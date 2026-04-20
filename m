@@ -1,88 +1,59 @@
-Return-Path: <linux-crypto+bounces-23190-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23191-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uWyyNUmu5WkQnAEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23190-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 06:40:41 +0200
+	id 6JcPKpLJ5WlIoAEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23191-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:37:06 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D044426BDC
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 06:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EC8D42742B
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:37:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2D835300CBF4
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 04:40:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A5248300C58C
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 06:37:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ECE137F8A1;
-	Mon, 20 Apr 2026 04:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6CB938236D;
+	Mon, 20 Apr 2026 06:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e67lTRGm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FOsT7BQ+"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3253237E31E
-	for <linux-crypto@vger.kernel.org>; Mon, 20 Apr 2026 04:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 892D015746F;
+	Mon, 20 Apr 2026 06:36:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776660038; cv=none; b=LLezTBZTm/gagE56o2ftOEUj7mhKkvK+zUlmw2umaMypEistBya+P2DmLhyLcUSHuSnkGOAxuPN5Iud8iP6WSZz8ZzCpbE3T/knNXllLAhEDJqkWtZTcWxvpHJqDej1ifbD/ozwcEh0yGd0Q9TQ45VmtQiCa8QbOILVjeCpNUeY=
+	t=1776667019; cv=none; b=NuWQzjumD4eFZ5KYUuzCFam/wuM+cTzTqyx5zoNyjcOiT84tgrApd6+WWGnnkbGAxj2Bmvomzlbv1mj8nHFArg6xveiOOis0MeJYqvDgP5q4vLy8ssnCb9r3yQLGjKQc8I65o2Qdx6ZMfkNF+YePnSXb8tba79XUu1dMvAJW3S8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776660038; c=relaxed/simple;
-	bh=x2ZPuLXVjSunwvX+LttAGekckIQQ7d0H+3W+QWAgtdk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h9RckO8+TQrsFjFmfemIUqboDOVw4Vz1IyzJVIgyWq5g3bAZEfyTcgbjnZ318MPQ1AAvGsaO+B6uSNk+jRM6oP60FwnIy7YnUD0WCtKc2nKM+4dD7s3KzlM4re/Aw1NqBe5hnULp/aFYFXBPxo/bIohtWCuqYNFaEQWlXRaMKVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e67lTRGm; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-3590042fa8eso1845815a91.1
-        for <linux-crypto@vger.kernel.org>; Sun, 19 Apr 2026 21:40:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776660036; x=1777264836; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mHOwjSuH+ifukyfbMxWURVHsMLaEmqyyv0eM8V2bFvk=;
-        b=e67lTRGmm0u7II2dpES7JDJa6S/yaL/15EYAl5boNjPgjtZXEoXkH7saaeQoT3Ioqf
-         rEi26qh09GTJngtkl59ZWvjK5mi3QZj8hlu4jIR6dT7icEffk/VYmQVWejOtR2Y5/QpL
-         g63Cx4U2/hqPAKlPM6q9TEm8K3MbVuR65OFUNo4boowM5B4syZYISm2/PpYUaw+4exT/
-         Kh4H17Y8Wogmcbhz+np05bx0ysk8Y7lF+bIIjj0Z2zzyQulLDbhqfnI94CKfiLweyhCi
-         OKkUPhSnYdynEjQc4onqyvGuWIqT/ko8p4BD3dZr+Xl/6P4zlmhzf4R68Azb4y/H0LjA
-         UByA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776660036; x=1777264836;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mHOwjSuH+ifukyfbMxWURVHsMLaEmqyyv0eM8V2bFvk=;
-        b=VK+B/AhfAWVBiCjOdUHuk9xLtAvrx7KVU+bke3kqYWcbHmKW/bLxXQEpP3ARD8fRDI
-         jrUDALoryJ5ithc72MqwY6DLoPk0Cu/naVL929ItKbMnHee6CXP2kO3EkD2/7r4KAu9P
-         24Ep9bunHDbtQatZso9Xc5+j3oVEk34lHemAQO09Lcd/tnTY+gzHfG7XLvgJ6M0jOHn5
-         EveNzPOKcnh4hq9W5JhPMO0+rr5rMc0nayM7HuA50/l4zucij0Q8Vmn9sWFf5/h5oWzu
-         1noXNhNAZYSzvr1WLzYDQmkOA+B9PRkR9dkCtbTZjsE/Ip3bBfgMPhwVyZAahuPysXoB
-         Q0AQ==
-X-Gm-Message-State: AOJu0Yzwb144CFAqA3nOG0XxK3HCphJUqv1MwcJ+CjecjmkReAl63lK2
-	Vz7BKNxL+igN8PXHDhlstu/21CBm46Ab7icERaNQJvWUpbMU5cc/xSvGM3fs9w==
-X-Gm-Gg: AeBDietolpTBMLWf0EaeGZ8obVyNbcuga5gfy4c4Y8J7+Qn1GO/1ZFa5iFEFc8cDp/W
-	wOhO7Q/kWCtA9jtnbSKkDBMR3buVLxl8dVbNsYFyNFNhadZk/nXG3bWpoXidFMMLT0TG+99Qx/6
-	TWRrzuAU8vm30RPbIOk/OLke+egfNT3sCbpgOf58v/Tzo5uHTeVtcV/2hC0HJ9ujAqXtc2j/p2F
-	BpCy9mzVcRwQXjmA3Ig97CdAJCS0c8jcBFvoXcJbnY+C9kgROBSxKkGcY/9RqfpmxrRHddlnWmz
-	mCL8J+KKmxHDtaoTKppyjvwlBpxjnakzvdDIOtszmWrKwcPw+q2I4J/WmoLdtRhbCtFdyo3pRZA
-	L6YWsiXxtzBR5QHYkyIkNnGiYXdgcbilfGdAhNUZE2SXtr4ShN1g6r+L16bszFf5n7SOoLQAA60
-	r21Tnd3ku4JtzqLyYqgZvL8c31zZRhwCfSjEmTGde3CC7x5c+tymmio2fsAdqd+jmR5yWGB5ev7
-	qq1q9YLI/imjw==
-X-Received: by 2002:a17:90a:d40d:b0:35b:e5ce:73bb with SMTP id 98e67ed59e1d1-361403d61d5mr12494469a91.1.1776660036203;
-        Sun, 19 Apr 2026 21:40:36 -0700 (PDT)
-Received: from localhost.localdomain (69-172-89-235.static.imsbiz.com. [69.172.89.235])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3614186adddsm9147211a91.2.2026.04.19.21.40.33
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 19 Apr 2026 21:40:35 -0700 (PDT)
-From: Dudu Lu <phx0fer@gmail.com>
-To: linux-crypto@vger.kernel.org
-Cc: herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	Dudu Lu <phx0fer@gmail.com>
-Subject: [PATCH] crypto: krb5enc - fix async decrypt skipping hash verification
-Date: Mon, 20 Apr 2026 12:40:27 +0800
-Message-Id: <20260420044027.56413-1-phx0fer@gmail.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-145)
+	s=arc-20240116; t=1776667019; c=relaxed/simple;
+	bh=eZIwjHTsAauKCfGAhduPaCDbK+KjBCoZ4p7G23eZu6U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C3pXMkZ3LsbxF9qJQ8HhyB8dlQlUBhUdDkKbZ40DeYi+i0o0THt40aVKnIGjJrYF488tzaFOHHDKsZnfUqElpsbLL1K4HvrEi0x3o1V4TbFzL2kdMiW/3pn1JOxUv3SNj33RJ48IX/LYv0xXTaHiXuc15upiOnE1mhNYv2z8pp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FOsT7BQ+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E50CCC19425;
+	Mon, 20 Apr 2026 06:36:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776667019;
+	bh=eZIwjHTsAauKCfGAhduPaCDbK+KjBCoZ4p7G23eZu6U=;
+	h=From:To:Cc:Subject:Date:From;
+	b=FOsT7BQ+/9NUMGqg9/6JqpkxnT/Q1XKaySeK5Pe8olQPdvef+fLGKiAfbMUyqrlQm
+	 yGGFnHsGhUD3TF+eHMuDCmafdMRLNu321Hj6xGelzfQ/7SQXQ+YkoCHKRIx1jqZ2Pb
+	 eBRdg0Y5ytKW+j+zoNpq4qz5GKV1KP3QuU6/bJfogpDy79KBK935T2vHwJGD46dC/h
+	 N5mMzyYvt39QeUmvsSsBHJueNzu1Zn2tg885787aOe74QMdfRi5g1rqrObRBNe82sw
+	 1tx5P8eREy7Livk2M3RF4JgJBr/CEhsVcWN4ObwN7j4HASyOcbalIKVeoNJHXVtN1k
+	 sVeIEMUh4mTlw==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org,
+	Herbert Xu <herbert@gondor.apana.org.au>
+Cc: linux-kernel@vger.kernel.org,
+	Stephan Mueller <smueller@chronox.de>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH 00/38] Fix and simplify the NIST DRBG implementation
+Date: Sun, 19 Apr 2026 23:33:44 -0700
+Message-ID: <20260420063422.324906-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -94,154 +65,163 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_CC(0.00)[gondor.apana.org.au,davemloft.net,gmail.com];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-23191-lists,linux-crypto=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23190-lists,linux-crypto=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[phx0fer@gmail.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 2D044426BDC
+	TAGGED_RCPT(0.00)[linux-crypto];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_HAS_DN(0.00)[]
+X-Rspamd-Queue-Id: 0EC8D42742B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-krb5enc_dispatch_decrypt() sets req->base.complete as the skcipher
-callback, which is the caller's own completion handler. When the
-skcipher completes asynchronously, this signals "done" to the caller
-without executing krb5enc_dispatch_decrypt_hash(), completely bypassing
-the integrity verification (hash check).
+This series is intended to be taken through the cryptodev tree.  It can
+also be retrieved from:
 
-Compare with the encrypt path which correctly uses
-krb5enc_encrypt_done as an intermediate callback to chain into the
-hash computation on async completion.
+    git fetch https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git drbg-v1
 
-Fix by adding krb5enc_decrypt_done as an intermediate callback that
-chains into krb5enc_dispatch_decrypt_hash() upon async skcipher
-completion, matching the encrypt path's callback pattern.
+This series fixes and greatly simplifies crypto/drbg.c, i.e. the
+kernel's implementation of NIST SP800-90A.  This code isn't normally
+used, but it's sometimes used by people doing FIPS 140-3 certifications.
 
-Also fix EBUSY/EINPROGRESS handling throughout: remove
-krb5enc_request_complete() which incorrectly swallowed EINPROGRESS
-notifications that must be passed up to callers waiting on backlogged
-requests, and add missing EBUSY checks in krb5enc_encrypt_ahash_done
-for the dispatch_encrypt return value.
+Note: this series is *not* meant to encourage using this code over
+random.c.  In fact, my recent commit 65b3c2f627851639 made "normal"
+systems stop using this code.  It's just that the reality is that this
+is in the kernel tree, it's been there for many years, and people are
+using it to get FIPS 140-3 certifications.  As long as that's the case,
+it might as well be fixed up and simplified.  Another reason to simplify
+this as much as possible is that for historical reasons it's accessible
+to unprivileged users via AF_ALG (even though it shouldn't be).  So I do
+think this is a clear step forwards, regardless of level of enthusiasm
+for FIPS, especially considering the massively negative diffstat.
 
-Fixes: d1775a177f7f ("crypto: Add 'krb5enc' hash and cipher AEAD algorithm")
-Signed-off-by: Dudu Lu <phx0fer@gmail.com>
----
- crypto/krb5enc.c | 42 ++++++++++++++++++++++++++----------------
- 1 file changed, 26 insertions(+), 16 deletions(-)
+Patches 1-5 begin with some bug fixes.  Fixes for CTR_DRBG and HASH_DRBG
+are included, despite that code being removed later in the series, so
+that they can be backported (though that is likely unused code anyway).
 
-diff --git a/crypto/krb5enc.c b/crypto/krb5enc.c
-index a1de55994d92..2df7d4c3baed 100644
---- a/crypto/krb5enc.c
-+++ b/crypto/krb5enc.c
-@@ -39,12 +39,6 @@ struct krb5enc_request_ctx {
- 	char tail[];
- };
- 
--static void krb5enc_request_complete(struct aead_request *req, int err)
--{
--	if (err != -EINPROGRESS)
--		aead_request_complete(req, err);
--}
--
- /**
-  * crypto_krb5enc_extractkeys - Extract Ke and Ki keys from the key blob.
-  * @keys: Where to put the key sizes and pointers
-@@ -127,7 +121,7 @@ static void krb5enc_encrypt_done(void *data, int err)
- {
- 	struct aead_request *req = data;
- 
--	krb5enc_request_complete(req, err);
-+	aead_request_complete(req, err);
- }
- 
- /*
-@@ -188,13 +182,16 @@ static void krb5enc_encrypt_ahash_done(void *data, int err)
- 	struct ahash_request *ahreq = (void *)(areq_ctx->tail + ictx->reqoff);
- 
- 	if (err)
--		return krb5enc_request_complete(req, err);
-+		goto out;
- 
- 	krb5enc_insert_checksum(req, ahreq->result);
- 
- 	err = krb5enc_dispatch_encrypt(req, 0);
--	if (err != -EINPROGRESS)
--		aead_request_complete(req, err);
-+	if (err == -EINPROGRESS || err == -EBUSY)
-+		return;
-+
-+out:
-+	aead_request_complete(req, err);
- }
- 
- /*
-@@ -264,11 +261,9 @@ static void krb5enc_decrypt_hash_done(void *data, int err)
- {
- 	struct aead_request *req = data;
- 
--	if (err)
--		return krb5enc_request_complete(req, err);
--
--	err = krb5enc_verify_hash(req);
--	krb5enc_request_complete(req, err);
-+	if (!err)
-+		err = krb5enc_verify_hash(req);
-+	aead_request_complete(req, err);
- }
- 
- /*
-@@ -300,6 +295,21 @@ static int krb5enc_dispatch_decrypt_hash(struct aead_request *req)
- 	return krb5enc_verify_hash(req);
- }
- 
-+static void krb5enc_decrypt_done(void *data, int err)
-+{
-+	struct aead_request *req = data;
-+
-+	if (err)
-+		goto out;
-+
-+	err = krb5enc_dispatch_decrypt_hash(req);
-+	if (err == -EINPROGRESS || err == -EBUSY)
-+		return;
-+
-+out:
-+	aead_request_complete(req, err);
-+}
-+
- /*
-  * Dispatch the decryption of the ciphertext.
-  */
-@@ -323,7 +333,7 @@ static int krb5enc_dispatch_decrypt(struct aead_request *req)
- 
- 	skcipher_request_set_tfm(skreq, ctx->enc);
- 	skcipher_request_set_callback(skreq, aead_request_flags(req),
--				      req->base.complete, req->base.data);
-+				      krb5enc_decrypt_done, req);
- 	skcipher_request_set_crypt(skreq, src, dst,
- 				   req->cryptlen - authsize, req->iv);
- 
+Patches 6-11 do some initial cleanups.
+
+Patches 12-17 clean up the museum of DRBG variants to just support the
+HMAC-SHA512 DRBG only, dropping support for the others.  This is already
+the default variant, it makes sense that it's the default, and it's
+probably the only one actually being used on current kernels.  In any
+case, supporting more than one is pretty pointless.  See the patches for
+more details about why it makes sense to keep using this one.
+
+Patches 18-33 contain many more cleanups, including switching from the
+crypto_shash API to the crypto library.
+
+Patch 34 is a significant one: it starts adding 32 bytes from
+get_random_bytes() to every additional input string.  This is to work
+around the forward secrecy bug described in Woodage & Shumow (2018)
+(https://eprint.iacr.org/2018/349.pdf), and to ensure that random.c
+reseeds are actually reflected in drbg.c.  Of course, for FIPS 140-3
+this is irrelevant, but this is the right thing to do in practice, and
+it should make drbg.c quite a bit more robust in practice.  (This isn't
+particularly novel, either; BoringSSL does essentially this same thing.)
+
+Patches 35-38 are some further cleanups, including some tweaks to when
+the formal reseeding happens.
+
+Note: while the primary goal of this series is to fix and simplify this
+code, this series is also intended to preserve the FIPS 140-3
+"certifiable" property of crypto/drbg.c.  I.e. after this series, it
+should still be possible to get a FIPS 140-3 certification that covers
+it.  In fact it should become quite a bit easier, since there will be
+only one DRBG variant to worry about and the code will be much more
+straightforward.  If there's anything I missed, let me know.
+
+Eric Biggers (38):
+  crypto: drbg - Fix returning success on failure in CTR_DRBG
+  crypto: drbg - Fix misaligned writes in CTR_DRBG and HASH_DRBG
+  crypto: drbg - Fix ineffective sanity check
+  crypto: drbg - Fix drbg_max_addtl() on 64-bit kernels
+  crypto: drbg - Fix the fips_enabled priority boost
+  crypto: drbg - Remove always-enabled symbol CRYPTO_DRBG_HMAC
+  crypto: drbg - Remove broken commented-out code
+  crypto: drbg - Remove unhelpful helper functions
+  crypto: drbg - Remove obsolete FIPS 140-2 continuous test
+  crypto: drbg - Fold include/crypto/drbg.h into crypto/drbg.c
+  crypto: drbg - Remove import of crypto_cipher functions
+  crypto: drbg - Remove support for CTR_DRBG
+  crypto: drbg - Remove support for HASH_DRBG
+  crypto: drbg - Flatten the DRBG menu
+  crypto: testmgr - Add test for drbg_pr_hmac_sha512
+  crypto: testmgr - Update test for drbg_nopr_hmac_sha512
+  crypto: drbg - Remove support for HMAC-SHA256 and HMAC-SHA384
+  crypto: drbg - Simplify algorithm registration
+  crypto: drbg - De-virtualize drbg_state_ops
+  crypto: drbg - Move fixed values into constants
+  crypto: drbg - Embed V and C into struct drbg_state
+  crypto: drbg - Use HMAC-SHA512 library API
+  crypto: drbg - Remove drbg_core
+  crypto: drbg - Install separate seed functions for pr and nopr
+  crypto: drbg - Move module aliases to end of file
+  crypto: drbg - Consolidate "instantiate" logic and remove
+    drbg_state::C
+  crypto: drbg - Eliminate use of 'drbg_string' and lists
+  crypto: drbg - Simplify drbg_generate_long() and fold into caller
+  crypto: drbg - Put rng_alg methods in logical order
+  crypto: drbg - Fold drbg_instantiate() into drbg_kcapi_seed()
+  crypto: drbg - Separate "reseed" case in drbg_kcapi_seed()
+  crypto: drbg - Fold drbg_prepare_hrng() into drbg_kcapi_seed()
+  crypto: drbg - Simplify "uninstantiate" logic
+  crypto: drbg - Include get_random_bytes() output in additional input
+  crypto: drbg - Change DRBG_MAX_REQUESTS to 4096
+  crypto: drbg - Remove redundant reseeding based on random.c state
+  crypto: drbg - Clean up generation code
+  crypto: drbg - Clean up loop in drbg_hmac_update()
+
+ Documentation/crypto/api-samples.rst          |    2 +-
+ Documentation/crypto/userspace-if.rst         |    2 +-
+ arch/m68k/configs/amiga_defconfig             |    2 -
+ arch/m68k/configs/apollo_defconfig            |    2 -
+ arch/m68k/configs/atari_defconfig             |    2 -
+ arch/m68k/configs/bvme6000_defconfig          |    2 -
+ arch/m68k/configs/hp300_defconfig             |    2 -
+ arch/m68k/configs/mac_defconfig               |    2 -
+ arch/m68k/configs/multi_defconfig             |    2 -
+ arch/m68k/configs/mvme147_defconfig           |    2 -
+ arch/m68k/configs/mvme16x_defconfig           |    2 -
+ arch/m68k/configs/q40_defconfig               |    2 -
+ arch/m68k/configs/sun3_defconfig              |    2 -
+ arch/m68k/configs/sun3x_defconfig             |    2 -
+ arch/mips/configs/decstation_64_defconfig     |    2 -
+ arch/mips/configs/decstation_defconfig        |    2 -
+ arch/mips/configs/decstation_r4k_defconfig    |    2 -
+ crypto/Kconfig                                |   40 +-
+ crypto/df_sp80090a.c                          |    8 +-
+ crypto/drbg.c                                 | 1800 +++--------------
+ crypto/testmgr.c                              |  143 +-
+ crypto/testmgr.h                              | 1262 ++++--------
+ drivers/crypto/xilinx/xilinx-trng.c           |    1 -
+ include/crypto/df_sp80090a.h                  |   25 +
+ include/crypto/drbg.h                         |  263 ---
+ include/crypto/internal/drbg.h                |   54 -
+ .../crypto/chacha20-s390/test-cipher.c        |    1 -
+ 27 files changed, 728 insertions(+), 2903 deletions(-)
+ delete mode 100644 include/crypto/drbg.h
+ delete mode 100644 include/crypto/internal/drbg.h
+
+
+base-commit: c1f49dea2b8f335813d3b348fd39117fb8efb428
 -- 
-2.39.3 (Apple Git-145)
+2.53.0
 
 
