@@ -1,124 +1,171 @@
-Return-Path: <linux-crypto+bounces-23240-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23241-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cOviDPno5WndpAEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23240-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 10:51:05 +0200
+	id ULd+Fa/q5WnxpAEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23241-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 10:58:23 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51B4542877C
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 10:51:04 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0108A42893A
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 10:58:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A48B3300AC9B
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:51:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 12151307ABA8
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:53:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB94D4A02;
-	Mon, 20 Apr 2026 08:51:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9033238A738;
+	Mon, 20 Apr 2026 08:53:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="X75GV+qK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QLrHv/Xn"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD04A37F74B
-	for <linux-crypto@vger.kernel.org>; Mon, 20 Apr 2026 08:50:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B30388E7B
+	for <linux-crypto@vger.kernel.org>; Mon, 20 Apr 2026 08:53:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776675062; cv=none; b=kbjS2n89yExrIvj8xDSV7D5jv/GNieQ712+MQxF95dTvon/pak6IIcuVxZ0n4hIuUMDWuuRv3oshGUcWLy/8SfQne6ogmFX2iX6Qh7yvbxQzw5SKCkQV68YnWZyH1ziJ0kYkfBXXFfp5YhUWYYGDmVu5DZCBFrNXFZz171HXxy0=
+	t=1776675228; cv=none; b=kabSiZKhXdncEkhP644T3mg4vqLe3/lsXghXyB2IL+FQu9CjhF9Q5r0F+tEfjrPA1Ns61GCBo3ahgKvmqVLZ/C/ct3dcLQoTeJomEDos0SyRbHG1svcKoF/kPH9wkun4rD8KKAEi2Rm3BUBmlNoQ3OR2l7Ev6KU0RCgWMhm2JqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776675062; c=relaxed/simple;
-	bh=42IUaf8hIpn4U9JA4twndcnXOrbUJG9hb6LbMVcP1k4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sTckB0y96vViCuQChLcHX6RISoDZXcrqlha7Dpe/5yQjh4pvHGJcKB1vZMigTgcHlcwFnpsRPxC7oeKoocW4km+2EZQ1D43XuqqsZSiXWurKu6SWTnODCc+JfG3PqSAcpwJz+Hh3KS2GJkOfLdKWLK9AM1lnoytT86Ry6Ohbh20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=X75GV+qK; arc=none smtp.client-ip=180.181.231.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=QWDhr6GxDcToH5i4UdOOd6z9bj7FvzEhoFozqUcdURE=; 
-	b=X75GV+qKCvQHRHMx11sCk6L+146C47TowmUpQVzgKgTcnNL39q/1xR1uo8vyM0xPcTb4sZEF8lL
-	+08MvnMcg1htCamHulwiVmQZgPg7s2W9PfytwShLUhllKKiOXDrlMu/REPLmfZufJhBhg/yYkDDJq
-	nZQACOOkwjax6YEc81dW9OUYYes3jtjGXX6qyXfim5ZitZidnBv4mq3mcm4hUa3nzpZr2QObyMI+t
-	Aoo5dPkEHCbiyb1IKdqIS5wMYhntOgePX0KK3AKC1FPpHITzE8Gs3DcYK8mhn+A/mG5q97MyC/ExM
-	d6pj114wFE34r4fqHPrqIeN4X5SKvVuEI/eg==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1wEkLH-007M5F-2P;
-	Mon, 20 Apr 2026 16:50:56 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 20 Apr 2026 16:50:55 +0800
-Date: Mon, 20 Apr 2026 16:50:55 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Cc: linux-crypto@vger.kernel.org, qat-linux@intel.com,
-	Laurent M Coquerel <laurent.m.coquerel@intel.com>
-Subject: Re: [PATCH v2] crypto: deflate - fix decompression window size
-Message-ID: <aeXo79eNiYnJ2ImV@gondor.apana.org.au>
-References: <20260326100433.57324-1-giovanni.cabiddu@intel.com>
- <ac8I4mpkdn8uy8TE@gondor.apana.org.au>
- <aeEWf4j+VO0FziNj@gcabiddu-mobl.ger.corp.intel.com>
+	s=arc-20240116; t=1776675228; c=relaxed/simple;
+	bh=eW002aUV/pDc7QNMwK4vUV0AbIjBkQcbKvXG8+FqB3k=;
+	h=From:In-Reply-To:MIME-Version:References:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Okqj3GpSqpZM/d5Qg5Srdej2ALoO3SYJVgRJ7523lIaJ+zesNKqD4UoY52dIDeF2+Y+Q4c9YRBUpKkEwTTaxpkq32pTpst/Oi0bGamoAdj+ag/SlXFolzkU4lojZvtSWxen14ATrP0PEtDYLiLoQLUZM9qJhM+3Vucydp/IJoHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QLrHv/Xn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBFB0C2BCB3
+	for <linux-crypto@vger.kernel.org>; Mon, 20 Apr 2026 08:53:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776675228;
+	bh=eW002aUV/pDc7QNMwK4vUV0AbIjBkQcbKvXG8+FqB3k=;
+	h=From:In-Reply-To:References:Date:Subject:To:Cc:From;
+	b=QLrHv/Xn6HC23/w6nn94mXgnR14YURNJd/57C9ACmoSi28uoI4wvopNGiWNSTISqk
+	 78cnOnCvjzts7uUxlJ2wLNIOuB/P+iqHNtQCc/OkO/HjTM3WjS1b3el4Un5TryA4bk
+	 ak0A/KZuetcg7qYwKr60Uf14N2FzQhz0J42w90uPR/AO5FF+vCbMVMm2UtyEqBvuwi
+	 o9dXFj+bhiZL/cLqBTkswi7Pxo8Kr744fjXAbk/1+1WQMAgmZcoNobJ5/m5b2LInQn
+	 AN+JlgjnbEzosd2ysvOHS5nAWhVq5gmfuCcGskbt65LABl0KazoycZT2Z07/NKgK+7
+	 Clru1DUVQ2tmA==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5a3fcb2c718so2312421e87.0
+        for <linux-crypto@vger.kernel.org>; Mon, 20 Apr 2026 01:53:47 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ9xa2H80HqKExvzUdO+y2WDnxqeZZ/+pNhC9m2iD9gZQ/KMzA7AFo+stB3THw1ee71fS5AkXDaPpW+bmWw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyFtoTxK3An3nExdBiHs6DTVTz1/yxzUOoK8dnCCTZvNmyDHEMf
+	Mxn8a+cQKoh9IVFYkLG2nTmRNo9MV96bnRA+u3aN20XWD6TPXrc2U32LsoQSqiuJzGlEqOo2pAe
+	8m91eQykLb0rDWyZvy+kkoicU4MPRD+f05If0xiUYKw==
+X-Received: by 2002:a05:6512:4142:b0:5a4:e6:8fce with SMTP id
+ 2adb3069b0e04-5a4172f609dmr2938573e87.38.1776675226584; Mon, 20 Apr 2026
+ 01:53:46 -0700 (PDT)
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 20 Apr 2026 10:53:44 +0200
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 20 Apr 2026 10:53:44 +0200
+From: Bartosz Golaszewski <brgl@kernel.org>
+In-Reply-To: <20260416-qcom_ice_power_and_clk_vote-v5-4-5ccf5d7e2846@oss.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aeEWf4j+VO0FziNj@gcabiddu-mobl.ger.corp.intel.com>
-X-Spamd-Result: default: False [-2.16 / 15.00];
+References: <20260416-qcom_ice_power_and_clk_vote-v5-0-5ccf5d7e2846@oss.qualcomm.com>
+ <20260416-qcom_ice_power_and_clk_vote-v5-4-5ccf5d7e2846@oss.qualcomm.com>
+Date: Mon, 20 Apr 2026 10:53:44 +0200
+X-Gmail-Original-Message-ID: <CAMRc=McE8YHGWuyRmJAt+x2mzMexgfz1zsnck6yYcupt-jcZtA@mail.gmail.com>
+X-Gm-Features: AQROBzACJ6Vdt_y2a3lRfsPW_8wLBcxtRDZ4npozYG3KDFhLtTX7xP1EwaHhPoM
+Message-ID: <CAMRc=McE8YHGWuyRmJAt+x2mzMexgfz1zsnck6yYcupt-jcZtA@mail.gmail.com>
+Subject: Re: [PATCH v5 04/13] arm64: dts: qcom: lemans: Add power-domain and
+ iface clk for ice node
+To: Harshal Dev <harshal.dev@oss.qualcomm.com>
+Cc: Brian Masney <bmasney@redhat.com>, Neeraj Soni <neeraj.soni@oss.qualcomm.com>, 
+	Gaurav Kashyap <gaurav.kashyap@oss.qualcomm.com>, linux-arm-msm@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>, 
+	Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konradybcio@kernel.org>, 
+	Abel Vesa <abel.vesa@oss.qualcomm.com>, 
+	Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>, 
+	cros-qcom-dts-watchers@chromium.org, Eric Biggers <ebiggers@google.com>, 
+	Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>, 
+	Jingyi Wang <jingyi.wang@oss.qualcomm.com>, Tengfei Fan <tengfei.fan@oss.qualcomm.com>, 
+	Bartosz Golaszewski <brgl@kernel.org>, David Wronek <davidwronek@gmail.com>, 
+	Luca Weiss <luca.weiss@fairphone.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Melody Olvera <quic_molvera@quicinc.com>, Alexander Koskovich <akoskovich@pm.me>, 
+	Abel Vesa <abelvesa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-23241-lists,linux-crypto=lfdr.de];
+	FREEMAIL_CC(0.00)[redhat.com,oss.qualcomm.com,vger.kernel.org,kernel.org,gondor.apana.org.au,davemloft.net,chromium.org,google.com,gmail.com,fairphone.com,linaro.org,quicinc.com,pm.me];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,qualcomm.com:email,1d88000:email];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[33];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[brgl@kernel.org,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	URIBL_MULTI_FAIL(0.00)[sto.lore.kernel.org:server fail,apana.org.au:server fail,gondor.apana.org.au:server fail];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23240-lists,linux-crypto=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[4];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email]
-X-Rspamd-Queue-Id: 51B4542877C
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto,dt];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 0108A42893A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, Apr 16, 2026 at 06:03:59PM +0100, Giovanni Cabiddu wrote:
+On Thu, 16 Apr 2026 13:59:21 +0200, Harshal Dev
+<harshal.dev@oss.qualcomm.com> said:
+> Qualcomm in-line crypto engine (ICE) platform driver specifies and votes
+> for its own resources. Before accessing ICE hardware during probe, to
+> avoid potential unclocked register access issues (when clk_ignore_unused
+> is not passed on the kernel command line), in addition to the 'core' clock
+> the 'iface' clock should also be turned on by the driver. This can only be
+> done if the UFS_PHY_GDSC power domain is enabled. Specify both the
+> UFS_PHY_GDSC power domain and the 'iface' clock in the ICE node for lemans.
 >
-> I'm reworking the acomp/BTRFS set, and that will be included there.
+> Fixes: 96272ba7103d4 ("arm64: dts: qcom: sa8775p: enable the inline crypto engine")
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
+> Reviewed-by: Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>
+> Signed-off-by: Harshal Dev <harshal.dev@oss.qualcomm.com>
+> ---
+>  arch/arm64/boot/dts/qcom/lemans.dtsi | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/lemans.dtsi b/arch/arm64/boot/dts/qcom/lemans.dtsi
+> index fe6e76351823..d83cad26a20f 100644
+> --- a/arch/arm64/boot/dts/qcom/lemans.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/lemans.dtsi
+> @@ -2758,7 +2758,11 @@ ice: crypto@1d88000 {
+>  			compatible = "qcom,sa8775p-inline-crypto-engine",
+>  				     "qcom,inline-crypto-engine";
+>  			reg = <0x0 0x01d88000 0x0 0x18000>;
+> -			clocks = <&gcc GCC_UFS_PHY_ICE_CORE_CLK>;
+> +			clocks = <&gcc GCC_UFS_PHY_ICE_CORE_CLK>,
+> +				 <&gcc GCC_UFS_PHY_AHB_CLK>;
+> +			clock-names = "core",
+> +				      "iface";
+> +			power-domains = <&gcc UFS_PHY_GDSC>;
+>  		};
+>
+>  		cryptobam: dma-controller@1dc4000 {
+>
+> --
+> 2.34.1
+>
+>
 
-I'd prefer a standalone parameters patch-set, with the first user
-being zram.
-
-> I don't think this should be treated as a parameter. A decompressor must
-> be able to handle any valid DEFLATE stream. RFC1951 (section 3.3) [1]
-> states that while a compressor may restrict parameters such as window
-> size, a compliant decompressor must accept the full range defined by the
-> specification.
-
-I thought this is the whole point of parameters.  Different parameters
-would generate compression output that may not be decompressed unless
-you used the same set of parameters.
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
 
