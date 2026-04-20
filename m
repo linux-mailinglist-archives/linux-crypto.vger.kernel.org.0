@@ -1,49 +1,49 @@
-Return-Path: <linux-crypto+bounces-23222-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23223-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OF3sKADL5WlIoAEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23222-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:43:12 +0200
+	id 0BJaCYjL5WlIoAEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23223-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:45:28 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A144275F8
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:43:12 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A23FA42764C
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:45:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D6245302084A
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 06:38:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CCC71303CD2E
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 06:38:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31413921E7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9843392821;
 	Mon, 20 Apr 2026 06:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="leBgm3Qk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SaKZai4t"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3294838F923;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80E943914F8;
 	Mon, 20 Apr 2026 06:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776667029; cv=none; b=UeLOfoVaxB2U9Jq8CQmC96cM17rnWD/FHEZOOjB265uv8fYjD0ZSMjIp74XVmnS7leao/raaYMSKYVEjTPsLPmRraDgLEzUArb35G/wIxC4Om/WNvGn9i1s3zYdocbCwjoX7Hc0XJ1rjNdjKrbSDvxwzk9olamGQ46KStUugx3Y=
+	t=1776667029; cv=none; b=E7XKMLKS7wCnVaL8UNMzz3srOY4xdr+JTHYTBXBADZ5ZjBvYEXEOeXSFzjYEpMjeX24DQWJ1nLERcWn/DQF8U1sXDUhyJPN4Ki44iawNP+lMLJddXtwmJWT5oBHRzoLUe5TDP1I3khrXuQy3f15jItk4lYJ8o6HgOGN90h5BPS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1776667029; c=relaxed/simple;
-	bh=wla75adFQXRnNMgLq0IS0PfZXeGDq1tsGETDptDTDVU=;
+	bh=af1vIQArVKzExARYuYWCoJA9/jR49J1y5i9toiE3TbQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mpYheyFCigX8xAykiLPk3a7OI9jlpamRjCw/mLSOQX141ejuAr37aFWh0/s4xVeEk1BqiPqCpoHcKohb75AUigUMSWFYcnWC+AURf/82foFoTnbrR8FFieH0oXce+49esqPjZdOiVw15yodrjvaGiAgL3cCtLAGia6UOL7GMwvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=leBgm3Qk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5685C2BCB8;
-	Mon, 20 Apr 2026 06:37:08 +0000 (UTC)
+	 MIME-Version; b=A+pUatnjxnMtO0oXRJRc0DH4BSUNB2DSkiBSOmy1lk/9FW6EZSs6kLeh7285I1k1Gb+ZAaQpTDKVyoHgTNuoIj2AF+b9oPgIRTpgu5reu2pZGt9b0NsbjG2Qv2DbAzSAInIjBJI8oMO9aoQHBqG+ez6E5vvkQ9H/TCMkwwLoh4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SaKZai4t; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BEC7C2BCB7;
+	Mon, 20 Apr 2026 06:37:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1776667029;
-	bh=wla75adFQXRnNMgLq0IS0PfZXeGDq1tsGETDptDTDVU=;
+	bh=af1vIQArVKzExARYuYWCoJA9/jR49J1y5i9toiE3TbQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=leBgm3QkGkD7EVBxmyPWC1lxuNOj+BvZIeN+N2Z8PBC8KDp+iSoRoRPikLDA/CA9W
-	 IBgLmWBmZwFRlXoW/+P7NtJ+zSCbAHngYSu9oEWbOkb4GukBxJTGg1PfM3itw9Gt9r
-	 YEUa9CF7387tdMloi19GsXTcmZ7oEujnYTWHxo6AsOOZ6aJmwNgAZmcky8rAHM0dzi
-	 MZZtr+2fquTCPg4YbaQabmW/tAxjpIcAjoXDsBA8hKyL52ds/luqUF1t1cJ3Ipt55Y
-	 DsXMW7s1jgNTs5j98YX1uef/28L4mB7j7ijA/ZmMJDN4tBU2N0SbygdRnL5SYTLOkE
-	 CLQXHV1/avWxg==
+	b=SaKZai4tsNUVCxKRYHEbIvQXHVJGgpecZVPFSDjMaHADR/Y1DdlUM3hslwY+w0vSa
+	 JFrGRG6KnpzCkO2vSoeizEvOsdqloS7m0NPDmMCFhonWwZHRZINt16UqGX9JM/7B7t
+	 GyRILpVbxI3R6ssjbRCyKMkRZnCg+FUzJLj6DIstkxNZZNHB76f5MaKHGm3NcsOs2q
+	 h5lpJPRY0OwL4rwXlRD6MjLu4rxMmymvXvrtbCGgkRpNIvA4qFA5EeNI9VJ7fi+Sbf
+	 U5zUA+g1hbhBglok534LdJXzX2sfJvrKbOkvRx43Sj/Lj2An44obdrElNmcxN9tFXK
+	 jCi9Ne8ZONdYw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org,
 	Herbert Xu <herbert@gondor.apana.org.au>
@@ -51,9 +51,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Stephan Mueller <smueller@chronox.de>,
 	"Jason A . Donenfeld" <Jason@zx2c4.com>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 31/38] crypto: drbg - Separate "reseed" case in drbg_kcapi_seed()
-Date: Sun, 19 Apr 2026 23:34:15 -0700
-Message-ID: <20260420063422.324906-32-ebiggers@kernel.org>
+Subject: [PATCH 32/38] crypto: drbg - Fold drbg_prepare_hrng() into drbg_kcapi_seed()
+Date: Sun, 19 Apr 2026 23:34:16 -0700
+Message-ID: <20260420063422.324906-33-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260420063422.324906-1-ebiggers@kernel.org>
 References: <20260420063422.324906-1-ebiggers@kernel.org>
@@ -69,18 +69,18 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23222-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23223-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
@@ -90,94 +90,78 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 20A144275F8
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A23FA42764C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Clearly separate the code for the "reseed" and "instantiate" cases,
-since what they need to do is quite different.
-
-Note that the mutex guard makes the mutex start being held during the
-call to drbg_uninstantiate(), which is fine.
+Fold drbg_prepare_hrng() into its only caller.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- crypto/drbg.c | 38 ++++++++++++++++----------------------
- 1 file changed, 16 insertions(+), 22 deletions(-)
+ crypto/drbg.c | 34 ++++++++++++----------------------
+ 1 file changed, 12 insertions(+), 22 deletions(-)
 
 diff --git a/crypto/drbg.c b/crypto/drbg.c
-index 763c14e3786c..a9d586107ebe 100644
+index a9d586107ebe..45d97f3ba4ef 100644
 --- a/crypto/drbg.c
 +++ b/crypto/drbg.c
-@@ -575,51 +575,45 @@ static int drbg_kcapi_seed(struct crypto_rng *tfm,
- 			   const u8 *pers, size_t pers_len, bool pr)
- {
- 	static const u8 initial_key[DRBG_STATE_LEN]; /* all zeroes */
- 	struct drbg_state *drbg = crypto_rng_ctx(tfm);
- 	int ret;
--	bool reseed = true;
- 
- 	pr_devel("DRBG: Initializing DRBG with prediction resistance %s\n",
- 		 str_enabled_disabled(pr));
--	mutex_lock(&drbg->drbg_mutex);
-+	guard(mutex)(&drbg->drbg_mutex);
-+
-+	if (drbg->instantiated)
-+		return drbg_seed(drbg, pers, pers_len, /* reseed= */ true);
- 
- 	/* 9.1 step 1 is implicit with the selected DRBG type */
- 
- 	/*
- 	 * 9.1 step 2 is implicit as caller can select prediction resistance
- 	 * all DRBG types support prediction resistance
- 	 */
- 
- 	/* 9.1 step 4 is implicit in DRBG_SEC_STRENGTH */
- 
--	if (!drbg->instantiated) {
--		drbg->instantiated = true;
--		drbg->pr = pr;
--		drbg->seeded = DRBG_SEED_STATE_UNSEEDED;
--		drbg->last_seed_time = 0;
--		drbg->reseed_threshold = DRBG_MAX_REQUESTS;
--		memset(drbg->V, 1, DRBG_STATE_LEN);
--		hmac_sha512_preparekey(&drbg->key, initial_key, DRBG_STATE_LEN);
--
--		ret = drbg_prepare_hrng(drbg);
--		if (ret)
--			goto free_everything;
--
--		reseed = false;
--	}
--
--	ret = drbg_seed(drbg, pers, pers_len, reseed);
-+	drbg->instantiated = true;
-+	drbg->pr = pr;
-+	drbg->seeded = DRBG_SEED_STATE_UNSEEDED;
-+	drbg->last_seed_time = 0;
-+	drbg->reseed_threshold = DRBG_MAX_REQUESTS;
-+	memset(drbg->V, 1, DRBG_STATE_LEN);
-+	hmac_sha512_preparekey(&drbg->key, initial_key, DRBG_STATE_LEN);
- 
--	if (ret && !reseed)
-+	ret = drbg_prepare_hrng(drbg);
-+	if (ret)
-+		goto free_everything;
-+	ret = drbg_seed(drbg, pers, pers_len, /* reseed= */ false);
-+	if (ret)
- 		goto free_everything;
- 
--	mutex_unlock(&drbg->drbg_mutex);
- 	return ret;
- 
- free_everything:
--	mutex_unlock(&drbg->drbg_mutex);
- 	drbg_uninstantiate(drbg);
- 	return ret;
+@@ -504,29 +504,10 @@ static int drbg_generate(struct drbg_state *drbg,
+ 	len = 0;
+ err:
+ 	return len;
  }
  
- static int drbg_kcapi_seed_pr(struct crypto_rng *tfm,
+-static int drbg_prepare_hrng(struct drbg_state *drbg)
+-{
+-	/* We do not need an HRNG in test mode. */
+-	if (drbg->test_entropylen != 0)
+-		return 0;
+-
+-	drbg->jent = crypto_alloc_rng("jitterentropy_rng", 0, 0);
+-	if (IS_ERR(drbg->jent)) {
+-		const int err = PTR_ERR(drbg->jent);
+-
+-		drbg->jent = NULL;
+-		if (fips_enabled)
+-			return err;
+-		pr_info("DRBG: Continuing without Jitter RNG\n");
+-	}
+-
+-	return 0;
+-}
+-
+ /*
+  * DRBG uninstantiate function as required by SP800-90A - this function
+  * frees all buffers and the DRBG handle
+  *
+  * @drbg DRBG state handle
+@@ -600,13 +581,22 @@ static int drbg_kcapi_seed(struct crypto_rng *tfm,
+ 	drbg->last_seed_time = 0;
+ 	drbg->reseed_threshold = DRBG_MAX_REQUESTS;
+ 	memset(drbg->V, 1, DRBG_STATE_LEN);
+ 	hmac_sha512_preparekey(&drbg->key, initial_key, DRBG_STATE_LEN);
+ 
+-	ret = drbg_prepare_hrng(drbg);
+-	if (ret)
+-		goto free_everything;
++	/* Allocate jitterentropy_rng if not in test mode. */
++	if (drbg->test_entropylen == 0) {
++		drbg->jent = crypto_alloc_rng("jitterentropy_rng", 0, 0);
++		if (IS_ERR(drbg->jent)) {
++			ret = PTR_ERR(drbg->jent);
++			drbg->jent = NULL;
++			if (fips_enabled)
++				goto free_everything;
++			pr_info("DRBG: Continuing without Jitter RNG\n");
++		}
++	}
++
+ 	ret = drbg_seed(drbg, pers, pers_len, /* reseed= */ false);
+ 	if (ret)
+ 		goto free_everything;
+ 
+ 	return ret;
 -- 
 2.53.0
 
