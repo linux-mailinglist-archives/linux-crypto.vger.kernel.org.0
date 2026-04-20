@@ -1,49 +1,49 @@
-Return-Path: <linux-crypto+bounces-23219-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23220-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KD4PHBjL5WlIoAEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23219-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:43:36 +0200
+	id qBtjKdLK5WlIoAEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23220-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:42:26 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD796427607
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:43:35 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A5C84275BE
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:42:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B7CB9309B01C
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 06:38:13 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 77D973058B9E
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 06:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC98938E13F;
-	Mon, 20 Apr 2026 06:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 162D438F633;
+	Mon, 20 Apr 2026 06:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pn5FPAsi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KjcsmHhT"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6995838B136;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A713638C2BF;
 	Mon, 20 Apr 2026 06:37:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776667028; cv=none; b=bOLFILQO+fJM0TLOxu3dC26EKC+y8ESk2tqO2FqblSgVIjRofZf1QDn24hD2um450N74kfocmFV40Fk0unS303BXKKFQD2YyKJwmep9MWQ8cx7H3cTiCIPpzqY2V3wiGLuBM7Dp5StYRfx5Hnh8/+EAdGoQi50Q+kuT0mu0o3ts=
+	t=1776667028; cv=none; b=madzvztFy1m2Ax/ejKz4wfg1s69o80qjG2moTIu+JXcVuHGMBAT1hDRTaYZ4qhOYSMjYhGtjOuxOtdplcN86TkrIX7Hcl+dElGe/1NCcl6FQ4eQsHHCce1WZbtX8PJIMRpES0hh5M01Lv7exKIeaOU12S8rPXPxeIkGfZvtOCGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1776667028; c=relaxed/simple;
-	bh=0WR+Gj9FEmt/sHKSbW+KRJNKsVT9ClFWDq6qAHNgwjM=;
+	bh=ab8Oa2H2wZFJso1ODU8GqfkTnczdmMsLEyZChrbqkyE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GO550vnd6ohHdW1CKNqJoh8uOB4F3KECh9RDZquhcBmoydH3wXFkpK0cMSg9uTCC/qmfn6AeCORtsLjn2Q/4vDvZL7Oh5raeFXS7z1Xpf71J57ez89gcelOxjscDTTe5xyXRDLcwMV+kX9uEwomVD4H3hE2tXWP8OO7nKoGXiOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pn5FPAsi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB593C19425;
-	Mon, 20 Apr 2026 06:37:07 +0000 (UTC)
+	 MIME-Version; b=AVDFVGsuszPnE4OLy+qX4ZmjOvf8fjJ0dkSCHOYQLUCOfOVLgviN1o7nUpG/HHvK7+y2DErOjSg7IQT1JVj9gZrDYvsBP34Dj9FBZYpsLBjKG9xo2PMX2JXX5seKIiT91abzdraA/VvoaSQYFn0YNzMJDiOiICBCxBD3Nm4+FEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KjcsmHhT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 418BEC2BCB7;
+	Mon, 20 Apr 2026 06:37:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1776667028;
-	bh=0WR+Gj9FEmt/sHKSbW+KRJNKsVT9ClFWDq6qAHNgwjM=;
+	bh=ab8Oa2H2wZFJso1ODU8GqfkTnczdmMsLEyZChrbqkyE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pn5FPAsigZXnATDnd0XFWSDXMSTL1sdAcjaMfIdUkPBCPkFFrICnFwSU+lAXbPjNU
-	 bzX36hG4Hws2brSoMLzfV1uYjHwXmph/IX4YyX2+mESSnnUd6lS5gv41ziwNeQ9YCO
-	 GSZVlGraQ7gzzhI6x5ikQW2OxAsL2PR+hXQy9aJ39MEHNO9kroRBQEGR5tPx8M2kiR
-	 ntrhx54edSsXAmFPesfZ6f1kF2U+5XGyGP5SfetnwvktlU/XoZxMqqfDB6lXoS20jI
-	 iYczH5anSjtjLHmAMILz9PPGzAaDquFQbfKRfeAcPBN0qiHSeSIGxhDAATwpTkX+2D
-	 ZyLq0/cm+04YQ==
+	b=KjcsmHhTUSWES02V0OrAX+WNt6kiE6FbaPHiUd857CaJjDMofOCMxWnMOBl3A91qH
+	 tbKxkZCW1vK2/h7gzw6grI3lMlFlaFLKZNjex2sAp+Lhp6Ay4TAkeB+ncwlXjnRTps
+	 d5ABGzJq7UvsyozgTaVpFhX7dwjU0KawD5+FTP59+Wlhb6iFUoBhe/VDKIhErrWXOd
+	 v+1hXw0201FKj12OcO/aAhckAh+7v0xQT69KcR1urHVRWLH/on0EQDAFPCJZ8eLvxt
+	 6ZEU1UKa2Jki5WJmg/a9/AuAfsuhYnwvnA68c+YUBZSxHDYmdJTBguLFuJpjMpBH1s
+	 bAVBzvuZ1spkw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org,
 	Herbert Xu <herbert@gondor.apana.org.au>
@@ -51,9 +51,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Stephan Mueller <smueller@chronox.de>,
 	"Jason A . Donenfeld" <Jason@zx2c4.com>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 28/38] crypto: drbg - Simplify drbg_generate_long() and fold into caller
-Date: Sun, 19 Apr 2026 23:34:12 -0700
-Message-ID: <20260420063422.324906-29-ebiggers@kernel.org>
+Subject: [PATCH 29/38] crypto: drbg - Put rng_alg methods in logical order
+Date: Sun, 19 Apr 2026 23:34:13 -0700
+Message-ID: <20260420063422.324906-30-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260420063422.324906-1-ebiggers@kernel.org>
 References: <20260420063422.324906-1-ebiggers@kernel.org>
@@ -69,18 +69,18 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23219-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23220-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
@@ -90,104 +90,182 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CD796427607
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 5A5C84275BE
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Simplify drbg_generate_long() to use a more straightforward loop, and
-then fold it into its only caller.  No functional change.
+Put the DRBG implementation of the rng_alg methods in the order in which
+they're called (cra_init => set_ent => seed => generate => cra_exit) so
+that it's easier to understand the flow.
+
+Also rename drbg_kcapi_random to drbg_kcapi_generate, and
+drbg_kcapi_cleanup to drbg_kcapi_exit, so they match the method names.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- crypto/drbg.c | 48 +++++++++++++++++-------------------------------
- 1 file changed, 17 insertions(+), 31 deletions(-)
+ crypto/drbg.c | 82 ++++++++++++++++++++++-----------------------------
+ 1 file changed, 36 insertions(+), 46 deletions(-)
 
 diff --git a/crypto/drbg.c b/crypto/drbg.c
-index b0cd8da51b26..9ff1a0e1b129 100644
+index 9ff1a0e1b129..ef9c3e9fdf6e 100644
 --- a/crypto/drbg.c
 +++ b/crypto/drbg.c
-@@ -504,39 +504,10 @@ static int drbg_generate(struct drbg_state *drbg,
- 	len = 0;
- err:
- 	return len;
+@@ -607,17 +607,24 @@ static int drbg_uninstantiate(struct drbg_state *drbg)
+ 	drbg_dealloc_state(drbg);
+ 	/* no scrubbing of test_data -- this shall survive an uninstantiate */
+ 	return 0;
  }
  
 -/*
-- * Wrapper around drbg_generate which can pull arbitrary long strings
-- * from the DRBG without hitting the maximum request limitation.
+- * Helper function for setting the test data in the DRBG
 - *
-- * Parameters: see drbg_generate
-- * Return codes: see drbg_generate -- if one drbg_generate request fails,
-- *		 the entire drbg_generate_long request fails
+- * @drbg DRBG state handle
+- * @data test data
+- * @len test data length
 - */
--static int drbg_generate_long(struct drbg_state *drbg,
--			      unsigned char *buf, unsigned int buflen,
--			      const u8 *addtl, size_t addtl_len)
--{
--	unsigned int len = 0;
--	unsigned int slice = 0;
--	do {
--		int err = 0;
--		unsigned int chunk = 0;
--		slice = (buflen - len) / DRBG_MAX_REQUEST_BYTES;
--		chunk = slice ? DRBG_MAX_REQUEST_BYTES : (buflen - len);
--		mutex_lock(&drbg->drbg_mutex);
--		err = drbg_generate(drbg, buf + len, chunk, addtl, addtl_len);
--		mutex_unlock(&drbg->drbg_mutex);
--		if (0 > err)
--			return err;
--		len += chunk;
--	} while (slice > 0 && (len < buflen));
--	return 0;
--}
--
- static int drbg_prepare_hrng(struct drbg_state *drbg)
++/***************************************************************
++ * Kernel crypto API interface to DRBG
++ ***************************************************************/
++
++static int drbg_kcapi_init(struct crypto_tfm *tfm)
++{
++	struct drbg_state *drbg = crypto_tfm_ctx(tfm);
++
++	mutex_init(&drbg->drbg_mutex);
++
++	return 0;
++}
++
++/* Set test entropy in the DRBG. */
+ static void drbg_kcapi_set_entropy(struct crypto_rng *tfm,
+ 				   const u8 *data, unsigned int len)
  {
- 	/* We do not need an HRNG in test mode. */
- 	if (drbg->test_entropylen != 0)
- 		return 0;
-@@ -674,11 +645,10 @@ static void drbg_kcapi_cleanup(struct crypto_tfm *tfm)
- 	drbg_uninstantiate(crypto_tfm_ctx(tfm));
+ 	struct drbg_state *drbg = crypto_rng_ctx(tfm);
+ 
+@@ -625,39 +632,42 @@ static void drbg_kcapi_set_entropy(struct crypto_rng *tfm,
+ 	drbg->test_entropy = data;
+ 	drbg->test_entropylen = len;
+ 	mutex_unlock(&drbg->drbg_mutex);
+ }
+ 
+-/***************************************************************
+- * Kernel crypto API interface to register DRBG
+- ***************************************************************/
+-
+-static int drbg_kcapi_init(struct crypto_tfm *tfm)
++/* Seed (i.e. instantiate) or re-seed the DRBG. */
++static int drbg_kcapi_seed(struct crypto_rng *tfm,
++			   const u8 *seed, unsigned int slen, bool pr)
+ {
+-	struct drbg_state *drbg = crypto_tfm_ctx(tfm);
++	struct drbg_state *drbg = crypto_rng_ctx(tfm);
+ 
+-	mutex_init(&drbg->drbg_mutex);
++	return drbg_instantiate(drbg, seed, slen, pr);
++}
+ 
+-	return 0;
++static int drbg_kcapi_seed_pr(struct crypto_rng *tfm,
++			      const u8 *seed, unsigned int slen)
++{
++	return drbg_kcapi_seed(tfm, seed, slen, /* pr= */ true);
+ }
+ 
+-static void drbg_kcapi_cleanup(struct crypto_tfm *tfm)
++static int drbg_kcapi_seed_nopr(struct crypto_rng *tfm,
++				const u8 *seed, unsigned int slen)
+ {
+-	drbg_uninstantiate(crypto_tfm_ctx(tfm));
++	return drbg_kcapi_seed(tfm, seed, slen, /* pr= */ false);
  }
  
  /*
   * Generate random numbers invoked by the kernel crypto API:
-- * The API of the kernel crypto API is extended as follows:
   *
   * src is additional input supplied to the RNG.
   * slen is the length of src.
   * dst is the output buffer where random data is to be stored.
   * dlen is the length of dst.
-@@ -687,11 +657,27 @@ static int drbg_kcapi_random(struct crypto_rng *tfm,
- 			     const u8 *src, unsigned int slen,
- 			     u8 *dst, unsigned int dlen)
+  */
+-static int drbg_kcapi_random(struct crypto_rng *tfm,
+-			     const u8 *src, unsigned int slen,
+-			     u8 *dst, unsigned int dlen)
++static int drbg_kcapi_generate(struct crypto_rng *tfm,
++			       const u8 *src, unsigned int slen,
++			       u8 *dst, unsigned int dlen)
  {
  	struct drbg_state *drbg = crypto_rng_ctx(tfm);
  
--	return drbg_generate_long(drbg, dst, dlen, src, slen);
-+	/*
-+	 * Break the request into multiple requests if needed, to avoid
-+	 * exceeding the maximum request length of the core algorithm.
-+	 */
-+	do {
-+		unsigned int n = min(dlen, DRBG_MAX_REQUEST_BYTES);
-+		int err;
-+
-+		mutex_lock(&drbg->drbg_mutex);
-+		err = drbg_generate(drbg, dst, n, src, slen);
-+		mutex_unlock(&drbg->drbg_mutex);
-+		if (err < 0)
-+			return err;
-+		dst += n;
-+		dlen -= n;
-+	} while (dlen);
-+	return 0;
+ 	/*
+ 	 * Break the request into multiple requests if needed, to avoid
+@@ -676,35 +686,15 @@ static int drbg_kcapi_random(struct crypto_rng *tfm,
+ 		dlen -= n;
+ 	} while (dlen);
+ 	return 0;
  }
  
- /* Seed (i.e. instantiate) or re-seed the DRBG. */
- static int drbg_kcapi_seed(struct crypto_rng *tfm,
- 			   const u8 *seed, unsigned int slen, bool pr)
+-/* Seed (i.e. instantiate) or re-seed the DRBG. */
+-static int drbg_kcapi_seed(struct crypto_rng *tfm,
+-			   const u8 *seed, unsigned int slen, bool pr)
++static void drbg_kcapi_exit(struct crypto_tfm *tfm)
+ {
+-	struct drbg_state *drbg = crypto_rng_ctx(tfm);
+-
+-	return drbg_instantiate(drbg, seed, slen, pr);
+-}
+-
+-static int drbg_kcapi_seed_pr(struct crypto_rng *tfm,
+-			      const u8 *seed, unsigned int slen)
+-{
+-	return drbg_kcapi_seed(tfm, seed, slen, /* pr= */ true);
+-}
+-
+-static int drbg_kcapi_seed_nopr(struct crypto_rng *tfm,
+-				const u8 *seed, unsigned int slen)
+-{
+-	return drbg_kcapi_seed(tfm, seed, slen, /* pr= */ false);
++	drbg_uninstantiate(crypto_tfm_ctx(tfm));
+ }
+ 
+-/***************************************************************
+- * Kernel module: code to load the module
+- ***************************************************************/
+-
+ /*
+  * Tests as defined in 11.3.2 in addition to the cipher tests: testing
+  * of the error handling.
+  *
+  * Note: testing of failing seed source as defined in 11.3.2 is not applicable
+@@ -767,24 +757,24 @@ static struct rng_alg drbg_algs[] = {
+ 		.base.cra_ctxsize	= sizeof(struct drbg_state),
+ 		.base.cra_module	= THIS_MODULE,
+ 		.base.cra_init		= drbg_kcapi_init,
+ 		.set_ent		= drbg_kcapi_set_entropy,
+ 		.seed			= drbg_kcapi_seed_pr,
+-		.generate		= drbg_kcapi_random,
+-		.base.cra_exit		= drbg_kcapi_cleanup,
++		.generate		= drbg_kcapi_generate,
++		.base.cra_exit		= drbg_kcapi_exit,
+ 	},
+ 	{
+ 		.base.cra_name		= "stdrng",
+ 		.base.cra_driver_name	= "drbg_nopr_hmac_sha512",
+ 		.base.cra_priority	= 201,
+ 		.base.cra_ctxsize	= sizeof(struct drbg_state),
+ 		.base.cra_module	= THIS_MODULE,
+ 		.base.cra_init		= drbg_kcapi_init,
+ 		.set_ent		= drbg_kcapi_set_entropy,
+ 		.seed			= drbg_kcapi_seed_nopr,
+-		.generate		= drbg_kcapi_random,
+-		.base.cra_exit		= drbg_kcapi_cleanup,
++		.generate		= drbg_kcapi_generate,
++		.base.cra_exit		= drbg_kcapi_exit,
+ 	},
+ };
+ 
+ static int __init drbg_init(void)
+ {
 -- 
 2.53.0
 
