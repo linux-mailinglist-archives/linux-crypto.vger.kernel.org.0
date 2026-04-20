@@ -1,162 +1,124 @@
-Return-Path: <linux-crypto+bounces-23242-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23240-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WPnBLc3q5WnxpAEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23242-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 10:58:53 +0200
+	id cOviDPno5WndpAEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23240-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 10:51:05 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8567428954
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 10:58:52 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51B4542877C
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 10:51:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 7EE8430298C7
-	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:54:22 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id A48B3300AC9B
+	for <lists+linux-crypto@lfdr.de>; Mon, 20 Apr 2026 08:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68857389DEC;
-	Mon, 20 Apr 2026 08:54:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB94D4A02;
+	Mon, 20 Apr 2026 08:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="X75GV+qK"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.175.55.52])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48F0385524
-	for <linux-crypto@vger.kernel.org>; Mon, 20 Apr 2026 08:54:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.175.55.52
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD04A37F74B
+	for <linux-crypto@vger.kernel.org>; Mon, 20 Apr 2026 08:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776675259; cv=none; b=d/nbyz0GoQfZEsvW6+zC9Vo/X15kjm9DAnZuhFaLUyscJIAtDRvnNVRWGgRNWcnHHU0DpTFsPla/ox9OifYGJ+D9+Hat984g98+ORD7kGkhXz6ozkHbh8J8wcdU4zlGL73fv1BjwSg/Y670d7xnD+5yvLJSQTuEFiFG/yk21lT0=
+	t=1776675062; cv=none; b=kbjS2n89yExrIvj8xDSV7D5jv/GNieQ712+MQxF95dTvon/pak6IIcuVxZ0n4hIuUMDWuuRv3oshGUcWLy/8SfQne6ogmFX2iX6Qh7yvbxQzw5SKCkQV68YnWZyH1ziJ0kYkfBXXFfp5YhUWYYGDmVu5DZCBFrNXFZz171HXxy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776675259; c=relaxed/simple;
-	bh=Swgw4q88qDcxf3DIoAK8gIhu97tKwfOCxSwyCaMzaV8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FBmXbkDOIpXAoPFqu+wjzZxSJjRflZUgajEJi61sNWrW20nCBr1ukA2ZIV8JtUjRobxco4Odn6+SLfudO/OiqpSsEETf3M8/9l17v95VMfM2qD4vAJjG+GXS32QKg9GpERJxTgffcQAMpMF+ZodtAmKFHQ8fCNhvwEy1c1tHziE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn; spf=pass smtp.mailfrom=lzu.edu.cn; arc=none smtp.client-ip=52.175.55.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lzu.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lzu.edu.cn
-Received: from enjou-Legion-Y7000P-2019.coin-barley.ts.net (unknown [172.23.56.36])
-	by app1 (Coremail) with SMTP id ygmowADXTv+l6eVp6jXWAA--.15504S3;
-	Mon, 20 Apr 2026 16:53:59 +0800 (CST)
-From: Ren Wei <n05ec@lzu.edu.cn>
-To: linux-crypto@vger.kernel.org
-Cc: herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	ardb@kernel.org,
-	yuantan098@gmail.com,
-	yifanwucs@gmail.com,
-	tomapufckgml@gmail.com,
-	bird@lzu.edu.cn,
-	z1652074432@gmail.com,
-	kanolyc@gmail.com,
-	n05ec@lzu.edu.cn
-Subject: [PATCH 1/1] crypto: authencesn: reject short ahash digests during instance creation
-Date: Mon, 20 Apr 2026 16:48:25 +0800
-Message-ID: <cb1188757edab9b056961d4d2441be009ac73ce8.1775217403.git.kanolyc@gmail.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <cover.1775217403.git.kanolyc@gmail.com>
-References: <cover.1775217403.git.kanolyc@gmail.com>
+	s=arc-20240116; t=1776675062; c=relaxed/simple;
+	bh=42IUaf8hIpn4U9JA4twndcnXOrbUJG9hb6LbMVcP1k4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sTckB0y96vViCuQChLcHX6RISoDZXcrqlha7Dpe/5yQjh4pvHGJcKB1vZMigTgcHlcwFnpsRPxC7oeKoocW4km+2EZQ1D43XuqqsZSiXWurKu6SWTnODCc+JfG3PqSAcpwJz+Hh3KS2GJkOfLdKWLK9AM1lnoytT86Ry6Ohbh20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=X75GV+qK; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=QWDhr6GxDcToH5i4UdOOd6z9bj7FvzEhoFozqUcdURE=; 
+	b=X75GV+qKCvQHRHMx11sCk6L+146C47TowmUpQVzgKgTcnNL39q/1xR1uo8vyM0xPcTb4sZEF8lL
+	+08MvnMcg1htCamHulwiVmQZgPg7s2W9PfytwShLUhllKKiOXDrlMu/REPLmfZufJhBhg/yYkDDJq
+	nZQACOOkwjax6YEc81dW9OUYYes3jtjGXX6qyXfim5ZitZidnBv4mq3mcm4hUa3nzpZr2QObyMI+t
+	Aoo5dPkEHCbiyb1IKdqIS5wMYhntOgePX0KK3AKC1FPpHITzE8Gs3DcYK8mhn+A/mG5q97MyC/ExM
+	d6pj114wFE34r4fqHPrqIeN4X5SKvVuEI/eg==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1wEkLH-007M5F-2P;
+	Mon, 20 Apr 2026 16:50:56 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 20 Apr 2026 16:50:55 +0800
+Date: Mon, 20 Apr 2026 16:50:55 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc: linux-crypto@vger.kernel.org, qat-linux@intel.com,
+	Laurent M Coquerel <laurent.m.coquerel@intel.com>
+Subject: Re: [PATCH v2] crypto: deflate - fix decompression window size
+Message-ID: <aeXo79eNiYnJ2ImV@gondor.apana.org.au>
+References: <20260326100433.57324-1-giovanni.cabiddu@intel.com>
+ <ac8I4mpkdn8uy8TE@gondor.apana.org.au>
+ <aeEWf4j+VO0FziNj@gcabiddu-mobl.ger.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:ygmowADXTv+l6eVp6jXWAA--.15504S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF43ZF13GrWxXFyDJF17trb_yoW8uF47pa
-	y3GFZrtrykJrW7CF1kJr4IqrW7Zr48JFy3JFZYkw1Yyr13uF1rtr12yFW2vF4UZrs5GFWq
-	yFWqvryUZw1DAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-	w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-	IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
-	z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
-	Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
-	6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-	vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
-	n4kS14v26r1q6r43MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv6c
-	x26r48MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6x
-	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbGQ6JUUUUU==
-X-CM-SenderInfo: zqqvvuo6o23hxhgxhubq/1tbiAQEDCWnl6GEAMgAAs9
-X-Spamd-Result: default: False [-0.96 / 15.00];
+In-Reply-To: <aeEWf4j+VO0FziNj@gcabiddu-mobl.ger.corp.intel.com>
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[gondor.apana.org.au,davemloft.net,kernel.org,gmail.com,lzu.edu.cn];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23242-lists,linux-crypto=lfdr.de];
-	DMARC_NA(0.00)[lzu.edu.cn];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	FROM_NEQ_ENVFROM(0.00)[n05ec@lzu.edu.cn,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	URIBL_MULTI_FAIL(0.00)[sto.lore.kernel.org:server fail,apana.org.au:server fail,gondor.apana.org.au:server fail];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-23240-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lzu.edu.cn:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B8567428954
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[4];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email]
+X-Rspamd-Queue-Id: 51B4542877C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Yucheng Lu <kanolyc@gmail.com>
+On Thu, Apr 16, 2026 at 06:03:59PM +0100, Giovanni Cabiddu wrote:
+>
+> I'm reworking the acomp/BTRFS set, and that will be included there.
 
-authencesn requires either a zero authsize or an authsize of at least
-4 bytes because the ESN encrypt/decrypt paths always move 4 bytes of
-high-order sequence number data at the end of the authenticated data.
+I'd prefer a standalone parameters patch-set, with the first user
+being zram.
 
-While crypto_authenc_esn_setauthsize() already rejects explicit
-non-zero authsizes in the range 1..3, crypto_authenc_esn_create()
-still copied auth->digestsize into inst->alg.maxauthsize without
-validating it.  The AEAD core then initialized the tfm's default
-authsize from that value.
+> I don't think this should be treated as a parameter. A decompressor must
+> be able to handle any valid DEFLATE stream. RFC1951 (section 3.3) [1]
+> states that while a compressor may restrict parameters such as window
+> size, a compliant decompressor must accept the full range defined by the
+> specification.
 
-As a result, selecting an ahash with digest size 1..3, such as
-cbcmac(cipher_null), exposed authencesn instances whose default
-authsize was invalid even though setauthsize() would have rejected the
-same value.  AF_ALG could then trigger the ESN tail handling with a
-too-short tag and hit an out-of-bounds access.
+I thought this is the whole point of parameters.  Different parameters
+would generate compression output that may not be decompressed unless
+you used the same set of parameters.
 
-Reject authencesn instances whose ahash digest size is in the invalid
-non-zero range 1..3 so that no tfm can inherit an unsupported default
-authsize.
-
-Fixes: f15f05b0a5de ("crypto: ccm - switch to separate cbcmac driver")
-Cc: stable@kernel.org
-Reported-by: Yuan Tan <yuantan098@gmail.com>
-Reported-by: Yifan Wu <yifanwucs@gmail.com>
-Reported-by: Juefei Pu <tomapufckgml@gmail.com>
-Reported-by: Xin Liu <bird@lzu.edu.cn>
-Tested-by: Yuhang Zheng <z1652074432@gmail.com>
-Signed-off-by: Yucheng Lu <kanolyc@gmail.com>
-Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
----
- crypto/authencesn.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/crypto/authencesn.c b/crypto/authencesn.c
-index 542a978663b9..bf44f035f7f8 100644
---- a/crypto/authencesn.c
-+++ b/crypto/authencesn.c
-@@ -384,6 +384,11 @@ static int crypto_authenc_esn_create(struct crypto_template *tmpl,
- 		goto err_free_inst;
- 	enc = crypto_spawn_skcipher_alg_common(&ctx->enc);
- 
-+	if (auth->digestsize > 0 && auth->digestsize < 4) {
-+		err = -EINVAL;
-+		goto err_free_inst;
-+	}
-+
- 	err = -ENAMETOOLONG;
- 	if (snprintf(inst->alg.base.cra_name, CRYPTO_MAX_ALG_NAME,
- 		     "authencesn(%s,%s)", auth_base->cra_name,
+Cheers,
 -- 
-2.47.3
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
