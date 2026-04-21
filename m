@@ -1,129 +1,63 @@
-Return-Path: <linux-crypto+bounces-23296-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23297-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kH3QMN6u52lZ/QEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23296-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2026 19:07:42 +0200
+	id aJwqNUnE52nuAQIAu9opvQ
+	(envelope-from <linux-crypto+bounces-23297-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2026 20:39:05 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1736143DBCE
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2026 19:07:42 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3F1D43EB92
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2026 20:39:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CDB0F301CF80
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2026 17:07:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D08013018776
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2026 18:38:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 969B63845B7;
-	Tue, 21 Apr 2026 17:07:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1821336B07B;
+	Tue, 21 Apr 2026 18:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rAdU7Bsh"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3113D1509AB;
-	Tue, 21 Apr 2026 17:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=63.228.1.57
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D16936C9C0;
+	Tue, 21 Apr 2026 18:38:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776791251; cv=none; b=YoLVRP0rELpxGlS4rxsWEocB5iqK/F4XRFaPLOyRf4qkL5Sj7ocK6fh+ElZ++lxGds/hy8CLE+yK43WPlGS0PzTsN3UYHPPu6wcg3j5oOtq3Gl2bHIeZjP7t7UiIMBnRVG/6t6oP2c6OH6NNZl5hYN47mi99cjxjn2wAUMb1jaQ=
+	t=1776796730; cv=none; b=JSUj88fYjwYtLzV9G240NJWzjigG9TxxQ4l5b/0/Fv7izCPQER03zOnEI6ve6dPGXLHy7m/naIFO4W6BCFc2zTzUVg2fxe09ycUv1G9xW34HfKpgVkzqs23pFTGItqpHGHT2RP54QeC1DXDsF3dof0g+BYpAQSymMGfpHIZcx+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776791251; c=relaxed/simple;
-	bh=BmLatGy8n1zKmv3W1i69jDYO1lD52eKYiSdHSJdTpeE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hWmmbShRAnnRWeyuIgfALBggo4xC11vz7zRyTtJodnrjqaCuRUb28Y7iawPTgFYWVitNK4etXALUVQ2BeBV5KeMyrhRlr4p2vuvEMeGLlJ8FerHQlwVTMI6e9/6tnHwitHWvoS/I2zUj8sz1JPQYSlmLpWy70oOUfdDZU4As4Do=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.crashing.org; spf=pass smtp.mailfrom=kernel.crashing.org; arc=none smtp.client-ip=63.228.1.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.crashing.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.crashing.org
-Received: from gate.crashing.org (localhost [127.0.0.1])
-	by gate.crashing.org (8.18.1/8.18.1/Debian-2) with ESMTP id 63LH4FuA3771909;
-	Tue, 21 Apr 2026 12:04:15 -0500
-Received: (from segher@localhost)
-	by gate.crashing.org (8.18.1/8.18.1/Submit) id 63LH47sR3771903;
-	Tue, 21 Apr 2026 12:04:07 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date: Tue, 21 Apr 2026 12:04:06 -0500
-From: Segher Boessenkool <segher@kernel.crashing.org>
-To: Link Mauve <linkmauve@linkmauve.fr>
-Cc: linuxppc-dev@lists.ozlabs.org, Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Juergen Gross <jgross@suse.com>, Ajay Kaher <ajay.kaher@broadcom.com>,
-        Alexey Makhalov <alexey.makhalov@broadcom.com>,
-        Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-        Geoff Levand <geoff@infradead.org>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Anatolij Gustschin <agust@denx.de>,
-        Breno =?iso-8859-1?Q?Leit=E3o?= <leitao@debian.org>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Thorsten Blum <thorsten.blum@linux.dev>,
-        Thomas Huth <thuth@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        David Hildenbrand <david@kernel.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        Donet Tom <donettom@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-        Will Deacon <will@kernel.org>,
-        "Lorenzo Stoakes (Oracle)" <ljs@kernel.org>,
-        Paul Moore <paul@paul-moore.com>, Nam Cao <namcao@linutronix.de>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Srikar Dronamraju <srikar@linux.ibm.com>,
-        Shrikanth Hegde <sshegde@linux.ibm.com>, Jiri Bohac <jbohac@suse.cz>,
-        "Mike Rapoport (Microsoft)" <rppt@kernel.org>,
-        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Kees Cook <kees@kernel.org>, Stephen Rothwell <sfr@cab.auug.org.au>,
-        Xichao Zhao <zhao.xichao@vivo.com>,
-        Gautam Menghani <gautam@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Guangshuo Li <lgs201920130244@gmail.com>,
-        Li Chen <chenl311@chinatelecom.cn>,
-        Aboorva Devarajan <aboorvad@linux.ibm.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Feng Tang <feng.tang@linux.alibaba.com>,
-        "Nysal Jan K.A." <nysal@linux.ibm.com>,
-        Aditya Gupta <adityag@linux.ibm.com>,
-        Sayali Patil <sayalip@linux.ibm.com>,
-        Rohan McLure <rmclure@linux.ibm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Yeoreum Yun <yeoreum.yun@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Donnellan <andrew+kernel@donnellan.id.au>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas.weissschuh@linutronix.de>,
-        Athira Rajeev <atrajeev@linux.ibm.com>,
-        Kajol Jain <kjain@linux.ibm.com>, Thomas Gleixner <tglx@kernel.org>,
-        Chen Ni <nichen@iscas.ac.cn>, Haren Myneni <haren@linux.ibm.com>,
-        Jonathan Greental <yonatan02greental@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Yury Norov (NVIDIA)" <yury.norov@gmail.com>,
-        Gaurav Batra <gbatra@linux.ibm.com>,
-        Nilay Shroff <nilay@linux.ibm.com>,
-        Vivian Wang <wangruikang@iscas.ac.cn>,
-        Adrian =?utf-8?Q?Barna=C5=9B?= <abarnas@google.com>,
-        "Rafael J. Wysocki (Intel)" <rafael@kernel.org>,
-        Thierry Reding <treding@nvidia.com>, Yury Norov <ynorov@nvidia.com>,
-        "Mukesh Kumar Chaurasiya (IBM)" <mkchauras@gmail.com>,
-        Ruben Wauters <rubenru09@aol.com>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-crypto@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux.dev, x86@kernel.org
-Subject: Re: [PATCH 2/2] powerpc: Run typos -w
-Message-ID: <aeeuBnjhRN7G9gYK@gate>
-References: <20260421121420.26079-1-linkmauve@linkmauve.fr>
- <20260421121420.26079-3-linkmauve@linkmauve.fr>
+	s=arc-20240116; t=1776796730; c=relaxed/simple;
+	bh=jBdZZez5rOUShQk6T498P2HWtiAvUM6Vu/wHjQYoaIA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=WNhvPHBc9CIEfZQoJG6vA4v8tI/8Xf0DJ9R9W141KIQu94P+76AJOejDM36LRM0NWESVRhiMWXvCiTY1R/FQG98mib4aBL7ZIIsG10KAk7xobfo/oKMoxZlmAS5qvl5augbJLenHttMozci1VU1gttY/codzulzLfByhxrL9VN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rAdU7Bsh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FF8DC2BCB0;
+	Tue, 21 Apr 2026 18:38:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776796729;
+	bh=jBdZZez5rOUShQk6T498P2HWtiAvUM6Vu/wHjQYoaIA=;
+	h=Date:From:To:Cc:Subject:From;
+	b=rAdU7BshopADlnMW+Hnm8nfqxdb9d8aqBzjalBic29ipdTrEjYiTWFldGqiWgOSre
+	 69+u5N3ZUaNio4r8VpbbwEXihAYlPFyCT5DkuxVEIY+TwzVAELRNjEvtfYj4x4DLXg
+	 NXokDOh++MA36xcrUE6FXSn3Vycyz4vmnEef0oKnNA01FVFIKVc1dNVI5bV53aUYsw
+	 L06yGS5tw+Y9bnciZzwsHL1GlzzZ9U7TcZxhfobdVCkk2jjiDtYLKyy8RIXI/v+8e4
+	 DOdNdGrluEUGZN1KA68GSnmIdUOM24GFHO3c9w2dkvPiV4fZ6bLE51UvNO8XfnHbVB
+	 UF9ddsDXd3Ahw==
+Date: Tue, 21 Apr 2026 11:38:47 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Ignat Korchagin <ignat@linux.win>,
+	Jarkko Sakkinen <jarkko@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>, Lukas Wunner <lukas@wunner.de>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Yiming Qian <yimingqian591@gmail.com>
+Subject: [GIT PULL] Crypto library fix and documentation update for 7.1
+Message-ID: <20260421183847.GA2202@quark>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -132,88 +66,77 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260421121420.26079-3-linkmauve@linkmauve.fr>
-X-Spamd-Result: default: False [0.54 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[lists.ozlabs.org,linux.ibm.com,ellerman.id.au,gmail.com,kernel.org,gondor.apana.org.au,davemloft.net,suse.com,broadcom.com,infradead.org,denx.de,debian.org,zx2c4.com,linux.dev,redhat.com,ziepe.ca,nvidia.com,linux-foundation.org,rivosinc.com,paul-moore.com,linutronix.de,suse.cz,linuxfoundation.org,linux.intel.com,cab.auug.org.au,vivo.com,amd.com,chinatelecom.cn,linux.alibaba.com,soleen.com,arm.com,donnellan.id.au,iscas.ac.cn,google.com,aol.com,vger.kernel.org,lists.linux.dev];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23296-lists,linux-crypto=lfdr.de];
-	DMARC_NA(0.00)[crashing.org];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-23297-lists,linux-crypto=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,zx2c4.com,gondor.apana.org.au,linux.win,lwn.net,wunner.de,infradead.org,gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt,kernel];
-	HAS_XAW(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[segher@kernel.crashing.org,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	RCPT_COUNT_GT_50(0.00)[94];
-	DBL_PROHIBIT(0.00)[0.0.12.28:email,0.0.0.1:email];
-	R_DKIM_NA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 1736143DBCE
+X-Rspamd-Queue-Id: D3F1D43EB92
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi!
+The following changes since commit d60bc140158342716e13ff0f8aa65642f43ba053:
 
-On Tue, Apr 21, 2026 at 02:14:14PM +0200, Link Mauve wrote:
-> diff --git a/arch/powerpc/boot/dts/fsl/ppa8548.dts b/arch/powerpc/boot/dts/fsl/ppa8548.dts
-> index f39838d93994..32558104b3a9 100644
-> --- a/arch/powerpc/boot/dts/fsl/ppa8548.dts
-> +++ b/arch/powerpc/boot/dts/fsl/ppa8548.dts
-> @@ -95,7 +95,7 @@ i2c@3100 {
->  
->  	/*
->  	 * Only ethernet controller @25000 and @26000 are used.
-> -	 * Use alias enet2 and enet3 for the remainig controllers,
-> +	 * Use alias enet2 and enet3 for the remaining controllers,
+  Merge tag 'pwrseq-updates-for-v7.1-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux (2026-04-13 20:28:22 -0700)
 
-Aliases.
+are available in the Git repository at:
 
-> diff --git a/arch/powerpc/boot/dts/mpc8308_p1m.dts b/arch/powerpc/boot/dts/mpc8308_p1m.dts
-> index 41f917f97dab..48a98449ecbb 100644
-> --- a/arch/powerpc/boot/dts/mpc8308_p1m.dts
-> +++ b/arch/powerpc/boot/dts/mpc8308_p1m.dts
-> @@ -90,14 +90,14 @@ can@1,0 {
->  			compatible = "nxp,sja1000";
->  			reg = <0x1 0x0 0x80>;
->  			interrupts = <18 0x8>;
-> -			interrups-parent = <&ipic>;
-> +			interrupts-parent = <&ipic>;
->  		};
+  https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git tags/libcrypto-for-linus
 
-interrupt-parent .
+for you to fetch changes up to e9af4f47d4a036b4be67e4be361f62e05081f7bf:
 
-All the names of properties have a meaning!  Just as you cannot change
-a function name in C without changing all calls to it as well, you
-really should never change a property name (if you want stuff to keep
-on working, that is ;-) ).
+  lib/crypto: docs: Add rst documentation to Documentation/crypto/ (2026-04-18 17:32:02 -0700)
 
-In this case, the property was never actually used (because of the
-typo).  Maybe it wasn't needed?  If you make changes to a DTS, post it
-*separately* from the rest of this series, and test it *thoroughly*.
-Just a "does it boot" test is certainly not enough.
+----------------------------------------------------------------
 
-It could well be that fixing the typo (so that the property name becomes
-"interrupt-parent") makes the kernel no longer boot on the systems
-affected, or less obvious problems can show up.
+- Fix an integer underflow in the mpi library
 
-It will need to be tested and evaluated by whoever maintains the DTSes
-in question, really :-/  And you cannot test it works for one DTS and
-then conclude it will work everywhere, heh.
+- Improve the crypto library documentation
 
+----------------------------------------------------------------
+Eric Biggers (2):
+      docs: kdoc: Expand 'at_least' when creating parameter list
+      lib/crypto: docs: Add rst documentation to Documentation/crypto/
 
-Segher
+Lukas Wunner (1):
+      lib/crypto: mpi: Fix integer underflow in mpi_read_raw_from_sgl()
+
+ Documentation/crypto/index.rst                 |   2 +-
+ Documentation/crypto/libcrypto-blockcipher.rst |  19 +++
+ Documentation/crypto/libcrypto-hash.rst        |  86 +++++++++++++
+ Documentation/crypto/libcrypto-signature.rst   |  11 ++
+ Documentation/crypto/libcrypto-utils.rst       |   6 +
+ Documentation/crypto/libcrypto.rst             | 165 +++++++++++++++++++++++++
+ Documentation/crypto/sha3.rst                  |   2 +
+ lib/crypto/mpi/mpicoder.c                      |   2 +-
+ tools/lib/python/kdoc/kdoc_parser.py           |   5 +
+ 9 files changed, 296 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/crypto/libcrypto-blockcipher.rst
+ create mode 100644 Documentation/crypto/libcrypto-hash.rst
+ create mode 100644 Documentation/crypto/libcrypto-signature.rst
+ create mode 100644 Documentation/crypto/libcrypto-utils.rst
+ create mode 100644 Documentation/crypto/libcrypto.rst
 
