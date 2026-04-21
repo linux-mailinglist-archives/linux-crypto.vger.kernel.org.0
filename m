@@ -1,66 +1,64 @@
-Return-Path: <linux-crypto+bounces-23274-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23275-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MGGKL6Lo5mlx1wEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23274-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2026 05:01:54 +0200
+	id +HirC8Po5mlx1wEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23275-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2026 05:02:27 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11231435A76
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2026 05:01:52 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CB2B435A7D
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2026 05:02:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id C67853005312
-	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2026 03:01:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 07F4C300D159
+	for <lists+linux-crypto@lfdr.de>; Tue, 21 Apr 2026 03:02:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7EAB311C36;
-	Tue, 21 Apr 2026 03:01:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D03CF317176;
+	Tue, 21 Apr 2026 03:02:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="BWRm62Ok"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="GPjfwvGC"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194F430DD30
-	for <linux-crypto@vger.kernel.org>; Tue, 21 Apr 2026 03:01:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF57311968;
+	Tue, 21 Apr 2026 03:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776740504; cv=none; b=TYTPG/A9MXdLnTyvxlYogI++VBN9YJvTZhvm2bZza2BMOdjB/a0O5jdES6bFhMLD0eHgo6cVKJK6F02RY77f7PoEugJ7YfsZbdJfJA8aMTzGOj/8vvVFXzfcxbPBElAxHvu9pt71otfPkF1aQe7t/JXMnJgcWj2Hba7sWxkNaXs=
+	t=1776740536; cv=none; b=UXln7Ys0QukY9zIUDGGqCNBDjpOp7opU7Av8cHf+37oWouAiWjJOlNHsvcMylmW0GGzmUke5dlyqWVja1sMumJdN6H1kAzMgX6PWH+g6HLSI5FWKJeHru+VeoYLHSlF+D3+nEcWAX11qmXKOf2UQPmvkY+CSaXevRbANnwmSvGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776740504; c=relaxed/simple;
-	bh=VnUtvUOgLJhwYBXGwSTkMGijftfKaKRIbA+Uz+mhn/I=;
+	s=arc-20240116; t=1776740536; c=relaxed/simple;
+	bh=NcusopJuv4HIWTtyNT1HwnHLAGevOuHazzsa5P2nsDA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bRHXzxCWUggng6nZr43IFSywS8SflyESBaf620rQCEB1pJMMMOcup2oYYv4uiakvE0q9xGBXKzqqw8QcPq7Y9kK8hFU6Tt9kknL84APh/3Yf4DFel6IMwZrHlDAITj/cttSQcYYtfnZ3QMZ/KOnRJZBQwbYwj/Zkk0rMA47G1aY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=BWRm62Ok; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=nmlZTgB0WRshw8XERhImcPjwhTZM8KMypfwBKIQTwb8//dbHFulMY+XPbT4+IGKcvoSKyw/J3n/9EgdriBPbzh+bcxzvyIT5pdLvGgukY6xQ/Haw2CDa18+OJzhVFGERWzxcmR8qzugPkfRCisJFuHIygh8TJrvCQJzgh+S0Htg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=GPjfwvGC; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=DZAARs3cc1ka/w/U4nXlkJlgQqgEdrr0EnjGxxSrwrg=; 
-	b=BWRm62OkYr+cnAi/LcBiNgaJfNpYd1CN0cvlvb+mw7jkaA7VjY0nNaHHJwkFB2SvNGCmQYmYp9+
-	EfW+8vSpBHUNwudD0wIoqJ7dHKjscKqenxZi/GNOgXkgirErTH0VmSCLZZ6/zA5/le0Cq3X7yxDEV
-	BL558ggMdv15TvV9fm/LBITHBDp2Ukm41k4lBaDiASwFacaDxnq/llEOVukGcXqFXC3LPVzf7FiPj
-	XZBu4EpX0JupdQjVE40pAnLuZiZUSk+Ne8ZLwPy8zp9uBRBbU3oThuqRXuWv14/oYM4TjjgEV2udM
-	oVBEONu85TdcFVl92ZevCcLNBH6CDa2SbfaQ==;
+	from:content-type:reply-to; bh=lqGzlhc3HOGYAUoAFGjYhElEUQ9buJDeLJujlYxnyBA=; 
+	b=GPjfwvGCbzNkZuDP8fJLjGjYOSvD6VDab9VL3idJXcu1xxeTUqZMbfOM5NJfabFYuhzV+SwPkQJ
+	rh6ONvVU8F9AhsUFHq6994xOHE0+pUMh7cAjFxIyJy3/YF56DDBAOy/n/uHQTiWsQeHiPAdD0oiuJ
+	pNaFfmLyhAHsSUNx8sX6K1tOXXZu8YhiJzL1H+b5QZoOgNr/AZKumtseGANqV2sbJtCiquyAlXogO
+	YzDHAYLtGFyVLPgOOA/i4p2aW7qh2kYwOvb6CG9VVor7y1A5qW6Jb3pJKSEZA8kQYn5xd9E+CFlhs
+	OAdXSt8Xyj1c8LRdJzyxo0xay3mqvkzYyzUg==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1wF1MX-007b97-0e;
-	Tue, 21 Apr 2026 11:01:22 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 21 Apr 2026 11:01:21 +0800
-Date: Tue, 21 Apr 2026 11:01:21 +0800
+	id 1wF1NB-007b9c-0H;
+	Tue, 21 Apr 2026 11:02:02 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 21 Apr 2026 11:02:01 +0800
+Date: Tue, 21 Apr 2026 11:02:01 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Cc: linux-crypto@vger.kernel.org, qat-linux@intel.com,
-	Laurent M Coquerel <laurent.m.coquerel@intel.com>,
-	senozhatsky@chromium.org
-Subject: Re: [PATCH v2] crypto: deflate - fix decompression window size
-Message-ID: <aebogashLMMuB9lg@gondor.apana.org.au>
-References: <20260326100433.57324-1-giovanni.cabiddu@intel.com>
- <ac8I4mpkdn8uy8TE@gondor.apana.org.au>
- <aeEWf4j+VO0FziNj@gcabiddu-mobl.ger.corp.intel.com>
- <aeXo79eNiYnJ2ImV@gondor.apana.org.au>
- <aeYB/Jjb885fJ/mU@gcabiddu-mobl.ger.corp.intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Thomas Graf <tgraf@suug.ch>, Andrew Morton <akpm@linux-foundation.org>,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rhashtable: Bounce deferred worker kick through
+ irq_work
+Message-ID: <aeboqS39EwdEKbuN@gondor.apana.org.au>
+References: <67fedbf2-914b-44f7-9422-1fe97d833705@kernel.org>
+ <aeXnak9Yl84a-kho@gondor.apana.org.au>
+ <4ff731fc-3791-4b96-a997-89c3bcd2d69b@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -69,16 +67,16 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aeYB/Jjb885fJ/mU@gcabiddu-mobl.ger.corp.intel.com>
+In-Reply-To: <4ff731fc-3791-4b96-a997-89c3bcd2d69b@kernel.org>
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23274-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23275-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -86,7 +84,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCPT_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
@@ -95,21 +93,42 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email,gondor.apana.org.au:dkim,gondor.apana.org.au:mid]
-X-Rspamd-Queue-Id: 11231435A76
+	DBL_BLOCKED_OPENRESOLVER(0.00)[apana.org.au:url,apana.org.au:email,gondor.apana.org.au:dkim,gondor.apana.org.au:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7CB2B435A7D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Apr 20, 2026 at 11:37:48AM +0100, Giovanni Cabiddu wrote:
->
-> Yes, I see your point, and I need to think this through some more.
-> Some hardware implementations may not allow configuring the window size.
+On Mon, Apr 20, 2026 at 08:12:58AM -1000, Tejun Heo wrote:
+> Inserts past 75% load call schedule_work(&ht->run_work) to kick an
+> async resize. If a caller holds a raw spinlock (e.g. an
+> insecure_elasticity user), schedule_work() under that lock records
+> 
+>   caller_lock -> pool->lock -> pi_lock -> rq->__lock
+> 
+> A cycle forms if any of these locks is acquired in the reverse
+> direction elsewhere. sched_ext, the only current insecure_elasticity
+> user, hits this: it holds scx_sched_lock across rhashtable inserts of
+> sub-schedulers, while scx_bypass() takes rq->__lock -> scx_sched_lock.
+> Exercising the resize path produces:
+> 
+>   Chain exists of:
+>     &pool->lock --> &rq->__lock --> scx_sched_lock
+> 
+> Route the kick unconditionally through irq_work so schedule_work() runs
+> from hard IRQ context with the caller's lock no longer held.
+> 
+> v2: bounce unconditionally instead of gating on insecure_elasticity, as
+>     suggested by Herbert.
+> 
+> Signed-off-by: Tejun Heo <tj@kernel.org>
+> ---
+> Herbert, any preference on how this should be routed?
 
-That's fine.  It's just like hardware that can't handle all key
-sizes for AES.  You just fallback to software if you encounter
-parameters that the hardware does not support.
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-Cheers,
+Please feel free to take this through your tree.
+
+Thanks,
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
