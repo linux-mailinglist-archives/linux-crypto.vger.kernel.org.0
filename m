@@ -1,100 +1,95 @@
-Return-Path: <linux-crypto+bounces-23337-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23339-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SDUDFtA56WnFWAIAu9opvQ
-	(envelope-from <linux-crypto+bounces-23337-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Apr 2026 23:12:48 +0200
+	id 0EYmLPM/6WmEWQIAu9opvQ
+	(envelope-from <linux-crypto+bounces-23339-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Apr 2026 23:38:59 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F13D944AD29
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Apr 2026 23:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EA2944B005
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Apr 2026 23:38:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1A5883110171
-	for <lists+linux-crypto@lfdr.de>; Wed, 22 Apr 2026 21:09:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 295E730432CB
+	for <lists+linux-crypto@lfdr.de>; Wed, 22 Apr 2026 21:34:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D401036C9D9;
-	Wed, 22 Apr 2026 21:09:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E528B37755D;
+	Wed, 22 Apr 2026 21:33:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cL8BQ+LP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N2F+if5d"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B5D365A1A
-	for <linux-crypto@vger.kernel.org>; Wed, 22 Apr 2026 21:09:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FF4367F25
+	for <linux-crypto@vger.kernel.org>; Wed, 22 Apr 2026 21:33:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776892196; cv=none; b=mHTsXulcUSMr0FRUZ008lXkc20YutCTGI324A39sp6kF8vWrHmXLfefh2dm2e+w9FmyHzVsQoXAUcFF6yImieNXw9nEQm7B+PRyID+edm91xKBhIsCsRJWr1AnhbT8vOb6HyLgxreLBGMPXSq/1EobAStXBXnFZyVoIn9jW499w=
+	t=1776893639; cv=none; b=qYAekvXIvm26g/kn89xeoy/hXk47dr+6lFjyyRxYtyfbO0SGhTfuh3nhZeqp8zYPSTzKAnWOR31hTcBssf3mJnzaFxxZ72UCBWJ+89Dyq+NMHyNO4MR6ijoSF8mqc0BZOrNJyoulC+AdWiflMMJqq2v4qF2OA5FTRIc2n0zs9qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776892196; c=relaxed/simple;
-	bh=fPUaGhBV9y5Y+5CqPe9ESQSxmwi2xQpZVeZbeoJlQuE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EpIgr+vyZ/WCttvh0sCzP/rM3c32p6BRIp5U2iGDCh1Sj8C+WVX6XUyKMF+6W7RNtRi1pn5lgHOrewaBhJTZHnD3gAo2km2hnE/WwBr+LydBdXGusO+bROMeijKwywoq2m8CYVQd97AFzzMKiB/1MJ2z71Do4DgN2PYmYPzCPaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cL8BQ+LP; arc=none smtp.client-ip=209.85.128.53
+	s=arc-20240116; t=1776893639; c=relaxed/simple;
+	bh=bu0ezSg3eXSHAn4od+sePxTgFrnLMGA7X7vvdBY4CqA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cdC6SqiSy4gm4A0lWxYQj3HHcuhXsM2bQeiCsRBhng3geBRXTgPIo6IntzSNaYwQGG9HmIdXQcB7kfa+aC4DQLC4hGkhV/KMEVxDBEN7qmVl1uXvu500UFb4mFB2/hgsehP2710g0U4TTMuu04czsWucbmVZutpUK+lagbLCT68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N2F+if5d; arc=none smtp.client-ip=209.85.167.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-488a8f97f6bso10996715e9.2
-        for <linux-crypto@vger.kernel.org>; Wed, 22 Apr 2026 14:09:52 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-59e5aa4ca41so5855383e87.2
+        for <linux-crypto@vger.kernel.org>; Wed, 22 Apr 2026 14:33:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776892192; x=1777496992; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qHDnqtZPzLje7acSFaV39CbG4kFW6b0D4B/rafiqA78=;
-        b=cL8BQ+LPcLC0EFK5+p5xvzMD4/8l6dPWKJ3kgmiMDMOAy6YJUWADOM+5GKA76z7hgl
-         juaydtZmqKp+X47qbH7pLEYia62nTL/kHmdL4ANnUnQRIMH8iwL/pJlSIGUf3Fjo+QRP
-         hsWlyprypIRmHagA3k5PYlFZIXRfqD9jsXDqPItmjrGGmBKm0sulG+fdmyAqKC8tG3o9
-         YWx83GZPmpXsLyCNzPBQC1DUCTM3a+wgZtTeX0FgspNHHEfW9wQWxkgYghNe48ZGUKzI
-         6bvDbYBAcnWlKhC04UJmXbwm3PtgHqI5cv7LG+f5gSAryWA9mSb2Gothu6fzhfMA4Ji6
-         c07A==
+        d=gmail.com; s=20251104; t=1776893636; x=1777498436; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dpp/pvEccJSCs2aYmYF/uD58hQ1rAlm0k4dG4FOoPeI=;
+        b=N2F+if5docbWjNhKevq4MTY/v6tDoWIsLnFfXZrEzKiwFP2pq5MBHHP/lY7DsAqg/d
+         HMegnPScTlmiMvyHY8OO9D17FdDLfdsdj29VROaG7WluT9Gt69pvCh+dYeqUc6oKcs70
+         Qx89Hna1md369LPnl1SFqCsGgXCprc+wJCGYcCNOpg4+870dePKvgktZ9lTpifYMOJYq
+         JxCzDMh+E04KwKJNpq9jYAGYa71pNuLYVovIBsjjVAo9X/ruoA1GG1awMsFzgUnKteER
+         GGErIBE/sU7PxrRvPe3m1rxvKHrxzNbc76b96+x0OqM67qptDWN8v8Hpnr6qAlV/WQRD
+         aPlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776892192; x=1777496992;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=qHDnqtZPzLje7acSFaV39CbG4kFW6b0D4B/rafiqA78=;
-        b=IvQhew09bfL3IcL7M9i1EHFPA9N6CjPsBmXkHm2nRLabhAf0nMaTEIUvLBIB7h/rdX
-         Y5SRYCld2G2ta9/4+U3gDjGEKgux6DpQox5Zx27yNDeYFfhR89KpwotvHgbeeVmJZui8
-         ZpP2I0Fm55lXZe0j+wZKw1vbnzwA3jnV6an9daHKPDLG1RmE69f5qrxSX7VtAUNdKgVF
-         S3E7t+rsNhF1qoT+8gkTlEfRG9P2DvRoWm/RB43+0RK3LzN81G/LGowIb+9qlTgbuepR
-         NA898jUlCxRR+2tP9+qltn+3k1bdhw6dGjzpZj2n1JFcY6h9VA/L6QXOKY30WbXsw1PX
-         v1xQ==
-X-Gm-Message-State: AOJu0YwxCJrFHZ7tLf83TCwT1Ty/lEcRiXdINYq841RfXkHjQz/Vulhj
-	x/I+nVeBNwafLOB1uBFzrJKERIO+DG4zmCPH+CI+H+tHUzDJPNpdnNt2
-X-Gm-Gg: AeBDievkyBrP6TwYGTyv4460CDh/jVgopS22j+YQ5BzqyfeJsEml6F+jhX+OyUOKo7+
-	dRYN1KyhAT3OaCE85DaR80tOhWPZDGnQu1Z0+MiSOkTg/dQTta+xxA4D64/6ygGBWqBmBA+6h3s
-	+e5B7Yox6wGRi+nIv7wqyJm05g+RNrQsv0j7HFom4UE7EssbPuvFc4TJN7TohyGN22Uls3oHgWl
-	FsDODgSXS7igEHbzhOTpbipoWTsaEPh2wDYLOyMM8lXcE0DPUTWOlCtTh5RYSbf1/MuYjxBJRzV
-	Nz7+47P6Wn3LiGiRDrgkR3ATRt3mzcrgnbODctKV26FJjr/bzr7AR2JmdEyzkq/5sA3TDIy1uCt
-	hKyG3/Nerr37IZNTH/hAgbAbg7R1wyIuSd+0vm8x2rTdsH0JKl4o3MvK5579NEizl+ErbIVpg4H
-	NVeeclNiejskY3Y25swB+WDDwrHpFC2kzjKIZd2jG8VNCVFDD1YmBMXXSXEfgZ0bsw9tvUoACng
-	W/lWKbmW5Gz
-X-Received: by 2002:a05:600c:4ecb:b0:485:358b:e7ee with SMTP id 5b1f17b1804b1-488fb6e1addmr189465975e9.0.1776892191490;
-        Wed, 22 Apr 2026 14:09:51 -0700 (PDT)
-Received: from menon.v.cablecom.net (84-74-0-139.dclient.hispeed.ch. [84.74.0.139])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48a4b329542sm352469085e9.3.2026.04.22.14.09.50
+        d=1e100.net; s=20251104; t=1776893636; x=1777498436;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dpp/pvEccJSCs2aYmYF/uD58hQ1rAlm0k4dG4FOoPeI=;
+        b=U9Sj/m0RudChzS6lli4RQQk/xkz8q8dKiEyeNvM0vPBM1wUxE3s4Ouqz/KDxR4NBTY
+         28JOd9Dtsv1Sb+G+JxoOke0XbFyIi1hmCA1Mi2/1mdqWY3RUoFX77CRC1krJ5VwBuum0
+         VxgD6hWeWO30uMt1H2F/QYSvzXhEoJ1IYIesJN7il+5dc7I9tyOjPT9k5vrnkZli7R9t
+         ch62RBxyHhiOf8lwt7TJBtMMwLPD9xSZQKFL957VwO5dXUwfLqt1rAV6inkreSDHIGUN
+         cnJqX0IkMhxiWiKLvGoeKZF8hnmVYUdH4QgVgjXUrPNiOLr+lPUvJeqCE6ofTzjmED97
+         1Clw==
+X-Forwarded-Encrypted: i=1; AFNElJ+n3E057YHC7dGBkVpRBAHj6xsibiI0XkeZmU1L5v881THpyaNeBoLXWuYngYnVCURXbluOfYEOC77oaKw=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzCEJHINkp1f5tN8wwrn+vYnzFLPCVLm3T+uV9njW2cRDGvAMFl
+	B7MQmwV0VSdOB1SrurfRnk1nA2tkxL0AUzoVNMYyhvo4H5FCbc6VsWpg6IXNM8EcpzarTFtNzbA
+	=
+X-Gm-Gg: AeBDievaM+qOhHVnv+V7oCJYTOEDdA+gCcnIijt0jp/Moq45IzHJ70w3IWY0cOWovkb
+	6H1GXrUvF75EPU2/t7RPuaOI65ma1gPcG/CAIQ6wZr15BYaBlcGJ9FvMcNJMTy//MfbnKESoy3g
+	nQf00y43A+Ni1MPh86Q5t2S5TaKT8wjeSmoIOan6CyKvPX2yeC/W4Hi2T8VsVRQzHaqsP7wp7K3
+	fpwpSo5qecd2+H3jAKh20VgbGUCl6fAa0c0+Tfppnk4hd57HM69sw3XA9oby+S85OmhM4I9Xb28
+	j/nX/m7rdSKFnnT9VB2VZdk8EcV1r5FZgKrzY1z7oNa6uSk06Q9Ukzt2360atq81jPsIeDafPJx
+	QZFzFC80onjk1rGzNFvAwFQ0Y0Wxgtqdk52H6DilOraZn8xAT2g6ZvAS0UPTbkMhTLenKVkFWfr
+	B0DVMob9r54HMSy60C3nwgLs6+nTN48hiJ1+SMTd9+7dFQ
+X-Received: by 2002:a05:6512:1109:b0:5a3:fd71:2781 with SMTP id 2adb3069b0e04-5a4172e7c37mr7632660e87.34.1776893635715;
+        Wed, 22 Apr 2026 14:33:55 -0700 (PDT)
+Received: from localhost ([188.234.148.119])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5a4185ad343sm4697828e87.2.2026.04.22.14.33.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2026 14:09:51 -0700 (PDT)
-From: Lothar Rubusch <l.rubusch@gmail.com>
-To: herbert@gondor.apana.org.au,
-	thorsten.blum@linux.dev,
-	davem@davemloft.net,
-	nicolas.ferre@microchip.com,
-	alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev,
-	ardb@kernel.org,
-	linusw@kernel.org
-Cc: linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
+        Wed, 22 Apr 2026 14:33:54 -0700 (PDT)
+From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+To: Thomas Graf <tgraf@suug.ch>,
+	Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	linux-crypto@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	l.rubusch@gmail.com
-Subject: [PATCH v3 3/3] crypto: atmel-sha204a - fix non-blocking read logic
-Date: Wed, 22 Apr 2026 21:09:36 +0000
-Message-Id: <20260422210936.20095-4-l.rubusch@gmail.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20260422210936.20095-1-l.rubusch@gmail.com>
-References: <20260422210936.20095-1-l.rubusch@gmail.com>
+	linux-fsdevel@vger.kernel.org,
+	Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Subject: [PATCH 0/1] rhashtable: fix fs_reclaim circular dep in free_and_destroy
+Date: Thu, 23 Apr 2026 02:33:48 +0500
+Message-ID: <20260422213349.1345098-1-mikhail.v.gavrilov@gmail.com>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -105,113 +100,89 @@ Content-Transfer-Encoding: 8bit
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lrubusch@gmail.com,linux-crypto@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-23337-lists,linux-crypto=lfdr.de];
-	TO_DN_NONE(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,suse.cz,vger.kernel.org,gmail.com];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-23339-lists,linux-crypto=lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mikhailvgavrilov@gmail.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
 	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: F13D944AD29
+X-Rspamd-Queue-Id: 4EA2944B005
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-The non-blocking path was (also) failing to provide valid entropy
-due to improper buffer management and a lack of hardware execution
-time.
+Hi all,
 
-Ensure cmd.msecs (30ms) and cmd.rxsize (35ms) are initialized before
-enqueuing the background work. Fix the data offset to skip the
-1-byte hardware count header when copying bits to the caller. Correctly
-return 0 (busy) to the hwrng core while hardware execution is in
-progress, preventing zero-filled buffers, which was the situation
-before.
+This fixes a lockdep "possible circular locking dependency detected"
+between fs_reclaim and the rhashtable &ht->mutex class that surfaces
+on kernels built from vfs-7.1-rc1.xattr or later. The cycle is created
+by the simple_xattrs rhashtable conversion (commit b32c4a213698
+"xattr: add rhashtable-based simple_xattr infrastructure") and its
+per-subsystem adaptations in shmem (52b364fed6e1), kernfs (5bd97f5c5f24),
+and pidfs (50704c391fbf), which made rhashtable_free_and_destroy()
+reachable from evict() under the dcache shrinker. The deferred rehash
+worker provides the forward edge (&ht->mutex -> fs_reclaim), and the
+teardown path under fs_reclaim provides the reverse edge
+(fs_reclaim -> &ht->mutex). Full splat and analysis are in the patch's
+commit message.
 
-With this fix applied, tests will look similar to this:
-$ socat -u OPEN:/dev/hwrng,nonblock - | head -c 32 | hexdump -C
-00000000  23 cc 42 3c 90 b1 38 fc  54 37 35 4b 09 c5 e1 0d  |#.B<..8.T75K....|
-2026/03/23 14:30:18 socat[858] E read(5, 0x55be363000, 8192): Resource temporarily unavailable
-00000010  73 3b af d9 02 70 76 bd  2d 59 4b 12 01 ac ae 2b  |s;...pv.-YK....+|
-00000020
+The fix is in rhashtable_free_and_destroy() rather than in the three
+simple_xattrs callers because:
 
-Fixes: da001fb651b0 ("crypto: atmel-i2c - add support for SHA204A random number generator")
-Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
----
- drivers/crypto/atmel-sha204a.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ (a) three callers are affected, a library fix closes all of them at
+     once;
 
-diff --git a/drivers/crypto/atmel-sha204a.c b/drivers/crypto/atmel-sha204a.c
-index f7dc00d0f4cd..04cbf80c1411 100644
---- a/drivers/crypto/atmel-sha204a.c
-+++ b/drivers/crypto/atmel-sha204a.c
-@@ -33,7 +33,6 @@ static void atmel_sha204a_rng_done(struct atmel_i2c_work_data *work_data,
- 				     "i2c transaction failed (%d)\n",
- 				     status);
- 		kfree(work_data);
--		rng->priv = 0;
- 		atomic_dec(&i2c_priv->tfm_count);
- 		return;
- 	}
-@@ -49,20 +48,19 @@ static int atmel_sha204a_rng_read_nonblocking(struct hwrng *rng, void *data,
- 
- 	i2c_priv = container_of(rng, struct atmel_i2c_client_priv, hwrng);
- 
--	/* Verify if data available from last run */
- 	if (rng->priv) {
- 		work_data = (struct atmel_i2c_work_data *)rng->priv;
--		max = min(sizeof(work_data->cmd.data), max);
--		memcpy(data, &work_data->cmd.data, max);
-+		max = min_t(size_t, ATMEL_RNG_BLOCK_SIZE, max);
-+		memcpy(data, &work_data->cmd.data[1], max);
- 
--		/* Now, free memory */
-+		/* Free memory and clear the in-flight flag */
- 		kfree(work_data);
- 		rng->priv = 0;
- 		atomic_dec(&i2c_priv->tfm_count);
- 		return max;
- 	}
- 
--	/* When a request is still in-flight but not processed */
-+	/* If a request is still in-flight, return 0 (busy) */
- 	if (atomic_read(&i2c_priv->tfm_count) > 0)
- 		return 0;
- 
-@@ -76,8 +74,14 @@ static int atmel_sha204a_rng_read_nonblocking(struct hwrng *rng, void *data,
- 	work_data->client = i2c_priv->client;
- 
- 	atmel_i2c_init_random_cmd(&work_data->cmd);
-+
-+	/* Set the execution time for the RNG command (from datasheet) */
-+	work_data->cmd.msecs = ATMEL_RNG_EXEC_TIME;
-+	work_data->cmd.rxsize = RANDOM_RSP_SIZE;
-+
- 	atmel_i2c_enqueue(work_data, atmel_sha204a_rng_done, rng);
- 
-+	/* Return 0 to indicate 'busy', data will be ready on next call */
- 	return 0;
- }
- 
+ (b) after cancel_work_sync() returns, the rehash worker is quiesced
+     and the function's documented contract already requires the
+     caller to guarantee no concurrent operations -- so the mutex
+     protects nothing and can just be removed.
+
+A review of lib/rhashtable.c confirms that this is the only site
+where &ht->mutex is acquired from a path reachable under fs_reclaim;
+the deferred worker is the only other acquisition site and it is the
+forward edge. Removing the acquisition therefore eliminates the class
+cycle entirely.
+
+The splat was observed organically on my workstation at ~35h uptime
+under normal mixed workload with CONFIG_PROVE_LOCKING=y. Attempts at
+synthetic reproduction within a few-minute window (tmpfs and kernfs
+zombies, ~60k reclaim-path executions of simple_xattr_ht_free()) did
+not trip lockdep, consistent with the rare coincidence-of-edges
+profile of the bug; the forward edge is already present in
+/proc/lockdep on idle systems via rht_deferred_worker, so verification
+of the fix is by absence of the splat on a patched kernel under
+extended normal workload.
+
+Thanks,
+Mikhail
+
+Mikhail Gavrilov (1):
+  rhashtable: drop ht->mutex in rhashtable_free_and_destroy()
+
+ lib/rhashtable.c | 23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
+
 -- 
-2.53.0
+2.54.0
 
 
