@@ -1,59 +1,59 @@
-Return-Path: <linux-crypto+bounces-23433-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23432-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EBgRCFSd72mfDQEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23433-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 19:31:00 +0200
+	id GE7rHByc72kbDQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23432-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 19:25:48 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DA1E477A33
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 19:30:59 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBE744777AF
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 19:25:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5A5C230B4640
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 17:21:36 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 67F1B30579FC
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 17:21:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E783E3C73;
-	Mon, 27 Apr 2026 17:20:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA94B3E3157;
+	Mon, 27 Apr 2026 17:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="D58p6ACx"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="etEhaVYK"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC3D83DA7E5
-	for <linux-crypto@vger.kernel.org>; Mon, 27 Apr 2026 17:20:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E283DCD84
+	for <linux-crypto@vger.kernel.org>; Mon, 27 Apr 2026 17:20:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777310446; cv=none; b=KLWdVylG6PKt0FmlrgC5R+gmkzqnkH5G1jcp2trEGJEI6E0xprVJBbYa7dvFN8dRK/vY4CO/HebyLrpgcY3XoBxw6xOmAOZXpI+Ri8Qz+Ygk3HDkGfrP133Ho2NuZ8BlDdnRio4RwGB87PY84TxzCRCn2biSLDltoxos9tuNmpc=
+	t=1777310446; cv=none; b=k4YSmshaQYKUT4npOdBgnkTgwNMwnTidvSvzWoI8aFIsSGKP3G56+kagE7sC22HrWy9fGHQizFh6wVvYkEqD9qHdWVBVIe0Z86B7aIqLym+CWtZ751/CLWVWU2T0f3TXOcbq+ZiRD3YmF2AY5MJwWN38qw0I0wA9fWpSYh2t4wU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1777310446; c=relaxed/simple;
-	bh=kscnIBItxFrhRJkr9ELi0HNdWFXJVmhILb8M4cpv89E=;
+	bh=3xDUnocLIAIGKNms7t7GLlfn+0JKHNX3bctn6rowp1g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n8PB4NLCAUAdBIaSiOyoYxuxESfcxZEXbD2WW7di+Y3PUwN4bZCIzkj6hy7Y7tdomTNqBMxx/rLsH9Vn5tH1I69k2p4YZtKiW8cJncf4zcxoLsqEViCa7eqPGTbHSlYATzG/6IEi5A1AF6dCYBEx7qscPgMJT2FP95BsEXS1CEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=D58p6ACx; arc=none smtp.client-ip=91.218.175.181
+	 MIME-Version; b=Kk0cYwNhWnRBsfGAcKHjOt6h9xo/SbPrM/TyfFvVghf8j8ZjynxAHBL0MhUgQohb2S5PoeD00wGBj/jlbsLXdJgCC98WLykzmRJqDAWoIOjayvafLycH88je+BvokbPxVa6yhoc2CZ7JE692YT4c9wpukGKlMasfHYiKaVBe/lM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=etEhaVYK; arc=none smtp.client-ip=91.218.175.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1777310442;
+	t=1777310443;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ibugJZHLqlxbw8x51Hi5jczaNCpaoiSlQlbi40a6rWo=;
-	b=D58p6ACxjjo5E+66wQcEuMxgeC5ZVLNaw9p+DU3TiqN4mBM4TQJds/vEeTDoHJIT5k1fSI
-	6ElwVXEqX/E8hL5y6OMg0lzgK094lGAigjkiUrrJNt5zNLteF7fxr6728xCT28Xlkf44VX
-	VM9jbf3favuNz/f7eyD88OdF/Fye+Ug=
+	bh=aq/7s2IHv/9b/Uw/YEvItYMFIy4ZXJ6dZqzgRz4Q/Xo=;
+	b=etEhaVYK+QIwZ9PXzyBb1qtVCxGY6JzpKqIEYPE8KPvYykkR4tAGZxXzU/9DKjxGmC6Jjm
+	qeH3s6FG2JApcBKiprLnftVMT1YJ3vxgTkwrvMcflIX2nvW2FntyligZe86KUe7vjXMC7Y
+	JDCZrwQ5tBMfn018icn29du9DBMqy/g=
 From: Thorsten Blum <thorsten.blum@linux.dev>
 To: Herbert Xu <herbert@gondor.apana.org.au>,
 	"David S. Miller" <davem@davemloft.net>
 Cc: Thorsten Blum <thorsten.blum@linux.dev>,
 	linux-crypto@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] crypto: omap - add omap_des_unregister_algs helper
-Date: Mon, 27 Apr 2026 19:20:19 +0200
-Message-ID: <20260427172018.416707-5-thorsten.blum@linux.dev>
+Subject: [PATCH 3/3] crypto: omap - add omap_sham_unregister_algs helper
+Date: Mon, 27 Apr 2026 19:20:20 +0200
+Message-ID: <20260427172018.416707-6-thorsten.blum@linux.dev>
 In-Reply-To: <20260427172018.416707-4-thorsten.blum@linux.dev>
 References: <20260427172018.416707-4-thorsten.blum@linux.dev>
 Precedence: bulk
@@ -62,11 +62,11 @@ List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2122; i=thorsten.blum@linux.dev; h=from:subject; bh=kscnIBItxFrhRJkr9ELi0HNdWFXJVmhILb8M4cpv89E=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJnvZ93YbKF2x7d4qtTB7JZjJ47FiCpvPJN9z5X5tYRVk fncWyxNHaUsDGJcDLJiiiwPZv2Y4VtaU7nJJGInzBxWJpAhDFycAjCR3keMDI+M3kkq370wofBg WteJjwF2kQrOTmsjXqvvLiwTFjtYOpXhf/ARC8to/jl5GubsPItvPpoQ33ig2/iLYUuPnpD2yW1 SXAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2244; i=thorsten.blum@linux.dev; h=from:subject; bh=3xDUnocLIAIGKNms7t7GLlfn+0JKHNX3bctn6rowp1g=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJnvZ90IOHYh4P/Hol9XtU8rnZkcqtQgEub5N+5h8U8li T+/HRYEdJSyMIhxMciKKbI8mPVjhm9pTeUmk4idMHNYmUCGMHBxCsBEfrky/A/d90Az6seWzjPv zGfLKZz+3PBcxv0j7wEX7XevT7A/fTeT4X9IOkfol9+m+ptydiQ3OLwPFb65/dDkAweLPyR6xQV u0eYBAA==
 X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 7DA1E477A33
+X-Rspamd-Queue-Id: EBE744777AF
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -74,13 +74,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23433-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23432-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	TO_DN_SOME(0.00)[];
@@ -92,74 +92,76 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[linux.dev:+];
 	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:dkim,linux.dev:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.dev:email,linux.dev:dkim,linux.dev:mid]
 
-Add a new helper omap_des_unregister_algs() and replace two for loops in
-omap_des_probe() and omap_des_remove(), which also ensure ->registered
-is reset to 0.
+Add a new helper omap_sham_unregister_algs() and replace two for loops
+in omap_sham_probe() and omap_sham_remove(), which also ensure
+->registered is reset to 0.
 
 Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 ---
- drivers/crypto/omap-des.c | 26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+ drivers/crypto/omap-sham.c | 27 ++++++++++++++++-----------
+ 1 file changed, 16 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/crypto/omap-des.c b/drivers/crypto/omap-des.c
-index 149ebd77710b..16d5c617d5ee 100644
---- a/drivers/crypto/omap-des.c
-+++ b/drivers/crypto/omap-des.c
-@@ -938,6 +938,20 @@ static int omap_des_get_pdev(struct omap_des_dev *dd,
- 	return 0;
- }
+diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
+index b8c416c5ee70..be1ac640ee59 100644
+--- a/drivers/crypto/omap-sham.c
++++ b/drivers/crypto/omap-sham.c
+@@ -2042,6 +2042,20 @@ static struct attribute *omap_sham_attrs[] = {
+ };
+ ATTRIBUTE_GROUPS(omap_sham);
  
-+static void omap_des_unregister_algs(const struct omap_des_pdata *pdata)
++static void omap_sham_unregister_algs(const struct omap_sham_pdata *pdata)
 +{
-+	struct omap_des_algs_info *alg_info;
++	struct omap_sham_algs_info *alg_info;
 +	int i;
 +
 +	for (i = pdata->algs_info_size - 1; i >= 0; i--) {
 +		alg_info = &pdata->algs_info[i];
 +
-+		crypto_engine_unregister_skciphers(alg_info->algs_list,
-+						   alg_info->registered);
++		crypto_engine_unregister_ahashes(alg_info->algs_list,
++						 alg_info->registered);
 +		alg_info->registered = 0;
 +	}
 +}
 +
- static int omap_des_probe(struct platform_device *pdev)
+ static int omap_sham_probe(struct platform_device *pdev)
  {
- 	struct device *dev = &pdev->dev;
-@@ -1043,11 +1057,7 @@ static int omap_des_probe(struct platform_device *pdev)
+ 	struct omap_sham_dev *dd;
+@@ -2158,10 +2172,7 @@ static int omap_sham_probe(struct platform_device *pdev)
  	return 0;
  
  err_algs:
 -	for (i = dd->pdata->algs_info_size - 1; i >= 0; i--)
 -		for (j = dd->pdata->algs_info[i].registered - 1; j >= 0; j--)
--			crypto_engine_unregister_skcipher(
+-			crypto_engine_unregister_ahash(
 -					&dd->pdata->algs_info[i].algs_list[j]);
--
-+	omap_des_unregister_algs(dd->pdata);
++	omap_sham_unregister_algs(dd->pdata);
+ err_engine_start:
+ 	crypto_engine_exit(dd->engine);
  err_engine:
- 	if (dd->engine)
- 		crypto_engine_exit(dd->engine);
-@@ -1067,16 +1077,12 @@ static int omap_des_probe(struct platform_device *pdev)
- static void omap_des_remove(struct platform_device *pdev)
+@@ -2182,19 +2193,13 @@ static int omap_sham_probe(struct platform_device *pdev)
+ static void omap_sham_remove(struct platform_device *pdev)
  {
- 	struct omap_des_dev *dd = platform_get_drvdata(pdev);
+ 	struct omap_sham_dev *dd;
 -	int i, j;
  
- 	spin_lock_bh(&list_lock);
+ 	dd = platform_get_drvdata(pdev);
+ 
+ 	spin_lock_bh(&sham.lock);
  	list_del(&dd->list);
- 	spin_unlock_bh(&list_lock);
- 
+ 	spin_unlock_bh(&sham.lock);
 -	for (i = dd->pdata->algs_info_size - 1; i >= 0; i--)
--		for (j = dd->pdata->algs_info[i].registered - 1; j >= 0; j--)
--			crypto_engine_unregister_skcipher(
+-		for (j = dd->pdata->algs_info[i].registered - 1; j >= 0; j--) {
+-			crypto_engine_unregister_ahash(
 -					&dd->pdata->algs_info[i].algs_list[j]);
-+	omap_des_unregister_algs(dd->pdata);
- 
+-			dd->pdata->algs_info[i].registered--;
+-		}
++	omap_sham_unregister_algs(dd->pdata);
  	cancel_work_sync(&dd->done_task);
- 	omap_des_dma_cleanup(dd);
+ 	pm_runtime_dont_use_autosuspend(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
 
