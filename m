@@ -1,174 +1,235 @@
-Return-Path: <linux-crypto+bounces-23431-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23390-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wBJuD4+R72nRCwEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23431-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 18:40:47 +0200
+	id AFfWDqMo72lE8AAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23390-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 11:13:07 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6C4F4768E9
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 18:40:46 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F57546FA35
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 11:13:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6604330090A6
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 16:40:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 871A63064EAC
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 08:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D571F3D6683;
-	Mon, 27 Apr 2026 16:40:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aPx3bjIm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE20208D0;
+	Mon, 27 Apr 2026 08:55:51 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A0F3D6494
-	for <linux-crypto@vger.kernel.org>; Mon, 27 Apr 2026 16:40:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59843537FF;
+	Mon, 27 Apr 2026 08:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777308041; cv=none; b=u85Cf8mGHBw92bvs5WnV/7Tok9TwcxuiHUoSPfW/RBeXX+qnhrjVA1UnF5wIwMz+rZDMmf6pG1gLEIlcm2Lx0TSgBdHX7MaLaZ889+J8aigjwrkNIKGiKutpen/cpFbPLiYz82ovqh0mop/9FNZ8C8KJR24WtbjB6M7SYFK3yrY=
+	t=1777280151; cv=none; b=WTyyYBuyEf4H3c9pjeXucxixE3p5B1NnhPf0R+yhSPfXmJ3nTxkxHMPfbSz+aA/FpNFe6PCwf6L6vvhqSO4uyQBo3fwEZsxaA0zOAnlhI+vV6vxJYxNKE17ov8PKfE7jreoJZB2VkUUvuGtvluP2xyNsCP/WKGX07N5m2+TZpzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777308041; c=relaxed/simple;
-	bh=tLfxGfZ8FK6o1WjyY8CrkwQT5BZ1HxjhnlCKtV2r3/Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HRgVzD1cFHyB6yPzzy2o1O0ejR3AnMZvB5IKJ0ax2e/XIws0/ioPPOSkvtsg3WOo6Sq0cqln5X+fl7KPyoEpisEf8g3hkpnmMLkVa1IfYjSwRNdHoB4q4PU5R0GazVtjiVjWQ+2UDkxUWCRQmQdGGPP0MQHt5LX/qw/6ff9hdnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aPx3bjIm; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1777308036;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UL1kvB9Ji20YADD2O7j5GE++8RuOFTqcHyAxji8oAys=;
-	b=aPx3bjImo3cA3H6UxscWcOW3PLdy5JIH+u2p6iwAzkK2q7oPWgKLH9fyIPNwSH3vOs8lC3
-	SX/ZDFHugiVdUANi+npTH3fKPavHtTMuVqqhdv+mbTJVe53wvGuc+6jPJ1S4GlrexIn3Uc
-	cyCbfG2lk6jE7jDcC4lS9uag1Q4NnAg=
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-	Pankaj Gupta <pankaj.gupta@nxp.com>,
-	Gaurav Jain <gaurav.jain@nxp.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>
-Cc: Thorsten Blum <thorsten.blum@linux.dev>,
-	stable@vger.kernel.org,
+	s=arc-20240116; t=1777280151; c=relaxed/simple;
+	bh=3h6KE49s5na7FVqF/JgPMHtxUXHsdU4YsryRRiVX8og=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sfp8/xikQvkqdddGzl9zlh1gVJYS5MlrRvy4Z6JyKoIP8DQ8FwjPgkNH/2nUKNamhCH/5JyUt3mMzgwLLUoF8eLkpF2WlyItc5N5X2BWXRXKA3ft9k1xghNsbRKUC/T5oxTO+m8VD21/8J7JLljhxDXFnWZ9f8SK8UB4UBwHiEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.40.54.15])
+	by gateway (Coremail) with SMTP id _____8BxzemSJO9plU0EAA--.12910S3;
+	Mon, 27 Apr 2026 16:55:46 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.40.54.15])
+	by front1 (Coremail) with SMTP id qMiowJCxHOGRJO9pmaB1AA--.26788S2;
+	Mon, 27 Apr 2026 16:55:45 +0800 (CST)
+From: Qunqin Zhao <zhaoqunqin@loongson.cn>
+To: lee@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev,
 	linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] crypto: caam - use print_hex_dump_devel to guard key hex dumps
-Date: Mon, 27 Apr 2026 18:39:39 +0200
-Message-ID: <20260427163937.337966-5-thorsten.blum@linux.dev>
-In-Reply-To: <20260427163937.337966-3-thorsten.blum@linux.dev>
-References: <20260427163937.337966-3-thorsten.blum@linux.dev>
+	Qunqin Zhao <zhaoqunqin@loongson.cn>
+Subject: [PATCH v2] mfd: loongson-se: Add multi-node support
+Date: Tue, 28 Apr 2026 00:51:33 +0800
+Message-Id: <20260427165133.23350-1-zhaoqunqin@loongson.cn>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2990; i=thorsten.blum@linux.dev; h=from:subject; bh=tLfxGfZ8FK6o1WjyY8CrkwQT5BZ1HxjhnlCKtV2r3/Q=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJnvJwY++Lpt07fvtbJJH893fZN49/3X5m+1G8uX23GzN VjGrii41FHKwiDGxSArpsjyYNaPGb6lNZWbTCJ2wsxhZQIZwsDFKQATOfWA4Z/uDsagH6JpmX0T 712Z6xHrmBXxJv1KndWLoocv4p/yFDxiZLh5VnXSh62e33Nffbjt9vTvJnO29UVfJU493Rfesaj hwXZOAA==
-X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: D6C4F4768E9
+X-CM-TRANSID:qMiowJCxHOGRJO9pmaB1AA--.26788S2
+X-CM-SenderInfo: 52kd01pxqtx0o6or00hjvr0hdfq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxXry5Jw4rAF4rWrWxZFWUtrc_yoWrGFy5pF
+	WDCayFvF4UCF47CwsYy398Cry3u3yrt39rGFZFgr4xAas8twn7WrWrKFyjgF45CFWUJF42
+	qrZ5GFW8CF48CabCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUvqb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M280x2IEY4vEnII2IxkI6r1a6r45M28lY4IE
+	w2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84
+	ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1U
+	M28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr2
+	1l57IF6xkI12xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv2
+	0xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7
+	xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2Iq
+	xVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r
+	126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY
+	6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67
+	AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x
+	07jDsqAUUUUU=
+X-Rspamd-Queue-Id: 7F57546FA35
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [4.04 / 15.00];
+	DATE_IN_FUTURE(4.00)[7];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-23390-lists,linux-crypto=lfdr.de];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[loongson.cn];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23431-lists,linux-crypto=lfdr.de];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
+	GREYLIST(0.00)[pass,body];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[zhaoqunqin@loongson.cn,linux-crypto@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_COUNT_FIVE(0.00)[5];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.822];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.dev:email,linux.dev:dkim,linux.dev:mid]
+	FROM_HAS_DN(0.00)[]
 
-Use print_hex_dump_devel() for dumping sensitive key material in
-*_setkey() to avoid leaking secrets at runtime when CONFIG_DYNAMIC_DEBUG
-is enabled.
+On the Loongson platform, each node is equipped with a security engine
+device. However, due to a hardware flaw, only the device on node 0 can
+trigger interrupts. Therefore, interrupts from other nodes are forwarded
+by node 0. We need to check in the interrupt handler of node 0 whether
+this interrupt is intended for other nodes.
 
-Fixes: 8d818c105501 ("crypto: caam/qi2 - add DPAA2-CAAM driver")
-Fixes: 226853ac3ebe ("crypto: caam/qi2 - add skcipher algorithms")
-Cc: stable@vger.kernel.org
-Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+Signed-off-by: Qunqin Zhao <zhaoqunqin@loongson.cn>
 ---
- drivers/crypto/caam/caamalg_qi2.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Changes in v2:
+	-Resending due to no feedback for one month.
+	-Rebased on top of latest mainline (7.1-rc1) to ensure the patch
+	 applies cleanly.
+	-No functional changes since the previous submission.
 
-diff --git a/drivers/crypto/caam/caamalg_qi2.c b/drivers/crypto/caam/caamalg_qi2.c
-index bf10c3dda745..6b47bcc16a50 100644
---- a/drivers/crypto/caam/caamalg_qi2.c
-+++ b/drivers/crypto/caam/caamalg_qi2.c
-@@ -301,7 +301,7 @@ static int aead_setkey(struct crypto_aead *aead, const u8 *key,
- 	dev_dbg(dev, "keylen %d enckeylen %d authkeylen %d\n",
- 		keys.authkeylen + keys.enckeylen, keys.enckeylen,
- 		keys.authkeylen);
--	print_hex_dump_debug("key in @" __stringify(__LINE__)": ",
-+	print_hex_dump_devel("key in @" __stringify(__LINE__)": ",
- 			     DUMP_PREFIX_ADDRESS, 16, 4, key, keylen, 1);
+Link to v1:
+https://lore.kernel.org/all/20260226102225.19516-1-zhaoqunqin@loongson.cn/#t
+
+ drivers/mfd/loongson-se.c       | 38 +++++++++++++++++++++++++++------
+ include/linux/mfd/loongson-se.h |  3 +++
+ 2 files changed, 35 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mfd/loongson-se.c b/drivers/mfd/loongson-se.c
+index 3902ba377d6..40e18c21268 100644
+--- a/drivers/mfd/loongson-se.c
++++ b/drivers/mfd/loongson-se.c
+@@ -37,6 +37,9 @@ struct loongson_se_controller_cmd {
+ 	u32 info[7];
+ };
  
- 	ctx->adata.keylen = keys.authkeylen;
-@@ -315,7 +315,7 @@ static int aead_setkey(struct crypto_aead *aead, const u8 *key,
- 	memcpy(ctx->key + ctx->adata.keylen_pad, keys.enckey, keys.enckeylen);
- 	dma_sync_single_for_device(dev, ctx->key_dma, ctx->adata.keylen_pad +
- 				   keys.enckeylen, ctx->dir);
--	print_hex_dump_debug("ctx.key@" __stringify(__LINE__)": ",
-+	print_hex_dump_devel("ctx.key@" __stringify(__LINE__)": ",
- 			     DUMP_PREFIX_ADDRESS, 16, 4, ctx->key,
- 			     ctx->adata.keylen_pad + keys.enckeylen, 1);
++static DECLARE_COMPLETION(node0);
++static struct loongson_se *se_node[SE_MAX_NODES];
++
+ static int loongson_se_poll(struct loongson_se *se, u32 int_bit)
+ {
+ 	u32 status;
+@@ -133,8 +136,8 @@ EXPORT_SYMBOL_GPL(loongson_se_init_engine);
+ static irqreturn_t se_irq_handler(int irq, void *dev_id)
+ {
+ 	struct loongson_se *se = dev_id;
+-	u32 int_status;
+-	int id;
++	u32 int_status, node_irq = 0;
++	int id, node;
  
-@@ -732,7 +732,7 @@ static int gcm_setkey(struct crypto_aead *aead,
- 	ret = aes_check_keylen(keylen);
- 	if (ret)
- 		return ret;
--	print_hex_dump_debug("key in @" __stringify(__LINE__)": ",
-+	print_hex_dump_devel("key in @" __stringify(__LINE__)": ",
- 			     DUMP_PREFIX_ADDRESS, 16, 4, key, keylen, 1);
+ 	spin_lock(&se->dev_lock);
  
- 	memcpy(ctx->key, key, keylen);
-@@ -828,7 +828,7 @@ static int rfc4106_setkey(struct crypto_aead *aead,
- 	if (ret)
- 		return ret;
+@@ -147,6 +150,11 @@ static irqreturn_t se_irq_handler(int irq, void *dev_id)
+ 		writel(SE_INT_CONTROLLER, se->base + SE_S2LINT_CL);
+ 	}
  
--	print_hex_dump_debug("key in @" __stringify(__LINE__)": ",
-+	print_hex_dump_devel("key in @" __stringify(__LINE__)": ",
- 			     DUMP_PREFIX_ADDRESS, 16, 4, key, keylen, 1);
++	if (int_status & SE_INT_OTHER_NODE) {
++		int_status &= ~SE_INT_OTHER_NODE;
++		node_irq = 1;
++	}
++
+ 	/* For engines */
+ 	while (int_status) {
+ 		id = __ffs(int_status);
+@@ -157,6 +165,14 @@ static irqreturn_t se_irq_handler(int irq, void *dev_id)
  
- 	memcpy(ctx->key, key, keylen);
-@@ -927,7 +927,7 @@ static int rfc4543_setkey(struct crypto_aead *aead,
- 	if (ret)
- 		return ret;
+ 	spin_unlock(&se->dev_lock);
  
--	print_hex_dump_debug("key in @" __stringify(__LINE__)": ",
-+	print_hex_dump_devel("key in @" __stringify(__LINE__)": ",
- 			     DUMP_PREFIX_ADDRESS, 16, 4, key, keylen, 1);
++	if (node_irq) {
++		writel(SE_INT_OTHER_NODE, se->base + SE_S2LINT_CL);
++		for (node = 1; node < SE_MAX_NODES; node++) {
++			if (se_node[node])
++				se_irq_handler(irq, se_node[node]);
++		}
++	}
++
+ 	return IRQ_HANDLED;
+ }
  
- 	memcpy(ctx->key, key, keylen);
-@@ -955,7 +955,7 @@ static int skcipher_setkey(struct crypto_skcipher *skcipher, const u8 *key,
- 	u32 *desc;
- 	const bool is_rfc3686 = alg->caam.rfc3686;
+@@ -189,6 +205,7 @@ static int loongson_se_probe(struct platform_device *pdev)
+ 	struct loongson_se *se;
+ 	int nr_irq, irq, err, i;
+ 	dma_addr_t paddr;
++	int node = dev_to_node(dev);
  
--	print_hex_dump_debug("key in @" __stringify(__LINE__)": ",
-+	print_hex_dump_devel("key in @" __stringify(__LINE__)": ",
- 			     DUMP_PREFIX_ADDRESS, 16, 4, key, keylen, 1);
+ 	se = devm_kmalloc(dev, sizeof(*se), GFP_KERNEL);
+ 	if (!se)
+@@ -213,9 +230,16 @@ static int loongson_se_probe(struct platform_device *pdev)
  
- 	ctx->cdata.keylen = keylen;
+ 	writel(SE_INT_ALL, se->base + SE_S2LINT_EN);
+ 
+-	nr_irq = platform_irq_count(pdev);
+-	if (nr_irq <= 0)
+-		return -ENODEV;
++	if (node == 0 || node == NUMA_NO_NODE) {
++		nr_irq = platform_irq_count(pdev);
++		if (nr_irq <= 0)
++			return -ENODEV;
++	} else {
++		/* Only the device on node 0 can trigger interrupts */
++		nr_irq = 0;
++		wait_for_completion_interruptible(&node0);
++		se_node[node] = se;
++	}
+ 
+ 	for (i = 0; i < nr_irq; i++) {
+ 		irq = platform_get_irq(pdev, i);
+@@ -228,7 +252,9 @@ static int loongson_se_probe(struct platform_device *pdev)
+ 	if (err)
+ 		return err;
+ 
+-	return devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE, engines,
++	complete_all(&node0);
++
++	return devm_mfd_add_devices(dev, PLATFORM_DEVID_AUTO, engines,
+ 				    ARRAY_SIZE(engines), NULL, 0, NULL);
+ }
+ 
+diff --git a/include/linux/mfd/loongson-se.h b/include/linux/mfd/loongson-se.h
+index 07afa0c2524..a80e06eb017 100644
+--- a/include/linux/mfd/loongson-se.h
++++ b/include/linux/mfd/loongson-se.h
+@@ -20,6 +20,9 @@
+ 
+ #define SE_INT_ALL			0xffffffff
+ #define SE_INT_CONTROLLER		BIT(0)
++#define SE_INT_OTHER_NODE		BIT(31)
++
++#define SE_MAX_NODES			8
+ 
+ #define SE_ENGINE_MAX			16
+ #define SE_ENGINE_RNG			1
+
+base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
+-- 
+2.47.2
+
 
