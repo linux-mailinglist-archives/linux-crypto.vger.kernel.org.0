@@ -1,235 +1,183 @@
-Return-Path: <linux-crypto+bounces-23390-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23434-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AFfWDqMo72lE8AAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23390-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 11:13:07 +0200
+	id aFoGKMuc72kbDQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23434-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 19:28:43 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F57546FA35
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 11:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 612BD47794D
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 19:28:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 871A63064EAC
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 08:56:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 362823061D6A
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 17:21:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE20208D0;
-	Mon, 27 Apr 2026 08:55:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47C263E3DA4;
+	Mon, 27 Apr 2026 17:20:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UQ1B1xAk"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C59843537FF;
-	Mon, 27 Apr 2026 08:55:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5931926F2BE
+	for <linux-crypto@vger.kernel.org>; Mon, 27 Apr 2026 17:20:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777280151; cv=none; b=WTyyYBuyEf4H3c9pjeXucxixE3p5B1NnhPf0R+yhSPfXmJ3nTxkxHMPfbSz+aA/FpNFe6PCwf6L6vvhqSO4uyQBo3fwEZsxaA0zOAnlhI+vV6vxJYxNKE17ov8PKfE7jreoJZB2VkUUvuGtvluP2xyNsCP/WKGX07N5m2+TZpzc=
+	t=1777310447; cv=none; b=Ee6pXhRXMwqLUNv7F10mipP4Iyt/uShb2Mf06tF7jZ+jW9plEd7vRcBK8w3KZrlwTLbrgkJ6QGNorI8ESnRgFAOTjdTS9mm8TKebJjjiPNEXSZswadY6sRdFpP1XHJZIQsh4VMjP5dm9mxvh7IZQMayoqrBIQFbMsRJxxm4LQqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777280151; c=relaxed/simple;
-	bh=3h6KE49s5na7FVqF/JgPMHtxUXHsdU4YsryRRiVX8og=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sfp8/xikQvkqdddGzl9zlh1gVJYS5MlrRvy4Z6JyKoIP8DQ8FwjPgkNH/2nUKNamhCH/5JyUt3mMzgwLLUoF8eLkpF2WlyItc5N5X2BWXRXKA3ft9k1xghNsbRKUC/T5oxTO+m8VD21/8J7JLljhxDXFnWZ9f8SK8UB4UBwHiEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.40.54.15])
-	by gateway (Coremail) with SMTP id _____8BxzemSJO9plU0EAA--.12910S3;
-	Mon, 27 Apr 2026 16:55:46 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.40.54.15])
-	by front1 (Coremail) with SMTP id qMiowJCxHOGRJO9pmaB1AA--.26788S2;
-	Mon, 27 Apr 2026 16:55:45 +0800 (CST)
-From: Qunqin Zhao <zhaoqunqin@loongson.cn>
-To: lee@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev,
+	s=arc-20240116; t=1777310447; c=relaxed/simple;
+	bh=kiYcnAb7eSltsnM8pt9yJnlYK6HhDuQkiSnoU4quvq0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iOBGU1qC2LRmaPvI/AKY38HP+rOtpixfjaGi5dmnf3ueA8Hyy5pcuTJ984W6+LlzxgHrP+ZlWy3el2xETVF36nvEhOyUfe2E54O0dHFm85UrwUhUSUZPhxiGPux9h/ZcBMEM4ligEjlj6fyFJcIJ85ECBOs7BGc1V/AsYnsi4xk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UQ1B1xAk; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1777310441;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+Kw/9Bw/B4rALoC498psLar42CORiFfu05i0v04MscA=;
+	b=UQ1B1xAkYHS7TXQrOpXW/DS6hRjJvPhHYuNlTepooGk+YjVXNBiqWOpK5GCVGG57bcFE+C
+	NuRmOgTFDQh6zpe2c5itqVXbk16kc7Pg3XZplGG+S3HOniJvUGsphQRodyjIyPNGg58Qny
+	SiOJd0kvCZI6dUYOEujg6B88ThxisM8=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
 	linux-crypto@vger.kernel.org,
-	Qunqin Zhao <zhaoqunqin@loongson.cn>
-Subject: [PATCH v2] mfd: loongson-se: Add multi-node support
-Date: Tue, 28 Apr 2026 00:51:33 +0800
-Message-Id: <20260427165133.23350-1-zhaoqunqin@loongson.cn>
-X-Mailer: git-send-email 2.20.1
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] crypto: omap - add omap_aes_unregister_algs helper
+Date: Mon, 27 Apr 2026 19:20:18 +0200
+Message-ID: <20260427172018.416707-4-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3040; i=thorsten.blum@linux.dev; h=from:subject; bh=kiYcnAb7eSltsnM8pt9yJnlYK6HhDuQkiSnoU4quvq0=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJnvZ12K2p7C8Ti1bqtni+3sqZqPbib/DWV/IZB1hu2KV tkat30GHaUsDGJcDLJiiiwPZv2Y4VtaU7nJJGInzBxWJpAhDFycAjCRQ0KMDIsWvGlek8umv+lR 17nKqyen+W4Wz5zEJV4t8cuqNDbqVBAjw/oS+bqkkJCjnjbZ5uuPNklWJc4uZJfdZPbzgtr0ZYd T2QA=
+X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJCxHOGRJO9pmaB1AA--.26788S2
-X-CM-SenderInfo: 52kd01pxqtx0o6or00hjvr0hdfq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxXry5Jw4rAF4rWrWxZFWUtrc_yoWrGFy5pF
-	WDCayFvF4UCF47CwsYy398Cry3u3yrt39rGFZFgr4xAas8twn7WrWrKFyjgF45CFWUJF42
-	qrZ5GFW8CF48CabCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUvqb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M280x2IEY4vEnII2IxkI6r1a6r45M28lY4IE
-	w2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84
-	ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1U
-	M28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr2
-	1l57IF6xkI12xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv2
-	0xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7
-	xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2Iq
-	xVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r
-	126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY
-	6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67
-	AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x
-	07jDsqAUUUUU=
-X-Rspamd-Queue-Id: 7F57546FA35
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: 612BD47794D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [4.04 / 15.00];
-	DATE_IN_FUTURE(4.00)[7];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23390-lists,linux-crypto=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[loongson.cn];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-23434-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	GREYLIST(0.00)[pass,body];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[zhaoqunqin@loongson.cn,linux-crypto@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.822];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	NEURAL_HAM(-0.00)[-0.999];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	FROM_HAS_DN(0.00)[]
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:dkim,linux.dev:mid]
 
-On the Loongson platform, each node is equipped with a security engine
-device. However, due to a hardware flaw, only the device on node 0 can
-trigger interrupts. Therefore, interrupts from other nodes are forwarded
-by node 0. We need to check in the interrupt handler of node 0 whether
-this interrupt is intended for other nodes.
+Add a new helper omap_aes_unregister_algs() and replace two for loops in
+omap_aes_probe() and omap_aes_remove(), which also ensure ->registered
+is reset to 0.
 
-Signed-off-by: Qunqin Zhao <zhaoqunqin@loongson.cn>
+Replace two additional for loops with crypto_engine_unregister_aeads()
+while at it and reset ->registered to 0 explicitly.
+
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 ---
-Changes in v2:
-	-Resending due to no feedback for one month.
-	-Rebased on top of latest mainline (7.1-rc1) to ensure the patch
-	 applies cleanly.
-	-No functional changes since the previous submission.
+ drivers/crypto/omap-aes.c | 43 ++++++++++++++++++++-------------------
+ 1 file changed, 22 insertions(+), 21 deletions(-)
 
-Link to v1:
-https://lore.kernel.org/all/20260226102225.19516-1-zhaoqunqin@loongson.cn/#t
-
- drivers/mfd/loongson-se.c       | 38 +++++++++++++++++++++++++++------
- include/linux/mfd/loongson-se.h |  3 +++
- 2 files changed, 35 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mfd/loongson-se.c b/drivers/mfd/loongson-se.c
-index 3902ba377d6..40e18c21268 100644
---- a/drivers/mfd/loongson-se.c
-+++ b/drivers/mfd/loongson-se.c
-@@ -37,6 +37,9 @@ struct loongson_se_controller_cmd {
- 	u32 info[7];
+diff --git a/drivers/crypto/omap-aes.c b/drivers/crypto/omap-aes.c
+index 3eadaf7a64fa..f31555c0d715 100644
+--- a/drivers/crypto/omap-aes.c
++++ b/drivers/crypto/omap-aes.c
+@@ -1089,6 +1089,20 @@ static struct attribute *omap_aes_attrs[] = {
  };
+ ATTRIBUTE_GROUPS(omap_aes);
  
-+static DECLARE_COMPLETION(node0);
-+static struct loongson_se *se_node[SE_MAX_NODES];
++static void omap_aes_unregister_algs(const struct omap_aes_pdata *pdata)
++{
++	struct omap_aes_algs_info *alg_info;
++	int i;
 +
- static int loongson_se_poll(struct loongson_se *se, u32 int_bit)
++	for (i = pdata->algs_info_size - 1; i >= 0; i--) {
++		alg_info = &pdata->algs_info[i];
++
++		crypto_engine_unregister_skciphers(alg_info->algs_list,
++						   alg_info->registered);
++		alg_info->registered = 0;
++	}
++}
++
+ static int omap_aes_probe(struct platform_device *pdev)
  {
- 	u32 status;
-@@ -133,8 +136,8 @@ EXPORT_SYMBOL_GPL(loongson_se_init_engine);
- static irqreturn_t se_irq_handler(int irq, void *dev_id)
+ 	struct device *dev = &pdev->dev;
+@@ -1215,15 +1229,11 @@ static int omap_aes_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ err_aead_algs:
+-	for (i = dd->pdata->aead_algs_info->registered - 1; i >= 0; i--) {
+-		aalg = &dd->pdata->aead_algs_info->algs_list[i];
+-		crypto_engine_unregister_aead(aalg);
+-	}
++	crypto_engine_unregister_aeads(dd->pdata->aead_algs_info->algs_list,
++				       dd->pdata->aead_algs_info->registered);
++	dd->pdata->aead_algs_info->registered = 0;
+ err_algs:
+-	for (i = dd->pdata->algs_info_size - 1; i >= 0; i--)
+-		for (j = dd->pdata->algs_info[i].registered - 1; j >= 0; j--)
+-			crypto_engine_unregister_skcipher(
+-					&dd->pdata->algs_info[i].algs_list[j]);
++	omap_aes_unregister_algs(dd->pdata);
+ 
+ err_engine:
+ 	if (dd->engine)
+@@ -1244,25 +1254,16 @@ static int omap_aes_probe(struct platform_device *pdev)
+ static void omap_aes_remove(struct platform_device *pdev)
  {
- 	struct loongson_se *se = dev_id;
--	u32 int_status;
--	int id;
-+	u32 int_status, node_irq = 0;
-+	int id, node;
+ 	struct omap_aes_dev *dd = platform_get_drvdata(pdev);
+-	struct aead_engine_alg *aalg;
+-	int i, j;
  
- 	spin_lock(&se->dev_lock);
+ 	spin_lock_bh(&list_lock);
+ 	list_del(&dd->list);
+ 	spin_unlock_bh(&list_lock);
  
-@@ -147,6 +150,11 @@ static irqreturn_t se_irq_handler(int irq, void *dev_id)
- 		writel(SE_INT_CONTROLLER, se->base + SE_S2LINT_CL);
- 	}
+-	for (i = dd->pdata->algs_info_size - 1; i >= 0; i--)
+-		for (j = dd->pdata->algs_info[i].registered - 1; j >= 0; j--) {
+-			crypto_engine_unregister_skcipher(
+-					&dd->pdata->algs_info[i].algs_list[j]);
+-			dd->pdata->algs_info[i].registered--;
+-		}
++	omap_aes_unregister_algs(dd->pdata);
  
-+	if (int_status & SE_INT_OTHER_NODE) {
-+		int_status &= ~SE_INT_OTHER_NODE;
-+		node_irq = 1;
-+	}
-+
- 	/* For engines */
- 	while (int_status) {
- 		id = __ffs(int_status);
-@@ -157,6 +165,14 @@ static irqreturn_t se_irq_handler(int irq, void *dev_id)
+-	for (i = dd->pdata->aead_algs_info->registered - 1; i >= 0; i--) {
+-		aalg = &dd->pdata->aead_algs_info->algs_list[i];
+-		crypto_engine_unregister_aead(aalg);
+-		dd->pdata->aead_algs_info->registered--;
+-	}
++	crypto_engine_unregister_aeads(dd->pdata->aead_algs_info->algs_list,
++				       dd->pdata->aead_algs_info->registered);
++	dd->pdata->aead_algs_info->registered = 0;
  
- 	spin_unlock(&se->dev_lock);
+ 	crypto_engine_exit(dd->engine);
  
-+	if (node_irq) {
-+		writel(SE_INT_OTHER_NODE, se->base + SE_S2LINT_CL);
-+		for (node = 1; node < SE_MAX_NODES; node++) {
-+			if (se_node[node])
-+				se_irq_handler(irq, se_node[node]);
-+		}
-+	}
-+
- 	return IRQ_HANDLED;
- }
- 
-@@ -189,6 +205,7 @@ static int loongson_se_probe(struct platform_device *pdev)
- 	struct loongson_se *se;
- 	int nr_irq, irq, err, i;
- 	dma_addr_t paddr;
-+	int node = dev_to_node(dev);
- 
- 	se = devm_kmalloc(dev, sizeof(*se), GFP_KERNEL);
- 	if (!se)
-@@ -213,9 +230,16 @@ static int loongson_se_probe(struct platform_device *pdev)
- 
- 	writel(SE_INT_ALL, se->base + SE_S2LINT_EN);
- 
--	nr_irq = platform_irq_count(pdev);
--	if (nr_irq <= 0)
--		return -ENODEV;
-+	if (node == 0 || node == NUMA_NO_NODE) {
-+		nr_irq = platform_irq_count(pdev);
-+		if (nr_irq <= 0)
-+			return -ENODEV;
-+	} else {
-+		/* Only the device on node 0 can trigger interrupts */
-+		nr_irq = 0;
-+		wait_for_completion_interruptible(&node0);
-+		se_node[node] = se;
-+	}
- 
- 	for (i = 0; i < nr_irq; i++) {
- 		irq = platform_get_irq(pdev, i);
-@@ -228,7 +252,9 @@ static int loongson_se_probe(struct platform_device *pdev)
- 	if (err)
- 		return err;
- 
--	return devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE, engines,
-+	complete_all(&node0);
-+
-+	return devm_mfd_add_devices(dev, PLATFORM_DEVID_AUTO, engines,
- 				    ARRAY_SIZE(engines), NULL, 0, NULL);
- }
- 
-diff --git a/include/linux/mfd/loongson-se.h b/include/linux/mfd/loongson-se.h
-index 07afa0c2524..a80e06eb017 100644
---- a/include/linux/mfd/loongson-se.h
-+++ b/include/linux/mfd/loongson-se.h
-@@ -20,6 +20,9 @@
- 
- #define SE_INT_ALL			0xffffffff
- #define SE_INT_CONTROLLER		BIT(0)
-+#define SE_INT_OTHER_NODE		BIT(31)
-+
-+#define SE_MAX_NODES			8
- 
- #define SE_ENGINE_MAX			16
- #define SE_ENGINE_RNG			1
-
-base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
--- 
-2.47.2
-
 
