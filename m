@@ -1,48 +1,49 @@
-Return-Path: <linux-crypto+bounces-23425-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23426-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EIHNBcyM72l5CwEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23425-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 18:20:28 +0200
+	id UJtZFaeN72l5CwEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23426-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 18:24:07 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7B244763E4
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 18:20:27 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCBE14764DC
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 18:24:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C0F663026727
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 16:16:26 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 91358308AA71
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 16:16:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708FB351C13;
-	Mon, 27 Apr 2026 16:15:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E757F35BDB2;
+	Mon, 27 Apr 2026 16:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ej8TxrL7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hBI5jAAL"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337A5346A08;
-	Mon, 27 Apr 2026 16:15:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8F7035AC32;
+	Mon, 27 Apr 2026 16:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777306539; cv=none; b=OWcpsqGEHXCmPk0PshGqCO3fNRi0SyBpP+3AIrwsRD9XbYzGqfHWQm1QmWwu2ZIeUbkHd6icTeSoapzxVVfBBNGxLkG/np+8MyqN9wIJMfnml4XHkmGx/s8FpqZsvq004V+NDyKv6W1mhGeZhMRxxhtGZlvlCfIHuPYj7HLDwk0=
+	t=1777306540; cv=none; b=tw4qCbGMemAlWaIM8vuYkn1tpJr/RN3Z5dlZ2/gCPmKXDuMDwp3On+3kX4KJVntNQT3vQeDLLokBznjq348dpDWL6Z2Yhz52nQ9U4yZBIW/vuloGfbKQgM3exi1JOj7SssHnkaQtCHnfN2ffyud1YpKmzYUhTViXFaMEP2dLDFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777306539; c=relaxed/simple;
-	bh=DxaBFcVV6Ivcn+LPWzkGJl+BhvbUw5dsbfhsvKaak0Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nAyKnC3EnaWGTndx1lA/cNxsUEnuaso5OMs0/Iv0mtkQlh4rYxsxZimmUaxCOe4yfGkban1k49Ip47FwQuS/+cIVGQ0FrZ+pPAAA0m4aiPzZKWSZFdphsJbaipBUtDIkGSBGyS+3t9erpgV3OK69OrXIudplUClj7A3J5uaX83U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ej8TxrL7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DDE1C2BCB4;
-	Mon, 27 Apr 2026 16:15:37 +0000 (UTC)
+	s=arc-20240116; t=1777306540; c=relaxed/simple;
+	bh=J8ZpFzOkrsE8Rd7KjjR9PYZ6e8XG2Q66HZDH5fx2iCA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Y6kWHx1V01Ov+ZL5xdpKbOEP+vl6L6hnQWYgL/g/D6JweI6eob+wB/8/ZAFoNzwb212KTU+Y9amV4a+mqhWFEmcRkzFlF85gebRjESBCCYMj0XUJNmStySumtWDSDgjILRDOkh9aVbiJzzEkgib7EIAH4NZRP25tvANlgT6tJVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hBI5jAAL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33F4EC2BCB7;
+	Mon, 27 Apr 2026 16:15:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777306538;
-	bh=DxaBFcVV6Ivcn+LPWzkGJl+BhvbUw5dsbfhsvKaak0Y=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Ej8TxrL7Iy9x3PO/bfteqBftcrB1Sy7zn0lKJL5wSNJRv+Nu59hVM17tsex4sFKRj
-	 EWJxHShdb4SFI3itYQ0ktnAqY48XhqZXuDIDbLywYQyobKK8BhuIFyHdtVvpLFM/6j
-	 1KdVJaBaYccztV1hw+7ZAL7XBAggd+eZI15874ruQM+ZOICKi4pGwTWe6aHDH9nIvD
-	 WBsfsuZYNjzCGDcRE+rmyrwIs3dlO+aU3PpQhxDrp+L+romoOIrElQvHDx+d1I9Yx2
-	 N8h55y1uaDYXGjUzp0ocpo6Nz//OzpILx17Ks3J2ECOF2jgzXLyyd+XbwVy4Z8PHZ3
-	 ahK3Xrh6/Fpwg==
+	s=k20201202; t=1777306540;
+	bh=J8ZpFzOkrsE8Rd7KjjR9PYZ6e8XG2Q66HZDH5fx2iCA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=hBI5jAALSlMPavCbUQXjYh5nzq/fVLi2HxP6f07Qa+sg05+vgr4bqMZfagyaLZFuy
+	 iGhDAPhR6WR+/awmWaEOZnhCFIutZRIIbvbdydLWvQd3sAruK3wgF8E+CkM/XxILyL
+	 KXbeA9PtUGG/nA6CgktXyHVAs83r1p26r7pGmuOFg1m1tkYN6wvN0B54MRh/gPC84V
+	 Vzp/oKm21F9CgZ0W96n+mKD7RcnsxaHHvAYigsh7zc6TWKpm+URwGWvbYYz3H/jEfM
+	 aU5wcTyO/d3mXfev7pkFzrWyWXeUn689nLRPSXfktUo9Om/h/paF7JEmleaF9PWgYT
+	 sVZtH9LVHfySg==
 From: Tycho Andersen <tycho@kernel.org>
 To: Ashish Kalra <ashish.kalra@amd.com>,
 	Tom Lendacky <thomas.lendacky@amd.com>,
@@ -53,10 +54,12 @@ Cc: linux-crypto@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Borislav Petkov <bp@alien8.de>,
 	"Tycho Andersen (AMD)" <tycho@kernel.org>
-Subject: [PATCH v1 0/4] SEV re-initialization fixes
-Date: Mon, 27 Apr 2026 10:15:03 -0600
-Message-ID: <20260427161507.32686-1-tycho@kernel.org>
+Subject: [PATCH v1 1/4] crypto/ccp: Do not initialize SNP for SEV ioctls
+Date: Mon, 27 Apr 2026 10:15:04 -0600
+Message-ID: <20260427161507.32686-2-tycho@kernel.org>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260427161507.32686-1-tycho@kernel.org>
+References: <20260427161507.32686-1-tycho@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -64,7 +67,7 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: D7B244763E4
+X-Rspamd-Queue-Id: BCBE14764DC
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -72,13 +75,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23425-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23426-lists,linux-crypto=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -92,32 +95,67 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,sashiko.dev:url]
 
 From: "Tycho Andersen (AMD)" <tycho@kernel.org>
 
-Here is a series targeted at fixing the bug where HSAVE_PA is cleared
-after other VMs are running that Sashiko pointed out.
+Sashiko notes:
 
-The first three patches are relatively straightforward, I think :). The
-last one is an ABI break from how things used to work.
+> if SEV initialization fails and KVM is actively running normal VMs, could a
+> userspace process trigger this code path via /dev/sev ioctls (e.g.,
+> SEV_PDH_GEN) and zero out MSR_VM_HSAVE_PA globally? Would the next VMRUN
+> execution for an active VM trigger a general protection fault and crash the
+> host?
 
-Thanks,
+sev_move_to_init_state() is called for ioctls requiring only SEV firmware:
+SEV_PEK_GEN, SEV_PDH_GEN, SEV_PEK_CSR, SEV_PEK_CERT_IMPORT, and
+SEV_PDH_CERT_EXPORT. After the firmware command, it does SEV_SHUTDOWN on
+the SEV firmware. Since these commands do not require SNP to be
+initialized, skip it by calling __sev_platform_init_locked() which only
+initializes the SEV firmware. This way SNP is not Initialized at all, and
+HSAVE_PA is not cleared.
 
-Tycho
+The previous code saved any SEV initialization firmware error to
+init_args.error and then threw it away and hardcoded the return value of
+INVALID_PLATFORM_STATE regardless of the real firmware error. This patch
+changes it to surface the underlying error, which is hopefully both more
+useful and doesn't cause any problems.
 
-Tycho Andersen (AMD) (4):
-  crypto/ccp: Do not initialize SNP for SEV ioctls
-  crypto/ccp: Do not initialize SNP for ioctl(SNP_COMMIT)
-  crypto/ccp: Do not initialize SNP for ioctl(SNP_VLEK_LOAD)
-  crypto/ccp: Do not initialize SNP for ioctl(SNP_CONFIG)
+Note that it is still safe to call __sev_firmware_shutdown() directly: it
+calls __sev_snp_shutdown_locked(), which skips SNP shutdown if SNP was not
+initialized.
 
- drivers/crypto/ccp/sev-dev.c | 70 ++++++------------------------------
- 1 file changed, 11 insertions(+), 59 deletions(-)
+Fixes: ceac7fb89e8d ("crypto: ccp - Ensure implicit SEV/SNP init and shutdown in ioctls")
+Reported-by: Sashiko
+Assisted-by: Gemini:gemini-3.1-pro-preview
+Link: https://sashiko.dev/#/patchset/20260324161301.1353976-1-tycho%40kernel.org
+Signed-off-by: Tycho Andersen (AMD) <tycho@kernel.org>
+---
+ drivers/crypto/ccp/sev-dev.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-
-base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index d1e9e0ac63b6..6891b90bbb88 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -1716,14 +1716,11 @@ static int sev_get_platform_state(int *state, int *error)
+ 
+ static int sev_move_to_init_state(struct sev_issue_cmd *argp, bool *shutdown_required)
+ {
+-	struct sev_platform_init_args init_args = {0};
+ 	int rc;
+ 
+-	rc = _sev_platform_init_locked(&init_args);
+-	if (rc) {
+-		argp->error = SEV_RET_INVALID_PLATFORM_STATE;
++	rc = __sev_platform_init_locked(&argp->error);
++	if (rc)
+ 		return rc;
+-	}
+ 
+ 	*shutdown_required = true;
+ 
 -- 
 2.53.0
 
