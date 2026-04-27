@@ -1,128 +1,139 @@
-Return-Path: <linux-crypto+bounces-23450-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23451-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id pHttEHHp72m+HgEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23450-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 00:55:45 +0200
+	id iC1HK9/v72nYMgEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23451-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 01:23:11 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id C796E47BA50
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 00:55:44 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 590A747BC8E
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 01:23:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id ABA4830098BF
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 22:55:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AC079301F4B5
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 23:22:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B2473ACA6A;
-	Mon, 27 Apr 2026 22:55:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E4D17B418;
+	Mon, 27 Apr 2026 23:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H3J/zqSU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ay8SLq9g"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02612116F4;
-	Mon, 27 Apr 2026 22:55:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAC9E364E92;
+	Mon, 27 Apr 2026 23:22:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777330540; cv=none; b=KkzH3I0kBWEwDW8NTSOXacVmMSCVYH3R7A4r2MoUVw4TjCd1gpme4Via++D8PkJblHsgyg8WGnK5vyHph+7Bk3BUOPfeqO2U3dsSAv2h/pbfvPp2jEDQh+qvHgX1P6bhlR5ij4ojZztJk/QRN6jd28A9syRu5c8f6Q6o9EZyyL8=
+	t=1777332130; cv=none; b=tjgMh2BQ8X/tMO/RpdmjfL74vz36N+lDwen2tfZzqO6zAnH7V/D+n7FisLq6lUY217nlZfRuv3nqmBcTUqMu9JRgFB6b/hrccRZ0KMfuwzWx3iaL5W8MCFmSNWkQ7JuQzHhWWsgrzPePSELnNPkIKGtTjqVdJ3AfHXZsPPwlRog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777330540; c=relaxed/simple;
-	bh=u4TmU67f5hhwJf1I4i/d/XWbjxi0EHQ0omutGz+1/+0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=VL8h2r9/HKLAw81IZZxKzI30+2pOLwklXc1GgYmLhmDDZ2yMwoT4CUnH8wzEwLCIsYFPvM0SufX1RHb73bmRUmNepcW0HaioCvJofGquInB+e40CjLQmfKgF0mtksVtwK9cSdEI+Pxo/RUi2Xl30JpC4Ct7A0fhFZON17rzbiVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H3J/zqSU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC1CDC19425;
-	Mon, 27 Apr 2026 22:55:39 +0000 (UTC)
+	s=arc-20240116; t=1777332130; c=relaxed/simple;
+	bh=81IQ/eYd32l85bdWp0t/7BehSWwgwWIf1MHbUIqakJE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aGNSc8J0cdNjrI/E4GOXIy4uMZ8RCui2brNt+TiQI+2e3D36CiWa5WGO8Euzh7xIGdaAxq6rv5COdsdJrJlfvs+RJzVtOpCt8h4obpIcQk1EulqFUTzD71+L+400/pLgyJPPNTjYoTQNi8QUkJBDlEeSlD6s3rOPmJCwMFqPUH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ay8SLq9g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED307C19425;
+	Mon, 27 Apr 2026 23:22:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777330540;
-	bh=u4TmU67f5hhwJf1I4i/d/XWbjxi0EHQ0omutGz+1/+0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=H3J/zqSUWdQG+2g7LezoYT1Gqql7aJLVtVhJE+MpKGOj8nEeazSr6wWT1/TfIZr8B
-	 YyED+LEVseeNaCLB9x3bqnDlElbTjMCLoXh9XtNqIDPhI6bJYC9opsxPlEL8DgDpZQ
-	 UdjAx3dS6pyfI2GgQRbbBrNtGelK0bwqDRE3pQBqLFw2EfaRCA3MB6HiCngBbq66+X
-	 Nhn4Nzc4mDj2MOuKkc2uksSXoX35BmPtYCu/V6KcmuARBL8jQDD60HmqzB2uFT7JvI
-	 ouGeJIXeSI4w79oz+2A87q1CnnUojv4WE0VdOWm4shBv5aSWiuEfSadDcO8q4/UKb3
-	 p8y8PpIUSvnIw==
-Date: Mon, 27 Apr 2026 15:55:38 -0700
-From: Jakub Kicinski <kuba@kernel.org>
+	s=k20201202; t=1777332130;
+	bh=81IQ/eYd32l85bdWp0t/7BehSWwgwWIf1MHbUIqakJE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ay8SLq9g6MkldlXKvnRMFU99Vo8iswS1DrDib2XLG9qsL6qHOXZXGIaKcYxG40Uto
+	 rvp3d2JItXDwS8t90gTKr11cFTIHECCqADiuld7cwvOQyVivREKIr3ohQ8EU8GOqKp
+	 MnsG2wzgZ6JROXBxJDwnfJMvXI63I2ogcXnEDYt+Mu2GszGjsVW6T9TN+HeQEOP2jT
+	 rSRmD6DfafHweOg5UsR6y6Ly8iZObBOtv70EK+XTtQWVllvU9P2Xm68tCGYlssgOL/
+	 5EbuxWT2iXSo4hq7rY+zt0KwKC9GrSWmVSznfLcQ7/R+PSAziew8pOshkFrFP0RLGU
+	 NUTaXtF6C2svw==
+Date: Mon, 27 Apr 2026 16:20:54 -0700
+From: Eric Biggers <ebiggers@kernel.org>
 To: Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: Eric Biggers <ebiggers@kernel.org>, netdev@vger.kernel.org,
- linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, Eric Dumazet
- <edumazet@google.com>, Neal Cardwell <ncardwell@google.com>, Kuniyuki
- Iwashima <kuniyu@google.com>, "David S . Miller" <davem@davemloft.net>,
- David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon
- Horman <horms@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, "Jason A .
- Donenfeld" <Jason@zx2c4.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- Dmitry Safonov <dima@arista.com>
+Cc: netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+	Neal Cardwell <ncardwell@google.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Dmitry Safonov <dima@arista.com>
 Subject: Re: [PATCH net-next v2 0/5] Reimplement TCP-AO using crypto library
-Message-ID: <20260427155538.2e1b8488@kernel.org>
-In-Reply-To: <CAJwJo6Z9oJSMMBUL_pbYWN6ha3n4MRpKV_aVut8E+af3JUDFkw@mail.gmail.com>
+Message-ID: <20260427232054.GA2700@sol>
 References: <20260427172727.9310-1-ebiggers@kernel.org>
-	<CAJwJo6Z9oJSMMBUL_pbYWN6ha3n4MRpKV_aVut8E+af3JUDFkw@mail.gmail.com>
+ <CAJwJo6Z9oJSMMBUL_pbYWN6ha3n4MRpKV_aVut8E+af3JUDFkw@mail.gmail.com>
+ <20260427200116.GA3454259@google.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: C796E47BA50
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260427200116.GA3454259@google.com>
+X-Rspamd-Queue-Id: 590A747BC8E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23450-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	RCVD_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	FREEMAIL_TO(0.00)[gmail.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
+	TAGGED_FROM(0.00)[bounces-23451-lists,linux-crypto=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuba@kernel.org,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TO_DN_SOME(0.00)[]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ietf.org:url]
 
-On Mon, 27 Apr 2026 20:09:05 +0100 Dmitry Safonov wrote:
-> I do like these numbers quite much! Yet, as I mentioned in version 1,
-> removing a fallback for other algorithms' support does not sound good
-> to me. There are two reasons:
-> - Ronald P. Bonica (the original RFC5925 author), together with Tony
-> Li do have an active RFC draft to support the additional algorithms
-> [1], potentially in addition to TCP Extended Options [2]
-> - There is at least one open-source BGP implementation (BIRD) that
-> allows using the algorithms that you are removing [3]. Without a
-> deprecation period and communication with at least known open source
-> users, it implies intentionally breaking them, which I can't agree
-> with.
-> 
-> I don't feel like Naking as we don't have any customers using anything
-> other than the 3 algorithms above (and BGP implementation is
-> [unfortunately] closed-source, so that would not feel appropriate even
-> if we had such customers), yet I do feel like it's worth and
-> appropriate to express my thoughts/concerns.
+On Mon, Apr 27, 2026 at 08:01:16PM +0000, Eric Biggers wrote:
+> > - Ronald P. Bonica (the original RFC5925 author), together with Tony
+> > Li do have an active RFC draft to support the additional algorithms
+[...]
+> > [1] https://www.ietf.org/archive/id/draft-bonica-tcpm-tcp-ao-algs-00.html
 
-What do you want to happen? You are the maintainer of this code,
-you don't get so say "i don't want to nack it but also no" :)
-Like Eric says if there are no real users code can be deleted.
+For what it's worth, that draft makes very little sense.  For example,
+it proposes three variants of HMAC-SHA3, instead of just making the
+modern choice of KMAC256.  And it proposes both HMAC-SHA384 and
+HMAC-SHA512, despite them being redundant with each other after the
+specified truncation to 128 bits.
 
-Adding deprecation warnings upstream is quite slow, IDK if injecting
-deprecation warnings to stable has been discussed..
+Thus, it's clear that draft needs some work.  That would include, for
+example, input from people who may be more familiar with best practices
+for choosing cryptographic algorithms in new designs.
+
+So I don't think the Linux kernel's implementation should, or needs to,
+already implement all the algorithms in that unofficial draft.
+
+All that's needed is the flexibility to add new algorithms later,
+whether from a fixed version of that draft or from somewhere else.
+
+We'll still have that with the library.
+
+And to emphasize again, the current code also isn't really generic.  So
+the support for new MACs doesn't necessarily come for free currently.
+It probably works for arbitrary HMACs.  But HMAC != MAC.  If
+AES-256-CMAC, BLAKE2, KMAC256, Poly1305-AES, or just about any other MAC
+is ever needed, the code would have to be changed to support it anyway.
+
+- Eric
 
