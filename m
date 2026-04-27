@@ -1,167 +1,187 @@
-Return-Path: <linux-crypto+bounces-23432-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23435-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GE7rHByc72kbDQEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23432-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 19:25:48 +0200
+	id iOS1Hpmc72kbDQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23435-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 19:27:53 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBE744777AF
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 19:25:47 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6723F47789E
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 19:27:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 67F1B30579FC
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 17:21:34 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 031F8300B9DC
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 17:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA94B3E3157;
-	Mon, 27 Apr 2026 17:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2498B3E3C54;
+	Mon, 27 Apr 2026 17:27:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="etEhaVYK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FQWh91jQ"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E283DCD84
-	for <linux-crypto@vger.kernel.org>; Mon, 27 Apr 2026 17:20:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA2DA3DA7ED;
+	Mon, 27 Apr 2026 17:27:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777310446; cv=none; b=k4YSmshaQYKUT4npOdBgnkTgwNMwnTidvSvzWoI8aFIsSGKP3G56+kagE7sC22HrWy9fGHQizFh6wVvYkEqD9qHdWVBVIe0Z86B7aIqLym+CWtZ751/CLWVWU2T0f3TXOcbq+ZiRD3YmF2AY5MJwWN38qw0I0wA9fWpSYh2t4wU=
+	t=1777310867; cv=none; b=Q3NYmo05o5HZXqxISYJc+jmPWpkElQnqJxY2W/3sZ3XGicT0lxhkW5LaioIG2iy1COh4EUN6gpMLOfDKWiqDXd3lZ0I8YipIg6kwkQwETVEI59rtKY7cD1j7r1t1ywaS8hlhilTtNtybSgat1DXOufMdjvUviOX2/uRzuMW1p04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777310446; c=relaxed/simple;
-	bh=3xDUnocLIAIGKNms7t7GLlfn+0JKHNX3bctn6rowp1g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Kk0cYwNhWnRBsfGAcKHjOt6h9xo/SbPrM/TyfFvVghf8j8ZjynxAHBL0MhUgQohb2S5PoeD00wGBj/jlbsLXdJgCC98WLykzmRJqDAWoIOjayvafLycH88je+BvokbPxVa6yhoc2CZ7JE692YT4c9wpukGKlMasfHYiKaVBe/lM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=etEhaVYK; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1777310443;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aq/7s2IHv/9b/Uw/YEvItYMFIy4ZXJ6dZqzgRz4Q/Xo=;
-	b=etEhaVYK+QIwZ9PXzyBb1qtVCxGY6JzpKqIEYPE8KPvYykkR4tAGZxXzU/9DKjxGmC6Jjm
-	qeH3s6FG2JApcBKiprLnftVMT1YJ3vxgTkwrvMcflIX2nvW2FntyligZe86KUe7vjXMC7Y
-	JDCZrwQ5tBMfn018icn29du9DBMqy/g=
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>
-Cc: Thorsten Blum <thorsten.blum@linux.dev>,
-	linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] crypto: omap - add omap_sham_unregister_algs helper
-Date: Mon, 27 Apr 2026 19:20:20 +0200
-Message-ID: <20260427172018.416707-6-thorsten.blum@linux.dev>
-In-Reply-To: <20260427172018.416707-4-thorsten.blum@linux.dev>
-References: <20260427172018.416707-4-thorsten.blum@linux.dev>
+	s=arc-20240116; t=1777310867; c=relaxed/simple;
+	bh=lffQnEF2HxPa86nR073wmKFncHxsvNGQFc1fCjNgYos=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AzMGX48rsSKhknSHm15KeFY+0a5dsD9tnniJejq3fgxGEyyEXh+GS4ZMg5N7zbYkJ2qpfU20Ux3qrjHDbhBEVH7WkbQfgTXOg++aEdh9q3zYFqUo2UDo4BFBbHdeYpE/XcqH+LTK5J4Vr1iXeu3jXzq2fUgj/Z5iMJ/5kaCxl9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FQWh91jQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89740C19425;
+	Mon, 27 Apr 2026 17:27:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777310867;
+	bh=lffQnEF2HxPa86nR073wmKFncHxsvNGQFc1fCjNgYos=;
+	h=From:To:Cc:Subject:Date:From;
+	b=FQWh91jQO/zC/C+ji8OmIrTTTUN3CZckMtGiKZREDIZs+oHlCiYRnfeReTMhoBRFM
+	 ZA/EykxErVe9XfPJB2laIdM0V4eO1pWY7QImwz9cl9AzutYCb/m60MVWJ6ZOm1nrcd
+	 A0kduFH9/hKVNDewi7xjH4NuO+1y8zqlaeJxsUH8ouvlF7lPj2IbA8ISvS/+S3kjQp
+	 46WNoddh2xS/Gi5xZaEC35rCJUNFUMCDiwfWVfDp8xWGDHBEs9KJs3mNQp7AMtie4+
+	 +AmOFE4hzvrqn11sCbuO04tc0Z8OttaOt0/tWtgct38IN+9bmvU9fwSFKCGuPATRo/
+	 yZYZMj5HxFGuw==
+From: Eric Biggers <ebiggers@kernel.org>
+To: netdev@vger.kernel.org
+Cc: linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Eric Dumazet <edumazet@google.com>,
+	Neal Cardwell <ncardwell@google.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Dmitry Safonov <0x7f454c46@gmail.com>,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH net-next v2 0/5] Reimplement TCP-AO using crypto library
+Date: Mon, 27 Apr 2026 10:27:22 -0700
+Message-ID: <20260427172727.9310-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2244; i=thorsten.blum@linux.dev; h=from:subject; bh=3xDUnocLIAIGKNms7t7GLlfn+0JKHNX3bctn6rowp1g=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJnvZ90IOHYh4P/Hol9XtU8rnZkcqtQgEub5N+5h8U8li T+/HRYEdJSyMIhxMciKKbI8mPVjhm9pTeUmk4idMHNYmUCGMHBxCsBEfrky/A/d90Az6seWzjPv zGfLKZz+3PBcxv0j7wEX7XevT7A/fTeT4X9IOkfol9+m+ptydiQ3OLwPFb65/dDkAweLPyR6xQV u0eYBAA==
-X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: EBE744777AF
+X-Rspamd-Queue-Id: 6723F47789E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23432-lists,linux-crypto=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,google.com,davemloft.net,kernel.org,redhat.com,zx2c4.com,gondor.apana.org.au,gmail.com];
 	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-23435-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-0.998];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.dev:email,linux.dev:dkim,linux.dev:mid]
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 
-Add a new helper omap_sham_unregister_algs() and replace two for loops
-in omap_sham_probe() and omap_sham_remove(), which also ensure
-->registered is reset to 0.
+This series can also be retrieved from:
 
-Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
----
- drivers/crypto/omap-sham.c | 27 ++++++++++++++++-----------
- 1 file changed, 16 insertions(+), 11 deletions(-)
+    git fetch https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git tcp-ao-v2
 
-diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
-index b8c416c5ee70..be1ac640ee59 100644
---- a/drivers/crypto/omap-sham.c
-+++ b/drivers/crypto/omap-sham.c
-@@ -2042,6 +2042,20 @@ static struct attribute *omap_sham_attrs[] = {
- };
- ATTRIBUTE_GROUPS(omap_sham);
- 
-+static void omap_sham_unregister_algs(const struct omap_sham_pdata *pdata)
-+{
-+	struct omap_sham_algs_info *alg_info;
-+	int i;
-+
-+	for (i = pdata->algs_info_size - 1; i >= 0; i--) {
-+		alg_info = &pdata->algs_info[i];
-+
-+		crypto_engine_unregister_ahashes(alg_info->algs_list,
-+						 alg_info->registered);
-+		alg_info->registered = 0;
-+	}
-+}
-+
- static int omap_sham_probe(struct platform_device *pdev)
- {
- 	struct omap_sham_dev *dd;
-@@ -2158,10 +2172,7 @@ static int omap_sham_probe(struct platform_device *pdev)
- 	return 0;
- 
- err_algs:
--	for (i = dd->pdata->algs_info_size - 1; i >= 0; i--)
--		for (j = dd->pdata->algs_info[i].registered - 1; j >= 0; j--)
--			crypto_engine_unregister_ahash(
--					&dd->pdata->algs_info[i].algs_list[j]);
-+	omap_sham_unregister_algs(dd->pdata);
- err_engine_start:
- 	crypto_engine_exit(dd->engine);
- err_engine:
-@@ -2182,19 +2193,13 @@ static int omap_sham_probe(struct platform_device *pdev)
- static void omap_sham_remove(struct platform_device *pdev)
- {
- 	struct omap_sham_dev *dd;
--	int i, j;
- 
- 	dd = platform_get_drvdata(pdev);
- 
- 	spin_lock_bh(&sham.lock);
- 	list_del(&dd->list);
- 	spin_unlock_bh(&sham.lock);
--	for (i = dd->pdata->algs_info_size - 1; i >= 0; i--)
--		for (j = dd->pdata->algs_info[i].registered - 1; j >= 0; j--) {
--			crypto_engine_unregister_ahash(
--					&dd->pdata->algs_info[i].algs_list[j]);
--			dd->pdata->algs_info[i].registered--;
--		}
-+	omap_sham_unregister_algs(dd->pdata);
- 	cancel_work_sync(&dd->done_task);
- 	pm_runtime_dont_use_autosuspend(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
+This series is targeting net-next for 7.2.  To make this series
+self-contained in the networking code, I dropped the patches that remove
+support for transformation cloning from the crypto API, which is a
+further negative 275-line cleanup and optimization this series enables.
+That will be done as a follow-up, either through the crypto tree for
+7.3, or still through net-next for 7.2 at maintainer preference.
+
+This series refactors the TCP-AO (TCP Authentication Option) code to do
+MAC and KDF computations using lib/crypto/ instead of crypto_ahash.
+This greatly simplifies the code and makes it much more efficient.  The
+entire tcp_sigpool mechanism becomes unnecessary and is removed, as the
+problems it was designed to solve don't exist with the library APIs.
+
+The crypto API's support for crypto transformation cloning also becomes
+unnecessary and will be removed in follow-up patches.  Note that as part
+of that, we'll be able to roll back the addition of the reference count
+to crypto_tfm, which had regressed performance for all crypto API users.
+
+To make this simplification and optimization possible, this series also
+updates the TCP-AO code to support a specific set of algorithms, rather
+than arbitrary algorithms that don't make sense and are very likely not
+being used, e.g. CRC-32 and HMAC-MD5.
+
+Specifically, this series retains the support for AES-128-CMAC,
+HMAC-SHA1, and HMAC-SHA256.  AES-128-CMAC and HMAC-SHA1 are the only
+algorithms that are actually standardized for use in TCP-AO, while
+HMAC-SHA256 makes sense to continue supporting as a Linux extension.  Of
+course, other algorithms can still be (re-)added later if ever needed.
+It's worth noting that TCP-AO MACs are limited to 20 bytes by the TCP
+options space, which limits the benefit of further algorithm upgrades.
+
+This series passes the tcp_ao selftests
+(sudo make -C tools/testing/selftests/net/tcp_ao/ run_tests).
+
+To get a sense for how much more efficient this makes the TCP-AO code,
+here's a microbenchmark for tcp_ao_hash_skb() with skb->len == 128:
+
+        Algorithm       Avg cycles (before)     Avg cycles (after)
+        ---------       -------------------     ------------------
+        HMAC-SHA1       3319                    1256
+        HMAC-SHA256     3311                    1344
+        AES-128-CMAC    2720                    1107
+
+Changed in v2:
+    - Rebased onto v7.1-rc1.
+    - Added Ard's Reviewed-by.
+    - Dropped patches that clean up things in the crypto/ directory, as
+      mentioned above.  They'll be sent separately.
+    - Added some mentions of the MAC length being limited by the TCP
+      options space.
+    - Removed unnecessary explicit assignment of values to enums.
+
+Eric Biggers (5):
+  net/tcp-ao: Drop support for most non-RFC-specified algorithms
+  net/tcp-ao: Use crypto library API instead of crypto_ahash
+  net/tcp-ao: Use stack-allocated MAC and traffic_key buffers
+  net/tcp-ao: Return void from functions that can no longer fail
+  net/tcp: Remove tcp_sigpool
+
+ include/net/tcp.h                             |  42 +-
+ include/net/tcp_ao.h                          |  74 +-
+ net/ipv4/Kconfig                              |   8 +-
+ net/ipv4/Makefile                             |   1 -
+ net/ipv4/tcp_ao.c                             | 677 +++++++++---------
+ net/ipv4/tcp_output.c                         |  10 +-
+ net/ipv4/tcp_sigpool.c                        | 366 ----------
+ net/ipv6/tcp_ao.c                             | 139 ++--
+ tools/testing/selftests/net/tcp_ao/config     |   4 -
+ .../selftests/net/tcp_ao/key-management.c     |  41 +-
+ 10 files changed, 440 insertions(+), 922 deletions(-)
+ delete mode 100644 net/ipv4/tcp_sigpool.c
+
+
+base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
+-- 
+2.54.0
+
 
