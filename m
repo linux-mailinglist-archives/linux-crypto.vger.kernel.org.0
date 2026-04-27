@@ -1,68 +1,71 @@
-Return-Path: <linux-crypto+bounces-23417-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23418-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UM5rG7NI72lO/wAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23417-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 13:29:55 +0200
+	id fxEQEzdK72mr/wAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23418-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 13:36:23 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DD8D471BB0
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 13:29:55 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50943471D51
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 13:36:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 04FA7300C0C9
-	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 11:29:17 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C9527302F5E7
+	for <lists+linux-crypto@lfdr.de>; Mon, 27 Apr 2026 11:31:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29E703BA229;
-	Mon, 27 Apr 2026 11:28:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F351D30E84F;
+	Mon, 27 Apr 2026 11:30:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="ogM+TnHg"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="AAiSRxe+"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D4BC3B95E9;
-	Mon, 27 Apr 2026 11:28:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB49F3BD22B;
+	Mon, 27 Apr 2026 11:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777289332; cv=none; b=SQLy/s/c2kx08fOa3cJ2M/DZyXrHjyM7RQNt/9nB3GiPTFY9G9WBnZggINaxFRLE74BlN8uUWoDruOsZ37yrwzLP+H3HEtJxu7om96uJtSDijFzk2FATWfPFnl9pVC587tKIfUajxhL+12rdlUPiWYPJoHCaMcV/u/kwDAc8JxY=
+	t=1777289421; cv=none; b=rgISK43G/bYewx5P5GwTbUFJRrFvAOpTvZ+hIVJFdcOsuteIdIAQAzCBVwFcL0SCeglcKmz0M1Ps6xlo8ByYVIsNePyXGos7qofPqbB36OPNWJlE/+Dx6NxQX/EtFRj8Un6FCiF3aj3dsubR7fETsVnf4d35Ea8H8qGH0NJAxzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777289332; c=relaxed/simple;
-	bh=6gWBj4MisYKhDfsbHiaLJojsUblIjuWUd7K92c1FoxE=;
+	s=arc-20240116; t=1777289421; c=relaxed/simple;
+	bh=6uWPIxn7ztPLQR2vzfpBGcaoSWohqiLdJEyU5wHeWIQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jY2frZwhqlQ6Rec6FxWTlw8yc8kRglj5DJnboH0gozle7wpJyi0/Ni0EbJzrRs1ifB0wc8qn6I/qmAgiYthU5j0F0FHfeyBFADKghblCI0QcKPYUZ3dcZAeajSXSHA1uH5T/5C1A0TbDHD+gZmOAdzYBAxi/ANXNQ0yL3I9rCGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=ogM+TnHg; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=hIpDkpW1ALXLiUSOn/YlWboml9UGOmhvot+RzyYM4mS+GXnxEwUlbzjmpXAITIE66C1tllWfVx1a3QBIYnYlT7H6YN587d1yvVnxazCRJ42aHOpcGoXro2dOyMPCM5U7ffS9qflHWSnY5K2saaVLhDu2SvEVaOFLii4+fuyENtc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=AAiSRxe+; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=Q2WgKfm0cGry8eeTwOrg1RLcJogo1MlMGaF3VYoKO8s=; 
-	b=ogM+TnHgh35jEAIkTveVlZUu6YYUmA4+wu5AVyVLaqltXMbjvl1HSOOegfIAR3fhoykihq9SCYS
-	CBKEbzMGep+5Dhnexk+d8ntsXtHSeqwAbWxYQs28RYQV8dR4hgnfvsEEt+zDDmLhCQ36Ccv9upvwT
-	UmigHjMEQW3jaUK5lA0oVrpGUxUVow4+YXYkgqdw9SBb8S3GOxRKDzP3DbClsEuxP8B7Vv8ZSd2u+
-	NChv/dnEZyv6QkKhnbmgRCsDAYileMmxKP7CKHJS/SYEvf5Lo8M+QWF5oCPiYXYfhHIaRSj5zf9TM
-	Xpcqs2ZDZ509C9wr7eFpi07F6GCgOOeLy70Q==;
+	from:content-type:reply-to; bh=qafNQ0xEOY5qhlm+wLT4AEic9YBI56O7zFUIfvV0p/E=; 
+	b=AAiSRxe+Slb3G7C+CaAuCw0FXEVNvwsBQ5tm+1rxXjTmJezECU9MP+te1CnAd7PwvYGN3H1ZPEO
+	d8M6OBgz+KeYafzYp8kC1xPZZ/+UBkxcG14qFJc3ekbqnoiiCt8lbT1q6s+tJ0VFy+W9LcjZLcrMY
+	sRV6aAtnbjcvcYxmI882TVG8T/c9UMPgSYYb9lUukuL4vILYND3Z0oSaUIJ9buLtGhnrvH85Es/Lt
+	qWv2HYZfGrqE5uLkt5lFjDUD5PDd4sljV7TcfHkBqf57DgNrwtXcV8Xr75pgtcODOorrAP0IOdxqq
+	4frAdohppS82LZeOpi1g/pqi+4V3H4piRsig==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1wHK8O-00991v-12;
-	Mon, 27 Apr 2026 19:28:17 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 27 Apr 2026 19:28:16 +0800
-Date: Mon, 27 Apr 2026 19:28:16 +0800
+	id 1wHKA2-00993v-0I;
+	Mon, 27 Apr 2026 19:29:59 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 27 Apr 2026 19:29:58 +0800
+Date: Mon, 27 Apr 2026 19:29:58 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Leonid Ravich <lravich@amazon.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>,
-	Alasdair Kergon <agk@redhat.com>, Ard Biesheuvel <ardb@kernel.org>,
-	Eric Biggers <ebiggers@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	Horia Geanta <horia.geanta@nxp.com>,
-	Gilad Ben-Yossef <gilad@benyossef.com>,
-	linux-crypto@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-block@vger.kernel.org
-Subject: Re: [RFC] crypto: skcipher multi-data-unit requests for dm-crypt
-Message-ID: <ae9IUN0lOMkijDyw@gondor.apana.org.au>
-References: <20260427095622.27799-1-lravich@amazon.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Thomas Graf <tgraf@suug.ch>, Andrew Morton <akpm@linux-foundation.org>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	David Hildenbrand <david@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+	syzbot+5af806780f38a5fe691f@syzkaller.appspotmail.com,
+	Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] rhashtable: give each instance its own lockdep class
+Message-ID: <ae9ItoKFvB12Qimn@gondor.apana.org.au>
+References: <20260427-work-rhashtable-lockdep-v1-1-f69e8bd91cb2@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -71,73 +74,102 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260427095622.27799-1-lravich@amazon.com>
-X-Rspamd-Queue-Id: 4DD8D471BB0
+In-Reply-To: <20260427-work-rhashtable-lockdep-v1-1-f69e8bd91cb2@kernel.org>
+X-Rspamd-Queue-Id: 50943471D51
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23417-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[suug.ch,linux-foundation.org,kernel.org,google.com,suse.com,vger.kernel.org,kvack.org,syzkaller.appspotmail.com,gmail.com,suse.cz];
+	TAGGED_FROM(0.00)[bounces-23418-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[17];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email]
+	TAGGED_RCPT(0.00)[linux-crypto,5af806780f38a5fe691f];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[apana.org.au:url,apana.org.au:email,appspotmail.com:email,gondor.apana.org.au:dkim,gondor.apana.org.au:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 
-On Mon, Apr 27, 2026 at 09:56:22AM +0000, Leonid Ravich wrote:
->
-> Proposal
-> ========
+On Mon, Apr 27, 2026 at 01:09:57PM +0200, Christian Brauner wrote:
+> syzbot reported a possible circular locking dependency between
+> &ht->mutex and fs_reclaim:
 > 
-> Add a data_unit_size field to struct skcipher_request:
+>   CPU0 (kswapd0)                    CPU1 (kworker)
+>   --------------                    --------------
+>   fs_reclaim                        ht->mutex
+>     shmem_evict_inode                 rhashtable_rehash_alloc
+>       simple_xattrs_free                bucket_table_alloc(GFP_KERNEL)
+>         rhashtable_free_and_destroy       __kvmalloc_node
+>           mutex_lock(&ht->mutex)            might_alloc -> fs_reclaim
 > 
->   struct skcipher_request {
->       unsigned int cryptlen;
->       u8 *iv;
->       struct scatterlist *src;
->       struct scatterlist *dst;
-> +     unsigned int data_unit_size;
->       struct crypto_async_request base;
->       void *__ctx[] CRYPTO_MINALIGN_ATTR;
->   };
+> The two halves of the splat refer to two different events on
+> &ht->mutex.
 > 
-> When data_unit_size is 0, behavior is unchanged (cryptlen is one
-> data unit). When data_unit_size is nonzero, cryptlen must be a
-> multiple of data_unit_size. The IV applies to the first data unit.
-> The crypto driver is responsible for incrementing the tweak per
-> data unit according to the mode.
+> The kswapd0 path is unambiguous: shmem_evict_inode at mm/shmem.c:1429
+> calls simple_xattrs_free(), which calls rhashtable_free_and_destroy()
+> on the per-inode simple_xattrs rhashtable being torn down with the
+> inode.
 > 
-> This mirrors the data_unit_size concept already present in struct
-> blk_crypto_config for inline encryption. In blk-crypto the size
-> is a property of the key configuration. Here it is per-request
-> because dm-crypt may use different sector sizes across different
-> device-mapper tables sharing the same tfm.
+> The previously-recorded ht->mutex -> fs_reclaim edge comes from
+> rht_deferred_worker -> rhashtable_rehash_alloc ->
+> bucket_table_alloc(GFP_KERNEL) -> __kvmalloc_node ->
+> might_alloc -> fs_reclaim. That stack stops at generic library code:
+> there is no subsystem-specific frame above rht_deferred_worker, so
+> the splat does not identify which rhashtable's worker recorded the
+> edge -- only that some rhashtable in the system did.
+> 
+> Whether or not that recording happened on the same simple_xattrs ht
+> that is now being destroyed, the predicted deadlock cannot occur:
+> rhashtable_free_and_destroy() does cancel_work_sync(&ht->run_work)
+> before taking ht->mutex, so the deferred worker cannot be running on
+> the instance being torn down. If the recording was on a different
+> rhashtable instance, the two ht->mutex acquisitions are on distinct
+> mutex objects and cannot deadlock either.
+> 
+> Lockdep flags a cycle regardless because mutex_init(&ht->mutex) lives
+> on a single source line in rhashtable_init_noprof(), so every
+> ht->mutex in the kernel shares one static lockdep class. Lockdep
+> matches by class, not by instance, and collapses all of these into
+> one node.
+> 
+> Lift the lockdep key out of rhashtable_init_noprof() and into the
+> caller. The user-visible rhashtable_init_noprof() /
+> rhltable_init_noprof() identifiers become macros that declare a
+> per-call-site static lock_class_key.
+> 
+> Reported-by: syzbot+5af806780f38a5fe691f@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/69e798fe.050a0220.24bfd3.0032.GAE@google.com
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
+> ---
+>  include/linux/rhashtable-types.h | 22 ++++++++++++++++++----
+>  lib/rhashtable.c                 | 17 ++++++++++-------
+>  2 files changed, 28 insertions(+), 11 deletions(-)
 
-Yes I'm happy with this since it could also work for IPsec.
+Thanks for the patch.
 
-But before you invest too much energy in it it would be helpful
-if you can get some proof-of-concept performance numbers so that
-your effort is not wasted down the track.
+But could you please try this patch and see if it also fixes
+your problem?
 
-Thanks,
+https://patchwork.kernel.org/project/linux-crypto/patch/20260422213349.1345098-2-mikhail.v.gavrilov@gmail.com/
+
+Cheers,
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
