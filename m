@@ -1,137 +1,165 @@
-Return-Path: <linux-crypto+bounces-23471-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23474-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uF8rNdh48GlgTwEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23471-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 11:07:36 +0200
+	id wI6VDPWF8GnuUQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23474-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 12:03:33 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 438C3480EE6
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 11:07:36 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88CCF482242
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 12:03:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 659BD3046D74
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 08:58:28 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id C34033017867
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 10:03:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C0F3DBD74;
-	Tue, 28 Apr 2026 08:57:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=139.com header.i=@139.com header.b="ApX2LVCs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 352603E274A;
+	Tue, 28 Apr 2026 10:03:30 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from n169-111.mail.139.com (n169-111.mail.139.com [120.232.169.111])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334AF31E828;
-	Tue, 28 Apr 2026 08:57:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=120.232.169.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C09013DA5B6
+	for <linux-crypto@vger.kernel.org>; Tue, 28 Apr 2026 10:03:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777366649; cv=none; b=PJz++l+CRCfRAYH0NrmqePeQv0JLXJuapPkD8yAf40pNkoUuf41nO7eAhuUdLH37YgbQEo2Q+DjxeUDXMJ56wQvqE2efX52c69qPORc0VU3tSkv/NPzdFEXWlHW6h3D1htfewBTVVF+vgmx5yQqcZVuT7m0Ja4a7q4CNj6zOO1k=
+	t=1777370610; cv=none; b=uHeW6/MZgpnhYpdornfIZHZd/Ohd/ahkZTO6u69Wjp+VZ4lqjlPvCDnbyY6Tkpzk1UUWfW9hszei4EulcEZJSqazg9vDYd7wUwal6Bb/otA3mlP6EjHNpSfg5JHjKZ6pHk2y1a1RV1TfuugVxrbSs0dj9fOai0ypVanaVTDrLH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777366649; c=relaxed/simple;
-	bh=At8ZEZXEyl6/MPyg8ioxlqaVNvw99hDz7FkN8u7FKwQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Qx01pJ2NYBfsG15U7zqKCavP29oxm2lIzFtHyilAwJrvX7Ssw5Mkb2BpXLGE0RuajVu//Xzr8MDyzzit4eBvADJrYpXma+HfUTkpq6azVQgAzZVfh9IpyoVxvcd+DFpt5za7K8qGYrfczUDEL931G9TbLcUsEucYvfVTqWgCVkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=139.com; spf=pass smtp.mailfrom=139.com; dkim=pass (1024-bit key) header.d=139.com header.i=@139.com header.b=ApX2LVCs; arc=none smtp.client-ip=120.232.169.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=139.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=139.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=139.com; s=dkim; l=0;
-	h=from:subject:message-id:to:cc:mime-version;
-	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-	b=ApX2LVCsdOP0Mj8BABzH38fFsK+QXZoXlpJ2EWo0DN2dOb5TTuvUY6W9T3d3oDt8tMZ8F25u07qs1
-	 +IpG3dLNrbo4zrZ5ycyYakqZAmAAhQNBHTzoa4buY/2P5YKaPySVgWNy8azGmaaH//7gqB39YlUEoF
-	 IZd5bVe4xhAedygE=
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM:                                                                                        
-X-RM-SPAM-FLAG:00000000
-Received:from  (unknown[47.95.114.252])
-	by rmsmtp-lg-appmail-14-12003 (RichMail) with SMTP id 2ee369f07660cf4-01d24;
-	Tue, 28 Apr 2026 16:57:19 +0800 (CST)
-X-RM-TRANSID:2ee369f07660cf4-01d24
-From: Bin Lan <lanbincn@139.com>
-To: gregkh@linuxfoundation.org,
-	sashal@kernel.org,
-	stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	steffen.klassert@secunet.com,
-	daniel.m.jordan@oracle.com,
-	linux-crypto@vger.kernel.org,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Bin Lan <lanbincn@139.com>
-Subject: [PATCH 5.10.y 2/2] padata: Remove comment for reorder_work
-Date: Tue, 28 Apr 2026 16:57:01 +0800
-Message-ID: <20260428085701.1480-3-lanbincn@139.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260428085701.1480-1-lanbincn@139.com>
-References: <20260428085701.1480-1-lanbincn@139.com>
+	s=arc-20240116; t=1777370610; c=relaxed/simple;
+	bh=nE2kTc46EAtHp+hzkKm/fM0pnbhHAPrXksUwFRqrq6Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rFTrlqRDPiSDRJDg6ZIZ6sN6rnpLEhxEmd1pJOwOltp2vf9nzkFFfXL3kfj1Qt22VradaB0JMsWerh83X4KbSrFLgfrk7EhIQpYaRRnIB0sVfLet+Uwlfb+P9wjygQlLn7hXFi6BIBs8HZlK0n/wjFJNtoRbGwodqpPUHZoTwd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-56f8c77ca6aso7620719e0c.2
+        for <linux-crypto@vger.kernel.org>; Tue, 28 Apr 2026 03:03:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777370608; x=1777975408;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gRyHSlueZ2yIa5nhGJ3DTVlj1ZKdcYhWGe6E+g/f2HU=;
+        b=LN6v9e/hsc6q1R0lZaS9DtTeeru+r1xKkDXdnmJphXtCJOdzNa73NotZDhg4QR740+
+         YIG3erHTIQKU7ZtmBiuUz7mj1Jh9GpYoiSu2MMEgaoyvcEaaKJWPl560LsdOOAsMwr22
+         qb5tAaQA3z8pWjxJ2jsjM6X40TPcP61TQtN1EtiM1YRxh4VYr6yAFrm0wc7ABciYWj9L
+         fmxzwEnPseKKZnOnycRHEONFpyUp73yHadakym6qJGWuB3GT2SXZbkIxekBenAs2SKbv
+         KhDVSHL+nUc3sdA2sMKUnSLyNOdJ5rXhFOKx2Hz0aygU9Iw0krYgNNQ0Hmf9uxuDzqKr
+         8Rig==
+X-Forwarded-Encrypted: i=1; AFNElJ9jJp3ef9jZx8mn5jV0SbzLSEUWxUwYP6zuBAjggPQqfg3tGDcUM10DXv4N9ds1v1D8xe+nqhco2nX/LXI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz8TymW0xxVrs3pd6NcUzLSU7Rs/mvhG9sUgQgPZ6mlDrf53/d+
+	cC7AINnaAO/BY1H2VfWLkZBO8FLu2tlMH24sNHkch7555Pwop8deuSy5us4o2YFUQI0=
+X-Gm-Gg: AeBDiesK4u6uXkDeBd7T8NtQvggTf4fAj2uyWWvZzy3SofgBzGgWrvH4/6rBbJ9U1uD
+	2IAsX1Hxv+EM2RJXu5RCc9HPr++dJyM/j0BCvk61s+ptIq5FPzJ3dvtwPhnaIU7rQ1Ks1YoVbVX
+	tYAd0Q7FO0EB02JVWevTpenOouWS11+G2HXgUznF+qLWfblWoBK1p6brumu05o7CJ1a9S7SvHLE
+	bn0wWK3ve/k6/SvIypSBRIeoAlU3Jnaoh+ruCPcNgqZ6+21ymqc5KCgNZOxKeM3yS6xJkVzveKu
+	FAJifYi1LLqZf8W+PrLZ7yX+fCyDktbd+xdDhyTS5Hs1Jevc37IZXcE9fY4FgjOWPLorV9rbph9
+	0s4q2DOfpJfaqyAy71x2skrILPL4EnV8WujjkmfiWvd/qMGLBj5WKZ9nfFsMTjOBnTCS2rFC/Zp
+	PlPrrRF8uXPmKw1zDHfUFahqsyvapkqYnByq9m2pMUvJz+HqkncAv/AozRnPEewgv+1I507Sg=
+X-Received: by 2002:a05:6122:4d1a:b0:56b:579c:82e with SMTP id 71dfb90a1353d-573a557ef07mr1079636e0c.5.1777370607706;
+        Tue, 28 Apr 2026 03:03:27 -0700 (PDT)
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-573a45d5075sm1304606e0c.9.2026.04.28.03.03.26
+        for <linux-crypto@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Apr 2026 03:03:27 -0700 (PDT)
+Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-60fa13bde2dso7079278137.3
+        for <linux-crypto@vger.kernel.org>; Tue, 28 Apr 2026 03:03:26 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ8MKeaseyOXRGMzH+Ae5PhQNThY0Blqmjl/rNAWQSWvN4b4Cl/EJStf+iu48R8I8ZjZjktMm2XzihUn3RU=@vger.kernel.org
+X-Received: by 2002:a05:6102:8029:b0:609:444:eda3 with SMTP id
+ ada2fe7eead31-6280aab5390mr872346137.17.1777370606595; Tue, 28 Apr 2026
+ 03:03:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 438C3480EE6
+References: <20260428024400.123337-1-ebiggers@kernel.org> <20260428024400.123337-5-ebiggers@kernel.org>
+In-Reply-To: <20260428024400.123337-5-ebiggers@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 28 Apr 2026 12:03:15 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVc4_1hfrX5_qTrNmz8dpe=H37i-N0xy9_M3ZkzUTO3Mg@mail.gmail.com>
+X-Gm-Features: AVHnY4IhVtJeI5bzqGCht8kP6KzDoM5sv9OtFI_ZUfpavb2rJ-ZtQSNVRJUngeM
+Message-ID: <CAMuHMdVc4_1hfrX5_qTrNmz8dpe=H37i-N0xy9_M3ZkzUTO3Mg@mail.gmail.com>
+Subject: Re: [PATCH net-next 4/5] crypto: fcrypt - Remove support for FCrypt
+ block cipher
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: netdev@vger.kernel.org, linux-afs@lists.infradead.org, 
+	David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Rspamd-Queue-Id: 88CCF482242
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [1.04 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_REJECT(1.00)[139.com:s=dkim];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23471-lists,linux-crypto=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,secunet.com,oracle.com,gondor.apana.org.au,canb.auug.org.au,139.com];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[139.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-23474-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[139.com];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lanbincn@139.com,linux-crypto@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[139.com:-];
-	NEURAL_HAM(-0.00)[-0.177];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[linux-m68k.org];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[geert@linux-m68k.org,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.982];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,apana.org.au:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,openafs.org:url,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 
-From: Herbert Xu <herbert@gondor.apana.org.au>
+On Tue, 28 Apr 2026 at 04:49, Eric Biggers <ebiggers@kernel.org> wrote:
+> Remove the insecure FCrypt block cipher from the crypto API.  Its only
+> user was net/rxrpc/, but now net/rxrpc/ implements it locally.  The
+> crypto API implementation is no longer needed.
+>
+> For some additional context: FCrypt was designed in 1988 and is
+> essentially a weakened version of DES.  It has the same 56-bit key size
+> as DES, which is easily brute forced.  Moreover, it's cryptographically
+> weak and doesn't even provide the intended 56-bit security level.  Its
+> author considers it to be a mistake, as well
+> (https://lists.openafs.org/pipermail/openafs-devel/2000-December/005320.html).
+>
+> But fortunately this 1980s-era homebrew block cipher was never adopted
+> outside of net/rxrpc/.  So its code can just be kept there.
+>
+> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 
-[ Upstream commit 82a0302e7167d0b7c6cde56613db3748f8dd806d ]
+>  arch/m68k/configs/amiga_defconfig           |   1 -
+>  arch/m68k/configs/apollo_defconfig          |   1 -
+>  arch/m68k/configs/atari_defconfig           |   1 -
+>  arch/m68k/configs/bvme6000_defconfig        |   1 -
+>  arch/m68k/configs/hp300_defconfig           |   1 -
+>  arch/m68k/configs/mac_defconfig             |   1 -
+>  arch/m68k/configs/multi_defconfig           |   1 -
+>  arch/m68k/configs/mvme147_defconfig         |   1 -
+>  arch/m68k/configs/mvme16x_defconfig         |   1 -
+>  arch/m68k/configs/q40_defconfig             |   1 -
+>  arch/m68k/configs/sun3_defconfig            |   1 -
+>  arch/m68k/configs/sun3x_defconfig           |   1 -
 
-Remove comment for reorder_work which no longer exists.
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: 71203f68c774 ("padata: Fix pd UAF once and for all")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Bin Lan <lanbincn@139.com>
----
- include/linux/padata.h | 1 -
- 1 file changed, 1 deletion(-)
+Gr{oetje,eeting}s,
 
-diff --git a/include/linux/padata.h b/include/linux/padata.h
-index 9ca779d7e310..6f07e12a4381 100644
---- a/include/linux/padata.h
-+++ b/include/linux/padata.h
-@@ -90,7 +90,6 @@ struct padata_cpumask {
-  * @processed: Number of already processed objects.
-  * @cpu: Next CPU to be processed.
-  * @cpumask: The cpumasks in use for parallel and serial workers.
-- * @reorder_work: work struct for reordering.
-  */
- struct parallel_data {
- 	struct padata_shell		*ps;
+                        Geert
+
 -- 
-2.43.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
