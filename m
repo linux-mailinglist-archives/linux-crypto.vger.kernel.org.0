@@ -1,148 +1,149 @@
-Return-Path: <linux-crypto+bounces-23470-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23472-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8AMxCFNr8GlmTQEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23470-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 10:09:55 +0200
+	id gBaBONp48GlgTwEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23472-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 11:07:38 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73E5947FA61
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 10:09:54 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C26BF480EFB
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 11:07:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AE80830A8599
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 07:53:54 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 217CD3048698
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 08:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70CD2EDD7D;
-	Tue, 28 Apr 2026 07:53:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C7CC3DC4A7;
+	Tue, 28 Apr 2026 08:57:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gIr6eZqa"
+	dkim=pass (1024-bit key) header.d=139.com header.i=@139.com header.b="ckj4jJzx"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from n169-111.mail.139.com (n169-111.mail.139.com [120.232.169.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FEB42D47E9
-	for <linux-crypto@vger.kernel.org>; Tue, 28 Apr 2026 07:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61EF83D9DD3;
+	Tue, 28 Apr 2026 08:57:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=120.232.169.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777362833; cv=none; b=VOiJsWIkErQw+HEGz21uWZINDWGQrBmzAH0cgBeWYbd0spn/8/VoBtU8sGEojRq1WQ2VcuUvGMi2Iff9D8+B6y/xL6Dj0UKbS62lduoBLvtrNfNljwylbqVnS6jJxV8YTvsWBDrFvXQNHADTVbCTdy0BJMhIxnsLty6tjrFKiTU=
+	t=1777366649; cv=none; b=u5sJ/iR7hBuKgevES7AwKHhYB/7rtjPbZCBOVE/cktBwwq8xoe1eJ5b8vONdzLH5n00KOn01pFsEybIEMFSbFmPMKPFJ96Z3p0nXYke3BR615aanst8fgRvmw2q7pvQowgqgkr6enNA8IvdX0f+4xii/KMQB2BUm6MdG3LXcvEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777362833; c=relaxed/simple;
-	bh=W2ux99vm/YR+fWjrnwRiZup/PYxG31SHUrlOrY3Sk+k=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=aSKW/a5DWRuGjRpBa81gyec3DdOu5ogvzTYVnRvwcvXj6fVqpWY+6HBTtzWY7KXc7PSqp6kTuP+st1T9p5/+yJTcMF8bU1lsx2hYoT0cfH+NCqUBpSiIZXPnrFc8EJd1wNbUYgl8nR//y8V9eyaXJeWCpW/oJkJhBynkaLCWlfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gIr6eZqa; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1777362830;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2t/FQHBc4YwiSUDHUyxx0oj6pNb+ROc36MbcJMBmi8w=;
-	b=gIr6eZqaTDakBSI1tV/L9FJ8cHZvESjeMBobNcb0xbeONjQqeaH3rYyrTmL+JEFRc69nT8
-	tnhXCE/ADr/+w0GNepB+7KkkRgrFoXc5T2YfHZ4gUZcgGO20wTtTSP1Me0Ynm7ivNU+hxE
-	M82By7hWgNasWCupKi42JCnGBivxKrs=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-536-qsX_92UiPIah9O2Y47wL1A-1; Tue,
- 28 Apr 2026 03:53:49 -0400
-X-MC-Unique: qsX_92UiPIah9O2Y47wL1A-1
-X-Mimecast-MFC-AGG-ID: qsX_92UiPIah9O2Y47wL1A_1777362827
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 07E78195609F;
-	Tue, 28 Apr 2026 07:53:47 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.44.32.126])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 49B09195608E;
-	Tue, 28 Apr 2026 07:53:42 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20260428024400.123337-1-ebiggers@kernel.org>
-References: <20260428024400.123337-1-ebiggers@kernel.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: dhowells@redhat.com, netdev@vger.kernel.org,
-    linux-afs@lists.infradead.org,
-    Marc Dionne <marc.dionne@auristor.com>, linux-crypto@vger.kernel.org,
-    linux-kernel@vger.kernel.org,
-    "David S . Miller" <davem@davemloft.net>,
-    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-    Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>
-Subject: Re: [PATCH net-next 0/5] Consolidate FCrypt and PCBC code into net/rxrpc/
+	s=arc-20240116; t=1777366649; c=relaxed/simple;
+	bh=K+2AlydItDpwcJJn/4PPx8mtDdI3scpVOKfjw6ehdsw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b0Kv7GIpKyTzBoAhyBOlWrHWws/w78wdB+1Wcr500zFbfBRpYnysgGKFwcU34BACztntqUY0aq7L6SJ2K6Ynpvlt3YMI4Pq9ZLcnFweqDHBqdNhbtwzdmyfV2GUKhUDfQwoAyGjLEFmJUE7I2zhtbeY4RH3Fw6+nOiOsoa5YC1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=139.com; spf=pass smtp.mailfrom=139.com; dkim=pass (1024-bit key) header.d=139.com header.i=@139.com header.b=ckj4jJzx; arc=none smtp.client-ip=120.232.169.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=139.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=139.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=139.com; s=dkim; l=0;
+	h=from:subject:message-id:to:cc:mime-version;
+	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+	b=ckj4jJzx6GdrKhc2mW2cg3rwhQzwzafn5i8tl+JA3Y6CnxE9HRtn244R7wjsZYDkLFl/OWH+V+rLq
+	 VVQbowftvm6O9JzIWeugH812M2Ni+oWBbEV6xhH98tkNzS5i3mKEtd3Lo2YWzthb+tXAjR3ZiGvLpL
+	 NA9Mp1B9TGLdv93w=
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM:                                                                                        
+X-RM-SPAM-FLAG:00000000
+Received:from China-139-kernel-team (unknown[47.95.114.252])
+	by rmsmtp-lg-appmail-14-12003 (RichMail) with SMTP id 2ee369f07660cf4-01d18;
+	Tue, 28 Apr 2026 16:57:10 +0800 (CST)
+X-RM-TRANSID:2ee369f07660cf4-01d18
+From: Bin Lan <lanbincn@139.com>
+To: gregkh@linuxfoundation.org,
+	sashal@kernel.org,
+	stable@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	steffen.klassert@secunet.com,
+	daniel.m.jordan@oracle.com,
+	linux-crypto@vger.kernel.org,
+	Bin Lan <lanbincn@139.com>
+Subject: [PATCH 5.10.y 0/2] backport to fix a race condition/UAF in the padata subsystem
+Date: Tue, 28 Apr 2026 16:56:59 +0800
+Message-ID: <20260428085701.1480-1-lanbincn@139.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <772373.1777362820.1@warthog.procyon.org.uk>
-Date: Tue, 28 Apr 2026 08:53:40 +0100
-Message-ID: <772374.1777362820@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
-X-Rspamd-Queue-Id: 73E5947FA61
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: C26BF480EFB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [1.04 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_REJECT(1.00)[139.com:s=dkim];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23470-lists,linux-crypto=lfdr.de];
+	DMARC_NA(0.00)[139.com];
+	TAGGED_FROM(0.00)[bounces-23472-lists,linux-crypto=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,secunet.com,oracle.com,139.com];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dhowells@redhat.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[139.com];
+	FROM_NEQ_ENVFROM(0.00)[lanbincn@139.com,linux-crypto@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[139.com:-];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[warthog.procyon.org.uk:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	NEURAL_SPAM(0.00)[0.047];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 
-Eric Biggers <ebiggers@kernel.org> wrote:
+This series backports the padata use-after-free fix and its follow-up
+cleanup to the 5.10.y stable branch. There is a race condition in 
+padata_reorder() dating back to the initial padata commit.
 
-> [This series applies to v7.1-rc1 and is intended to be taken via
-> net-next.  Patches 4-5 could be left for later if desired.]
-> 
-> The FCrypt "block cipher" and the PCBC mode of operation are obsolete
-> and insecure.  Since their only user is net/rxrpc/, they belong there,
-> not in the crypto API.
-> 
-> Therefore, this series removes these algorithms from the crypto API and
-> replaces them with local implementations in net/rxrpc/.
-> 
-> The local implementations are simpler too, as they avoid the crypto API
-> boilerplate.
-> 
-> I don't know how to test all the code in net/rxrpc/, but everything
-> should still work.  I added a KUnit test for the crypto functions.
+Backport notes for 5.10.y:
 
-It seems to work, so apart from the two points I noted, you can add:
+  - The upstream fix (commit 71203f68c774) was written against mainline
+    which uses the 2-argument cpumask_next_wrap(cpu, mask) API introduced
+    by dc5bb9b769c9 ("cpumask: deprecate cpumask_next_wrap()"). Since
+    6.1.y still has the original 4-argument API, the call in
+    padata_reorder() is adapted to:
+      cpumask_next_wrap(cpu, pd->cpumask.pcpu, -1, false)
+    This is functionally equivalent.
 
-	Acked-by: David Howells <dhowells@redhat.com>
+  - The context in padata_find_next() differs from mainline due to
+    f954a2d37637 ("padata: switch padata_find_next() to using
+    cpumask_next_wrap()") not being present in 6.1.y. The conflict was
+    resolved.
 
-It looks like it might be slightly faster, but I think the overhead reduction
-is not that visible with all the other things the filesystem and protocol do
-plus I/O overhead.  RxGK is a lot faster and more secure, so we should be
-moving that way anyway.
+After applying this series, kernel/padata.c matches the upstream file at
+commit 71203f68c774 with a few differences. None of these differences 
+affect the fix, the core changes to padata_find_next(), padata_reorder(), 
+and padata_do_serial() are identical.
 
-David
+Testing:
+  - Built and booted on x86_64 (4 CPUs)
+  - All 4 test cases passed:
+    * Basic parallel->serial reorder (64 jobs)
+    * Out-of-order parallel completion reorder (64 jobs)
+    * Concurrent jobs + padata_replace race (64 jobs)
+    * Stress test (10 iterations x 64 jobs, random delays)
+  - No KASAN/BUG/WARNING/UAF detected in dmesg
+
+Bin Lan
+
+Herbert Xu (2):
+  padata: Fix pd UAF once and for all
+  padata: Remove comment for reorder_work
+
+ include/linux/padata.h |   4 --
+ kernel/padata.c        | 136 +++++++++++------------------------------
+ 2 files changed, 37 insertions(+), 103 deletions(-)
+
+-- 
+2.43.0
+
 
 
