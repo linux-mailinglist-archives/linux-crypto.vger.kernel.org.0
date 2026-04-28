@@ -1,221 +1,245 @@
-Return-Path: <linux-crypto+bounces-23454-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23456-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id APTEHhAP8GnTNgEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23454-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 03:36:16 +0200
+	id +K1LHbcf8GnLOgEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23456-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 04:47:19 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD5BE47C719
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 03:36:15 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C66447CE07
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 04:47:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B78F030214D3
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 01:36:11 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 67C203009E05
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 02:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA8B02D7804;
-	Tue, 28 Apr 2026 01:36:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E03390986;
+	Tue, 28 Apr 2026 02:47:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="N4CttKse";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="NnjsHAik"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aGLfRmXH"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 658871FDA61
-	for <linux-crypto@vger.kernel.org>; Tue, 28 Apr 2026 01:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792041DF25C;
+	Tue, 28 Apr 2026 02:47:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777340170; cv=none; b=kB495CKVhcc7cclMd96xv61koGJYfTqWRPVphT+gHcNXV31JkcnUnjCjnYyfS6vX1Rsx8HNpYsBCN7/arxkt2i5VLXyEEQZ66eEfEhHCK33aV+4NqfJ55YcopIEuuFvWcXSqonex8g9ExGhpyKHdVgP2NBpwVFbkqzR4VnGNh/Q=
+	t=1777344429; cv=none; b=knv7cSaYrYf1yFHGGQ8k0/yvKWu6hOk/A4HblAZt8NrRkXGetU1HJBg+bAEly22b2XZla6WWFGMAoH8e3qLrbPEyUvDsinipeZMX7EKb49TkGGeQMEJSEJCTMx3fxFPw380wl4MBVRyvvWn9e1brSyfxkn/sC4eYlE/FFqWWnps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777340170; c=relaxed/simple;
-	bh=Y7gKuCFiPboEfKzDAf73jyDXFOaCi/weSrK7a2Kqvuk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d1b3XKZTgwT0ZQhVlG9C0UmAx+G0iih2EQL5gcGfpMAZESNf8As+FyoQlJQlBvFtY3BBldOsp2x6QsEsrbqrf/nZg77MbNdjsVE6p9pNkxctVujvd+j0BAMGUm3z1SW9L4SavcGqPqH7bX+qwwtS8/dr9vU47MaK3KzLKu6Sn0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=N4CttKse; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=NnjsHAik; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 63RGYAvX3123516
-	for <linux-crypto@vger.kernel.org>; Tue, 28 Apr 2026 01:36:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=qcppdkim1; bh=kmuhBpsDaaHpjbrFXXWCLn7R
-	VHpczN9SgLXRDFkeWwo=; b=N4CttKse4inMTMby51Mb1YAxD5xM1/fxIfjRhTVS
-	iZno8VmHFOlMbCQVh1lFOWhaqm8tk0pluCgK13BzDyGZClkCKtyv0rltkqzDyZkR
-	qjQwIjNZrNoJi29dR8kNUzvlnxVh0cPFApFnQemBDdY9tpzBzrQdnm1zR1AlacZ6
-	/X7nsFhOFQDSnyJA2Tbmv7JqW2jWRjSOsXmz6OwqBmH1XnCZf0te4Z+O4DeCC1bQ
-	WJ5MFIvKNrGGEboTE2z/+4Ph7NHfZJlJVb7+1/JjlhKFZjUFksRcz9RdSgrHFAtb
-	s+rG6IiM4pZjnE0mnUEMx/MWvExHx0UMr8BwqibLi/o7Lw==
-Received: from mail-dy1-f199.google.com (mail-dy1-f199.google.com [74.125.82.199])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4dt5qgk71y-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-crypto@vger.kernel.org>; Tue, 28 Apr 2026 01:36:08 +0000 (GMT)
-Received: by mail-dy1-f199.google.com with SMTP id 5a478bee46e88-2eaed3d96d7so2885299eec.0
-        for <linux-crypto@vger.kernel.org>; Mon, 27 Apr 2026 18:36:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1777340168; x=1777944968; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kmuhBpsDaaHpjbrFXXWCLn7RVHpczN9SgLXRDFkeWwo=;
-        b=NnjsHAikA33BjHVi8SDVvQZRfPNka2MksUhwl7i/uaoDTakGNsMKepk89BDzkjj5jZ
-         AhK+rJF6OwUP+VThX9h+jz4Lrv3pADLzr33jzE3bhaaeIXxuIEzR8LqsxjMfNvPQBPee
-         KbwE109pCmSCCwspXSTUftjRxJTKhTpiqWR7HtX6J4v+yAd7V3HN9JosFE4/E9BL9hQq
-         UFVIAuH6c4H8Zs4uLVABkoNOL6kMmKNlLxpRW79N+8dDN9NnpgfDgxeqCo0WsfpKjed9
-         gIIBvYDLcM6yjKkSV1iRnzAOjMNfM93vOP5VMxfOPp1FnHkaM7VdEFkXiXjueK8HcJZp
-         cplA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777340168; x=1777944968;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kmuhBpsDaaHpjbrFXXWCLn7RVHpczN9SgLXRDFkeWwo=;
-        b=gkYVDY5sSD3vcjGts5zJf6nR4VrIBL8zFgI0CCQiXugZu3RaG9mHrOp/wtMYPv2OEq
-         cbYEfQuE7B9nCOBN62tQyWQVcWfFoH7KSHP6UdHIm7WvCNb8ZFCyX6FfRb3VKmhnqu89
-         /Sn1sKrmMK2VqnF6hrNnU+eB/3EoIFQQKvG1kJVTahLMnPQx145RUfexZ0QOjqBClRHc
-         MvNAwNP2TeWG2UemLdKB/P+VZdB+UhAlG52itI0DOCtM+j9OlsPqoGToG/OKBSoPp8KL
-         TZkEnk1bh2gHNi2rueHxyXUYzJ55w6UQntpWct9h90swd1T/U5Uq5+ogquD3nUBOR46X
-         +Z5g==
-X-Forwarded-Encrypted: i=1; AFNElJ9etiJ4zWzceKvCSftri/w8RTGFN4WHAKypruam4MoyLMGZaQU0e2KcydQMO/YKMu3QJj/GVu/GdmA3i/E=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywx7ImOCK3lE38Ta6QKW0OxNeT1AWHhEw3z6I311UGcXZo8Uc6k
-	RIKg5bzbxbq8t9fadW5RohPsmYK9nJ00nEZKpKZ5nwT/ilG8L/Nc4mUBqh0WGEJqaQBBtkaDuwf
-	kPyHiLnXGt4nXTNloOFXxGgVrujU+qL8nFqeIkgXpFPhZXU+9fs3ARMbJMKLqb0LAGDY=
-X-Gm-Gg: AeBDietVtaJ91YgUDI1dA0mKCOQngzmgVYaM1Kq20o5KHLl43Hov/qELOwZV4058juQ
-	qboKUpiIQIlSfJwkUvcpEbaUNCx3sKHx1YKTZob9+NlYoI76n7AKNbgBwus6jU8ciUDWxBJ//qV
-	hC+m1qKs3G9fEbLpDi9b6f12MX+lT4crmRBNe3Yik/l6LNcyNpRPU5QMJPp2eL8x1QLkQvJBSk/
-	KWMauyJjJwTzMHHG1Zp6LwCYbrkWmDq+fHMnOxiV1jo0Pb8VoIzfY1Bv7QuN9Tu4wKQNToEv25+
-	tra76QpuGjGzY/P7jQChtB89RcRol9NASALxiSn4ACukl388JPQdJv96MzDdpTnJSDb6Y5zTj1m
-	62coe1ENKjGwdVwUkdxzXhBtbUP8Q17E3Q2FqS1yhAg3xF0H4amLdPJeQlS4Vvoa4mnu1zH0BGQ
-	Q=
-X-Received: by 2002:a05:7300:3247:b0:2c4:ec89:bc7 with SMTP id 5a478bee46e88-2ed0a00248bmr597104eec.10.1777340167662;
-        Mon, 27 Apr 2026 18:36:07 -0700 (PDT)
-X-Received: by 2002:a05:7300:3247:b0:2c4:ec89:bc7 with SMTP id 5a478bee46e88-2ed0a00248bmr597080eec.10.1777340167102;
-        Mon, 27 Apr 2026 18:36:07 -0700 (PDT)
-Received: from QCOM-aGQu4IUr3Y (i-global052.qualcomm.com. [199.106.103.52])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2ed0a106524sm1074873eec.23.2026.04.27.18.36.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2026 18:36:06 -0700 (PDT)
-Date: Tue, 28 Apr 2026 09:36:00 +0800
-From: Shawn Guo <shengchao.guo@oss.qualcomm.com>
-To: Harshal Dev <harshal.dev@oss.qualcomm.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        Dmitry Baryshkov <lumag@kernel.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
-        Deepti Jaggi <deepti.jaggi@oss.qualcomm.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: crypto: qcom,inline-crypto-engine:
- Document Nord ICE
-Message-ID: <afAPACSt4JoLuYLn@QCOM-aGQu4IUr3Y>
-References: <20260427010527.230473-1-shengchao.guo@oss.qualcomm.com>
- <f3e83bc2-36ef-4628-af1f-d9465eca72e3@oss.qualcomm.com>
+	s=arc-20240116; t=1777344429; c=relaxed/simple;
+	bh=mVJSxfGuAiiALaqw6cebpSUplEdzz/52FbX/446Vss4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hkajIm4tJV3JcqVceR8GCQt71FYB4ZZ8UHwm1GBIq4bxCsKTlOgPBJLgMBnBe0W9ixVq69ZieOx784g/DDMKGNlrSMHhpMYCiM66iRdqUQc2lNc58O7QgtUWCpNqBUYTmPNlASI2kPXofEPF29Di4n+ooVZN9ecxwwfHCtZ6qFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aGLfRmXH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACE52C19425;
+	Tue, 28 Apr 2026 02:47:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777344429;
+	bh=mVJSxfGuAiiALaqw6cebpSUplEdzz/52FbX/446Vss4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=aGLfRmXH0soAYiZ/0ex3mxiOOCHRykC6ohPg4bjVidPlq45DkA1CsFjMR2AkHlyle
+	 1iHcuCJ6Jhb/SR60K87Y4I2Yc3ejvTrk8v8yRaNMA/fQxUhOWRBRhr0X5Yeeou8GnR
+	 Z2HJv0RTpVlO3pEH5snvGhhyL+eqPnC86N1TzDfUMeMp6WDP7PW9M1oLgX4jGmb+VP
+	 bv0rNj+3wXQwXDF0d3zyW/E5oLiPoqdzRTrvQuGIpX4SsL9arl4oVTaBkWawK7yd63
+	 WbfOcwo0RbNhpg9/8FKfDU5JsSUNk0JX8KbyvmAKHX9HeBIaFGrLAKb4iG7qBXzaQo
+	 S+A1mU13I3lCA==
+From: Eric Biggers <ebiggers@kernel.org>
+To: netdev@vger.kernel.org,
+	linux-afs@lists.infradead.org
+Cc: David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH net-next 0/5] Consolidate FCrypt and PCBC code into net/rxrpc/
+Date: Mon, 27 Apr 2026 19:43:53 -0700
+Message-ID: <20260428024400.123337-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f3e83bc2-36ef-4628-af1f-d9465eca72e3@oss.qualcomm.com>
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNDI4MDAxMyBTYWx0ZWRfX2VktognksUhl
- JcbC48BanuRRa8NmsXGmjznR8B7zuxJdqRuFztyrUshfAKqYFvRhWGJeOC08hxLHOjpDWsmv+IH
- EKjFc+nTYg/wGmpU3qEYBjf44QSX7MwwpeN1YlzVExaWBqz94mStXsCDxiRvHIy++VJ4rxcQvJo
- xF+sCrJr72DjizpoyKyItSbLVlp9+F4g/MFLFc6Y5ZTvYO06xC0LNEPsup2Eekf88SiZWOJUsWI
- L3MqtcCWuAf7NrYW0XUS8H1OkV4sqGiScxUKGmHHzcTlClciIx3vSoTlDsCfiFEyhB6gHPU3Mia
- 3oln4GXnUw8OEL9cwrGe51U51depcksKZ4Il4X+Woax+DQn2IwejLiQAc4ze7musgznjpsbhXg6
- C7hf3oRpZ0PcFOL+XFWIRxMW+LOm3hWcliLy+wOfDXNIRbi+M18p3+XxIG1yJeeaLOaLSol7l31
- MdHNk8bFH0w+yyk/Wcg==
-X-Authority-Analysis: v=2.4 cv=V69NF+ni c=1 sm=1 tr=0 ts=69f00f08 cx=c_pps
- a=cFYjgdjTJScbgFmBucgdfQ==:117 a=b9+bayejhc3NMeqCNyeLQQ==:17
- a=kj9zAlcOel0A:10 a=A5OVakUREuEA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=yOCtJkima9RkubShWh1s:22
- a=VwQbUJbxAAAA:8 a=EUspDBNiAAAA:8 a=KIcV2tIvfCGpu7CZsroA:9 a=CjuIK1q_8ugA:10
- a=scEy_gLbYbu1JhEsrz4S:22
-X-Proofpoint-GUID: 7DrAokDOlzBr74hZ2OkhEE4-OkpnuL96
-X-Proofpoint-ORIG-GUID: 7DrAokDOlzBr74hZ2OkhEE4-OkpnuL96
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-04-27_04,2026-04-21_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- malwarescore=0 clxscore=1015 suspectscore=0 adultscore=0 spamscore=0
- phishscore=0 priorityscore=1501 bulkscore=0 impostorscore=0
- lowpriorityscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2604200000
- definitions=main-2604280013
-X-Rspamd-Queue-Id: CD5BE47C719
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 7C66447CE07
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[qualcomm.com,reject];
-	R_DKIM_ALLOW(-0.20)[qualcomm.com:s=qcppdkim1,oss.qualcomm.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23454-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,qualcomm.com:dkim,qualcomm.com:email];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	DKIM_TRACE(0.00)[qualcomm.com:+,oss.qualcomm.com:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shengchao.guo@oss.qualcomm.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-23456-lists,linux-crypto=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	TAGGED_RCPT(0.00)[linux-crypto];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 
-On Mon, Apr 27, 2026 at 12:50:40PM +0530, Harshal Dev wrote:
-> Hi Shawn,
-> 
-> On 4/27/2026 6:35 AM, Shawn Guo wrote:
-> > Document Inline Crypto Engine (ICE) on Qualcomm Nord SoC which is
-> > compatible with 'qcom,inline-crypto-engine'.
-> > 
-> > Signed-off-by: Shawn Guo <shengchao.guo@oss.qualcomm.com>
-> > ---
-> > Changes in v2:
-> >  - Improve commit log to make the compatibility explicit
-> >  - Link to v1: https://lore.kernel.org/all/20260420073301.1250197-1-shengchao.guo@oss.qualcomm.com/
-> > 
-> >  .../devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml    | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml b/Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml
-> > index 876bf90ed96e..9251db2b8fcd 100644
-> > --- a/Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml
-> > +++ b/Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml
-> > @@ -16,6 +16,7 @@ properties:
-> >            - qcom,eliza-inline-crypto-engine
-> >            - qcom,kaanapali-inline-crypto-engine
-> >            - qcom,milos-inline-crypto-engine
-> > +          - qcom,nord-inline-crypto-engine
-> 
-> Wanted to bring your attention to this patch we are hoping to send for 7.1 fixes window
-> which mandates the iface clock and power-domain for ICE (from Eliza/Milos onwards) to avoid issues
-> seen when these properties are missing:
-> https://lore.kernel.org/all/20260416-qcom_ice_power_and_clk_vote-v5-1-5ccf5d7e2846@oss.qualcomm.com/
-> 
-> While I won't ask you to adjust your patch immediately, if our patch is merged, would request you to
-> update this binding to comply with the newly introduced ones such that the iface clock and power-domain
-> are made mandatory for Nord as well.
+[This series applies to v7.1-rc1 and is intended to be taken via
+net-next.  Patches 4-5 could be left for later if desired.]
 
-Thanks for the heads-up, Harshal!  Sure, I will update after your series
-hits linux-next.
+The FCrypt "block cipher" and the PCBC mode of operation are obsolete
+and insecure.  Since their only user is net/rxrpc/, they belong there,
+not in the crypto API.
 
-Shawn
+Therefore, this series removes these algorithms from the crypto API and
+replaces them with local implementations in net/rxrpc/.
+
+The local implementations are simpler too, as they avoid the crypto API
+boilerplate.
+
+I don't know how to test all the code in net/rxrpc/, but everything
+should still work.  I added a KUnit test for the crypto functions.
+
+Eric Biggers (5):
+  net/rxrpc: Add local FCrypt-PCBC implementation
+  net/rxrpc: Use local FCrypt-PCBC implementation
+  net/rxrpc: Reimplement DES-PCBC using DES library
+  crypto: fcrypt - Remove support for FCrypt block cipher
+  crypto: pcbc - Remove support for PCBC mode
+
+ arch/arm/configs/am200epdkit_defconfig        |   1 -
+ arch/arm/configs/dove_defconfig               |   1 -
+ arch/arm/configs/multi_v5_defconfig           |   1 -
+ arch/arm/configs/mv78xx0_defconfig            |   1 -
+ arch/arm/configs/mvebu_v5_defconfig           |   1 -
+ arch/arm/configs/omap1_defconfig              |   1 -
+ arch/arm/configs/orion5x_defconfig            |   1 -
+ arch/arm/configs/pxa_defconfig                |   2 -
+ arch/arm/configs/wpcm450_defconfig            |   1 -
+ arch/m68k/configs/amiga_defconfig             |   2 -
+ arch/m68k/configs/apollo_defconfig            |   2 -
+ arch/m68k/configs/atari_defconfig             |   2 -
+ arch/m68k/configs/bvme6000_defconfig          |   2 -
+ arch/m68k/configs/hp300_defconfig             |   2 -
+ arch/m68k/configs/mac_defconfig               |   2 -
+ arch/m68k/configs/multi_defconfig             |   2 -
+ arch/m68k/configs/mvme147_defconfig           |   2 -
+ arch/m68k/configs/mvme16x_defconfig           |   2 -
+ arch/m68k/configs/q40_defconfig               |   2 -
+ arch/m68k/configs/sun3_defconfig              |   2 -
+ arch/m68k/configs/sun3x_defconfig             |   2 -
+ arch/mips/configs/bigsur_defconfig            |   2 -
+ arch/mips/configs/decstation_64_defconfig     |   2 -
+ arch/mips/configs/decstation_defconfig        |   2 -
+ arch/mips/configs/decstation_r4k_defconfig    |   2 -
+ arch/mips/configs/fuloong2e_defconfig         |   1 -
+ arch/mips/configs/gpr_defconfig               |   1 -
+ arch/mips/configs/ip22_defconfig              |   2 -
+ arch/mips/configs/ip27_defconfig              |   2 -
+ arch/mips/configs/ip30_defconfig              |   2 -
+ arch/mips/configs/ip32_defconfig              |   2 -
+ arch/mips/configs/lemote2f_defconfig          |   2 -
+ arch/mips/configs/malta_defconfig             |   2 -
+ arch/mips/configs/malta_kvm_defconfig         |   2 -
+ arch/mips/configs/malta_qemu_32r6_defconfig   |   1 -
+ arch/mips/configs/maltaaprp_defconfig         |   1 -
+ arch/mips/configs/maltasmvp_defconfig         |   1 -
+ arch/mips/configs/maltasmvp_eva_defconfig     |   1 -
+ arch/mips/configs/maltaup_defconfig           |   1 -
+ arch/mips/configs/maltaup_xpa_defconfig       |   2 -
+ arch/mips/configs/mtx1_defconfig              |   1 -
+ arch/mips/configs/rm200_defconfig             |   2 -
+ arch/mips/configs/sb1250_swarm_defconfig      |   2 -
+ arch/parisc/configs/generic-64bit_defconfig   |   2 -
+ arch/powerpc/configs/44x/akebono_defconfig    |   1 -
+ arch/powerpc/configs/44x/bamboo_defconfig     |   1 -
+ arch/powerpc/configs/44x/currituck_defconfig  |   1 -
+ arch/powerpc/configs/44x/ebony_defconfig      |   1 -
+ arch/powerpc/configs/44x/eiger_defconfig      |   1 -
+ arch/powerpc/configs/44x/fsp2_defconfig       |   1 -
+ arch/powerpc/configs/44x/icon_defconfig       |   1 -
+ arch/powerpc/configs/44x/iss476-smp_defconfig |   1 -
+ arch/powerpc/configs/44x/katmai_defconfig     |   1 -
+ arch/powerpc/configs/44x/rainier_defconfig    |   1 -
+ arch/powerpc/configs/44x/redwood_defconfig    |   1 -
+ arch/powerpc/configs/44x/sequoia_defconfig    |   1 -
+ arch/powerpc/configs/44x/taishan_defconfig    |   1 -
+ arch/powerpc/configs/52xx/cm5200_defconfig    |   1 -
+ arch/powerpc/configs/52xx/motionpro_defconfig |   1 -
+ arch/powerpc/configs/52xx/tqm5200_defconfig   |   1 -
+ arch/powerpc/configs/83xx/asp8347_defconfig   |   1 -
+ .../configs/83xx/mpc8313_rdb_defconfig        |   1 -
+ .../configs/83xx/mpc8315_rdb_defconfig        |   1 -
+ .../configs/83xx/mpc832x_rdb_defconfig        |   1 -
+ .../configs/83xx/mpc834x_itx_defconfig        |   1 -
+ .../configs/83xx/mpc834x_itxgp_defconfig      |   1 -
+ .../configs/83xx/mpc837x_rdb_defconfig        |   1 -
+ arch/powerpc/configs/amigaone_defconfig       |   1 -
+ arch/powerpc/configs/cell_defconfig           |   1 -
+ arch/powerpc/configs/chrp32_defconfig         |   1 -
+ arch/powerpc/configs/ep8248e_defconfig        |   1 -
+ arch/powerpc/configs/fsl-emb-nonhw.config     |   1 -
+ arch/powerpc/configs/g5_defconfig             |   1 -
+ arch/powerpc/configs/linkstation_defconfig    |   1 -
+ arch/powerpc/configs/mgcoge_defconfig         |   1 -
+ arch/powerpc/configs/mpc83xx_defconfig        |   1 -
+ arch/powerpc/configs/mvme5100_defconfig       |   1 -
+ arch/powerpc/configs/pmac32_defconfig         |   1 -
+ arch/powerpc/configs/powernv_defconfig        |   1 -
+ arch/powerpc/configs/ppc44x_defconfig         |   1 -
+ arch/powerpc/configs/ppc64_defconfig          |   1 -
+ arch/powerpc/configs/ppc64e_defconfig         |   1 -
+ arch/powerpc/configs/ppc6xx_defconfig         |   2 -
+ arch/powerpc/configs/ps3_defconfig            |   1 -
+ arch/s390/configs/debug_defconfig             |   2 -
+ arch/s390/configs/defconfig                   |   2 -
+ arch/sh/configs/hp6xx_defconfig               |   1 -
+ arch/sh/configs/r7780mp_defconfig             |   1 -
+ arch/sh/configs/r7785rp_defconfig             |   1 -
+ arch/sh/configs/se7712_defconfig              |   1 -
+ arch/sh/configs/sh2007_defconfig              |   2 -
+ arch/sparc/configs/sparc32_defconfig          |   1 -
+ arch/sparc/configs/sparc64_defconfig          |   2 -
+ crypto/Kconfig                                |  18 -
+ crypto/Makefile                               |   2 -
+ crypto/pcbc.c                                 | 195 -------
+ crypto/tcrypt.c                               |   4 -
+ crypto/testmgr.c                              |  15 -
+ crypto/testmgr.h                              |  45 --
+ net/rxrpc/.kunitconfig                        |   6 +
+ net/rxrpc/Kconfig                             |  13 +-
+ net/rxrpc/Makefile                            |   3 +-
+ net/rxrpc/ar-internal.h                       |  21 +-
+ {crypto => net/rxrpc}/fcrypt.c                | 329 +++++-------
+ net/rxrpc/key.c                               |   1 -
+ net/rxrpc/rxkad.c                             | 479 +++++-------------
+ net/rxrpc/server_key.c                        |   1 -
+ net/rxrpc/tests/Makefile                      |   3 +
+ net/rxrpc/tests/rxrpc_kunit.c                 | 140 +++++
+ 109 files changed, 445 insertions(+), 956 deletions(-)
+ delete mode 100644 crypto/pcbc.c
+ create mode 100644 net/rxrpc/.kunitconfig
+ rename {crypto => net/rxrpc}/fcrypt.c (65%)
+ create mode 100644 net/rxrpc/tests/Makefile
+ create mode 100644 net/rxrpc/tests/rxrpc_kunit.c
+
+
+base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
+-- 
+2.54.0
+
 
