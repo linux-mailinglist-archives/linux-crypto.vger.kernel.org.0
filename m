@@ -1,216 +1,158 @@
-Return-Path: <linux-crypto+bounces-23453-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23455-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oICmOIkM8GmiNgEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23453-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 03:25:29 +0200
+	id KAQMLJEP8GnTNgEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23455-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 03:38:25 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D1D247C5E1
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 03:25:28 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D90047C789
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 03:38:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D323C303EC15
-	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 01:24:53 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1075830269D7
+	for <lists+linux-crypto@lfdr.de>; Tue, 28 Apr 2026 01:36:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E132D839C;
-	Tue, 28 Apr 2026 01:24:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF35B2D876A;
+	Tue, 28 Apr 2026 01:36:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KUntDx0L"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gNoXSzz9"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D99E2224AF9
-	for <linux-crypto@vger.kernel.org>; Tue, 28 Apr 2026 01:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F3AA22A4E9;
+	Tue, 28 Apr 2026 01:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777339491; cv=none; b=JLB1t0gJraQw4CzgUINU3NtcBraaoeeTOTrr6LPxD3DEAJd0UOXeiaAHx3URr9AQOUT6NTabD4AxEjXpSbiLd6vPNtAfXUISJtQHouQ00uuC+Huq4787GY6FZjBlJ0aIajT6frHREJj3tkBTxBhCqTxnBiKesAUqflHHyKtRauk=
+	t=1777340202; cv=none; b=K8E0t+dXsLdXTJdbf3iBC/YeL64kjg02wELif38xAistlWeebBr3CHMv8B8wyRURBGDzz47RVGRzCMmunR9bSdW9WqqsjgPPWYli/oqfVqEOwcSKSdFxvH3mWwGexPU4Ev07ouALtM+AOtk5sgzeNV2jfxQUijT5Iu7Ajp+lkpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777339491; c=relaxed/simple;
-	bh=Jrr5vozgfTInFQ8tY3V01o9YID5j5pE0ZSEW05djYFA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oHugmXfJORn79Xkn42wBrxJQGmr9rxF55vYNNrhe/VKP1TtZXdaASaHY9d2RHxL1+E7W5s357bnDC2qZRRs1zOVQOJp+cJ0QuNIYKM5viF1G57pm/TTRTajuYldOhCcpsU21zrftjqKzYTtEPs3yhqhPrynPaA/tBsWJAVsfsck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KUntDx0L; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-488a88aeec9so133717425e9.2
-        for <linux-crypto@vger.kernel.org>; Mon, 27 Apr 2026 18:24:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777339487; x=1777944287; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=weDQ2uowpmJWEW0ohZ4PRY9xm0tEvW01Qf+utiRvTWI=;
-        b=KUntDx0LWOSjDrwiK7AOLoztTzKWOKD6r1TTSiesmdBvp1V/UPWE5sKSLvZSZIhtXm
-         APXyUwGshnbQWVyfoXn4EJrvvJqLsX8pVIkylkM6tUN0eh/NjR7RQNog9p47pHw8WCb8
-         jkoD+L6CNzvXgMvSwSyHaF0hXlUWkgKRQMXea5oJDxYm6sSzw/ihV5nx97vIJ+HYrteR
-         4GTcsfKC4LHHQRQpLxzU5avx5er+Wf/aL6GOvW1PJOECO6n5UDunQCx05KAmCAEjTmqf
-         sV0CvhFuMYulueCgkPf2Kn8mEJzIlsEczbz2wXvAcNfv/TTQGuh1z+3E5oBr/n9so6Pa
-         CM5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777339487; x=1777944287;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=weDQ2uowpmJWEW0ohZ4PRY9xm0tEvW01Qf+utiRvTWI=;
-        b=aYXam92v1V9Okgw5CQQ/ml7ItejIJJGyvyTdsfyvkMh3F0hmL/rrz3KDM0bJB0DdR8
-         XFRbZFDW9Y/Q2ZQk3wRkktH+JzAMki6O+p6e6fxR6fGkvqoiYMhfOb8s5zQBk7WBHmN/
-         nyVI5Q2rSn9jc9ON1JUX/MlA6Bvavzh++9168LXWYGmNG20uQsEWxtifhToo5yXfW8DN
-         Mcy2JNqjazMP/LhaXxJY95HntRkmSWThQaU9kyJGC2PSpQK4LHsrOSvKRyFTFoUnCO9B
-         SlMcDuLHEcUPz1zIf2cCUHgN3vJGaXDk/yrJxAf+ntxIToEJumuxlqN/P3r/YElKSE7y
-         1c/Q==
-X-Forwarded-Encrypted: i=1; AFNElJ9trHocgjWMtTQjFtKw8lfLMIaKIy/pQA+4gBy6ddITLyk52EdT4TTGwNq5ohPIKyeT/6dBldUKWkmtLAc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxtIDQ0dRpoUKQk04eLf12B/QE097s5w6ATNqPWndag58Q1ELLo
-	6kl9hQ3s1fIYsHY2kmFWXjQKFKLHUu2pO9/rX6prhdpF6bGVgr3hJr9Y
-X-Gm-Gg: AeBDiesI4AFytIfu8hIo8UzLpAKDM07LkHBNUXIP7bunYr1lb0xUYRlHJoKxuscepi0
-	8iR8tGqLuxsHyAP/pGQIaRu/28NgIC+G8IO+wa0y2Ra1GOSVliuEA4R5BCimU9R2h0wnmsF2EdJ
-	BA1TpfoeoIFYcLB6ZTHKcSMthGS++qtHEJdrBfQXrVPBwadalT+2P1AP6uYZ456bWMsMaU/OYry
-	70esk3GaN9wnp36g8DDfMvIaNk3d6PCfDR/FmEyinmZtoS/ScL26shHIPCxib31KH44KH+Xkqty
-	QlGAqw2GrSci+JLCINitlsopxY8qeeG8PODNijiLqbLDgXIWAm/uW4Bg8KBE3TQ7i/FsdNiCmYr
-	eAI37Y9d8lqr2KptwLP6051/U4/+tiA238l+J+9oHpjAXBFB1TyCzHUT1UZ3ilysYPMbBRtZgAs
-	sV/pnKeTLuXy1SZUaEe4xB4/2cWNNASGRMPJgOdu6IkcjuhhjB6C/46NXU8sub1K9w8Ly5i2eIn
-	JlmHp5GQ0ZmUA==
-X-Received: by 2002:a05:600c:5251:b0:488:81b1:ae36 with SMTP id 5b1f17b1804b1-48a77b19cf8mr13046995e9.23.1777339487108;
-        Mon, 27 Apr 2026 18:24:47 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48a774d9bd1sm10577525e9.3.2026.04.27.18.24.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Apr 2026 18:24:46 -0700 (PDT)
-Date: Tue, 28 Apr 2026 02:24:45 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Eric Biggers <ebiggers@kernel.org>
+	s=arc-20240116; t=1777340202; c=relaxed/simple;
+	bh=SxEnJ5lG7Z3dI9JA/sUF0K65BeJfFboQkDmohfpIDPA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CExG5A4dGRYGEWfy3QKAUKqD9agsrgOMRJz/KbMKt2Qkgz9u6DQQVcj7sPX4/EojSUTEpav26TQRflqh7pIJL8l0uSEUbjIbZaU/pzlaxfTud+vtzOhLV3koNb9dPBKAosi9K7VthYZqxHa8Z56JAB55RqeV97QyVpv923fAFds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gNoXSzz9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C431CC19425;
+	Tue, 28 Apr 2026 01:36:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777340202;
+	bh=SxEnJ5lG7Z3dI9JA/sUF0K65BeJfFboQkDmohfpIDPA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gNoXSzz9njbbGSOq71tipeGEgjt4i+Nq2t1QmvP0O1uNKQMyq/2NLqswpkfsvTaDM
+	 fjQpokGjQG9lS67rzUV0Kqqyk7B93gRLgWMLcfzkn7r0SdMM9cJaN6wXblS9v2/I8J
+	 KjcxQbMmsXQHuqYq6i2MKu1bC6sPJ5q8fqDsQlFhGyIL5IaqYQ1FUlRDxptQeyUHSo
+	 5iwI7nPcWUWngIRs5suRvgYrpN4zWlMh3mnuL/frmthtO6D4sJbwqUGy3D64qmjimK
+	 FcsJXV+lSuMVjpaxxczEoX5DkGrmiNjTEzzjMxeYA3Rgs3prI6mbKNvBtCGOxNKV1O
+	 HXWcR/tufMzBw==
+Date: Mon, 27 Apr 2026 18:35:24 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: David Laight <david.laight.linux@gmail.com>
 Cc: netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>, Neal
- Cardwell <ncardwell@google.com>, Kuniyuki Iwashima <kuniyu@google.com>,
- "David S . Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Simon
- Horman <horms@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, "Jason A .
- Donenfeld" <Jason@zx2c4.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- Dmitry Safonov <0x7f454c46@gmail.com>
+	linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+	Neal Cardwell <ncardwell@google.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Dmitry Safonov <0x7f454c46@gmail.com>
 Subject: Re: [PATCH net-next v2 2/5] net/tcp-ao: Use crypto library API
  instead of crypto_ahash
-Message-ID: <20260428022445.65e14a27@pumpkin>
-In-Reply-To: <20260427172727.9310-3-ebiggers@kernel.org>
+Message-ID: <20260428013524.GB2700@sol>
 References: <20260427172727.9310-1-ebiggers@kernel.org>
-	<20260427172727.9310-3-ebiggers@kernel.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+ <20260427172727.9310-3-ebiggers@kernel.org>
+ <20260428022445.65e14a27@pumpkin>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 5D1D247C5E1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260428022445.65e14a27@pumpkin>
+X-Rspamd-Queue-Id: 2D90047C789
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23453-lists,linux-crypto=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,google.com,davemloft.net,kernel.org,redhat.com,zx2c4.com,gondor.apana.org.au,gmail.com];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-23455-lists,linux-crypto=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_COUNT_THREE(0.00)[4];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	FREEMAIL_CC(0.00)[vger.kernel.org,google.com,davemloft.net,kernel.org,redhat.com,zx2c4.com,gondor.apana.org.au,gmail.com];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 
-On Mon, 27 Apr 2026 10:27:24 -0700
-Eric Biggers <ebiggers@kernel.org> wrote:
-
-> Currently the kernel's TCP-AO implementation does the MAC and KDF
-> computations using the crypto_ahash API.  This API is inefficient and
-> difficult to use, and it has required extensive workarounds in the form
-> of per-CPU preallocated objects (tcp_sigpool) to work at all.
+On Tue, Apr 28, 2026 at 02:24:45AM +0100, David Laight wrote:
+> On Mon, 27 Apr 2026 10:27:24 -0700
+> Eric Biggers <ebiggers@kernel.org> wrote:
 > 
-> Let's use lib/crypto/ instead.  This means switching to straightforward
-> stack-allocated structures, virtually addressed buffers, and direct
-> function calls.  It also means removing quite a bit of error handling.
-> This makes TCP-AO quite a bit faster.
+> > Currently the kernel's TCP-AO implementation does the MAC and KDF
+> > computations using the crypto_ahash API.  This API is inefficient and
+> > difficult to use, and it has required extensive workarounds in the form
+> > of per-CPU preallocated objects (tcp_sigpool) to work at all.
+> > 
+> > Let's use lib/crypto/ instead.  This means switching to straightforward
+> > stack-allocated structures, virtually addressed buffers, and direct
+> > function calls.  It also means removing quite a bit of error handling.
+> > This makes TCP-AO quite a bit faster.
+> > 
+> > This also enables many additional cleanups, which later commits will
+> > handle: removing tcp-sigpool, removing support for crypto_tfm cloning,
+> > removing more error handling, and replacing more dynamically-allocated
+> > buffers with stack buffers based on the now-statically-known limits.
+> > 
+> > Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+> > Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+> ...
+> > @@ -344,33 +444,26 @@ static int tcp_v4_ao_calc_key(struct tcp_ao_key *mkt, u8 *key,
+> >  	struct kdf_input_block {
+> >  		u8                      counter;
+> >  		u8                      label[6];
+> >  		struct tcp4_ao_context	ctx;
+> >  		__be16                  outlen;
+> > -	} __packed * tmp;
 > 
-> This also enables many additional cleanups, which later commits will
-> handle: removing tcp-sigpool, removing support for crypto_tfm cloning,
-> removing more error handling, and replacing more dynamically-allocated
-> buffers with stack buffers based on the now-statically-known limits.
+> That looks a bit horrid.
+> I also had a feeling that the compiler sometimes rejects non-packed structures
+> inside packed ones.
+> Perhaps nest the whole thing inside another structure that has an initial
+> u8 pad and is marked __packed __aligned(4).
+> Then the assignments to the fields of 'ctx' will be known to be aligned
+> even when tcp4_ao_context is also __packed.
 > 
-> Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
-...
-> @@ -344,33 +444,26 @@ static int tcp_v4_ao_calc_key(struct tcp_ao_key *mkt, u8 *key,
->  	struct kdf_input_block {
->  		u8                      counter;
->  		u8                      label[6];
->  		struct tcp4_ao_context	ctx;
->  		__be16                  outlen;
-> -	} __packed * tmp;
+> 	David
 
-That looks a bit horrid.
-I also had a feeling that the compiler sometimes rejects non-packed structures
-inside packed ones.
-Perhaps nest the whole thing inside another structure that has an initial
-u8 pad and is marked __packed __aligned(4).
-Then the assignments to the fields of 'ctx' will be known to be aligned
-even when tcp4_ao_context is also __packed.
+This series doesn't change the definition of struct kdf_input_block.
+Could we defer changing it (if it makes sense to) to a later patch?
+Yes, there might be a way to get the be32 and be16 fields naturally
+aligned and get the compiler to understand that.  But that would be a
+pretty small micro-optimization compared to removing all the tcp_sigpool
+overhead from the same function (which this series does).
 
-	David
-
-> -	struct tcp_sigpool hp;
-> -	int err;
-> -
-> -	err = tcp_sigpool_start(mkt->tcp_sigpool_id, &hp);
-> -	if (err)
-> -		return err;
-> -
-> -	tmp = hp.scratch;
-> -	tmp->counter	= 1;
-> -	memcpy(tmp->label, "TCP-AO", 6);
-> -	tmp->ctx.saddr	= saddr;
-> -	tmp->ctx.daddr	= daddr;
-> -	tmp->ctx.sport	= sport;
-> -	tmp->ctx.dport	= dport;
-> -	tmp->ctx.sisn	= sisn;
-> -	tmp->ctx.disn	= disn;
-> -	tmp->outlen	= htons(tcp_ao_digest_size(mkt) * 8); /* in bits */
-> -
-> -	err = tcp_ao_calc_traffic_key(mkt, key, tmp, sizeof(*tmp), &hp);
-> -	tcp_sigpool_end(&hp);
-> -
-> -	return err;
-> +	} __packed input = {
-> +		.counter = 1,
-> +		.label = "TCP-AO",
-> +		.ctx = {
-> +			.saddr = saddr,
-> +			.daddr = daddr,
-> +			.sport = sport,
-> +			.dport = dport,
-> +			.sisn = sisn,
-> +			.disn = disn,
-> +		},
-> +		.outlen = htons(tcp_ao_digest_size(mkt) * 8), /* in bits */
-> +	};
-> +
-> +	tcp_ao_calc_traffic_key(mkt, key, &input, sizeof(input));
-> +	return 0;
->  }
+- Eric
 
