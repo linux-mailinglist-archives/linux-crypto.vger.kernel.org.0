@@ -1,195 +1,125 @@
-Return-Path: <linux-crypto+bounces-23528-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23529-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MPUZG/pz8mkHrgEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23528-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 Apr 2026 23:11:22 +0200
+	id OFI+LWB08mkHrgEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23529-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 Apr 2026 23:13:04 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1F5A49A74C
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 Apr 2026 23:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 54FC549A795
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 Apr 2026 23:13:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 411A33021733
-	for <lists+linux-crypto@lfdr.de>; Wed, 29 Apr 2026 21:09:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9C5503016527
+	for <lists+linux-crypto@lfdr.de>; Wed, 29 Apr 2026 21:11:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343F63A5430;
-	Wed, 29 Apr 2026 21:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 859F03A5430;
+	Wed, 29 Apr 2026 21:11:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bat/mB6E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fyPxQTtB"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E995438C2A7;
-	Wed, 29 Apr 2026 21:09:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47BBEBA34;
+	Wed, 29 Apr 2026 21:11:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777496958; cv=none; b=Z8F93TH4gK6RyQGQzFU9MAT9D+0BeXcrmaxiZJ7r0/JCHLMbObhckiT/Kzsv5ztOR5pvRCsv4VOyYm2807dovX7bzMDjTyw0bJy1z5WUdHq6lfbzgtRKq8sbazcgOo84O3RL1OJx7t4zjsXoB1LdLeY9pVZssZgfVbm3JRB3GLE=
+	t=1777497104; cv=none; b=OrINyUmop6kBrCEjKTNLBijkS3QQ85uzykRXNEpZrp0wuZz+1LAinxBPXAI7yfYUSirLk0a9oLqVGhzAYeE6TtJQnzpe90EyBJjtBcprPq9iWQbT0GUMZwJoLwGnMK1iQIQ3sAkyUvaUND8wiC2yJw5hufpLCrsXDBYRgYt5Vh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777496958; c=relaxed/simple;
-	bh=M0tdnOuzmXCioq1vwVig5JzFxH+713uACYEZlJFVWF0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XKSneFz2685tkp3PtVffFEBw5VnFOTRU4SRXNRWu6QXoshwHXvW3luc+oh9LwPsYNwOzTV8tcsjnbUpxLeHifk6tSvX7qEpgTWA9Js7gZ1oi0FzsrblkVapPfCRNuRR61zhVh0tniwWTIboFdeZr+tBbDWGmagNNsKFkE63dQTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bat/mB6E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 050E7C19425;
-	Wed, 29 Apr 2026 21:09:16 +0000 (UTC)
+	s=arc-20240116; t=1777497104; c=relaxed/simple;
+	bh=MRSJho1zZoNjgvRjTorbWpBPzXTaPpyCP6FGZl9fLEk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pmgDaoi9wSokx++M1Fx3ROfsPu5qnyTt1HHYYM6xhB66yC+FOyGRJ5yV5/8zEJEMV7hqzvqrWXOK3jxsD2eC1cqo4/p53rt+RsngHlJZpVLvnuA5H56mS5GuoUHiL9SyXmaxrKdmp8K0/GmBxqdI8fMMy/UGMpcf4fbEISJ2iVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fyPxQTtB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C342C19425;
+	Wed, 29 Apr 2026 21:11:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777496957;
-	bh=M0tdnOuzmXCioq1vwVig5JzFxH+713uACYEZlJFVWF0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Bat/mB6EBRPlJ0/KTDjzhHnrM7sS4bWxntiwKyhUmeP/aUWfvDhffz/ONTecVUdka
-	 3ARQrOwB5HbAuEMe3fnyTMD1Y+Qrhnrckx86yj/PqRhfD2oRZUNAP6a/hOXICkGFao
-	 HSllbKrNweKuaDMb0WNhI8O7mrsK8qg6DG72HsZUn8LfroRLI9hoI+PzEMV5Zc5UyS
-	 czA54KqM2wWLh4kVHmt0y29vfMbjgYFLzZYLGX/vroegIzwtd1Ul668w+QIbFpU8jb
-	 QgDRFs/lKeRpdexUeNvKsBpNJaDLl0JhjHX0H+zdJX6SNLeXL4afibZzJSgyLULWvb
-	 X0NntKwn82idw==
+	s=k20201202; t=1777497103;
+	bh=MRSJho1zZoNjgvRjTorbWpBPzXTaPpyCP6FGZl9fLEk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fyPxQTtBnD6hY9ZQifbdFDd1MdEbZnqfpvN2xCaJd199Vhs3N44ytaHP4HY89l2sp
+	 UySOr4Rh7YggJu7K4msWINmI/TeeQm4nBR3HQkmG7X6QMgeTMpidUtIkVdqPvS+98E
+	 xqTB7c7gl2fFFpeyyTZ1pOyNmy6x3qiD3wIV71lwYGD4vJl6Uslajv5sZlBVCecB58
+	 KjVoGWvSbQjmCW+VfgzjgXxBKkhru0Dd4eWuVvQL1MXXkuDwCIQFgLR2w2ShXMwbjb
+	 zijpctcS8JR2xyHCnymIPVPGwMHuaM6ksQwwi5d56QNaCdfZ8aKEU5W3cIodEaDVrH
+	 //D+jRJUcgVJg==
+Date: Wed, 29 Apr 2026 21:11:41 +0000
 From: Eric Biggers <ebiggers@kernel.org>
-To: netdev@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Eric Dumazet <edumazet@google.com>,
-	Neal Cardwell <ncardwell@google.com>,
-	Kuniyuki Iwashima <kuniyu@google.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Dmitry Safonov <0x7f454c46@gmail.com>,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH net-next] Documentation/tcp_ao: Document the supported MAC algorithms and lengths
-Date: Wed, 29 Apr 2026 21:08:56 +0000
-Message-ID: <20260429210856.725667-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.54.0.545.g6539524ca2-goog
+To: Simon Horman <horms@kernel.org>
+Cc: netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, edumazet@google.com,
+	ncardwell@google.com, kuniyu@google.com, davem@davemloft.net,
+	dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com,
+	ardb@kernel.org, Jason@zx2c4.com, herbert@gondor.apana.org.au,
+	0x7f454c46@gmail.com
+Subject: Re: [PATCH net-next v2 1/5] net/tcp-ao: Drop support for most
+ non-RFC-specified algorithms
+Message-ID: <20260429211141.GB621449@google.com>
+References: <20260427172727.9310-2-ebiggers@kernel.org>
+ <20260429185828.1539480-2-horms@kernel.org>
+ <20260429194456.GA621449@google.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: F1F5A49A74C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260429194456.GA621449@google.com>
+X-Rspamd-Queue-Id: 54FC549A795
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-23529-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[vger.kernel.org,google.com,davemloft.net,kernel.org,redhat.com,zx2c4.com,gondor.apana.org.au,gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-23528-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	RCVD_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.993];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-Update the TCP-AO documentation to fix some incorrect terminology and
-claims regarding the MAC algorithms, and document which MAC algorithms
-and lengths the Linux implementation supports.
+On Wed, Apr 29, 2026 at 07:44:56PM +0000, Eric Biggers wrote:
+> > One more question, on the commit message and documentation rather than the
+> > diff: Documentation/networking/tcp_ao.rst still describes TCP-AO as "May
+> > support any hashing algorithm"
+> 
+> That "May support any hashing algorithm" statement has always been
+> incorrect, so I wouldn't pay much attention to it.  It also appears in a
+> table describing TCP-AO as a protocol, not the kernel's implementation.
+> 
+> > and does not mention the newly enforced
+> > whitelist or the -ENOENT failure mode.  Should tcp_ao.rst be updated in
+> > this patch to list the accepted algorithm strings and the rationale (e.g.
+> > the 20-byte TCP option MAC cap), so userspace has a documented contract?
+> 
+> As stated in the commit message, the list of MAC algorithms supported by
+> the kernel's implementation of TCP-AO has always been undocumented.  It
+> should be documented, but I would suggest documentation improvements
+> belong in a separate patch.
 
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
----
- Documentation/networking/tcp_ao.rst | 38 ++++++++++++++++++++---------
- 1 file changed, 27 insertions(+), 11 deletions(-)
+The missing documentation is added in
+https://lore.kernel.org/netdev/20260429210856.725667-1-ebiggers@kernel.org/
 
-diff --git a/Documentation/networking/tcp_ao.rst b/Documentation/networking/tcp_ao.rst
-index d5b6d0df63c3..55304037aa81 100644
---- a/Documentation/networking/tcp_ao.rst
-+++ b/Documentation/networking/tcp_ao.rst
-@@ -5,32 +5,34 @@ TCP Authentication Option Linux implementation (RFC5925)
- ========================================================
- 
- TCP Authentication Option (TCP-AO) provides a TCP extension aimed at verifying
- segments between trusted peers. It adds a new TCP header option with
- a Message Authentication Code (MAC). MACs are produced from the content
--of a TCP segment using a hashing function with a password known to both peers.
-+of a TCP segment using a key known to both peers.
- The intent of TCP-AO is to deprecate TCP-MD5 providing better security,
--key rotation and support for a variety of hashing algorithms.
-+key rotation and support for a variety of MAC algorithms.
- 
- 1. Introduction
- ===============
- 
- .. table:: Short and Limited Comparison of TCP-AO and TCP-MD5
- 
-  +----------------------+------------------------+-----------------------+
-  |                      |       TCP-MD5          |         TCP-AO        |
-  +======================+========================+=======================+
-- |Supported hashing     |MD5                     |Must support HMAC-SHA1 |
-- |algorithms            |(cryptographically weak)|(chosen-prefix attacks)|
-- |                      |                        |and CMAC-AES-128 (only |
-- |                      |                        |side-channel attacks). |
-- |                      |                        |May support any hashing|
-- |                      |                        |algorithm.             |
-+ |Supported MAC         |MD5 of data and key     |HMAC-SHA-1-96 and      |
-+ |algorithms            |(cryptographically weak)|AES-128-CMAC-96.       |
-+ |                      |                        |Implementations are    |
-+ |                      |                        |permitted to support   |
-+ |                      |                        |additional algorithms. |
-  +----------------------+------------------------+-----------------------+
-- |Length of MACs (bytes)|16                      |Typically 12-16.       |
-- |                      |                        |Other variants that fit|
-- |                      |                        |TCP header permitted.  |
-+ |Length of MACs (bytes)|16                      |12 for HMAC-SHA-1-96   |
-+ |                      |                        |and AES-128-CMAC-96.   |
-+ |                      |                        |Implementations are    |
-+ |                      |                        |permitted to support   |
-+ |                      |                        |any MAC length that    |
-+ |                      |                        |fits in the TCP header.|
-  +----------------------+------------------------+-----------------------+
-  |Number of keys per    |1                       |Many                   |
-  |TCP connection        |                        |                       |
-  +----------------------+------------------------+-----------------------+
-  |Possibility to change |Non-practical (both     |Supported by protocol  |
-@@ -294,10 +296,24 @@ Linux provides a set of ``setsockopt()s`` and ``getsockopt()s`` that let
- userspace manage TCP-AO on a per-socket basis. In order to add/delete MKTs
- ``TCP_AO_ADD_KEY`` and ``TCP_AO_DEL_KEY`` TCP socket options must be used.
- It is not allowed to add a key on an established non-TCP-AO connection
- as well as to remove the last key from TCP-AO connection.
- 
-+``TCP_AO_ADD_KEY`` allows the MAC algorithm and MAC length to be selected.
-+Linux supports the mandatory-to-implement algorithms HMAC-SHA-1-96 and
-+AES-128-CMAC-96. In addition, as Linux extensions, it supports:
-+
-+- HMAC-SHA256. Linux uses HMAC-SHA256 in the same way as HMAC-SHA1; this
-+  includes omitting an explicit entropy extraction step. To work around the
-+  missing entropy extraction, users should provide keys with full entropy. The
-+  implementation is interoperable with other implementations of HMAC-SHA256 for
-+  TCP-AO only when they have implemented the key derivation the same way (and
-+  also the same MAC length is selected on each side).
-+
-+- Any MAC length for any of the supported MAC algorithms, provided it fits in
-+  the TCP header and is at least 4 bytes.
-+
- ``setsockopt(TCP_AO_DEL_KEY)`` command may specify ``tcp_ao_del::current_key``
- + ``tcp_ao_del::set_current`` and/or ``tcp_ao_del::rnext``
- + ``tcp_ao_del::set_rnext`` which makes such delete "forced": it
- provides userspace a way to delete a key that's being used and atomically set
- another one instead. This is not intended for normal use and should be used
-
-base-commit: 09942ddedcb960f9e78fd817ec33f501d1040c5b
--- 
-2.54.0.545.g6539524ca2-goog
-
+- Eric
 
