@@ -1,60 +1,59 @@
-Return-Path: <linux-crypto+bounces-23670-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23672-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id zbr4Mtu9+Gl10QIAu9opvQ
-	(envelope-from <linux-crypto+bounces-23670-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 04 May 2026 17:40:11 +0200
+	id OOWfOCG++Gl10QIAu9opvQ
+	(envelope-from <linux-crypto+bounces-23672-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 04 May 2026 17:41:21 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E5434C0CEA
-	for <lists+linux-crypto@lfdr.de>; Mon, 04 May 2026 17:40:10 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 952EB4C0D30
+	for <lists+linux-crypto@lfdr.de>; Mon, 04 May 2026 17:41:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E341130173AD
-	for <lists+linux-crypto@lfdr.de>; Mon,  4 May 2026 15:39:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 65BF03045ED5
+	for <lists+linux-crypto@lfdr.de>; Mon,  4 May 2026 15:39:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8503A3E0C69;
-	Mon,  4 May 2026 15:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97EF33E120F;
+	Mon,  4 May 2026 15:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="rwoGylUq"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hE2n0h+h"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C383E0220
-	for <linux-crypto@vger.kernel.org>; Mon,  4 May 2026 15:39:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972DF3E0251;
+	Mon,  4 May 2026 15:39:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777909183; cv=none; b=XGcs40avhNGBBv4aUXfaFsWqS8sGLc/gmDHA8EUxVgEsUZuX+rdma6MQNGZ6y3x0K4M+2ybmDX4AYa2e04S4KraZotUXNS6xY+CGVFv+gZ9fEuybEt2VAbY13LObXbFMiGRIRg6JGv0msyTM3gGQOGW0Q26lnqlsrdU1lzrkF2I=
+	t=1777909184; cv=none; b=iNt8dpcp4FWS6Ji074hoF0HK5kQ7pFCMCF8RLpv5/VI5pTUVn5vZY0KVX+a5stZ++V4kO7i/WHR2GB3DAdCDz+s+o5ln7BSsiyjbGsW3fdGlqg2806KEubp85U8y9sOMndsC1oAOynlxzyTJxmkdQ4KoZcSiDl9e4ZI+RoTcvl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777909183; c=relaxed/simple;
-	bh=q4MZ+La159R2EqSHOQ0B8f2cDTsmyvN1X83sSLb5MKU=;
+	s=arc-20240116; t=1777909184; c=relaxed/simple;
+	bh=wXA66UJbIpzCtYdtcAzvfSpEKu6C0MJtApWKi6F4YDw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=gteL/3qwitsqvEU4Yx33WLfztFescCty6rw8Ek8ceZ8L3l87GRDG2q4F/ii0goRjdEsr0ad3NREzsx+uW0VzbKrV02QfgWUdbNIYNTtZqsqLgn1KkV8tz4yBBNStOSoYkLfFDUuWiliTDf7CeZ3JGpiMoyYftOeN/a8BwpJiDBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=rwoGylUq; arc=none smtp.client-ip=185.246.84.56
+	 In-Reply-To:To:Cc; b=WKEyjSOjNOSqNmTy3WDI/uedKn9U9M7H7tSEUb/SJ8kXLNqePE1va3e+uLjFmMRLbzKioUBZyF+0z7Mkw5tVdGni9jyAZZO9MURCXpawOOwL8u5LYTNlo90QQDS77WKo9AjYFg4c/fVMUkHIEKuyrSV7vTLJlnDco+z/c1T69cY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hE2n0h+h; arc=none smtp.client-ip=185.246.84.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 2F4561A350E;
-	Mon,  4 May 2026 15:39:40 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 48B3E1A350F;
+	Mon,  4 May 2026 15:39:41 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 051AD5FD5F;
-	Mon,  4 May 2026 15:39:40 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0CD9211AD2BCC;
-	Mon,  4 May 2026 17:39:37 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 1F7F45FD5F;
+	Mon,  4 May 2026 15:39:41 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 77AA611AD2BCD;
+	Mon,  4 May 2026 17:39:39 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1777909178; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1777909180; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=31DNmP7BbqxxwmafcensuC/+auDTPsXFUOPjvKgF2Uw=;
-	b=rwoGylUqCany6IvNRjSEGXmxM2siBJjAsaQSFzzj2S5eLnP4v1yK0fHMn2uMJ3n5GN5U+b
-	L61sXjKaEmgAJY4CDU5ay0v6e8gDW6wSuyQezYyqTabLZE4yorIX6SdQTShplajC8Y6ojT
-	gmueOPK8Q7BOR1xtqUZctQmNslir6pYWO/5o0fvqowJM80XDLTOqvdcYH2hB3JdOK6kqRs
-	PoAwRifAHsG6d5/dW4i8//iAEmNd76FmAgxAb8WwRPfPQmlsbvXuYCEWKe0VyYLxJHOqxS
-	MMAY8AqIVG5Udyu9grN1vnllB35DY8AJdJSEAkfZQ0IUOZlTvzrLWw7egOipmA==
+	bh=uvBvHYQc9incdS4pyRWWg39JHb2lfMzCeMd1O03d4MU=;
+	b=hE2n0h+h8wPjrWHv0ilOuElgq3KHEGllQ0NiWDSwf7ced0kGiaHaeP65NtB21xt9+ITwSW
+	e7iOa91bcUwyjlKsuUJi159XmjoZcRvdRahgPA0ZWxUt/uuVRF5JwycGPDXIdYii7ssFDw
+	NQLRVrjC1CgzcXOlS723LFh9X0vyi+DRdASzQfjEORdVXs2u2ayxDQdbb1ammNwFARkQfV
+	JMPMJ7dYvAAvK1Prz2oVpEsspm8+pn7v9IWuBK8kzvcZk1AsrUVq0VBdaOx6yyWDzWTHSe
+	zA+EuZjaWUzv8OKJVj6dlSgSqACmfIiU9FwTC9xeUXFzLGZ+xsTdICqRMjS1vQ==
 From: Paul Louvel <paul.louvel@bootlin.com>
-Date: Mon, 04 May 2026 17:38:28 +0200
-Subject: [PATCH 2/4] crypto: talitos - rename first_desc/last_desc to
- first_request/last_request
+Date: Mon, 04 May 2026 17:38:29 +0200
+Subject: [PATCH 3/4] crypto: talitos - remove useless wrapper
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -63,7 +62,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260504-bootlin_test-7-1-rc1_sec_bugfix-v1-2-c97c641976f5@bootlin.com>
+Message-Id: <20260504-bootlin_test-7-1-rc1_sec_bugfix-v1-3-c97c641976f5@bootlin.com>
 References: <20260504-bootlin_test-7-1-rc1_sec_bugfix-v1-0-c97c641976f5@bootlin.com>
 In-Reply-To: <20260504-bootlin_test-7-1-rc1_sec_bugfix-v1-0-c97c641976f5@bootlin.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>, 
@@ -76,26 +75,26 @@ Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
  Paul Louvel <paul.louvel@bootlin.com>, 
  Christophe Leroy <chleroy@kernel.org>, stable@vger.kernel.org
 X-Mailer: b4 0.15.1
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1777909177; l=4824;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1777909177; l=1332;
  i=paul.louvel@bootlin.com; s=20260313; h=from:subject:message-id;
- bh=q4MZ+La159R2EqSHOQ0B8f2cDTsmyvN1X83sSLb5MKU=;
- b=GqMLY7uq3gAFs1VMtxAF6a/t/QIJZKiol7P3taZWogGNtXSIIPMKdH0IjjR79W8Wl9ozRrFh+
- fwIKWKj+PEkAWAK//sS8Mc9wNp+/vSTJ11T/ZcQa+vp69DnEVRcfz1Z
+ bh=wXA66UJbIpzCtYdtcAzvfSpEKu6C0MJtApWKi6F4YDw=;
+ b=8ca7UXY81DLfirE2MjD+496dbqAgpBfv/+Z7OYhyOE5WBf6N5LvBWIr0o+IbYYSW89QlqfNxQ
+ OmVT20gym0fD5mhm+Le0WyX5J49pIUQ7hPHZRnDkxR+F/6W+/1v9vMq
 X-Developer-Key: i=paul.louvel@bootlin.com; a=ed25519;
  pk=eLW50NT18UAvUT5cAcYf88zNbBCZDLFXuptpyLVhVIU=
 X-Last-TLS-Session-Version: TLSv1.3
-X-Rspamd-Queue-Id: 4E5434C0CEA
+X-Rspamd-Queue-Id: 952EB4C0D30
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23670-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23672-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -108,132 +107,48 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[paul.louvel@bootlin.com,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,bootlin.com:email,bootlin.com:dkim,bootlin.com:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,bootlin.com:email,bootlin.com:dkim,bootlin.com:mid]
 
-In talitos_ahash_req_ctx and talitos_export_state, the fields
-first_desc and last_desc describe request-level (not descriptor-level)
-state.  Rename them to first_request and last_request for clarity.
-last_desc is also removed from talitos_ahash_req_ctx as it is no
-longer used.
+ahash_process_req() was a wrapper used in commit 655ef638a2bc ("crypto:
+talitos - fix SEC1 32k ahash request limitation"). Rename
+ahash_process_req_one() to ahash_process_req() and remove the wrapper.
 
 Cc: stable@vger.kernel.org
 Signed-off-by: Paul Louvel <paul.louvel@bootlin.com>
 ---
- drivers/crypto/talitos.c | 28 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
+ drivers/crypto/talitos.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-index 458a6a56d65b..6ada42d8aa32 100644
+index 6ada42d8aa32..8d063ad5639c 100644
 --- a/drivers/crypto/talitos.c
 +++ b/drivers/crypto/talitos.c
-@@ -954,8 +954,7 @@ struct talitos_ahash_req_ctx {
- 	u8 buf[2][HASH_MAX_BLOCK_SIZE];
- 	int buf_idx;
- 	unsigned int swinit;
--	unsigned int first_desc;
--	unsigned int last_desc;
-+	unsigned int first_request;
- 	unsigned int last_request;
- 	unsigned int to_hash_later;
- 	unsigned int nbuf;
-@@ -968,8 +967,8 @@ struct talitos_export_state {
- 	u32 hw_context[TALITOS_MDEU_MAX_CONTEXT_SIZE / sizeof(u32)];
- 	u8 buf[HASH_MAX_BLOCK_SIZE];
- 	unsigned int swinit;
--	unsigned int first_desc;
--	unsigned int last_desc;
-+	unsigned int first_request;
-+	unsigned int last_request;
- 	unsigned int to_hash_later;
- 	unsigned int nbuf;
- };
-@@ -1830,7 +1829,7 @@ static void sec1_ahash_done(struct device *dev, struct talitos_desc *desc,
- 	struct talitos_ahash_req_ctx *req_ctx = ahash_request_ctx(context);
- 	struct ahash_request *areq = context;
+@@ -2061,7 +2061,7 @@ static int ahash_process_req_prepare(struct ahash_request *areq,
+ 	return 0;
+ }
  
--	req_ctx->first_desc = 0;
-+	req_ctx->first_request = 0;
+-static int ahash_process_req_one(struct ahash_request *areq, unsigned int nbytes)
++static int ahash_process_req(struct ahash_request *areq, unsigned int nbytes)
+ {
+ 	struct crypto_ahash *tfm = crypto_ahash_reqtfm(areq);
+ 	struct talitos_ctx *ctx = crypto_ahash_ctx(tfm);
+@@ -2147,11 +2147,6 @@ static int ahash_process_req_one(struct ahash_request *areq, unsigned int nbytes
+ 	return ret;
+ }
  
- 	ahash_free_desc_list_from(areq,
- 				  list_first_entry(&req_ctx->desc_list,
-@@ -1855,7 +1854,7 @@ static void sec2_ahash_done(struct device *dev, struct talitos_desc *desc,
- 	struct talitos_edesc *edesc, *next;
- 	bool is_last;
- 
--	req_ctx->first_desc = 0;
-+	req_ctx->first_request = 0;
- 
- 	edesc = container_of(desc, struct talitos_edesc, desc);
- 	is_last = edesc->last;
-@@ -1930,7 +1929,7 @@ static void common_nonsnoop_hash(struct talitos_edesc *edesc,
- 	/* first DWORD empty */
- 
- 	/* hash context in */
--	if (!edesc->first || !req_ctx->first_desc || req_ctx->swinit) {
-+	if (!edesc->first || !req_ctx->first_request || req_ctx->swinit) {
- 		map_single_talitos_ptr_nosync(dev, &desc->ptr[1],
- 					      req_ctx->hw_context_size,
- 					      req_ctx->hw_context,
-@@ -2036,14 +2035,14 @@ static int ahash_process_req_prepare(struct ahash_request *areq,
- 			edesc->desc.hdr |= DESC_HDR_MODE0_MDEU_CONT;
- 
- 		/* request SEC to INIT hash. */
--		if (req_ctx->first_desc && edesc->first && !req_ctx->swinit)
-+		if (req_ctx->first_request && edesc->first && !req_ctx->swinit)
- 			edesc->desc.hdr |= DESC_HDR_MODE0_MDEU_INIT;
- 
- 		/*
- 		 * When the tfm context has a keylen, it's an HMAC.
- 		 * A first or last (ie. not middle) descriptor must request HMAC.
- 		 */
--		if (ctx->keylen && ((req_ctx->first_desc && edesc->first) ||
-+		if (ctx->keylen && ((req_ctx->first_request && edesc->first) ||
- 				    (req_ctx->last_request && edesc->last)))
- 			edesc->desc.hdr |= DESC_HDR_MODE0_MDEU_HMAC;
- 
-@@ -2165,14 +2164,13 @@ static int ahash_init(struct ahash_request *areq)
- 	/* Initialize the context */
- 	req_ctx->buf_idx = 0;
- 	req_ctx->nbuf = 0;
--	req_ctx->first_desc = 1; /* first_desc indicates h/w must init its context */
-+	req_ctx->first_request = 1;
- 	req_ctx->swinit = 0; /* assume h/w init of context */
- 	size =	(crypto_ahash_digestsize(tfm) <= SHA256_DIGEST_SIZE)
- 			? TALITOS_MDEU_CONTEXT_SIZE_MD5_SHA1_SHA256
- 			: TALITOS_MDEU_CONTEXT_SIZE_SHA384_SHA512;
- 	req_ctx->hw_context_size = size;
- 	req_ctx->last_request = 0;
--	req_ctx->last_desc = 0;
- 
- 	dma = dma_map_single(dev, req_ctx->hw_context, req_ctx->hw_context_size,
- 			     DMA_TO_DEVICE);
-@@ -2264,8 +2262,8 @@ static int ahash_export(struct ahash_request *areq, void *out)
- 	       req_ctx->hw_context_size);
- 	memcpy(export->buf, req_ctx->buf[req_ctx->buf_idx], req_ctx->nbuf);
- 	export->swinit = req_ctx->swinit;
--	export->first_desc = req_ctx->first_desc;
--	export->last_desc = req_ctx->last_desc;
-+	export->first_request = req_ctx->first_request;
-+	export->last_request = req_ctx->last_request;
- 	export->to_hash_later = req_ctx->to_hash_later;
- 	export->nbuf = req_ctx->nbuf;
- 
-@@ -2290,8 +2288,8 @@ static int ahash_import(struct ahash_request *areq, const void *in)
- 	memcpy(req_ctx->hw_context, export->hw_context, size);
- 	memcpy(req_ctx->buf[0], export->buf, export->nbuf);
- 	req_ctx->swinit = export->swinit;
--	req_ctx->first_desc = export->first_desc;
--	req_ctx->last_desc = export->last_desc;
-+	req_ctx->first_request = export->first_request;
-+	req_ctx->last_request = export->last_request;
- 	req_ctx->to_hash_later = export->to_hash_later;
- 	req_ctx->nbuf = export->nbuf;
- 
+-static int ahash_process_req(struct ahash_request *areq, unsigned int nbytes)
+-{
+-	return ahash_process_req_one(areq, nbytes);
+-}
+-
+ static int ahash_init(struct ahash_request *areq)
+ {
+ 	struct crypto_ahash *tfm = crypto_ahash_reqtfm(areq);
 
 -- 
 2.53.0
