@@ -1,155 +1,207 @@
-Return-Path: <linux-crypto+bounces-23665-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23667-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mDVWGMK0+Gm3zAIAu9opvQ
-	(envelope-from <linux-crypto+bounces-23665-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 04 May 2026 17:01:22 +0200
+	id 3i9LIou7+Gka0QIAu9opvQ
+	(envelope-from <linux-crypto+bounces-23667-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 04 May 2026 17:30:19 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A144A4C0522
-	for <lists+linux-crypto@lfdr.de>; Mon, 04 May 2026 17:01:16 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 754CD4C0B23
+	for <lists+linux-crypto@lfdr.de>; Mon, 04 May 2026 17:30:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D6A163042A2C
-	for <lists+linux-crypto@lfdr.de>; Mon,  4 May 2026 14:45:38 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 5A6193018347
+	for <lists+linux-crypto@lfdr.de>; Mon,  4 May 2026 15:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4CA73E1CF0;
-	Mon,  4 May 2026 14:44:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95B53DFC9F;
+	Mon,  4 May 2026 15:24:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gG3Xw+2i"
+	dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b="Iw/Stqm/"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E003E0249;
-	Mon,  4 May 2026 14:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5F53DE459
+	for <linux-crypto@vger.kernel.org>; Mon,  4 May 2026 15:24:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777905859; cv=none; b=aEVx5IBuu9oyzlQU5q9uDtnoTQNKOq5g6tiPE4lkWm2/7+F/NuwIie3tdAYzXAVBFBYF+OZf4c4HAh8llT5NOhijFm+YqvmiUbZbT67GbcnIJrZ8ycr3Dgl0jH917xKbz+D63cwej0CdCsMi9nRKYWVLs3IOZrWacQu3bwR5HHI=
+	t=1777908278; cv=none; b=a2hva1oSiSYbEd83KapM7uBQktG4wRiiYu8yJXcAQRePL+kqQ/iu1FFEW67kk+WxfgYl4EY0fGM06I0K4t/Yl5r3O71FoA+91pkZwCNmC2DTuJmdQdVXrW82AsBT1D9v/KwzaFYXMJ7cSKo84Y9bG0UgpI6hkwMzVXaNMVZfIBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777905859; c=relaxed/simple;
-	bh=Hcd+c5ejDq9HmZ/RCyyMXAR0oqXfPOkprJJVWljHL1I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XvkitN6a6KmJ9M0tfJHpB2gt1nAf3zrgurew/dDpcKx6LBLMf1sbPi9b+Gft2g+iF/p5PENiFTq11W8W2x4GLua1PAo1GrBmO7Oo0GOB/BSbFQ1hy+33/O4mTctEg6W05GpmtZnzsSO4MDcthwDl3+lTqiA99oWbTBTM6t3H7/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gG3Xw+2i; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1777905858; x=1809441858;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Hcd+c5ejDq9HmZ/RCyyMXAR0oqXfPOkprJJVWljHL1I=;
-  b=gG3Xw+2i+GkjUBHLBESiY/Yzup7nGNUB4ceLw7eFf1DisTstKD1vRf4a
-   65z4jVNQZue/cI3QuUj45mHgSIq1SAk8+kfU/V2MTflDBhdPQ9Qa4Y+PF
-   kcesuuBs+Tt70Pb4WG7TzbqGbDkUXL9+nYF77tjb+RaIk0QOKcTD+b7KO
-   N4uu58cTfjdOCl2/rmqnp/Q+Anrck9iWDuJbU2NSvxz7s0YH2jmeb7Sb2
-   AAJAGzQMAuVqeWZ4D7nfJOd1WPzbCIq1iv535CUqcDX5CHLh77zS3ZA9/
-   ePplL1loLc1Nk/vhn5gDE0ETsFXfqGXborr3gKjmmvtu+6qJpOd7gqrMC
-   Q==;
-X-CSE-ConnectionGUID: 4rj+7D5PSfGrgQCXz7t4zA==
-X-CSE-MsgGUID: LsR42FjkT06Fl6x2IuULGg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11776"; a="78467467"
-X-IronPort-AV: E=Sophos;i="6.23,215,1770624000"; 
-   d="scan'208";a="78467467"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2026 07:44:18 -0700
-X-CSE-ConnectionGUID: ayBP/g22R1iN9HyLaGb2ug==
-X-CSE-MsgGUID: 6qRLhbp3T3yujl/++awl7g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,215,1770624000"; 
-   d="scan'208";a="231171546"
-Received: from ettammin-mobl2.ger.corp.intel.com (HELO localhost) ([10.245.245.198])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2026 07:44:16 -0700
-Date: Mon, 4 May 2026 17:44:13 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Olivia Mackall <olivia@selenic.com>,
+	s=arc-20240116; t=1777908278; c=relaxed/simple;
+	bh=mBTCRfmyLiiqDTNNeCwkkG8BW2ePxsRS+eMQ6c/jyEU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pAn3Io28XggfNAI6TyQtWTWT2YncVkW8zDlbYYvO+/rL1Kn8GpraLdiY91gzeVkGkoqFu7UOVGt7JX++wdWmX9LO0OAXTpyhITa2rpROAeeoK8g5z35qa6AgqCQxDJKn+NymlPqXhgCz1tqensPZgZKkbu8GGckZ+XGW1p8zXPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20251104.gappssmtp.com header.i=@baylibre-com.20251104.gappssmtp.com header.b=Iw/Stqm/; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-44c4cc7c1cfso1351667f8f.0
+        for <linux-crypto@vger.kernel.org>; Mon, 04 May 2026 08:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20251104.gappssmtp.com; s=20251104; t=1777908274; x=1778513074; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s5L1gyrAMclmWaElGNBFaKeIDh6nrUu9GFr6ldCV0Kk=;
+        b=Iw/Stqm/HlAsmJh1EkR4ve5UrnZsdbtDKiy/nujoPIyB3lIbYQo51V3nJxggAUbylr
+         QZMwxu8Jyxztm0c4Utd4s7OCsBlEX5fuVa4f2tNcKqTrbofGpLMmwRUazJK4kRfQTRZX
+         w0jc1k3rL8EaGNim976QE4/BKqz3ktHHs7fb3foxAe3NulCf209dTLMPTJ/EF4XyLQOe
+         khQiVM8F82GHcu0jveCFO3QvmxQx3DSg9IpqaR5IcVwV93TFU3hKkbB8oebGQo+6SboS
+         JGxleZy5F+KD4NO0yRtlX/Rh5bs4OxPgkR64NcnhECyysmKRtfcvbJzdz92FjSiddRUe
+         hk0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1777908274; x=1778513074;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s5L1gyrAMclmWaElGNBFaKeIDh6nrUu9GFr6ldCV0Kk=;
+        b=NC93fXt9wg5cDag95FjpeImozdHR3qyWL/VKN7NL9aLPVKGat1blreYM5BbZS8Rv04
+         QWdpO0DgKef3hNPPhky6/GYO7NfWNX8KbhMsTJS17/g1x29oukfj7IEkH9tHfXm7e0kT
+         R/tPn9u1QUcGnIBvmMTPTy3IVleW1aTKjKyKMpOeYjt3zDNYGDWo/XhCR41m1VLjavg1
+         tC+SOfMigpqsD8yQs7097Grqt0wsLGaeS6eJ8VBt5wFpQVfRFqz8ZTomM+M0U3vHd/4M
+         zCl3/njzKnOeZ0URDwKMYq0PV9xYbG1lZRjNOBzV0VZeb+JmKI+LmKoCTJqD3CMqvV5m
+         m8Sg==
+X-Forwarded-Encrypted: i=1; AFNElJ8k4KR/t2X3awH52ctuCwDxoAtjcb4f1Xi7yE4bFGt8osN9qjSotxzyNSZa+x8RMLYvK8f+Rk/joABkxsI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxPx3+TJSBgDUQyJBnTGdMnmClfhZndTSejb0BHGI4rfuRzOzUa
+	O2dtMcQL5Q0DQsg/Hb0nyNY8WAWLQ2JVYk81ha455UA7w8VETXvtHJB6smN+qR9uArMQzIxtguH
+	ybODL
+X-Gm-Gg: AeBDietm5ebRs3JiLYPR1SdzSXhxQG68AyEIY5yHkDN2V92dmMkf25YBfnFiSk5ceog
+	bpTqoFRPPIEt5xPwAB3N4HbAlgyFKLI7DQdHljDr1FuaUQ72XlYzKDeKP+GEws6fKRDohNQnb79
+	kwYUUevv2Q0XESrvUMKaU/pRNB2I8UcIqiwc05hHbYdDGjftFBW3ccLeq7RY15o2g3E6lENwxFQ
+	qMQpEktWoq1dhK28OACmoPccVio06tc0G7kqZeR4Al3z1I6UzheTniD3TVpaBHy3+r1hmEftb90
+	Qk4PIKPsDtAaEKaitMfSVvQYyW5z4oyZ7BRjBiULreXztvMNj2+4ZPLZq7+2BH57hMCCClnikYf
+	r6qrf7W14lnGqqDHzyVRWoAxbPToZXncal6tGADtgkP3fl3nr0ahbH+Pc1yI9AA0Jr9LdNtlpe4
+	n+RjeeXM3A4/aWw8XZRJVGvBLZv9u29hHkdrPt/r6Cd0XzF/qTKfSZak4aJTKFVEUTs0m4bpXh/
+	idahck2drB7XiaWgAwiaaFY6g==
+X-Received: by 2002:a05:6000:4304:b0:43b:8858:1146 with SMTP id ffacd0b85a97d-44bb62073b9mr18108417f8f.41.1777908274234;
+        Mon, 04 May 2026 08:24:34 -0700 (PDT)
+Received: from localhost (p200300f65f114e08197264a4bf9e813f.dip0.t-ipconnect.de. [2003:f6:5f11:4e08:1972:64a4:bf9e:813f])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-44a8ea7cf6asm27113524f8f.8.2026.05.04.08.24.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 May 2026 08:24:33 -0700 (PDT)
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig=20=28The=20Capable=20Hub=29?= <u.kleine-koenig@baylibre.com>
+To: Tom Lendacky <thomas.lendacky@amd.com>,
+	John Allen <john.allen@amd.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] hwrng: core - use bool for wait parameter in
- rng_get_data
-Message-ID: <afiwvXUnPhZ6xcAV@ashevche-desk.local>
-References: <20260430110047.248825-5-thorsten.blum@linux.dev>
- <20260430110047.248825-6-thorsten.blum@linux.dev>
- <afilBnLk4lapbAj4@black.igk.intel.com>
- <afivHbWdCprHpJSB@linux.dev>
+	"David S. Miller" <davem@davemloft.net>
+Cc: Markus Schneider-Pargmann <msp@baylibre.com>,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: ccp - Define pci_device_ids using named initializers
+Date: Mon,  4 May 2026 17:24:21 +0200
+Message-ID: <20260504152421.2147027-2-u.kleine-koenig@baylibre.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <afivHbWdCprHpJSB@linux.dev>
-Organization: Intel Finland Oy - BIC 0357606-4 - c/o Alberga Business Park, 6
- krs, Bertel Jungin Aukio 5, 02600 Espoo
-X-Rspamd-Queue-Id: A144A4C0522
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3557; i=u.kleine-koenig@baylibre.com; h=from:subject; bh=mBTCRfmyLiiqDTNNeCwkkG8BW2ePxsRS+eMQ6c/jyEU=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBp+LolDzRpK8wRwL1vSjXJsiuXKSCqvw6iQQJvz 6rwOs1vxx2JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCafi6JQAKCRCPgPtYfRL+ Tn0XB/4r4//GL59ncvaNlSdy6qb7aJsWR7/qjqFpkviz5q3jjMAyVjvE8GpHrqt2Etkq++C74as xa5k+EYtn7sKf8uY5k9JtUqKJ1sz1s+qB4P/8OkjYn/oweswOR5t3DMI8wYUNChMbzTmWS6uf15 tkpQ/R9Fi305MJQtDqPMl4MR7UePJn54+0ozv8KSv1WdQZXdSZjxUd/8T8Mpg0HEYwlCkaWIseu HNN1fc+Sgh2IKCXYyMhu2RSOgEKaOYE2Fi+XCnvvHyx+DJpe4uNSyM8PQyNeoSK82i1Tyg/9hnp Qfn1/2iEYNa37ipCKbg/rKUTfwcYIZZ7aNJ0u1j4OEgQI5a/
+X-Developer-Key: i=u.kleine-koenig@baylibre.com; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 754CD4C0B23
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[baylibre-com.20251104.gappssmtp.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RSPAMD_URIBL_FAIL(0.00)[intel.com:query timed out];
-	HAS_ORG_HEADER(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-23665-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-23667-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[baylibre.com];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[baylibre-com.20251104.gappssmtp.com:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[u.kleine-koenig@baylibre.com,linux-crypto@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[andriy.shevchenko@intel.com,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[intel.com:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ashevche-desk.local:mid,intel.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[baylibre-com.20251104.gappssmtp.com:dkim,baylibre.com:mid,baylibre.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 
-On Mon, May 04, 2026 at 04:37:17PM +0200, Thorsten Blum wrote:
-> On Mon, May 04, 2026 at 03:54:14PM +0200, Andy Shevchenko wrote:
-> > On Thu, Apr 30, 2026 at 01:00:49PM +0200, Thorsten Blum wrote:
+The .driver_data member of the struct pci_device_id array was
+initialized by list expressions. This isn't easily readable if you're
+not into PCI. Using the PCI_DEVICE macro and named initializers is more
+explicit and thus easier to parse. Also skip explicit assignment of 0
+(which the compiler then takes care of) in the terminating entry.
 
-...
+Signed-off-by: Uwe Kleine-König (The Capable Hub) <u.kleine-koenig@baylibre.com>
+---
+Hello,
 
-> > >  static inline int rng_get_data(struct hwrng *rng, u8 *buffer, size_t size,
-> > > -			int wait) {
-> > > +			bool wait) {
-> > 
-> > You want to fix the checkpatch warnings while at it and indentation.
-> 
-> I just checked again, but I don't get any checkpatch warnings.
+The secret plan is to make struct pci_device_id::driver_data an
+anonymous union (similar to
+https://lore.kernel.org/all/cover.1776579304.git.u.kleine-koenig@baylibre.com/)
+and that requires named initializers. But IMHO it's also a nice cleanup
+on its own.
 
-Hmm... I remember for sure that checkpatch warns when it's a { on the line of
-the prototype... Maybe it's about different scenario. Whatever, the coding
-style is to have { on the new line.
+The anonymous union will allow changes like the following:
 
-...
+-	{ PCI_VDEVICE(AMD, 0x1537), .driver_data = (kernel_ulong_t)&dev_vdata[0] },
++	{ PCI_VDEVICE(AMD, 0x1537), .driver_data_ptr = &dev_vdata[0] },
 
-> > > -		rc = rng_get_data(rng, rng_fillbuf,
-> > > -				  rng_buffer_size(), 1);
-> > > +		rc = rng_get_data(rng, rng_fillbuf, rng_buffer_size(), true);
-> > 
-> > Is it the only user? Why parameter is needed at all?
-> 
-> The other one in rng_dev_read() already uses a boolean expression, hence
-> no changes.
+(together with the respective change in the code when the value is
+used). This gets rid of a bunch of casts and thus slightly improves
+type safety.
 
-Good, thanks for clarification.
+Best regards
+Uwe
 
+ drivers/crypto/ccp/sp-pci.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/crypto/ccp/sp-pci.c b/drivers/crypto/ccp/sp-pci.c
+index 6ac805d99ccb..ede6ff9ad0c2 100644
+--- a/drivers/crypto/ccp/sp-pci.c
++++ b/drivers/crypto/ccp/sp-pci.c
+@@ -552,21 +552,21 @@ static const struct sp_dev_vdata dev_vdata[] = {
+ 
+ };
+ static const struct pci_device_id sp_pci_table[] = {
+-	{ PCI_VDEVICE(AMD, 0x1537), (kernel_ulong_t)&dev_vdata[0] },
+-	{ PCI_VDEVICE(AMD, 0x1456), (kernel_ulong_t)&dev_vdata[1] },
+-	{ PCI_VDEVICE(AMD, 0x1468), (kernel_ulong_t)&dev_vdata[2] },
+-	{ PCI_VDEVICE(AMD, 0x1486), (kernel_ulong_t)&dev_vdata[3] },
+-	{ PCI_VDEVICE(AMD, 0x15DF), (kernel_ulong_t)&dev_vdata[4] },
+-	{ PCI_VDEVICE(AMD, 0x14CA), (kernel_ulong_t)&dev_vdata[5] },
+-	{ PCI_VDEVICE(AMD, 0x15C7), (kernel_ulong_t)&dev_vdata[6] },
+-	{ PCI_VDEVICE(AMD, 0x1649), (kernel_ulong_t)&dev_vdata[6] },
+-	{ PCI_VDEVICE(AMD, 0x1134), (kernel_ulong_t)&dev_vdata[7] },
+-	{ PCI_VDEVICE(AMD, 0x17E0), (kernel_ulong_t)&dev_vdata[7] },
+-	{ PCI_VDEVICE(AMD, 0x156E), (kernel_ulong_t)&dev_vdata[8] },
+-	{ PCI_VDEVICE(AMD, 0x17D8), (kernel_ulong_t)&dev_vdata[8] },
+-	{ PCI_VDEVICE(AMD, 0x115A), (kernel_ulong_t)&dev_vdata[9] },
++	{ PCI_VDEVICE(AMD, 0x1537), .driver_data = (kernel_ulong_t)&dev_vdata[0] },
++	{ PCI_VDEVICE(AMD, 0x1456), .driver_data = (kernel_ulong_t)&dev_vdata[1] },
++	{ PCI_VDEVICE(AMD, 0x1468), .driver_data = (kernel_ulong_t)&dev_vdata[2] },
++	{ PCI_VDEVICE(AMD, 0x1486), .driver_data = (kernel_ulong_t)&dev_vdata[3] },
++	{ PCI_VDEVICE(AMD, 0x15DF), .driver_data = (kernel_ulong_t)&dev_vdata[4] },
++	{ PCI_VDEVICE(AMD, 0x14CA), .driver_data = (kernel_ulong_t)&dev_vdata[5] },
++	{ PCI_VDEVICE(AMD, 0x15C7), .driver_data = (kernel_ulong_t)&dev_vdata[6] },
++	{ PCI_VDEVICE(AMD, 0x1649), .driver_data = (kernel_ulong_t)&dev_vdata[6] },
++	{ PCI_VDEVICE(AMD, 0x1134), .driver_data = (kernel_ulong_t)&dev_vdata[7] },
++	{ PCI_VDEVICE(AMD, 0x17E0), .driver_data = (kernel_ulong_t)&dev_vdata[7] },
++	{ PCI_VDEVICE(AMD, 0x156E), .driver_data = (kernel_ulong_t)&dev_vdata[8] },
++	{ PCI_VDEVICE(AMD, 0x17D8), .driver_data = (kernel_ulong_t)&dev_vdata[8] },
++	{ PCI_VDEVICE(AMD, 0x115A), .driver_data = (kernel_ulong_t)&dev_vdata[9] },
+ 	/* Last entry must be zero */
+-	{ 0, }
++	{ }
+ };
+ MODULE_DEVICE_TABLE(pci, sp_pci_table);
+ 
+
+base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.47.3
 
 
