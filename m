@@ -1,66 +1,66 @@
-Return-Path: <linux-crypto+bounces-23731-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23732-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +OnJMLi5+WmNBAMAu9opvQ
-	(envelope-from <linux-crypto+bounces-23731-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 05 May 2026 11:34:48 +0200
+	id iNXAJ+W5+WlICwMAu9opvQ
+	(envelope-from <linux-crypto+bounces-23732-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 05 May 2026 11:35:33 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CB344C9D04
-	for <lists+linux-crypto@lfdr.de>; Tue, 05 May 2026 11:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 00FC34C9D88
+	for <lists+linux-crypto@lfdr.de>; Tue, 05 May 2026 11:35:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3EE943151E86
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 May 2026 09:27:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A6EA7308B784
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 May 2026 09:29:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DC9E3161A4;
-	Tue,  5 May 2026 09:27:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED2F03254AF;
+	Tue,  5 May 2026 09:29:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="sG7AklXy"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="M9Gc7BSb"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D14C540DFA7;
-	Tue,  5 May 2026 09:27:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BF1231E82B;
+	Tue,  5 May 2026 09:29:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777973250; cv=none; b=oxaFdWzqKfUgMJ1WQYYBpIDEgj+UXCk80OkaRkuo/a6naKLXHV+mZcQR2Qzt3RXziP2hlTbCbeGXlId+HqPi7ulCBbp6YQlrXrJXONlge+xIN/y+ZxuOLoFnP3J2UmXPewGTS4ybus9847GZpxJitBefFtT1IiOoP6B+ZKQO0oQ=
+	t=1777973341; cv=none; b=ixwPQDecPu6GGVJBtLZ5Gs2JQUuxg5Rsa60QHwk9du2qj10xjOMqtRrRbQ1HbKcI0aYO/rhYYTKEDCqM6CZeaFoPuVnpst5vi8I570VIVhZcbzmn9T3l9kSPtV/MFwupHuBkhRLh/6lNyCimH1xm58w4OhGZI1NU9InTpoP0oP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777973250; c=relaxed/simple;
-	bh=6cDJz+g/aJYdg5ND5lXRiP2Om/zKysRVBFDj3f8sm4Q=;
+	s=arc-20240116; t=1777973341; c=relaxed/simple;
+	bh=oLhVaXyL9MTjy6KbF1ZaUjgqGKqDxQHUgjrNNwbcAGc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oghvc12hp+0pbs2RQcoTtfh4scYjxd1wJzf6ILRdYNcPUY/tV1XLQxtGNkHx6PKaCU++Nvzw33m8VKnr0nYjREbDlv4aUPfKPU4gqv0RwfdGPuKxFOQReOQyz4ecfh/6RpwSSEtOhMvI/IrNSebaUMN3YWSCF9kOBk6xMtuu4yY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=sG7AklXy; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=H7LOK15LY/Os4H6Gqb5fFOBe10wJvovHCGSB3uUcDhrYOrbC+xNn+V7utnmeWe6yNwpBXxQcaA+rtpMQrKyGdNXQbwwEFKxIqYEbVnH4uBN9PjC++61SwP7ccazpbtMvVpTG/ZiH1ckkcWZ3YRg38AkcCVuAbo2RBdMcSgpyWhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=M9Gc7BSb; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=+AXtKqd4hursGhJ7ysYyzDvc1qaibPoD+s00h+TaKbc=; 
-	b=sG7AklXyvYyiQ8BjEyZUNeNRuNCC6x8wSTQp9Tm0d2USXuCdoLyN9JR1KpsDmk3DekpI78YI4SV
-	6Vudpfk9UQe/BDZCJnaOy5WkC4CzHxVIENTeOI5Ht4f90U+4tQRxnvUX91NsoBZvwOxJZGFZM/6Kl
-	UE2hee1Ft4vEOBv7UDxSNCQ+MZDl5dBKJ8ooyfgv0VITLu6Z3fsiKaWR53ORD/RehxswOGBsD9SBy
-	AyBbLaOReKgF02y++3pxwn434vmaDUP9yhn2f5xWZM6w7p+5Xi9sajndJbSzHE7/fwFwucpDUkjqL
-	QJjl84ERj25t0eQbpzt0vpU7oq4b6ocwVChA==;
+	from:content-type:reply-to; bh=AJ3IT5krG8flJ0dD3QnWrPNJRFvlVr4qKiaiB8sp/PU=; 
+	b=M9Gc7BSbshp3KGTBnsjOsUdSnOiSY1OTzZk3gVa9ifj3bDUOFFZDRIZMFtR1B4uPmuIpWtioUrj
+	GM0KCZhbGbDGz6VR6Y8OXMfmKLdG9WUP8lJrEe2bdn/2Efz+8jIBGoUKSM5zZxNG+Dd4NOyuMDl7w
+	ks5wpryhIiClvF+z2nmDVhzfR+oPNBydhwHzifCB5/dt6hN/9Mw2L42ltBnw5JKPQ0LFgwY18h+Ot
+	PFd2fsZNXHtOEs17GrBQ5yyq/iuAPC4D07IoLa0KlwjRMSdNG454qbd4Nt9TIISel7OwgGjhfqRQ8
+	eoWM7ZNftv9oDJkgiO+EBHNRmWKKJoruQmUA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1wKC3Y-00BNtc-10;
-	Tue, 05 May 2026 17:27:09 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 05 May 2026 17:27:08 +0800
-Date: Tue, 5 May 2026 17:27:08 +0800
+	id 1wKC55-00BNwE-1I;
+	Tue, 05 May 2026 17:28:44 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 05 May 2026 17:28:43 +0800
+Date: Tue, 5 May 2026 17:28:43 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Lothar Rubusch <l.rubusch@gmail.com>
-Cc: thorsten.blum@linux.dev, davem@davemloft.net,
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev, ardb@kernel.org, linusw@kernel.org,
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/1] crypto: atmel-sha204a - fix blocking and
- non-blocking rng logic
-Message-ID: <afm37IhzvsAQCZj1@gondor.apana.org.au>
-References: <20260426212947.24757-1-l.rubusch@gmail.com>
- <20260426212947.24757-2-l.rubusch@gmail.com>
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+	Pankaj Gupta <pankaj.gupta@nxp.com>,
+	Gaurav Jain <gaurav.jain@nxp.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Sascha Hauer <s.hauer@pengutronix.de>, stable@vger.kernel.org,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] crypto: caam - use print_hex_dump_devel to guard key
+ hex dumps
+Message-ID: <afm4S8FhUTli5Sc5@gondor.apana.org.au>
+References: <20260427163937.337966-3-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -69,66 +69,53 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260426212947.24757-2-l.rubusch@gmail.com>
-X-Rspamd-Queue-Id: 2CB344C9D04
+In-Reply-To: <20260427163937.337966-3-thorsten.blum@linux.dev>
+X-Rspamd-Queue-Id: 00FC34C9D88
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23731-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-23732-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,linux.dev:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email]
 
-On Sun, Apr 26, 2026 at 09:29:47PM +0000, Lothar Rubusch wrote:
-> The blocking and non-blocking paths were failing to provide valid entropy
-> due to improper buffer management. Reading the buffer starting from byte 1,
-> only fetch the 32 bytes of random data from the return message.
+On Mon, Apr 27, 2026 at 06:39:37PM +0200, Thorsten Blum wrote:
+> Use print_hex_dump_devel() for dumping sensitive key material in
+> *_setkey() and gen_split_key() to avoid leaking secrets at runtime when
+> CONFIG_DYNAMIC_DEBUG is enabled.
 > 
-> Tested on an Atmel SHA204A device.
-> 
-> Before (here for blocking), tests showed repeatedly reading reduced bytes.
-> $ head -c 32 /dev/hwrng | hexdump -C
-> 00000000  02 28 85 b3 47 40 f2 ee  00 00 00 00 00 00 00 00  |.(..G@..........|
-> 00000010  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-> 00000020
-> 
-> After, the result will be similar to the following:
-> $ head -c 32 /dev/hwrng | hexdump -C
-> 00000000  5a fc 3f 13 14 68 fe 06  68 0a bd 04 83 6e 09 69  |Z.?..h..h....n.i|
-> 00000010  75 ff cf 87 10 84 3b c9  c1 df ae eb 45 53 4c c3  |u.....;.....ESL.|
-> 00000020
-> 
-> Fixes: da001fb651b0 ("crypto: atmel-i2c - add support for SHA204A random number generator")
-> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
+> Fixes: 6e005503199b ("crypto: caam - print debug messages at debug level")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 > ---
->  drivers/crypto/atmel-sha204a.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  drivers/crypto/caam/caamalg.c    | 12 ++++++------
+>  drivers/crypto/caam/caamalg_qi.c | 12 ++++++------
+>  drivers/crypto/caam/caamhash.c   |  4 ++--
+>  drivers/crypto/caam/key_gen.c    |  4 ++--
+>  4 files changed, 16 insertions(+), 16 deletions(-)
 
-Patch applied.  Thanks.
+All applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
