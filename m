@@ -1,64 +1,69 @@
-Return-Path: <linux-crypto+bounces-23709-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23710-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ELr8Bh+p+WnF+gIAu9opvQ
-	(envelope-from <linux-crypto+bounces-23709-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 05 May 2026 10:23:59 +0200
+	id iNo6F7Cp+WnF+gIAu9opvQ
+	(envelope-from <linux-crypto+bounces-23710-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 05 May 2026 10:26:24 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B807D4C89D6
-	for <lists+linux-crypto@lfdr.de>; Tue, 05 May 2026 10:23:57 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACA3B4C8A28
+	for <lists+linux-crypto@lfdr.de>; Tue, 05 May 2026 10:26:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EEC39302DF54
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 May 2026 08:23:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CE478301DB82
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 May 2026 08:24:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CB13E0245;
-	Tue,  5 May 2026 08:23:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75FBC3E4C61;
+	Tue,  5 May 2026 08:24:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="B0+ihSpr"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="qakh+Pca"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79AD23E4C61;
-	Tue,  5 May 2026 08:23:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8749C3A6F05;
+	Tue,  5 May 2026 08:24:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777969399; cv=none; b=PWL5tj2gCjZoW1mO/C5zUMUq6fnTOhq5ZsJ/1P0M3TddFt8FgVjMKThIXM16TKyTOLU5ZnrcHAS49ArEg4yuJisi/r3NG69Tute4vPOMt34wIvfOKBrmFFX813sU5nUH54bDxRje/SO7WV5o3Ah7bwyPpcVs6Kuc7P/tPxhE4Ig=
+	t=1777969455; cv=none; b=UUY7qwFAqU+zQ03aanmjvaaIo53VTdPFrqUgtdSvDdcAPlNvgyRQwh+GicBhUO713n8Y5cTHmbzDHv3BjeblmV29ky6TqU6RHL/e91sjqJY+IiYDgcfFNV4g0ZNzVjl4qpywFPKSorC58hdpRqAUzrZIp4y4OnkncSy/Z67e1Zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777969399; c=relaxed/simple;
-	bh=s8tRxJbbfwrCnkwj+IvJip8DNnvpQbZWo/ddocX/+VE=;
+	s=arc-20240116; t=1777969455; c=relaxed/simple;
+	bh=65d4mfJqll7aTN94krnPXFp0SpPrPnQFXDOZmXugglY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J0sWKjgVdtEzn60H9R8WvJDYYtL62ZWEVyRy+pBER1X9jyeusrQiZpcSVRN+ya+pm9Aayo9/M8UYRHJnql8JhBBsPtPcDfc85movhVOEGI2NXEFsCHjYTcFllZFJNLnW+aYF/oQTJPXSWcWEsRGWnnduePA8/7LczXXczY3kTHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=B0+ihSpr; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=fmiUW+XFwYvI9HN6fm0mwjfTf0yYmG0XNBch2e47RRqkndbThFZQf+Et7CbQWPRSc0JRz8ajXuqrGigd4hgz2fWVLyHzGAG/0ARJbZwfr2V61KqcbO8+i2ywz/kPnZs5UXwDnqwS+q3ZoFm/qErKTvc74dn3WTrAp5bU/1KOpGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=qakh+Pca; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=AZzxSu0X3NGt+Y8kBHu5qY0cSTMYriJuRZ0POdO9TTA=; 
-	b=B0+ihSpr1z/xxR2YpHkjsjuDUnSZE7p5tmXCTk05LO5WrUTbBBu+qSNDqULGXY61nGNiuszq425
-	5EvZgUOzoMBB9sl/T/PNPcus0pDNTQ5I6aVAOo+RgIKDLGMsozM2BIlT9+L166EjlZdJIXm+PAE6T
-	GVR2pdcsqhmYkqsl2lfMj2XlPke2AdsL36PA+BmMvEod//kcGCkOa+Hzh5edZzGS3mKixvAstaN/v
-	7iUWVj0qy6js6uEXv/d8hMb6YnvQcktUbKgKg0YJye296Xyy0cyedkYL597ERbM1ZcgMoUa+ZB0Ca
-	h/FKWhOr7WzDW8dxrB//YcmbNIm619ym8e7Q==;
+	from:content-type:reply-to; bh=W2L/wc4nO4TQ1KbAL57CA3IDUihdxHp/UFeH7YUly2g=; 
+	b=qakh+PcatNIPaMFzF+xyn7z41x6WBbM6BazmKo1xpOsqEeExYKHAYg22c97p3xxE3F0UXv+W/gG
+	1ee5hy9UarXuZ1hurIE9HVhNUdVDhbahMmQNCxPaBdC+qNcRH4xtwtn62LaHVrUwyClAqDg5DlAZp
+	ZsrbW7esIBoSuA2WhDarQiQ6784bY2pny5HcnJW7gRv7w9Dg9UC7aPrlWGILjwTiSY8CpF+nce92M
+	jn8mXNCoW6+yaT954DpbQ5l/WuaqmRWeWSv1BuIDaTcYSPmm1p9jCAeLnhJUkeNmL/p/2ZWRKcQG7
+	f4/3Uus+geyXZi0u8i20co/tntZtGKRmwQqg==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1wKB3a-00BMcq-2K;
-	Tue, 05 May 2026 16:23:07 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 05 May 2026 16:23:06 +0800
-Date: Tue, 5 May 2026 16:23:06 +0800
+	id 1wKB4H-00BMe7-30;
+	Tue, 05 May 2026 16:23:50 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 05 May 2026 16:23:49 +0800
+Date: Tue, 5 May 2026 16:23:49 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Rosen Penev <rosenp@gmail.com>
-Cc: linux-crypto@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Kees Cook <kees@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	"open list:KERNEL HARDENING (not covered by other areas):Keyword:b__counted_by(_le|_be)?b" <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCHv2] talitos: allocate channels with main struct
-Message-ID: <afmo6sJlqbjCWd9A@gondor.apana.org.au>
-References: <20260505073705.8810-1-rosenp@gmail.com>
+To: Weiming Shi <bestswngs@gmail.com>
+Cc: David Howells <dhowells@redhat.com>, Lukas Wunner <lukas@wunner.de>,
+	Ignat Korchagin <ignat@linux.win>,
+	"David S . Miller" <davem@davemloft.net>,
+	Vivek Goyal <vgoyal@redhat.com>, Kees Cook <kees@kernel.org>,
+	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+	Xiang Mei <xmei5@asu.edu>, Jarkko Sakkinen <jarkko@kernel.org>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Mimi Zohar <zohar@linux.ibm.com>
+Subject: Re: [PATCH] crypto: fix OOB read in pefile_digest_pe_contents
+Message-ID: <afmpFd_iRXDxdxBT@gondor.apana.org.au>
+References: <20260430173632.277436-3-bestswngs@gmail.com>
+ <afmEQ5ove_8fqEhH@gondor.apana.org.au>
+ <afmYY6bDIrKwbwBT@Air.local>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -67,68 +72,46 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260505073705.8810-1-rosenp@gmail.com>
-X-Rspamd-Queue-Id: B807D4C89D6
+In-Reply-To: <afmYY6bDIrKwbwBT@Air.local>
+X-Rspamd-Queue-Id: ACA3B4C8A28
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23709-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-23710-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	TO_DN_SOME(0.00)[]
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,apana.org.au:url,apana.org.au:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-On Tue, May 05, 2026 at 12:37:05AM -0700, Rosen Penev wrote:
-> Use a flexible array member to combine allocations.
+On Tue, May 05, 2026 at 03:12:35PM +0800, Weiming Shi wrote:
+>
+> Do you mean this should be `pelen <= tmp` ?
 > 
-> Add __counted_by for extra runtime analysis.
-> 
-> Signed-off-by: Rosen Penev <rosenp@gmail.com>
-> ---
->  v2: add check for of_property_read_u32
->  drivers/crypto/talitos.c | 19 +++++++------------
->  drivers/crypto/talitos.h |  5 +++--
->  2 files changed, 10 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-> index bc61d0fe3514..e1f009684216 100644
-> --- a/drivers/crypto/talitos.c
-> +++ b/drivers/crypto/talitos.c
-> @@ -3409,14 +3409,20 @@ static int talitos_probe(struct platform_device *ofdev)
->  	struct device *dev = &ofdev->dev;
->  	struct device_node *np = ofdev->dev.of_node;
->  	struct talitos_private *priv;
-> +	unsigned int num_channels;
->  	int i, err;
->  	int stride;
->  	struct resource *res;
->  
-> -	priv = devm_kzalloc(dev, sizeof(struct talitos_private), GFP_KERNEL);
-> +	if (of_property_read_u32(np, "fsl,num-channels", &num_channels))
-> +		num_channels = 0;
+> pelen == tmp means the cert table sits right at EOF with no trailing data 
+> in between - that's a legitimate layout.
 
-Does this driver still work with zero channels? It should just fail
-the probe.
+Nevermind, I misread the patch.
 
 Thanks,
 -- 
