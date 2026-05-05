@@ -1,63 +1,66 @@
-Return-Path: <linux-crypto+bounces-23730-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23731-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YAM5MS25+WmNBAMAu9opvQ
-	(envelope-from <linux-crypto+bounces-23730-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 05 May 2026 11:32:29 +0200
+	id +OnJMLi5+WmNBAMAu9opvQ
+	(envelope-from <linux-crypto+bounces-23731-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 05 May 2026 11:34:48 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C026D4C9C63
-	for <lists+linux-crypto@lfdr.de>; Tue, 05 May 2026 11:32:28 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CB344C9D04
+	for <lists+linux-crypto@lfdr.de>; Tue, 05 May 2026 11:34:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 89DD930563D9
-	for <lists+linux-crypto@lfdr.de>; Tue,  5 May 2026 09:26:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3EE943151E86
+	for <lists+linux-crypto@lfdr.de>; Tue,  5 May 2026 09:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66606325726;
-	Tue,  5 May 2026 09:25:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DC9E3161A4;
+	Tue,  5 May 2026 09:27:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="K4HmjReC"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="sG7AklXy"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCEBD31F99F;
-	Tue,  5 May 2026 09:25:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D14C540DFA7;
+	Tue,  5 May 2026 09:27:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777973155; cv=none; b=k6162JhAQ5bLfyDqg9MsJREvFtTaKHACJlW3C9kspCpScrZKMzpx2ME6kd2eOgp1WCLPXpgFRVYs+ARzzk3mUfcU9Hi+DqYXeezQOklg5yevu1vQTXHUY/bJnqCgbErzm6lV/IqNYN0aqAp0CZ5akQuSF6LfEpuuRh4bwQJ4uxs=
+	t=1777973250; cv=none; b=oxaFdWzqKfUgMJ1WQYYBpIDEgj+UXCk80OkaRkuo/a6naKLXHV+mZcQR2Qzt3RXziP2hlTbCbeGXlId+HqPi7ulCBbp6YQlrXrJXONlge+xIN/y+ZxuOLoFnP3J2UmXPewGTS4ybus9847GZpxJitBefFtT1IiOoP6B+ZKQO0oQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777973155; c=relaxed/simple;
-	bh=Ly6qDU95n7CEGR9S6IuN7ufML+LFXz6wpEvAIF4Xrpw=;
+	s=arc-20240116; t=1777973250; c=relaxed/simple;
+	bh=6cDJz+g/aJYdg5ND5lXRiP2Om/zKysRVBFDj3f8sm4Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=riocPNM+9/gfLLvAPSlV6CN+2/PpODM0CvnMjhgznCZ0jTB+YEMIa7m3ZIQbTLgFz+Ju4HJB9W6CKHWhKtORAu3izt/kIH8dV41fT7i1aFESQmQIDfvVpKrlisIoKN37GAuio0izRgruzZuYb8sv260AR3MwKjvHMNc054qqZ4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=K4HmjReC; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=oghvc12hp+0pbs2RQcoTtfh4scYjxd1wJzf6ILRdYNcPUY/tV1XLQxtGNkHx6PKaCU++Nvzw33m8VKnr0nYjREbDlv4aUPfKPU4gqv0RwfdGPuKxFOQReOQyz4ecfh/6RpwSSEtOhMvI/IrNSebaUMN3YWSCF9kOBk6xMtuu4yY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=sG7AklXy; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=9nukT3K5jxN3AsFjPXiIq8SCvRYtR+WGeD1RMvpEcdI=; 
-	b=K4HmjReCBYQa3sNC6yt/BuyMhUGZWjAkOvB2h8Au64iZJow6Q/KBZRasXF7rYxM4ZMwkOi50CzI
-	Wu7nmuE5J8iQPDjg85In/8cRstucUTcbKnT8xGGE9HqIBDO/blJW7eK1V6oJybuhQlTC6oG0xyzGu
-	nwziHhdCPxSGB3xUNptY4G3ho5OuwV7PwsCzavI8NQyEU9FxjdrJQRUCyhrPjZjsU0YFYBhSUhGZD
-	UsLkalm/jsLlyHZdu288N2GSZztDwJBzhAjb+gC58h+2oRcH7tnU6e1lD4hWj+GS0D+hduN6rg+2G
-	ZWcdS+grvugTVFBvuiJOHTb5rB46MTOAAnbA==;
+	from:content-type:reply-to; bh=+AXtKqd4hursGhJ7ysYyzDvc1qaibPoD+s00h+TaKbc=; 
+	b=sG7AklXyvYyiQ8BjEyZUNeNRuNCC6x8wSTQp9Tm0d2USXuCdoLyN9JR1KpsDmk3DekpI78YI4SV
+	6Vudpfk9UQe/BDZCJnaOy5WkC4CzHxVIENTeOI5Ht4f90U+4tQRxnvUX91NsoBZvwOxJZGFZM/6Kl
+	UE2hee1Ft4vEOBv7UDxSNCQ+MZDl5dBKJ8ooyfgv0VITLu6Z3fsiKaWR53ORD/RehxswOGBsD9SBy
+	AyBbLaOReKgF02y++3pxwn434vmaDUP9yhn2f5xWZM6w7p+5Xi9sajndJbSzHE7/fwFwucpDUkjqL
+	QJjl84ERj25t0eQbpzt0vpU7oq4b6ocwVChA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1wKC2F-00BNrX-02;
-	Tue, 05 May 2026 17:25:48 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 05 May 2026 17:25:47 +0800
-Date: Tue, 5 May 2026 17:25:47 +0800
+	id 1wKC3Y-00BNtc-10;
+	Tue, 05 May 2026 17:27:09 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 05 May 2026 17:27:08 +0800
+Date: Tue, 5 May 2026 17:27:08 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Rosen Penev <rosenp@gmail.com>
-Cc: linux-crypto@vger.kernel.org, Srujana Challa <schalla@marvell.com>,
-	Bharat Bhushan <bbhushan2@marvell.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] crypto: cesa: allocate engines with main struct
-Message-ID: <afm3m3X_6bJSy-Sx@gondor.apana.org.au>
-References: <20260425023247.475233-1-rosenp@gmail.com>
+To: Lothar Rubusch <l.rubusch@gmail.com>
+Cc: thorsten.blum@linux.dev, davem@davemloft.net,
+	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+	claudiu.beznea@tuxon.dev, ardb@kernel.org, linusw@kernel.org,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/1] crypto: atmel-sha204a - fix blocking and
+ non-blocking rng logic
+Message-ID: <afm37IhzvsAQCZj1@gondor.apana.org.au>
+References: <20260426212947.24757-1-l.rubusch@gmail.com>
+ <20260426212947.24757-2-l.rubusch@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -66,49 +69,64 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260425023247.475233-1-rosenp@gmail.com>
-X-Rspamd-Queue-Id: C026D4C9C63
+In-Reply-To: <20260426212947.24757-2-l.rubusch@gmail.com>
+X-Rspamd-Queue-Id: 2CB344C9D04
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-23731-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23730-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,apana.org.au:url,apana.org.au:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:dkim,gondor.apana.org.au:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email]
 
-On Fri, Apr 24, 2026 at 07:32:47PM -0700, Rosen Penev wrote:
-> Use a flexible array member to combine and simplify allocation.
+On Sun, Apr 26, 2026 at 09:29:47PM +0000, Lothar Rubusch wrote:
+> The blocking and non-blocking paths were failing to provide valid entropy
+> due to improper buffer management. Reading the buffer starting from byte 1,
+> only fetch the 32 bytes of random data from the return message.
 > 
-> Move struct mv_cesa_dev down as flexible array members require full
-> definitions.
+> Tested on an Atmel SHA204A device.
 > 
-> Signed-off-by: Rosen Penev <rosenp@gmail.com>
+> Before (here for blocking), tests showed repeatedly reading reduced bytes.
+> $ head -c 32 /dev/hwrng | hexdump -C
+> 00000000  02 28 85 b3 47 40 f2 ee  00 00 00 00 00 00 00 00  |.(..G@..........|
+> 00000010  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 00000020
+> 
+> After, the result will be similar to the following:
+> $ head -c 32 /dev/hwrng | hexdump -C
+> 00000000  5a fc 3f 13 14 68 fe 06  68 0a bd 04 83 6e 09 69  |Z.?..h..h....n.i|
+> 00000010  75 ff cf 87 10 84 3b c9  c1 df ae eb 45 53 4c c3  |u.....;.....ESL.|
+> 00000020
+> 
+> Fixes: da001fb651b0 ("crypto: atmel-i2c - add support for SHA204A random number generator")
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
 > ---
->  drivers/crypto/marvell/cesa/cesa.c | 11 +++-----
->  drivers/crypto/marvell/cesa/cesa.h | 42 +++++++++++++++---------------
->  2 files changed, 25 insertions(+), 28 deletions(-)
+>  drivers/crypto/atmel-sha204a.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
 Patch applied.  Thanks.
 -- 
