@@ -1,130 +1,198 @@
-Return-Path: <linux-crypto+bounces-23813-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23829-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IMj9Cpya/Gk6RwAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23813-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 07 May 2026 15:58:52 +0200
+	id AOxaIuir/GkNSgAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23829-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 07 May 2026 17:12:40 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A8974E9B92
-	for <lists+linux-crypto@lfdr.de>; Thu, 07 May 2026 15:58:51 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB74F4EAD7C
+	for <lists+linux-crypto@lfdr.de>; Thu, 07 May 2026 17:12:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 90138305BE98
-	for <lists+linux-crypto@lfdr.de>; Thu,  7 May 2026 13:56:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 02852303F04C
+	for <lists+linux-crypto@lfdr.de>; Thu,  7 May 2026 15:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 840D63F9F27;
-	Thu,  7 May 2026 13:56:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB2143D501;
+	Thu,  7 May 2026 15:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="H3SD+9ao"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FeW9jMkO"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A4A3F7A81;
-	Thu,  7 May 2026 13:55:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 998AA31714A
+	for <linux-crypto@vger.kernel.org>; Thu,  7 May 2026 15:06:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778162162; cv=none; b=XXAvbsrejDM/BX3Gt3YgAvVzZJpASmRfAEZruF6TNQACfiW5x+01c7tV6PQse3tRtOA3QRGmHzTFgZ+w8DIi/r1W5lMdGbJxLPous2RTzWITR5LJUEgjdiPpN9IF5hO047snDlJq3brp6qnPNVuPAoyJgO6hRKTt3ZqS5aL2Tyk=
+	t=1778166410; cv=none; b=KRsl8hRkhaJBtcYkzkAv+KVO4M9UwUGlxosghE2kT1qPxLBh2mJQdvZrsM4t+jEZbgwrBQV9hSvt9wuKVajauN9QmaFVbyRlfOiieejs6vM2dCq55Nso826VlYOnfFlOz/MSioIcjPE/5tI98QM8eRk+LZwOef4vjcOysxQOpyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778162162; c=relaxed/simple;
-	bh=aVCy1hInQ45HcL3yLOgWnhTxaxk2VpYFwSI9ioAk6Bw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=J2y3yIXvZPdsMxrhEoM+JjGvt91ACbJinhPjrokzYqhxDQ25eotfX6f0RPcu7OOXhhJnfco3E5BnQSEEMrcuWsfHm7IFmuzVY46gZYQYhWpPO/NGehuew3m6eT+hTdtRGGnp0QaoNGdY4uriaDuuRDjIV62kRT2aRISPCB0Eqwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=H3SD+9ao; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1778162158;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=et12f+JBlWCvrIykUAG98jlPA42V3ob8Dp6+bnOSQHI=;
-	b=H3SD+9aorpsQgmKm9KhQNK1BtZ3U1CBgSmkr7fhAsep8OsdnD3LfhUOp0POFY9GuOZdSPP
-	Hc/a39hxl+LfPkCUCbzBal1QRgiKThoTTJ86ECBSlAewFmUFo9M8fS5fyYARTFshkHY/vX
-	Y9el1qMVOp614bKobm4/Cobe1wCM1II=
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Thorsten Blum <thorsten.blum@linux.dev>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Cc: linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: atmel-ecc - replace min_t with min
-Date: Thu,  7 May 2026 15:55:27 +0200
-Message-ID: <20260507135525.331107-3-thorsten.blum@linux.dev>
+	s=arc-20240116; t=1778166410; c=relaxed/simple;
+	bh=IP+/Fnx7QZnh8QTBFMIALzP2lGBypeoUrxgpTU306NA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=nG3bndkF46l+p7zuKni2hLUpwI9NxqdAq0PvVg89QFehGING+xefsMrg204hKB2yQnQ91Dc1nVHRuJlp0EyfBenBI3yBggJPvtt4iFVe/YLESRVnXKe1Zwkd8xqhe2uN+q4RjdOn5nat0D6hR/3M5y/hJkySKa8TgKfKHauhQto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FeW9jMkO; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-48910865133so836025e9.2
+        for <linux-crypto@vger.kernel.org>; Thu, 07 May 2026 08:06:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778166407; x=1778771207; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2+BqkKYr5ktDQUipIMVSn9p1dY9rXSMM7LC0Q/JXlrw=;
+        b=FeW9jMkOudobsJ7SjDTMJEqC67MkGQ+JIFV0REm4VWYy4Ykzoikqmwy2zRwaEXxoGR
+         49xTJ5tiLVZbrEltn/0Pz8b5SzfIA8g2TkbHWWEZ2pFKj5TOHAcflIPimEYciOtc0NMC
+         s83wvW608Cd5CWOxn5Kdw87cIuinFq7q4HIuhHgVjLOjtmm/mLFflUTIQ8vb5cOPDyJl
+         lTa+VtIoM84WJ7/Ltlop0Y7TSNto8AEbBndKf+8J39JErfYyxG5SLHLQ8BMOpD3I7R5M
+         EH+VVsefCrS5s+0gzeTWlLC9VE5PVA/Y314g0xjYkb9QZ5da2KvQOyDQyccot96IID4m
+         08og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778166407; x=1778771207;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=2+BqkKYr5ktDQUipIMVSn9p1dY9rXSMM7LC0Q/JXlrw=;
+        b=ShuI3Bveln+d9NjGaA4BDKHeJRXYyemRDejZLm3Mu9vgJN6f64wHF3aP73AGSxdj4s
+         cF06t2d/KaYBRev2r/H5Apfp594TzfpeHmo15ZrufjCTsyaFyEQD/0wFepKn3sCV6R1V
+         vDZunczS6cRb9keHkPNkxTU+5oFkmDEailOLzOGJMXLCMgCOchR+hJOhoJ5X5JDXySQA
+         udXtTPYOxawwGx7D1Dq7vWWQNvbNUAmLyTQM2kszerVEfOAnjGI0jDks+gl/qO+mtMsN
+         SKQBU05YJ1TzJNrQJbFoEVLBGkp0ZLQteFBSeEbQsxfvYEUNHR7VYIrYTsnawJJofn6g
+         zPew==
+X-Forwarded-Encrypted: i=1; AFNElJ860DySkDAjr4/izYqqvl0NbqCfjIfKt2pwuqqN9TovDQSnqo9bdXaG8CAyoTrdF4nSPnPmmfzESYq0Eo0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFG54RVIFrfTLAA2Am/aLDLrOm6y2Y5jIL9+bTOTyuxNF/9l72
+	otKxwpPr5ovf1LNBPg7935B0TzD0KEJrjIlKwN4ZIAVdaU03+uSum0Ck
+X-Gm-Gg: AeBDiesKY70oux/E3lUHwPwKmKSo8w2TJxOjvN7+EbLNPhH/1Na2+sIpVPlmzyRfLEi
+	SUb+9cXgCcTq1zvQcI3ivj9UASy47pY38ScAo4FXtxIR80poW/ES/Dl80pJS+A2AOeZAxJGesDL
+	Rr/EcO2UO1cSARawb3DsfdyPoZf0j7hra9Qy9OW/SBthSboo9qiPY6J96hLuyVgyRAFoI56nzL1
+	XGi8SeI6FJVbR2fXZtL8JwsYj8EmyhDoX7JC2a2Dh5MByzfTxmGHA72KQVcV5y4unWhnpet6862
+	Nwu6Ew/UiVfjkoueychjf4GL+vPutE9sIdNaRLJe+rhM8zhYTqDf7febDrhZs2NJiwOyQcZ+H6f
+	6EqkKXbmMMm5n/QWIdMqLg5IFdKaQm/xFa+3QDC4/KITBDvujkHnBjN+BFAlaKKt9kow03ob9GZ
+	QP0wrkSRVP/mQsCDCZMNteNb0G9aBHZynKaAN5BAidjkBEaRU8SsoeF9pt
+X-Received: by 2002:a05:600c:3595:b0:48a:5664:f44a with SMTP id 5b1f17b1804b1-48e5325018dmr72211695e9.2.1778166406382;
+        Thu, 07 May 2026 08:06:46 -0700 (PDT)
+Received: from localhost.localdomain ([185.139.138.86])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e53907e8asm127217385e9.13.2026.05.07.08.06.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2026 08:06:45 -0700 (PDT)
+From: Stepan Ionichev <sozdayvek@gmail.com>
+To: ashish.kalra@amd.com
+Cc: thomas.lendacky@amd.com,
+	aik@amd.com,
+	john.allen@amd.com,
+	herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Stepan Ionichev <sozdayvek@gmail.com>
+Subject: [PATCH v2] crypto: ccp: sev-dev-tsm: bail out early when pdev->bus is NULL
+Date: Thu,  7 May 2026 19:06:08 +0500
+Message-Id: <20260507140608.8612-1-sozdayvek@gmail.com>
+X-Mailer: git-send-email 2.33.0.windows.2
+In-Reply-To: <20260507023619.398-1-sozdayvek@gmail.com>
+References: <20260507023619.398-1-sozdayvek@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1183; i=thorsten.blum@linux.dev; h=from:subject; bh=aVCy1hInQ45HcL3yLOgWnhTxaxk2VpYFwSI9ioAk6Bw=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJl/Zp5j6TX1Ck2RDYkxvn9sel7jxkuL/e/sfFDxrdJns 4WMs9yyjlIWBjEuBlkxRZYHs37M8C2tqdxkErETZg4rE8gQBi5OAZhIAjvD/6onj37d/17GskSt UH5Ja8h04W/frGQMo8zmGRxYt7tgzVpGhsMbeg0tXq7f9+a/bGb7tOTjQr3V+jZ/P4pZbaz5EPM 7hh8A
-X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 8A8974E9B92
+X-Rspamd-Queue-Id: DB74F4EAD7C
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[amd.com,gondor.apana.org.au,davemloft.net,vger.kernel.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-23829-lists,linux-crypto=lfdr.de];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23813-lists,linux-crypto=lfdr.de];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[9];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:email,linux.dev:mid,linux.dev:dkim]
+	FROM_NEQ_ENVFROM(0.00)[sozdayvek@gmail.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-Use the simpler min() macro since the values are all unsigned and
-compatible.
+dsm_create() initially checks pdev->bus when computing segment_id:
 
-Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+	u8 segment_id = pdev->bus ? pci_domain_nr(pdev->bus) : 0;
+
+But the next two lines unconditionally dereference pdev->bus via
+pcie_find_root_port() and especially pci_dev_id(pdev), which expands
+to PCI_DEVID(dev->bus->number, dev->devfn). If pdev->bus is in fact
+NULL, segment_id is initialised to 0 but the very next statement
+crashes the kernel.
+
+smatch flags this:
+
+  drivers/crypto/ccp/sev-dev-tsm.c:253 dsm_create() error: we
+    previously assumed 'pdev->bus' could be null (see line 251)
+
+Make the NULL handling consistent: if pdev->bus is NULL the device
+has no PCI context to work with and SEV TIO setup cannot proceed,
+so return -ENODEV before any of the bus-dependent lookups. The
+remaining initialisation now runs only on the path where pdev->bus
+is known to be valid.
+
+No change for callers where pdev->bus is non-NULL, which is the
+only case where dsm_create() did meaningful work before this change.
+
+Fixes: 4be423572da1 ("crypto/ccp: Implement SEV-TIO PCIe IDE (phase1)")
+Signed-off-by: Stepan Ionichev <sozdayvek@gmail.com>
 ---
- drivers/crypto/atmel-ecc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v2:
+- Add Fixes: tag (suggested by Tom Lendacky).
+- Cc Alexey Kardashevskiy (original author of the SEV-TIO code).
 
-diff --git a/drivers/crypto/atmel-ecc.c b/drivers/crypto/atmel-ecc.c
-index b6a77c8d439c..2cf53f0b6742 100644
---- a/drivers/crypto/atmel-ecc.c
-+++ b/drivers/crypto/atmel-ecc.c
-@@ -56,7 +56,7 @@ static void atmel_ecdh_done(struct atmel_i2c_work_data *work_data, void *areq,
- 		goto free_work_data;
- 
- 	/* might want less than we've got */
--	n_sz = min_t(size_t, ATMEL_ECC_NIST_P256_N_SIZE, req->dst_len);
-+	n_sz = min(ATMEL_ECC_NIST_P256_N_SIZE, req->dst_len);
- 
- 	/* copy the shared secret */
- 	copied = sg_copy_from_buffer(req->dst, sg_nents_for_len(req->dst, n_sz),
-@@ -150,7 +150,7 @@ static int atmel_ecdh_generate_public_key(struct kpp_request *req)
- 		return -EINVAL;
- 
- 	/* might want less than we've got */
--	nbytes = min_t(size_t, ATMEL_ECC_PUBKEY_SIZE, req->dst_len);
-+	nbytes = min(ATMEL_ECC_PUBKEY_SIZE, req->dst_len);
- 
- 	/* public key was saved at private key generation */
- 	copied = sg_copy_from_buffer(req->dst,
+ drivers/crypto/ccp/sev-dev-tsm.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/crypto/ccp/sev-dev-tsm.c b/drivers/crypto/ccp/sev-dev-tsm.c
+index b07ae529b..f303d8f55 100644
+--- a/drivers/crypto/ccp/sev-dev-tsm.c
++++ b/drivers/crypto/ccp/sev-dev-tsm.c
+@@ -248,12 +248,19 @@ static void dsm_remove(struct pci_tsm *tsm)
+ static int dsm_create(struct tio_dsm *dsm)
+ {
+ 	struct pci_dev *pdev = dsm->tsm.base_tsm.pdev;
+-	u8 segment_id = pdev->bus ? pci_domain_nr(pdev->bus) : 0;
+-	struct pci_dev *rootport = pcie_find_root_port(pdev);
+-	u16 device_id = pci_dev_id(pdev);
++	struct pci_dev *rootport;
++	u8 segment_id;
++	u16 device_id;
+ 	u16 root_port_id;
+ 	u32 lnkcap = 0;
+
++	if (!pdev->bus)
++		return -ENODEV;
++
++	segment_id = pci_domain_nr(pdev->bus);
++	rootport = pcie_find_root_port(pdev);
++	device_id = pci_dev_id(pdev);
++
+ 	if (pci_read_config_dword(rootport, pci_pcie_cap(rootport) + PCI_EXP_LNKCAP,
+ 				  &lnkcap))
+ 		return -ENODEV;
+--
+2.43.0
 
