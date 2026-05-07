@@ -1,175 +1,320 @@
-Return-Path: <linux-crypto+bounces-23828-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23830-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8MZlLven/GmwSQAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23828-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 07 May 2026 16:55:51 +0200
+	id dYtiOND8/Gk9WQAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23830-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 07 May 2026 22:57:52 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F2384EAA75
-	for <lists+linux-crypto@lfdr.de>; Thu, 07 May 2026 16:55:51 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D8D34EF099
+	for <lists+linux-crypto@lfdr.de>; Thu, 07 May 2026 22:57:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C2CD6307C69F
-	for <lists+linux-crypto@lfdr.de>; Thu,  7 May 2026 14:50:17 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E3E66300C002
+	for <lists+linux-crypto@lfdr.de>; Thu,  7 May 2026 20:57:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 261C53F0A9A;
-	Thu,  7 May 2026 14:50:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF3B33D6D8;
+	Thu,  7 May 2026 20:57:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="qNvqkC8x"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="Ks8qNKOU"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E76F3BE145
-	for <linux-crypto@vger.kernel.org>; Thu,  7 May 2026 14:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778165409; cv=none; b=ex5gNBnyBfxcf9fU3npY6V8vaUPTh1md9wKPCeFKzr5NdEEzmi3K30ZlPomaQqZ8T6Z20fG9c3RFEvLX2WyTgxpqlX7e2l4C0+Vo6mTA5o79Gr76yT4F2n8YLt5MDsmzZfck55YSIB6vY2rQKSO8tcaTR+mUNTMHELAh2I1hYMc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778165409; c=relaxed/simple;
-	bh=wdi4qtiEctfoiQNuVz+U8eHaMc662FosLCEsmsjfrHE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bHW2DPQjrgkKPE5YvpWRQYtUGz2a0TyIbv8n0NWX9l7PdlKzJeKor2tx2W6Pcj/3rXxOrrmAAVGA/VkVmGFoVap8cfh1dJOUQL+JecSUYCa+cR3mnpXkxkOx14uCFt+Rje5ZLBSwrPZqmemDG7kAUzw+KTdeXj0QNR6JHdp5SOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=qNvqkC8x; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-488ad135063so9008885e9.0
-        for <linux-crypto@vger.kernel.org>; Thu, 07 May 2026 07:50:08 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84DBF331A76
+	for <linux-crypto@vger.kernel.org>; Thu,  7 May 2026 20:57:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.214.175
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778187471; cv=pass; b=meNWuqYDAdNA0ZGndMpJqXtUXZxXQmy28mvDGKvx8YhrJ6L7BpP5JoQqzEOVGnGDSvAd3fyu4HCR+sHHQzQYb1W0pztmyUGPEEDFj5gNa1ksWeZvOwBrnnBhFbQrvlKYGy0Y1/6EvjJM28UioPp8S5tZaX6/wix0ICTjGMYLH0s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778187471; c=relaxed/simple;
+	bh=dzCGE45kN9A7cRwTX4c6YDKiWHm0lvYyixc38KnjSlo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Wempcq4iQrx5/v84+C7eNpgKRUyBP+p0AmsSSdWicTRfblMq4EJEMZXuczxkamOv29iYAKmlUJmAP0W48GkRc1B2lRrdHfMXgVXl0QoreS04ygvRhmG3/DYhFmVFfjZzE9Aet8a/2AnC+uFE2tXZCWuvuy38B/hrzGhk/fVYaM8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=Ks8qNKOU; arc=pass smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-2ba6485d219so8757765ad.3
+        for <linux-crypto@vger.kernel.org>; Thu, 07 May 2026 13:57:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778187468; cv=none;
+        d=google.com; s=arc-20240605;
+        b=PzSt/Axi1R1OOn7M3O+JKXIPWr7gVWghL/wYl5eKTqJcKAy2zw/36JOjhJSyboe8yq
+         VHZ/6k6k1X9z2ciWl1H7wOO1R3Bwg6AN8RfreoF72KwU6R+NVS/mDkj+Vz3J4b+TjLSp
+         LqM+Ks8bqnRNWGAs3/1HDqHwOyK2wwNvhUUXM6cVlJWWL2B/jz3eITm4L1S4g7cnuyPL
+         9f+wCE3wxCxV8BBkKfipizS/bXeicABi7ewVynUEPBs4frm2k9FEEwZVHs/ayQxpI8LX
+         cB+nx8OVzZ3pKH895sMWZWLhCI/Ry9D5BChTmV3GKYDfnaG2A3818tLLmAls3xHzaN+I
+         jeBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=w9z2GvzEw9i/nhMRa6wlw8IHkov6Pzg/iLQFCyv25S4=;
+        fh=J0X31sgJgaVLiSSpjc7WHsJq+E2WPNogyldPFylqaaI=;
+        b=d60GfsFR2M/s9N3MPkIKB0o6mu+e0PdnJ8YBsJWc6hO+Xd9uCytEPmyyDs3BnxM0pX
+         bIEmJVT01vxhyghzaR+wyU6gcCm7ba9T3h0vgb3vFIKnPLF2pXWheAvZ4MDTKenZvy9m
+         3In05aBDTNZX81cmQERfAJunn79q6cF05h02y0mohQsk/9ALu342Npl9tYarXQaBOwES
+         yVbrq4LL2ppi33iwMLpEK16yOG0yottMlZQ9UVEG8AYHFlbbG4P4FeQzfA01RYOq7G6B
+         rzN+pQ7lN7sVRjA9SVtPZQM2Wy9zTfdVBSLz5cn8fiDH4oFd2wWNVSVIJCQ3XCfFVGhK
+         8fhQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778165407; x=1778770207; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=paul-moore.com; s=google; t=1778187468; x=1778792268; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fyk8eDbl85Hd7XiZtHIzqBxAFI/hqUpEHNnD2/TC2s0=;
-        b=qNvqkC8xDFXnGCMT2tPOpIREvMk+O/7oCxsAAocQ3WaZCzbRDbUTwypXkINy9mTtO/
-         7LDncDHZpdRFIR9GwgvDKfu7fSS9K1c22wEExbJYovTyIsMBUwfQ3wUJFn2v5RVXGM+I
-         eY4wJ2JX3FrJ2yw1G8TzHZ3TznTxECrMrsFE5IetJnHKrB0N1JPCxzAM792VHLctgrLW
-         5f6HBucjdBsp+noydhJ2v2iw6Ebwqnx7jiJ/WDk1bKgnv5o9jroea7umpCBI8ldyeC0f
-         rbiofezDJJ0Yc6eEw0UsCXg5MGfcdJZhbMO1LlAShX4eiFEYrF9isqDT23HxzBMsE5fz
-         T7BA==
+        bh=w9z2GvzEw9i/nhMRa6wlw8IHkov6Pzg/iLQFCyv25S4=;
+        b=Ks8qNKOUoHUd6fNtJlBJb8CTyVXA5nLreVszv/M7Pv++AS2yadUNOK5REbi1j1tA1i
+         BQnXYPspts7M4WKCkU1YH9ARq57GZOs2Q3UDFqLDzONjP8oT7KMOl20zT7xq0Rvn5hI5
+         jeAs7mqMeV1jhYdIBN+8XPBaES5+ZHsLW64SlgeWtcTzJvSu/e3MB5ZgVSJGe3k3BHPK
+         QRI1vKwYBC+BTv2CLKmbHeI/xdeIX7uTE+JADu4TUX3hyYjPi5tv8v149FMuGc0NfCQj
+         O/gL5b5Bn5j/LxV+DZG9o+U6AHj69Tdx1z1WMaHRVDDDKZ/mGL67kBogMj2jBFMkhPE/
+         E9yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778165407; x=1778770207;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20251104; t=1778187468; x=1778792268;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=fyk8eDbl85Hd7XiZtHIzqBxAFI/hqUpEHNnD2/TC2s0=;
-        b=UfTZKeLQ3C/U5QLhjuuLfj+pObbmVETb3XM83BD6aBeeNd/QB1k8MzF2vb37t5bnHq
-         /Q/oPBotLDGecpLht9Vb5RrSPFSuqX6Li4CxPpLa/ghfLNapzPWSM1Kyh34RX9G+jEOo
-         KieZd+ZNgdKln1dnOu4AV3iU7PgE00qRHscrIa/te0AAQ8/Appl52BSamTalS63zsGbX
-         dBKIni79zodTn06DYjcFcVKubMglOM8u3AcpI/MHH3CCelBz6yxqMKrJcTMoUqQQurFn
-         UaT3MGOBR47rYVxggAK/9zPYSnk7w2zbacaaFr5cfxd9Z4QxZBZ14yWK86FqZtvFMLic
-         TBuw==
-X-Forwarded-Encrypted: i=1; AFNElJ//Q07pKXbfUv51vaRc0aoJBUrr2Yf0vEJg8TgYZPcIlPDG33sK46HEefSUPYGgTlL2g+bgaYqHNULNoGU=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyFR8nemTnH1QjV4e6hQH2qhxMPFHt7aj+3v+o359jJG2dMNVJs
-	BCTLN5jPHb63BktmoHTyTtqggG5MqwDEnCpiNezHawH3GYAVVCofeMty
-X-Gm-Gg: AeBDieuo4v+T0GW2Ai72ejaNXBINQAPd7QrEOlZVP5ayekJSL2LmyUpj1ZPfsqir2HK
-	t1+nroTAEbXdJofmVBPMfLxs2Ng1j4pfJ1tLgvr90Rd2Qc5Ov//2z56n0XxQKP54/BqKHh56aHm
-	QeguPMUKC9wTdZtO3mWudwHTjT4sLT1PhLakXFg28PrUZ3Ck555zbRQdbGjLTMEgGufXkz4k1tH
-	0PN7HvglPsZondm1OOipJrf+mLSdiYM3S9rWH17kBnEKcJe+vAvwXTerndWWFfwhXU0rGUCBbeo
-	TZVmdBJCVCpNG1ekOsvZbzYa66i0IMAtZ/RDJrByrOF5lVzOvJI4afPkfb5cwV6IY2dLf4WKmbP
-	t1ILj+SWzHeLV+1UW5/7QH+Af9pTi31Ed9iO6tf34V5S0PfWocT6fLjZ76PdE9FbGtRseCCx2NP
-	Yc00EKA7QDwLpmXIYinXMGZrzdBefQ7kAFpqphTtbrXjEAeqLuXc3+CwxSvD93btgu2IulWIiy8
-	FJCxto77twLDA==
-X-Received: by 2002:a05:600c:8012:b0:48e:5fb8:f80f with SMTP id 5b1f17b1804b1-48e5fb8fac9mr40003765e9.24.1778165406496;
-        Thu, 07 May 2026 07:50:06 -0700 (PDT)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e53895effsm125874225e9.3.2026.05.07.07.50.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2026 07:50:06 -0700 (PDT)
-Date: Thu, 7 May 2026 15:50:04 +0100
-From: David Laight <david.laight.linux@gmail.com>
-To: Thorsten Blum <thorsten.blum@linux.dev>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller"
- <davem@davemloft.net>, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>, Claudiu Beznea
- <claudiu.beznea@tuxon.dev>, linux-crypto@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: atmel-ecc - replace min_t with min
-Message-ID: <20260507155004.4d537703@pumpkin>
-In-Reply-To: <20260507135525.331107-3-thorsten.blum@linux.dev>
-References: <20260507135525.331107-3-thorsten.blum@linux.dev>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+        bh=w9z2GvzEw9i/nhMRa6wlw8IHkov6Pzg/iLQFCyv25S4=;
+        b=A1txh9KB3bhy9FXsU1t5v+2rLULgINCIWTRMnsYnHc8I1/fie2kAxEQ6KucJIgWHn7
+         0+ZY1/Dc7VKzjKCV+8fTg9tOtm4v6ER3mARF52maf87P4bkyGA/VvMoTPVgW0pOiAs93
+         xULm/uqyO3xRYBMYBlNBoWksDILgRZW9IFxcWwL1Wp3wMJ9BvbijXYfHvsof8GNqFfCl
+         uODm85DDTvQ0KP2DElR/ArnzA8xXWvRphuxYnRrE2ji1ja2GeXZ+ZUYkhmfNKEawubnf
+         BcXadR8r2/Ha6zSrMB7hc37i/xTWUvzc2y5tTIySIpfR0iLbfFKLsaxmgm/QxUkyVzwR
+         1N8Q==
+X-Forwarded-Encrypted: i=1; AFNElJ/VuMSvbRcn942FvpWM+vsb3c0QE87DDlNMlRDEbp+sdjF4whLdnEdr9FA2TuwIv61yNxMI3kcj+SPAyZ8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyKceCmtwqtzGoDXls4geTdFravi9vYuFFdZfgG+UtQMKhwNLym
+	bIPxUpgTHA8dAM/kk//g9L9+pFIINyI+ypqrO3BAD2S2B1AoC24mvFAolqcbc1l21R/eh6KFUuM
+	rohZ5qC+RXS0ekBLlWU61NkC94MbsKPTbU0TXNWoH
+X-Gm-Gg: Acq92OGhSsb0r8lmNjxThhJhUUv2gezVhIEe0z6CncxWacG6zV6CH61sOsSu0hDJc/I
+	zrBQkQqhMcmeIf4W3O68OmSWEql2HRRzf9qoE0XPyMfg2v3RsnFzwhUg8uJfb/6o3tdPlIRYrjR
+	xl8LugwGHaLZnvlJ3rSt6Y19rMTw2SMhJ4gPuMNWzxM9J4FyGwz9UYdG9xY6ga/6TI9yH/MCaNC
+	Y4Owp810IixfypmvvSX4QNM1GCoM0LlmNrx2YnQdYkTa3GWAujHAogu7IMdWBX1jT3ROlcaBArU
+	hZS8klBIzcBp8ISy1A==
+X-Received: by 2002:a17:902:cf4c:b0:2b7:88d8:efde with SMTP id
+ d9443c01a7336-2ba78f4e986mr89794045ad.7.1778187467778; Thu, 07 May 2026
+ 13:57:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 2F2384EAA75
+References: <20260507191416.2984054-1-bboscaccy@linux.microsoft.com>
+In-Reply-To: <20260507191416.2984054-1-bboscaccy@linux.microsoft.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Thu, 7 May 2026 16:57:35 -0400
+X-Gm-Features: AVHnY4JwRLAedFRfQ7q22oAcPpo0Tq1zBBEQ_RXTzWDidOJW2m8V1gD0lHHMSSw
+Message-ID: <CAHC9VhR0Abikk+2=DWtVu1cEkcwkudKFRJH51BFOh0Qt01wLJw@mail.gmail.com>
+Subject: Re: [PATCH v7 00/10] Reintroduce Hornet LSM
+To: Blaise Boscaccy <bboscaccy@linux.microsoft.com>, linux-crypto@vger.kernel.org
+Cc: Jonathan Corbet <corbet@lwn.net>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
+	"Dr. David Alan Gilbert" <linux@treblig.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	James.Bottomley@hansenpartnership.com, dhowells@redhat.com, 
+	Fan Wu <wufan@kernel.org>, Ryan Foster <foster.ryan.r@gmail.com>, 
+	Randy Dunlap <rdunlap@infradead.org>, linux-security-module@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 7D8D34EF099
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[paul-moore.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[paul-moore.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23828-lists,linux-crypto=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-23830-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[lwn.net,namei.org,hallyn.com,digikod.net,google.com,treblig.org,linux-foundation.org,hansenpartnership.com,redhat.com,kernel.org,gmail.com,infradead.org,vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[paul@paul-moore.com,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[paul-moore.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Action: no action
 
-On Thu,  7 May 2026 15:55:27 +0200
-Thorsten Blum <thorsten.blum@linux.dev> wrote:
+On Thu, May 7, 2026 at 3:14=E2=80=AFPM Blaise Boscaccy
+<bboscaccy@linux.microsoft.com> wrote:
+>
+> This patch series introduces the next iteration of the Hornet LSM.
+> Hornet=E2=80=99s goal is to provide a secure and extensible in-kernel
+> signature verification mechanism for eBPF programs.
+>
+> Hornet addresses concerns from users who require strict audit trails and
+> verification guarantees for eBPF programs, especially in
+> security-sensitive environments. Many production systems need assurance
+> that only authorized, unmodified eBPF programs are loaded into the
+> kernel. Hornet provides this assurance through cryptographic signature
+> verification.
+>
+> The currently accepted loader-plus-map signature verification scheme,
+> mandated by Alexei and KP, is simple to implement and generally
+> acceptable if users and administrators are satisfied with it. However,
+> verifying both the loader and the maps offers additional benefits
+> beyond verifying the loader alone:
+>
+> 1. Security and Audit Integrity
+>
+> A key advantage is that the LSM hook for authorizing BPF program loads
+> can operate after signature verification. This ensures:
+>
+> * Access control decisions are based on verified signature status.
+> * Accurate system state measurement and logging.
+> * Log entries claiming a verified signature are truthful, avoiding
+>   misleading records where only the loader was verified while the actual
+>   BPF program verification occurs later without logging.
+>
+> 2. TOCTOU Attack Prevention
+>
+> The current map hash implementation may be vulnerable to a TOCTOU
+> attack because it allows unfrozen maps to cache a previously
+> calculated hash. The accepted =E2=80=9Ctrusted loader=E2=80=9D scheme can=
+not detect
+> this and may permit loading altered maps.
+>
+> 3. Supply Chain Integrity
+>
+> Verify that eBPF programs and their associated map data have not been
+> modified since they were built and signed, in the kernel proper, may
+> aid in protecting against supply chain attacks.
+>
+> This approach addresses concerns from users who require strict audit
+> trails and verification guarantees, especially in security-sensitive
+> environments. Map hashes for extended verification are passed via the
+> existing PKCS#7 UAPI and verified by the crypto subsystem. Hornet then
+> calculates the program=E2=80=99s verification state.  Hornet itself does =
+not
+> enforce a policy on whether unsigned or partially signed programs
+> should be rejected. It delegates that decision to downstream LSMs
+> hook, making it a composable building block in a larger security
+> architecture.
 
-> Use the simpler min() macro since the values are all unsigned and
-> compatible.
-> 
-> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+[NOTE: trimmed changelog for brevity]
 
-I'm all for nuking min_t(), so:
+> Blaise Boscaccy (6):
+>   lsm: security: Add additional enum values for bpf integrity checks
+>   security: Hornet LSM
+>   hornet: Introduce gen_sig
+>   hornet: Add a light skeleton data extractor scripts
+>   selftests/hornet: Add a selftest for the Hornet LSM
+>   ipe: Add BPF program load policy enforcement via Hornet integration
+>
+> James Bottomley (3):
+>   crypto: pkcs7: add flag for validated trust on a signed info block
+>   crypto: pkcs7: add ability to extract signed attributes by OID
+>   crypto: pkcs7: add tests for pkcs7_get_authattr
+>
+> Paul Moore (1):
+>   lsm: framework for BPF integrity verification
+>
+>  Documentation/admin-guide/LSM/Hornet.rst     | 323 +++++++++++++++
+>  Documentation/admin-guide/LSM/index.rst      |   1 +
+>  Documentation/admin-guide/LSM/ipe.rst        | 162 +++++++-
+>  Documentation/security/ipe.rst               |  68 ++++
+>  MAINTAINERS                                  |   9 +
+>  certs/system_keyring.c                       |   1 +
+>  crypto/asymmetric_keys/Makefile              |   4 +-
+>  crypto/asymmetric_keys/pkcs7_aa.asn1         |  18 +
+>  crypto/asymmetric_keys/pkcs7_key_type.c      |  44 +-
+>  crypto/asymmetric_keys/pkcs7_parser.c        |  81 ++++
+>  crypto/asymmetric_keys/pkcs7_parser.h        |   1 +
+>  crypto/asymmetric_keys/pkcs7_trust.c         |   1 +
+>  include/crypto/pkcs7.h                       |   4 +
+>  include/linux/lsm_hook_defs.h                |   5 +
+>  include/linux/oid_registry.h                 |   3 +
+>  include/linux/security.h                     |  28 ++
+>  include/uapi/linux/lsm.h                     |   1 +
+>  scripts/Makefile                             |   1 +
+>  scripts/hornet/Makefile                      |   5 +
+>  scripts/hornet/extract-insn.sh               |  27 ++
+>  scripts/hornet/extract-map.sh                |  27 ++
+>  scripts/hornet/extract-skel.sh               |  27 ++
+>  scripts/hornet/gen_sig.c                     | 401 +++++++++++++++++++
+>  scripts/hornet/write-sig.sh                  |  27 ++
+>  security/Kconfig                             |   3 +-
+>  security/Makefile                            |   1 +
+>  security/hornet/Kconfig                      |  13 +
+>  security/hornet/Makefile                     |   7 +
+>  security/hornet/hornet.asn1                  |  12 +
+>  security/hornet/hornet_lsm.c                 | 352 ++++++++++++++++
+>  security/ipe/Kconfig                         |  15 +
+>  security/ipe/audit.c                         |  15 +
+>  security/ipe/eval.c                          |  93 ++++-
+>  security/ipe/eval.h                          |  11 +
+>  security/ipe/hooks.c                         |  63 +++
+>  security/ipe/hooks.h                         |  15 +
+>  security/ipe/ipe.c                           |  14 +
+>  security/ipe/ipe.h                           |   3 +
+>  security/ipe/policy.h                        |  14 +
+>  security/ipe/policy_parser.c                 |  27 ++
+>  security/security.c                          |  75 +++-
+>  tools/testing/selftests/Makefile             |   1 +
+>  tools/testing/selftests/hornet/Makefile      |  63 +++
+>  tools/testing/selftests/hornet/loader.c      |  21 +
+>  tools/testing/selftests/hornet/trivial.bpf.c |  33 ++
+>  45 files changed, 2112 insertions(+), 8 deletions(-)
+>  create mode 100644 Documentation/admin-guide/LSM/Hornet.rst
+>  create mode 100644 crypto/asymmetric_keys/pkcs7_aa.asn1
+>  create mode 100644 scripts/hornet/Makefile
+>  create mode 100755 scripts/hornet/extract-insn.sh
+>  create mode 100755 scripts/hornet/extract-map.sh
+>  create mode 100755 scripts/hornet/extract-skel.sh
+>  create mode 100644 scripts/hornet/gen_sig.c
+>  create mode 100755 scripts/hornet/write-sig.sh
+>  create mode 100644 security/hornet/Kconfig
+>  create mode 100644 security/hornet/Makefile
+>  create mode 100644 security/hornet/hornet.asn1
+>  create mode 100644 security/hornet/hornet_lsm.c
+>  create mode 100644 tools/testing/selftests/hornet/Makefile
+>  create mode 100644 tools/testing/selftests/hornet/loader.c
+>  create mode 100644 tools/testing/selftests/hornet/trivial.bpf.c
 
-Reviewed-by: David Laight <david.laght.linux@gmail.com>
+[NOTE: added the linux-crypto list to the To/CC lines]
 
-> ---
->  drivers/crypto/atmel-ecc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/crypto/atmel-ecc.c b/drivers/crypto/atmel-ecc.c
-> index b6a77c8d439c..2cf53f0b6742 100644
-> --- a/drivers/crypto/atmel-ecc.c
-> +++ b/drivers/crypto/atmel-ecc.c
-> @@ -56,7 +56,7 @@ static void atmel_ecdh_done(struct atmel_i2c_work_data *work_data, void *areq,
->  		goto free_work_data;
->  
->  	/* might want less than we've got */
-> -	n_sz = min_t(size_t, ATMEL_ECC_NIST_P256_N_SIZE, req->dst_len);
-> +	n_sz = min(ATMEL_ECC_NIST_P256_N_SIZE, req->dst_len);
+Hi crypto folks,
 
-Not entirely related, but (to me) the arguments are in the wrong order.
+You'll notice there are three patches from James Bottomley in this
+patchset that touch crypto code and I'd appreciate it if you could
+take a look and either ACK the patches or let James and Blaise know
+what you would like changed.  James did send these patches to you for
+review some time ago, so they aren't necessarily new, but I wanted to
+make sure you saw them again.
 
->  
->  	/* copy the shared secret */
->  	copied = sg_copy_from_buffer(req->dst, sg_nents_for_len(req->dst, n_sz),
-> @@ -150,7 +150,7 @@ static int atmel_ecdh_generate_public_key(struct kpp_request *req)
->  		return -EINVAL;
->  
->  	/* might want less than we've got */
-> -	nbytes = min_t(size_t, ATMEL_ECC_PUBKEY_SIZE, req->dst_len);
-> +	nbytes = min(ATMEL_ECC_PUBKEY_SIZE, req->dst_len);
->  
->  	/* public key was saved at private key generation */
->  	copied = sg_copy_from_buffer(req->dst,
-> 
+Unfortunately, it doesn't look like the crypto list was CC'd on this
+patchset, so here is a lore link to the patchset as a whole:
 
+https://lore.kernel.org/linux-security-module/20260507191416.2984054-1-bbos=
+caccy@linux.microsoft.com
+
+... and here are lore links to the three crypto patches:
+
+https://lore.kernel.org/linux-security-module/20260507191416.2984054-2-bbos=
+caccy@linux.microsoft.com
+
+https://lore.kernel.org/linux-security-module/20260507191416.2984054-3-bbos=
+caccy@linux.microsoft.com
+
+https://lore.kernel.org/linux-security-module/20260507191416.2984054-4-bbos=
+caccy@linux.microsoft.com
+
+Thanks.
+
+--=20
+paul-moore.com
 
