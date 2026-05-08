@@ -1,48 +1,48 @@
-Return-Path: <linux-crypto+bounces-23852-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23850-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eI3zFR7V/Wl2jgAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23852-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:20:46 +0200
+	id 2CgXAQfV/Wl2jgAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23850-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:20:23 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C632F4F64C6
-	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 363954F649F
+	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:20:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 117CE309883B
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 May 2026 12:16:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1EAF530924E7
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 May 2026 12:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2EE1382F00;
-	Fri,  8 May 2026 12:16:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69CDB36166A;
+	Fri,  8 May 2026 12:16:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="YA1taRYV"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ZiKMth1D"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5BAD35F162;
-	Fri,  8 May 2026 12:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 442BD37FF76;
+	Fri,  8 May 2026 12:16:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778242574; cv=none; b=UkXzpA6LQHUG4XLLuIo9nTEhEnnOgoW/JZhaY5+z9JtziMFsNVkCua2S3i5tewP52tIUVEaWXVCEsoAO8X9oEXBnDld7oFnpb8nA9Dod2hnXFX2+H+thWc7qhz+w5fOdqQnaqH3uj2tCEy67YN3AfS/ltahczyEAgd78SPCB5ro=
+	t=1778242569; cv=none; b=K9Uz0OMQtBu/fxbcusAeuD+EFvg6iKFhZLZK0fAdInykbSOn2Hgn7GB42iQRiTyGMXNqo0BFrGYOOPXrUp1iUorBOMfDmEqZoevNLJBjMFKwW0by/TUhf8LS+yI66dlK2rwr0jDavCqJP3PbXHKd0pZEFk5npmRS0cIYOaQGvuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778242574; c=relaxed/simple;
-	bh=mEsys1h5aQK0DP4Yf0qcPeRK2Era4FTmUC8qic3NsDQ=;
+	s=arc-20240116; t=1778242569; c=relaxed/simple;
+	bh=eI+lnb4OIstw+TJ/gSUcTbk+6CPtXDvwn0TN344wuIA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fCLRA9cCgoeVeFZW7tHJj/8OGbvIgIiLAtODD7PfDlbLJP9erO5aFAflXbYv4pmrXoNCY7qFvbykwAtcjdtGMPnBbQbhmskN1OLHXFjGFOaPj1kMTr7L2hIyQmnQfOTK9v99yKfNaWQ8LLl+8PkmcpLEFe3RJCGKnhynTeLgWMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=YA1taRYV; arc=none smtp.client-ip=115.124.30.97
+	 MIME-Version; b=ni/5Mmj2ipAKXuIUFWOny7Jty782J1O4IQcvQiOVEMn/rVgbYfHjYUt7uDkUVX52ubhhHaKM9cr5xcJ9pufPMAh/xEx+KqwblGLudf/59sK3n2YRww0aN+PRh4gVmg+NBd05Irlr3e45WJXi/eMquD/ieZEaqCUZ0Azfb4sLh5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ZiKMth1D; arc=none smtp.client-ip=115.124.30.112
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1778242562; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=4yw5AFB5qsJSIITpEFRXbsszGR1UshaGAlig0l2OZ7g=;
-	b=YA1taRYV+j7hgzLyGGlfMfJir9P1iTJMv7jphvV7k+WggjO/TMRHgHvU1STtPqX/QZna75nU2MIKy7fg6jPhdUe5tHDPMsCOjFijnO7BKZ0t1Ba3weaqrVsLaJPB2bLq4sPk2QUm1yyTgbpxVE85xFXjXz4jWYG0ek/T0QigPHE=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033032089153;MF=libaokun@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0X2XQgnv_1778242561;
-Received: from x31h02109.sqa.na131.tbsite.net(mailfrom:libaokun@linux.alibaba.com fp:SMTPD_---0X2XQgnv_1778242561 cluster:ay36)
+	t=1778242563; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=UjyILuNe0LAhrUwcQd6OrpHIO74QHE8aSygiu8ENNoo=;
+	b=ZiKMth1DCl8veoBr+UFzIJ5EzNohOFnj4bjiPXxqtTwyff/Yg9egkJBaO/ylGUadrZtoxTt7oYSYDI1J2VMsMijbKI2/CCzQVW1OYoa6U8DxIgTHylqygdTZ7CnVQ3zbCf6erovoSOmXiin4X2b+2CBOydhNfCrvTX9FEGZ2a+Y=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037026112;MF=libaokun@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0X2XQgo7_1778242562;
+Received: from x31h02109.sqa.na131.tbsite.net(mailfrom:libaokun@linux.alibaba.com fp:SMTPD_---0X2XQgo7_1778242562 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Fri, 08 May 2026 20:16:01 +0800
+          Fri, 08 May 2026 20:16:02 +0800
 From: Baokun Li <libaokun@linux.alibaba.com>
 To: linux-ext4@vger.kernel.org
 Cc: linux-crypto@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc: linux-crypto@vger.kernel.org,
 	ojaswin@linux.ibm.com,
 	ritesh.list@gmail.com,
 	Baokun Li <libaokun@linux.alibaba.com>
-Subject: [PATCH RFC 03/17] lib/crc: crc_kunit: add benchmark for crc32c_flip_range()
-Date: Fri,  8 May 2026 20:15:25 +0800
-Message-ID: <20260508121539.4174601-4-libaokun@linux.alibaba.com>
+Subject: [PATCH RFC 04/17] ext4: fix incorrect block bitmap free clusters update on metadata overlap
+Date: Fri,  8 May 2026 20:15:26 +0800
+Message-ID: <20260508121539.4174601-5-libaokun@linux.alibaba.com>
 X-Mailer: git-send-email 2.43.7
 In-Reply-To: <20260508121539.4174601-1-libaokun@linux.alibaba.com>
 References: <20260508121539.4174601-1-libaokun@linux.alibaba.com>
@@ -68,7 +68,7 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: C632F4F64C6
+X-Rspamd-Queue-Id: 363954F649F
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-6.16 / 15.00];
 	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
@@ -82,7 +82,7 @@ X-Spamd-Result: default: False [-6.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23852-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23850-lists,linux-crypto=lfdr.de];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,mit.edu,dilger.ca,suse.cz,huawei.com,linux.ibm.com,gmail.com,linux.alibaba.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -101,95 +101,42 @@ X-Spamd-Result: default: False [-6.16 / 15.00];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[alibaba.com:email,linux.alibaba.com:mid,linux.alibaba.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-Add a kunit benchmark comparing crc32c_flip_range() against full crc32c
-recomputation across bitmap sizes from 1KB to 64KB. The benchmark reports
-per-call latency in nanoseconds and the speedup ratio.
+In ext4_mb_mark_diskspace_used(), when the allocator detects that the
+allocated blocks overlap with filesystem metadata, it enters an error
+recovery path that marks these blocks as used in the bitmap via
+ext4_mb_mark_context() with flags=0.
 
-Sample results (x86_64, Intel(R) Xeon(R) Platinum 8331C):
+Without EXT4_MB_BITMAP_MARKED_CHECK, ext4_mb_mark_context() assumes all
+bits in the range will be flipped, so it sets changed=len unconditionally.
+However, in a corrupted filesystem, some of these metadata blocks may
+already be marked as used (bit=1) in the bitmap. Since mb_set_bits() is
+idempotent (sets bits to 1 regardless of current state), bits that are
+already set won't actually change, but the free clusters count is still
+decremented by the full range length, leading to an inaccurate free
+clusters count.
 
-bitmap=1024: flip_range=48 ns, full_crc=45 ns, speedup=0.9x
-bitmap=2048: flip_range=53 ns, full_crc=88 ns, speedup=1.6x
-bitmap=4096: flip_range=57 ns, full_crc=182 ns, speedup=3.1x
-bitmap=8192: flip_range=63 ns, full_crc=357 ns, speedup=5.6x
-bitmap=16384: flip_range=68 ns, full_crc=709 ns, speedup=10.3x
-bitmap=32768: flip_range=73 ns, full_crc=1421 ns, speedup=19.3x
-bitmap=65536: flip_range=78 ns, full_crc=2853 ns, speedup=36.3x
+Fix this by passing EXT4_MB_BITMAP_MARKED_CHECK, which correctly counts
+only the bits that actually changed state.
 
+Fixes: 2f94711b098b ("ext4: call ext4_mb_mark_context in ext4_mb_mark_diskspace_used")
 Signed-off-by: Baokun Li <libaokun@linux.alibaba.com>
 ---
- lib/crc/tests/crc_kunit.c | 52 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
+ fs/ext4/mballoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/crc/tests/crc_kunit.c b/lib/crc/tests/crc_kunit.c
-index 46f9df5b58e4..8e8b541b37d3 100644
---- a/lib/crc/tests/crc_kunit.c
-+++ b/lib/crc/tests/crc_kunit.c
-@@ -554,6 +554,57 @@ static void crc32c_flip_range_test(struct kunit *test)
- 	}
- }
- 
-+/*
-+ * Benchmark crc32c_flip_range vs full crc32c recomputation
-+ */
-+static void crc32c_flip_range_benchmark(struct kunit *test)
-+{
-+	static const size_t bitmap_sizes[] = {
-+		1024, 2048, 4096, 8192, 16384, 32768, 65536,
-+	};
-+	size_t i, j, num_iters, buflen, total_bits;
-+	volatile u32 crc;
-+	u64 t_flip, t_full;
-+	u8 *buf;
-+
-+	if (!IS_ENABLED(CONFIG_CRC_BENCHMARK))
-+		kunit_skip(test, "not enabled");
-+
-+	buf = kunit_kzalloc(test, 65536, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_NULL(test, buf);
-+
-+	for (i = 0; i < ARRAY_SIZE(bitmap_sizes); i++) {
-+		buflen = bitmap_sizes[i];
-+		total_bits = buflen * 8;
-+		num_iters = 10000000 / (buflen + 128);
-+
-+		/* Benchmark crc32c_flip_range */
-+		crc = crc32c(0, buf, buflen);
-+		preempt_disable();
-+		t_flip = ktime_get_ns();
-+		for (j = 0; j < num_iters; j++)
-+			crc = crc32c_flip_range(crc, total_bits, 100, 100);
-+		t_flip = ktime_get_ns() - t_flip;
-+		preempt_enable();
-+
-+		/* Benchmark full crc32c recomputation */
-+		preempt_disable();
-+		t_full = ktime_get_ns();
-+		for (j = 0; j < num_iters; j++)
-+			crc = crc32c(0, buf, buflen);
-+		t_full = ktime_get_ns() - t_full;
-+		preempt_enable();
-+
-+		kunit_info(test,
-+			   "bitmap=%zu: flip_range=%llu ns, full_crc=%llu ns, speedup=%llu.%01llux\n",
-+			   buflen,
-+			   div64_u64(t_flip, num_iters),
-+			   div64_u64(t_full, num_iters),
-+			   div64_u64(t_full * 10, t_flip ? t_flip : 1) / 10,
-+			   div64_u64(t_full * 10, t_flip ? t_flip : 1) % 10);
-+	}
-+}
-+
- static struct kunit_case crc_test_cases[] = {
- #if IS_REACHABLE(CONFIG_CRC7)
- 	KUNIT_CASE(crc7_be_test),
-@@ -575,6 +626,7 @@ static struct kunit_case crc_test_cases[] = {
- 	KUNIT_CASE(crc32c_test),
- 	KUNIT_CASE(crc32c_benchmark),
- 	KUNIT_CASE(crc32c_flip_range_test),
-+	KUNIT_CASE(crc32c_flip_range_benchmark),
- #endif
- #if IS_REACHABLE(CONFIG_CRC64)
- 	KUNIT_CASE(crc64_be_test),
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index ed1bd00e11cd..ff2023c9f52c 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4228,7 +4228,7 @@ ext4_mb_mark_diskspace_used(struct ext4_allocation_context *ac, handle_t *handle
+ 					   ac->ac_b_ex.fe_group,
+ 					   ac->ac_b_ex.fe_start,
+ 					   ac->ac_b_ex.fe_len,
+-					   0, NULL);
++					   EXT4_MB_BITMAP_MARKED_CHECK, NULL);
+ 		if (!err)
+ 			err = -EFSCORRUPTED;
+ 		return err;
 -- 
 2.43.7
 
