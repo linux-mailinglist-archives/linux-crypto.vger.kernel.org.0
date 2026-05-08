@@ -1,48 +1,48 @@
-Return-Path: <linux-crypto+bounces-23859-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23865-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gClMKG/V/Wl2jgAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23859-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:22:07 +0200
+	id MApWBj/U/Wl2jgAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23865-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:17:03 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0409C4F651D
-	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:22:06 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FAE44F63B7
+	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:17:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C1AE130B1050
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 May 2026 12:16:20 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 00D44301906A
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 May 2026 12:16:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726703DBD76;
-	Fri,  8 May 2026 12:16:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA35B384232;
+	Fri,  8 May 2026 12:16:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="UMSTwu8G"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Aw4Wh/zW"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB0B36166A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F453DB63C;
 	Fri,  8 May 2026 12:16:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778242579; cv=none; b=po/wB7hbsmZlQ48/mVWsatdAfRiceeB6f3WB2EgvuH8C5XYkPJ8eKrfz5x11es8oq3GGA/BvGE8ydNT9CigXrv/qM4Lgq59maw+bLq61DdQFO2+rzDKE7r5Z8ZQefRNMqewqMYA7kXNparFczD5NgEOH+gRn6y3HALNwQkYPTx0=
+	t=1778242581; cv=none; b=OxKKBC511uCpn/iaal5z2HxU+dmLaLGxkubgceHixyEEbzXoob4AC5xPYrFsWN2A9PvnhmDKnJis3q9IPODgg/HG6QdkRFbKSiujMjOemeEOdqdxt8xzJF0cVUDkhhGw3Dskv4/kwEYV/CmFJuygXx/2i279LkksN9VoyWwnCPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778242579; c=relaxed/simple;
-	bh=YCKFjQiZrOBBRxkTAZoWHoGW2GZSiBgcy/0+8q03k3k=;
+	s=arc-20240116; t=1778242581; c=relaxed/simple;
+	bh=OUftgixMNWlG++qrrDs5ZeGmxtXp1jfQD5mN2C6rp6E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Onl+K1femMb2gCOHJ2r17a3orj2luEKP6JvjOUmwopB1SzQ7IzeK8r+Z89EhDugng5hvMtUM2QuWlbziJYPmRFkhAHh03KUVhNBEHrKR7s/BJq+OEX6Pm1MK3Jj2aKErKebik8VvoHDaxSOukIvU40QuGbYOM51FdmvwoJY/2x4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=UMSTwu8G; arc=none smtp.client-ip=115.124.30.97
+	 MIME-Version; b=Q5E+YwD1Sulilr9UsZ1mOyDvoUSIl/898ycOwhosz3AvE1og9bRR5K+ttB01MuNfyx+JnONkXRQV57bMaLOUMsz6HthvV2qVh+L+Qa2ILLPPGi2HEpub5mSxAq2L+GnXcBeaomPRe5xghPqXrvnmiZkvW3TIjKl3pU5GD+HW2qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Aw4Wh/zW; arc=none smtp.client-ip=115.124.30.98
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1778242572; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=dB3zSaZqP7/b8wHGDUalrkHyVRQutKa9azzVpRzhLnQ=;
-	b=UMSTwu8GwEjITJsF8pcxMkH2p9jJQzaDSRC0PknV2dbkId9htebVKxzq5ANYfoaAXc0vaxxeMg1/OL9FPQ6Xy99UQO4Ygy8SKilcWMUEWZeQGVyzICB3aZxhaA97JzzMpFKLPtIigjNg14WMKDzzGvw/D0kcHq07GDwszfwo1oQ=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045098064;MF=libaokun@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0X2XQgre_1778242571;
-Received: from x31h02109.sqa.na131.tbsite.net(mailfrom:libaokun@linux.alibaba.com fp:SMTPD_---0X2XQgre_1778242571 cluster:ay36)
+	t=1778242573; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=jzJIYLNOQ5UlZMTTubAeA23KJPWfOAbaezYvUFo6acU=;
+	b=Aw4Wh/zW++Mqs2Wb1rzSIOQ0VmRSdME6eTelCkYCpdGLzbtQZC79JOJGXAxQ4n9PF72S9ERWB4ODpqKalZhqaRW7VCSyeYVL+xaKnNApOgElNu21GXzq79U/CbY2FyB9wx2w5d8gaWyR4DdJuYO3j8MM1NkT6kw+wMBzewOcL/g=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam011083073210;MF=libaokun@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0X2XQgru_1778242572;
+Received: from x31h02109.sqa.na131.tbsite.net(mailfrom:libaokun@linux.alibaba.com fp:SMTPD_---0X2XQgru_1778242572 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Fri, 08 May 2026 20:16:12 +0800
+          Fri, 08 May 2026 20:16:13 +0800
 From: Baokun Li <libaokun@linux.alibaba.com>
 To: linux-ext4@vger.kernel.org
 Cc: linux-crypto@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc: linux-crypto@vger.kernel.org,
 	ojaswin@linux.ibm.com,
 	ritesh.list@gmail.com,
 	Baokun Li <libaokun@linux.alibaba.com>
-Subject: [PATCH RFC 16/17] ext4: extract ext4_update_inode_group_desc() to reduce duplication
-Date: Fri,  8 May 2026 20:15:38 +0800
-Message-ID: <20260508121539.4174601-17-libaokun@linux.alibaba.com>
+Subject: [PATCH RFC 17/17] ext4: add ext4_get_flex_group() helper to simplify flex group lookups
+Date: Fri,  8 May 2026 20:15:39 +0800
+Message-ID: <20260508121539.4174601-18-libaokun@linux.alibaba.com>
 X-Mailer: git-send-email 2.43.7
 In-Reply-To: <20260508121539.4174601-1-libaokun@linux.alibaba.com>
 References: <20260508121539.4174601-1-libaokun@linux.alibaba.com>
@@ -68,7 +68,7 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 0409C4F651D
+X-Rspamd-Queue-Id: 1FAE44F63B7
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-6.16 / 15.00];
 	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
@@ -77,18 +77,18 @@ X-Spamd-Result: default: False [-6.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23859-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23865-lists,linux-crypto=lfdr.de];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,mit.edu,dilger.ca,suse.cz,huawei.com,linux.ibm.com,gmail.com,linux.alibaba.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[libaokun@linux.alibaba.com,linux-crypto@vger.kernel.org];
@@ -98,190 +98,147 @@ X-Spamd-Result: default: False [-6.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCPT_COUNT_SEVEN(0.00)[11];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.alibaba.com:mid,linux.alibaba.com:dkim,alibaba.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.alibaba.com:mid,linux.alibaba.com:dkim,alibaba.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-ext4_mark_inode_used() and __ext4_new_inode() contain nearly
-identical code blocks for updating group descriptor fields after
-inode allocation (UNINIT flag clearing, itable_unused update,
-inode bitmap checksum, group desc checksum). Extract the common
-logic into ext4_update_inode_group_desc() to eliminate duplication.
+Introduce ext4_get_flex_group() that combines ext4_flex_group() and
+sbi_array_rcu_deref() into a single call, replacing the repeated
+pattern across ialloc.c, mballoc.c, resize.c, and super.c.
+
+No functional change.
 
 Signed-off-by: Baokun Li <libaokun@linux.alibaba.com>
 ---
- fs/ext4/ialloc.c | 136 ++++++++++++++++++++---------------------------
- 1 file changed, 57 insertions(+), 79 deletions(-)
+ fs/ext4/ext4.h    |  7 +++++++
+ fs/ext4/ialloc.c  | 19 +++++--------------
+ fs/ext4/mballoc.c |  4 +---
+ fs/ext4/resize.c  |  4 +---
+ fs/ext4/super.c   |  4 +---
+ 5 files changed, 15 insertions(+), 23 deletions(-)
 
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 9dd1cdb367ba..25430c572818 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -808,12 +808,63 @@ static int ext4_might_init_block_bitmap(handle_t *handle,
- 	return err;
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index f48cb9d998ab..e38ada51972a 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3457,6 +3457,13 @@ static inline unsigned int ext4_flex_bg_size(struct ext4_sb_info *sbi)
+ 	return 1 << sbi->s_log_groups_per_flex;
  }
  
-+/*
-+ * Update group descriptor checksums and itable_unused after allocating
-+ * inode @bit (0-based relative inode number within the group).
-+ * Must be called with the group lock held.
-+ */
-+static void ext4_update_inode_group_desc(struct super_block *sb,
-+					 ext4_group_t group,
-+					 struct ext4_group_desc *gdp,
-+					 struct buffer_head *inode_bitmap_bh,
-+					 int bit, umode_t mode)
++static inline struct flex_groups *ext4_get_flex_group(struct ext4_sb_info *sbi,
++						      ext4_group_t block_group)
 +{
-+	int free;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	bool fast_crc = true;
-+
-+	ext4_free_inodes_set(sb, gdp, ext4_free_inodes_count(sb, gdp) - 1);
-+	if (S_ISDIR(mode)) {
-+		ext4_used_dirs_set(sb, gdp, ext4_used_dirs_count(sb, gdp) + 1);
-+		if (sbi->s_log_groups_per_flex) {
-+			ext4_group_t f = ext4_flex_group(sbi, group);
-+
-+			atomic_inc(&sbi_array_rcu_deref(sbi, s_flex_groups,
-+							f)->used_dirs);
-+		}
-+	}
-+
-+	if (!ext4_has_group_desc_csum(sb))
-+		return;
-+
-+	free = EXT4_INODES_PER_GROUP(sb) - ext4_itable_unused_count(sb, gdp);
-+	if (gdp->bg_flags & cpu_to_le16(EXT4_BG_INODE_UNINIT)) {
-+		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_INODE_UNINIT);
-+		free = 0;
-+		/* Incremental CRC needs a valid checksum baseline */
-+		fast_crc = false;
-+	}
-+
-+	/*
-+	 * Check the relative inode number against the last used
-+	 * relative inode number in this group. If it is greater
-+	 * we need to update the bg_itable_unused count.
-+	 */
-+	if (bit >= free)
-+		ext4_itable_unused_set(sb, gdp,
-+				       EXT4_INODES_PER_GROUP(sb) - bit - 1);
-+	if (fast_crc)
-+		ext4_inode_bitmap_csum_set_fast(sb, gdp, bit);
-+	else
-+		ext4_inode_bitmap_csum_set(sb, gdp, inode_bitmap_bh);
-+	ext4_group_desc_csum_set(sb, group, gdp);
++	return sbi_array_rcu_deref(sbi, s_flex_groups,
++				   ext4_flex_group(sbi, block_group));
 +}
 +
- int ext4_mark_inode_used(struct super_block *sb, int ino, umode_t mode)
+ static inline loff_t ext4_get_maxbytes(struct inode *inode)
  {
- 	unsigned long max_ino = le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count);
- 	struct buffer_head *inode_bitmap_bh = NULL, *group_desc_bh = NULL;
- 	struct ext4_group_desc *gdp;
--	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	ext4_group_t group;
- 	int bit;
- 	int err;
-@@ -848,44 +899,8 @@ int ext4_mark_inode_used(struct super_block *sb, int ino, umode_t mode)
- 	ext4_set_bit(bit, inode_bitmap_bh->b_data);
+ 	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+index 25430c572818..d88160afd6b6 100644
+--- a/fs/ext4/ialloc.c
++++ b/fs/ext4/ialloc.c
+@@ -336,8 +336,7 @@ void ext4_free_inode(handle_t *handle, struct inode *inode)
+ 	if (sbi->s_log_groups_per_flex) {
+ 		struct flex_groups *fg;
  
- 	/* Update the relevant bg descriptor fields */
--	ext4_free_inodes_set(sb, gdp, ext4_free_inodes_count(sb, gdp) - 1);
--	if (S_ISDIR(mode)) {
--		ext4_used_dirs_set(sb, gdp, ext4_used_dirs_count(sb, gdp) + 1);
+-		fg = sbi_array_rcu_deref(sbi, s_flex_groups,
+-					 ext4_flex_group(sbi, block_group));
++		fg = ext4_get_flex_group(sbi, block_group);
+ 		atomic_inc(&fg->free_inodes);
+ 		if (is_directory)
+ 			atomic_dec(&fg->used_dirs);
+@@ -826,12 +825,8 @@ static void ext4_update_inode_group_desc(struct super_block *sb,
+ 	ext4_free_inodes_set(sb, gdp, ext4_free_inodes_count(sb, gdp) - 1);
+ 	if (S_ISDIR(mode)) {
+ 		ext4_used_dirs_set(sb, gdp, ext4_used_dirs_count(sb, gdp) + 1);
 -		if (sbi->s_log_groups_per_flex) {
 -			ext4_group_t f = ext4_flex_group(sbi, group);
 -
 -			atomic_inc(&sbi_array_rcu_deref(sbi, s_flex_groups,
 -							f)->used_dirs);
 -		}
--	}
--
--	if (ext4_has_group_desc_csum(sb)) {
--		bool fast_crc = true;
--		int free = EXT4_INODES_PER_GROUP(sb) -
--				ext4_itable_unused_count(sb, gdp);
--
--		if (gdp->bg_flags & cpu_to_le16(EXT4_BG_INODE_UNINIT)) {
--			gdp->bg_flags &= cpu_to_le16(~EXT4_BG_INODE_UNINIT);
--			free = 0;
--			/* Incremental CRC needs a valid checksum baseline */
--			fast_crc = false;
--		}
--
--		/*
--		 * Check the relative inode number against the last used
--		 * relative inode number in this group. if it is greater
--		 * we need to update the bg_itable_unused count
--		 */
--		if (bit >= free)
--			ext4_itable_unused_set(sb, gdp,
--					(EXT4_INODES_PER_GROUP(sb) - bit - 1));
--		if (fast_crc)
--			ext4_inode_bitmap_csum_set_fast(sb, gdp, bit);
--		else
--			ext4_inode_bitmap_csum_set(sb, gdp, inode_bitmap_bh);
--		ext4_group_desc_csum_set(sb, group, gdp);
--	}
--
-+	ext4_update_inode_group_desc(sb, group, gdp,
-+				     inode_bitmap_bh, bit, mode);
- 	ext4_unlock_group(sb, group);
++		if (sbi->s_log_groups_per_flex)
++			atomic_inc(&ext4_get_flex_group(sbi, group)->used_dirs);
+ 	}
  
- 	BUFFER_TRACE(inode_bitmap_bh, "call ext4_handle_dirty_metadata");
-@@ -1165,50 +1180,13 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
- 				ret2 = 0;
- 			} else {
- 				ret2 = 1; /* we didn't grab the inode */
--				goto unlock_group;
- 			}
- 		}
+ 	if (!ext4_has_group_desc_csum(sb))
+@@ -997,7 +992,6 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
+ 	int ret2, err;
+ 	struct inode *ret;
+ 	ext4_group_t i;
+-	ext4_group_t flex_group;
+ 	struct ext4_group_info *grp = NULL;
+ 	bool encrypt = false;
  
- 		/* Update the relevant bg descriptor fields */
--		ext4_free_inodes_set(sb, gdp,
--				     ext4_free_inodes_count(sb, gdp) - 1);
--		if (S_ISDIR(mode)) {
--			ext4_used_dirs_set(sb, gdp,
--					   ext4_used_dirs_count(sb, gdp) + 1);
--			if (sbi->s_log_groups_per_flex) {
--				ext4_group_t f = ext4_flex_group(sbi, group);
--				atomic_inc(&sbi_array_rcu_deref(sbi, s_flex_groups,
--								f)->used_dirs);
--			}
--		}
--
--		if (ext4_has_group_desc_csum(sb)) {
--			bool fast_crc = true;
--			int free = EXT4_INODES_PER_GROUP(sb) -
--					ext4_itable_unused_count(sb, gdp);
--
--			if (gdp->bg_flags & cpu_to_le16(EXT4_BG_INODE_UNINIT)) {
--				gdp->bg_flags &= cpu_to_le16(~EXT4_BG_INODE_UNINIT);
--				free = 0;
--				/* Incremental CRC needs a valid csum baseline */
--				fast_crc = false;
--			}
--			/*
--			 * Check the relative inode number against the
--			 * last used relative inode number in this group.
--			 * If it is greater we need to update the
--			 * bg_itable_unused count.
--			 */
--			if (bit >= free)
--				ext4_itable_unused_set(sb, gdp,
--					EXT4_INODES_PER_GROUP(sb) - bit - 1);
--			if (fast_crc)
--				ext4_inode_bitmap_csum_set_fast(sb, gdp, bit);
--			else
--				ext4_inode_bitmap_csum_set(sb, gdp, inode_bitmap_bh);
--			ext4_group_desc_csum_set(sb, group, gdp);
--		}
--unlock_group:
-+		if (!ret2)
-+			ext4_update_inode_group_desc(sb, group, gdp,
-+						     inode_bitmap_bh, bit, mode);
- 		ext4_unlock_group(sb, group);
- 		if (ext4_has_group_desc_csum(sb) &&
- 		    !(sbi->s_mount_state & EXT4_FC_REPLAY))
+@@ -1220,11 +1214,8 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
+ 	if (S_ISDIR(mode))
+ 		percpu_counter_inc(&sbi->s_dirs_counter);
+ 
+-	if (sbi->s_log_groups_per_flex) {
+-		flex_group = ext4_flex_group(sbi, group);
+-		atomic_dec(&sbi_array_rcu_deref(sbi, s_flex_groups,
+-						flex_group)->free_inodes);
+-	}
++	if (sbi->s_log_groups_per_flex)
++		atomic_dec(&ext4_get_flex_group(sbi, group)->free_inodes);
+ 
+ 	/* the inode bitmap is zero-based */
+ 	inode->i_ino = bit + 1 + group * EXT4_INODES_PER_GROUP(sb);
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 77f6309916d1..9e30c9eefd35 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4181,9 +4181,7 @@ ext4_mb_mark_context(handle_t *handle, struct super_block *sb, bool state,
+ 		*ret_changed = changed;
+ 
+ 	if (sbi->s_log_groups_per_flex) {
+-		ext4_group_t flex_group = ext4_flex_group(sbi, group);
+-		struct flex_groups *fg = sbi_array_rcu_deref(sbi,
+-					   s_flex_groups, flex_group);
++		struct flex_groups *fg = ext4_get_flex_group(sbi, group);
+ 
+ 		if (state)
+ 			atomic64_sub(changed, &fg->free_clusters);
+diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+index 2c5b851c552a..8d2cd1bc17bb 100644
+--- a/fs/ext4/resize.c
++++ b/fs/ext4/resize.c
+@@ -1495,11 +1495,9 @@ static void ext4_update_super(struct super_block *sb,
+ 	ext4_debug("free blocks count %llu",
+ 		   percpu_counter_read(&sbi->s_freeclusters_counter));
+ 	if (ext4_has_feature_flex_bg(sb) && sbi->s_log_groups_per_flex) {
+-		ext4_group_t flex_group;
+ 		struct flex_groups *fg;
+ 
+-		flex_group = ext4_flex_group(sbi, group_data[0].group);
+-		fg = sbi_array_rcu_deref(sbi, s_flex_groups, flex_group);
++		fg = ext4_get_flex_group(sbi, group_data[0].group);
+ 		atomic64_add(EXT4_NUM_B2C(sbi, free_blocks),
+ 			     &fg->free_clusters);
+ 		atomic_add(EXT4_INODES_PER_GROUP(sb) * flex_gd->count,
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 6a77db4d3124..064e06163716 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -3211,7 +3211,6 @@ static int ext4_fill_flex_info(struct super_block *sb)
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	struct ext4_group_desc *gdp = NULL;
+ 	struct flex_groups *fg;
+-	ext4_group_t flex_group;
+ 	int i, err;
+ 
+ 	sbi->s_log_groups_per_flex = sbi->s_es->s_log_groups_per_flex;
+@@ -3227,8 +3226,7 @@ static int ext4_fill_flex_info(struct super_block *sb)
+ 	for (i = 0; i < sbi->s_groups_count; i++) {
+ 		gdp = ext4_get_group_desc(sb, i, NULL);
+ 
+-		flex_group = ext4_flex_group(sbi, i);
+-		fg = sbi_array_rcu_deref(sbi, s_flex_groups, flex_group);
++		fg = ext4_get_flex_group(sbi, i);
+ 		atomic_add(ext4_free_inodes_count(sb, gdp), &fg->free_inodes);
+ 		atomic64_add(ext4_free_group_clusters(sb, gdp),
+ 			     &fg->free_clusters);
 -- 
 2.43.7
 
