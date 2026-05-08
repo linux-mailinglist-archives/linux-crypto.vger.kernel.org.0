@@ -1,48 +1,48 @@
-Return-Path: <linux-crypto+bounces-23860-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23864-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YDNPLHLV/Wl2jgAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23860-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:22:10 +0200
+	id 8LugITXU/Wl2jgAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23864-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:16:53 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E5E64F6524
-	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:22:10 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C034D4F6392
+	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:16:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F057330B2BDD
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 May 2026 12:16:20 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B61FD301B1FE
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 May 2026 12:16:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 764303DC4C6;
-	Fri,  8 May 2026 12:16:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8620A3DDDB0;
+	Fri,  8 May 2026 12:16:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="uwSnD90S"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="e/jNtFAx"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD96D3D5244;
-	Fri,  8 May 2026 12:16:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AD63DA5DC;
+	Fri,  8 May 2026 12:16:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778242579; cv=none; b=Q5gxnrtPFlvKV3w8E+RMQPZ1rjr5ndEZh31jIkWpz3tuNazM3mVoSnzAzaBMp//NT0GymRf9D7FGK+KGOf8pYb2pASWexgsSSDQLOMVLU4Bu+0Z/ZSwL5KU473ZUJMFvX8c8x87oQPu+VtXQHcHox0/EV0ICWByokd/GKYU0Ojg=
+	t=1778242580; cv=none; b=JUdUBAP5OodZ6EgQjWzzANgZ+lyA3Gf8vdElxgZtdSFeP9YIicXISDoJnjRxSZE/oEQD98XnCHTQk/TJYDBdPw4Vo40rQFZDs7OUixebVcbtqavrNN0Pgn2Cac4KJ6fv5RBdX4c58fMgbHarvejuwgzzMEm+UmS2oQ3LP6z+J7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778242579; c=relaxed/simple;
-	bh=PFc3imtu7npQUjqtdoe3If9Ky6yXQHRgCbyLYFArCkg=;
+	s=arc-20240116; t=1778242580; c=relaxed/simple;
+	bh=vBNO2Bvyb8M0KvGjxHVE5XxThYzHNdNL1nT/bjDLgeA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TV47nrw983DmlqfO1fI1aitfVUnQO2Z7OgHkeDcW27tqeHxZ39V0vpjkag3bFcf9Xnpyy+IrMs9MnFcBXvH8l674DIT6ZoQM9NR1do3Y44PraaH1PLZV3rwc63y8Ml5pm9uzIiA5+9PWmZooP3j1JwK0QjEW8/JYFkRk16hiQ9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=uwSnD90S; arc=none smtp.client-ip=115.124.30.100
+	 MIME-Version; b=QqdjcyMakGK8xTAVqHHr+ZD17UFOk2drMxvlfL8rhXQmcbLqIQDoLe1RipQo3IW+UuBFqrEYS/mT0QuOzZSqFOffbKX8pxCHJ5jlJV7LKHyT+7kPnddptDJ0IrgPPWXU9x1PCr2XO7rPjiA0smclJCm1IFG6QZtokrwEyE9dD2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=e/jNtFAx; arc=none smtp.client-ip=115.124.30.132
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1778242568; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=j+njTUQuSD4WJzz69aJY/AMPFzUNIY9l1EwDZIOoNNs=;
-	b=uwSnD90SE3fsS0ngCYi214i94sTKNqISGyLTYB7vGKmENuhwTdtEFWCm5boOjy5nYKPsR4n3OQRQLoXgi7XXjsEL8ZAAG0tYx3On9pRuESprzMkBNCeTa4DM730BQUp56bye6iX47/6AmPx8aLIGKi8ZbJQReOYIQkBZ/fSZwJg=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam011083073210;MF=libaokun@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0X2XQgqZ_1778242567;
-Received: from x31h02109.sqa.na131.tbsite.net(mailfrom:libaokun@linux.alibaba.com fp:SMTPD_---0X2XQgqZ_1778242567 cluster:ay36)
+	t=1778242569; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=Pyydu/+mSA8+HVaiGjvimdSM19JdEkQ9zUvMzEWmW5w=;
+	b=e/jNtFAxpfMViYJVnBTmqLtcsE57duadw9Mcs3XIWmQFCs42TddxZu3fuvEXhjx3nlnSGAiXgEQHXvUotC3GaqYxJU6Psn35Fwhc+uI/EljAKGkaB7uKpS9Ya6ZRC8cGDxxALFtswwTFRJ36ycQJky5QqI0Com4r+4K3jiSvTd8=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037026112;MF=libaokun@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0X2XQgqm_1778242568;
+Received: from x31h02109.sqa.na131.tbsite.net(mailfrom:libaokun@linux.alibaba.com fp:SMTPD_---0X2XQgqm_1778242568 cluster:ay36)
           by smtp.aliyun-inc.com;
-          Fri, 08 May 2026 20:16:08 +0800
+          Fri, 08 May 2026 20:16:09 +0800
 From: Baokun Li <libaokun@linux.alibaba.com>
 To: linux-ext4@vger.kernel.org
 Cc: linux-crypto@vger.kernel.org,
@@ -55,9 +55,9 @@ Cc: linux-crypto@vger.kernel.org,
 	ojaswin@linux.ibm.com,
 	ritesh.list@gmail.com,
 	Baokun Li <libaokun@linux.alibaba.com>
-Subject: [PATCH RFC 11/17] ext4: fix missing bg_used_dirs_count update in fast commit replay
-Date: Fri,  8 May 2026 20:15:33 +0800
-Message-ID: <20260508121539.4174601-12-libaokun@linux.alibaba.com>
+Subject: [PATCH RFC 12/17] ext4: factor out ext4_might_init_block_bitmap() helper
+Date: Fri,  8 May 2026 20:15:34 +0800
+Message-ID: <20260508121539.4174601-13-libaokun@linux.alibaba.com>
 X-Mailer: git-send-email 2.43.7
 In-Reply-To: <20260508121539.4174601-1-libaokun@linux.alibaba.com>
 References: <20260508121539.4174601-1-libaokun@linux.alibaba.com>
@@ -68,7 +68,7 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 0E5E64F6524
+X-Rspamd-Queue-Id: C034D4F6392
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-6.16 / 15.00];
 	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
@@ -77,129 +77,200 @@ X-Spamd-Result: default: False [-6.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23860-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23864-lists,linux-crypto=lfdr.de];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,mit.edu,dilger.ca,suse.cz,huawei.com,linux.ibm.com,gmail.com,linux.alibaba.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[libaokun@linux.alibaba.com,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	NEURAL_HAM(-0.00)[-0.999];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCPT_COUNT_SEVEN(0.00)[11];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,iloc.bh:url,linux.alibaba.com:mid,linux.alibaba.com:dkim,alibaba.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.alibaba.com:mid,linux.alibaba.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,alibaba.com:email]
 X-Rspamd-Action: no action
 
-ext4_mark_inode_used() did not update bg_used_dirs_count for directory
-inodes during fast commit replay because it lacked the inode mode.
-Add a mode parameter and pass it from both ext4_fc_replay_inode() (from
-raw_fc_inode) and ext4_fc_replay_create() (after ext4_iget).
+Extract the BLOCK_UNINIT initialization logic from ext4_mark_inode_used()
+and __ext4_new_inode() into a shared ext4_might_init_block_bitmap() helper.
 
-Fixes: 8016e29f4362 ("ext4: fast commit recovery path")
+Both call sites perform the same sequence: check EXT4_BG_BLOCK_UNINIT,
+read the block bitmap, dirty it, then clear the flag and establish the
+correct block bitmap checksum under the group lock.  The only difference
+is whether a journal handle is available (NULL during fast commit replay
+in ext4_mark_inode_used()).
+
+No functional change.
+
 Signed-off-by: Baokun Li <libaokun@linux.alibaba.com>
 ---
- fs/ext4/ext4.h        |  2 +-
- fs/ext4/fast_commit.c | 13 +++++++------
- fs/ext4/ialloc.c      | 13 ++++++++++++-
- 3 files changed, 20 insertions(+), 8 deletions(-)
+ fs/ext4/ialloc.c | 129 +++++++++++++++++++++--------------------------
+ 1 file changed, 58 insertions(+), 71 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index e6739d5af490..f48cb9d998ab 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2941,7 +2941,7 @@ extern int ext4fs_dirhash(const struct inode *dir, const char *name, int len,
- 			  struct dx_hash_info *hinfo);
- 
- /* ialloc.c */
--extern int ext4_mark_inode_used(struct super_block *sb, int ino);
-+extern int ext4_mark_inode_used(struct super_block *sb, int ino, umode_t mode);
- extern struct inode *__ext4_new_inode(struct mnt_idmap *, handle_t *,
- 				      struct inode *, umode_t,
- 				      const struct qstr *qstr, __u32 goal,
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index b3c22636251d..f68d7b2eb0db 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -1578,7 +1578,7 @@ static int ext4_fc_replay_inode(struct super_block *sb,
- 	ret = sync_dirty_buffer(iloc.bh);
- 	if (ret)
- 		goto out_brelse;
--	ret = ext4_mark_inode_used(sb, ino);
-+	ret = ext4_mark_inode_used(sb, ino, le16_to_cpu(raw_fc_inode->i_mode));
- 	if (ret)
- 		goto out_brelse;
- 
-@@ -1635,11 +1635,7 @@ static int ext4_fc_replay_create(struct super_block *sb,
- 	trace_ext4_fc_replay(sb, EXT4_FC_TAG_CREAT, darg.ino,
- 			darg.parent_ino, darg.dname_len);
- 
--	/* This takes care of update group descriptor and other metadata */
--	ret = ext4_mark_inode_used(sb, darg.ino);
--	if (ret)
--		goto out;
--
-+	/* Inode already on disk from TAG_INODE replay; iget first for mode. */
- 	inode = ext4_iget(sb, darg.ino, EXT4_IGET_NORMAL);
- 	if (IS_ERR(inode)) {
- 		ext4_debug("inode %d not found.", darg.ino);
-@@ -1648,6 +1644,11 @@ static int ext4_fc_replay_create(struct super_block *sb,
- 		goto out;
- 	}
- 
-+	/* This takes care of update group descriptor and other metadata */
-+	ret = ext4_mark_inode_used(sb, darg.ino, inode->i_mode);
-+	if (ret)
-+		goto out;
-+
- 	if (S_ISDIR(inode->i_mode)) {
- 		/*
- 		 * If we are creating a directory, we need to make sure that the
 diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 55eb69fbb4c9..5896cdfb2ccf 100644
+index 5896cdfb2ccf..90896b7f8c73 100644
 --- a/fs/ext4/ialloc.c
 +++ b/fs/ext4/ialloc.c
-@@ -756,11 +756,12 @@ static int find_inode_bit(struct super_block *sb, ext4_group_t group,
+@@ -756,6 +756,58 @@ static int find_inode_bit(struct super_block *sb, ext4_group_t group,
  	return 1;
  }
  
--int ext4_mark_inode_used(struct super_block *sb, int ino)
-+int ext4_mark_inode_used(struct super_block *sb, int ino, umode_t mode)
- {
- 	unsigned long max_ino = le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count);
- 	struct buffer_head *inode_bitmap_bh = NULL, *group_desc_bh = NULL;
- 	struct ext4_group_desc *gdp;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	ext4_group_t group;
- 	int bit;
- 	int err;
-@@ -858,6 +859,16 @@ int ext4_mark_inode_used(struct super_block *sb, int ino)
- 	}
- 
- 	ext4_free_inodes_set(sb, gdp, ext4_free_inodes_count(sb, gdp) - 1);
-+	if (S_ISDIR(mode)) {
-+		ext4_used_dirs_set(sb, gdp, ext4_used_dirs_count(sb, gdp) + 1);
-+		if (sbi->s_log_groups_per_flex) {
-+			ext4_group_t f = ext4_flex_group(sbi, group);
++/*
++ * If the block bitmap for @group is not yet initialized (EXT4_BG_BLOCK_UNINIT),
++ * read it into memory, dirty it, and clear the UNINIT flag under the group lock
++ * so that the on-disk checksum is established.  @handle may be NULL during fast
++ * commit replay (no journal credits needed in that path).
++ */
++static int ext4_might_init_block_bitmap(handle_t *handle,
++					struct super_block *sb,
++					ext4_group_t group,
++					struct ext4_group_desc *gdp)
++{
++	int err;
++	struct buffer_head *block_bitmap_bh;
 +
-+			atomic_inc(&sbi_array_rcu_deref(sbi, s_flex_groups,
-+							f)->used_dirs);
-+		}
++	if (!ext4_has_group_desc_csum(sb) ||
++	    !(gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT)))
++		return 0;
++
++	block_bitmap_bh = ext4_read_block_bitmap(sb, group);
++	if (IS_ERR(block_bitmap_bh))
++		return PTR_ERR(block_bitmap_bh);
++
++	if (handle) {
++		BUFFER_TRACE(block_bitmap_bh, "get block bitmap access");
++		err = ext4_journal_get_write_access(handle, sb,
++				block_bitmap_bh, EXT4_JTR_NONE);
++		if (err)
++			goto out_brelse;
 +	}
 +
++	BUFFER_TRACE(block_bitmap_bh, "dirty block bitmap");
++	err = ext4_handle_dirty_metadata(handle, NULL, block_bitmap_bh);
++	if (!handle)
++		sync_dirty_buffer(block_bitmap_bh);
++
++	/* recheck and clear flag under lock if we still need to */
++	ext4_lock_group(sb, group);
++	if (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT)) {
++		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
++		ext4_free_group_clusters_set(sb, gdp,
++			ext4_free_clusters_after_init(sb, group, gdp));
++		ext4_block_bitmap_csum_set(sb, gdp, block_bitmap_bh);
++		ext4_group_desc_csum_set(sb, group, gdp);
++	}
++	ext4_unlock_group(sb, group);
++
++out_brelse:
++	brelse(block_bitmap_bh);
++	ext4_std_error(sb, err);
++	return err;
++}
++
+ int ext4_mark_inode_used(struct super_block *sb, int ino, umode_t mode)
+ {
+ 	unsigned long max_ino = le32_to_cpu(EXT4_SB(sb)->s_es->s_inodes_count);
+@@ -801,38 +853,9 @@ int ext4_mark_inode_used(struct super_block *sb, int ino, umode_t mode)
+ 	}
+ 
+ 	/* We may have to initialize the block bitmap if it isn't already */
+-	if (ext4_has_group_desc_csum(sb) &&
+-	    gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT)) {
+-		struct buffer_head *block_bitmap_bh;
+-
+-		block_bitmap_bh = ext4_read_block_bitmap(sb, group);
+-		if (IS_ERR(block_bitmap_bh)) {
+-			err = PTR_ERR(block_bitmap_bh);
+-			goto out;
+-		}
+-
+-		BUFFER_TRACE(block_bitmap_bh, "dirty block bitmap");
+-		err = ext4_handle_dirty_metadata(NULL, NULL, block_bitmap_bh);
+-		sync_dirty_buffer(block_bitmap_bh);
+-
+-		/* recheck and clear flag under lock if we still need to */
+-		ext4_lock_group(sb, group);
+-		if (ext4_has_group_desc_csum(sb) &&
+-		    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
+-			gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
+-			ext4_free_group_clusters_set(sb, gdp,
+-				ext4_free_clusters_after_init(sb, group, gdp));
+-			ext4_block_bitmap_csum_set(sb, gdp, block_bitmap_bh);
+-			ext4_group_desc_csum_set(sb, group, gdp);
+-		}
+-		ext4_unlock_group(sb, group);
+-		brelse(block_bitmap_bh);
+-
+-		if (err) {
+-			ext4_std_error(sb, err);
+-			goto out;
+-		}
+-	}
++	err = ext4_might_init_block_bitmap(NULL, sb, group, gdp);
++	if (err)
++		goto out;
+ 
+ 	/* Update the relevant bg descriptor fields */
  	if (ext4_has_group_desc_csum(sb)) {
- 		ext4_inode_bitmap_csum_set(sb, gdp, inode_bitmap_bh);
- 		ext4_group_desc_csum_set(sb, group, gdp);
+@@ -1154,45 +1177,9 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
+ 	}
+ 
+ 	/* We may have to initialize the block bitmap if it isn't already */
+-	if (ext4_has_group_desc_csum(sb) &&
+-	    gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT)) {
+-		struct buffer_head *block_bitmap_bh;
+-
+-		block_bitmap_bh = ext4_read_block_bitmap(sb, group);
+-		if (IS_ERR(block_bitmap_bh)) {
+-			err = PTR_ERR(block_bitmap_bh);
+-			goto out;
+-		}
+-		BUFFER_TRACE(block_bitmap_bh, "get block bitmap access");
+-		err = ext4_journal_get_write_access(handle, sb, block_bitmap_bh,
+-						    EXT4_JTR_NONE);
+-		if (err) {
+-			brelse(block_bitmap_bh);
+-			ext4_std_error(sb, err);
+-			goto out;
+-		}
+-
+-		BUFFER_TRACE(block_bitmap_bh, "dirty block bitmap");
+-		err = ext4_handle_dirty_metadata(handle, NULL, block_bitmap_bh);
+-
+-		/* recheck and clear flag under lock if we still need to */
+-		ext4_lock_group(sb, group);
+-		if (ext4_has_group_desc_csum(sb) &&
+-		    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
+-			gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
+-			ext4_free_group_clusters_set(sb, gdp,
+-				ext4_free_clusters_after_init(sb, group, gdp));
+-			ext4_block_bitmap_csum_set(sb, gdp, block_bitmap_bh);
+-			ext4_group_desc_csum_set(sb, group, gdp);
+-		}
+-		ext4_unlock_group(sb, group);
+-		brelse(block_bitmap_bh);
+-
+-		if (err) {
+-			ext4_std_error(sb, err);
+-			goto out;
+-		}
+-	}
++	err = ext4_might_init_block_bitmap(handle, sb, group, gdp);
++	if (err)
++		goto out;
+ 
+ 	/* Update the relevant bg descriptor fields */
+ 	if (ext4_has_group_desc_csum(sb)) {
 -- 
 2.43.7
 
