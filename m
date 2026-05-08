@@ -1,46 +1,46 @@
-Return-Path: <linux-crypto+bounces-23854-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23856-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kCMPKRrU/Wl2jgAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23854-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:16:26 +0200
+	id CAApM0/V/Wl2jgAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23856-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:21:35 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12D204F6378
-	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:16:25 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 619DA4F6501
+	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:21:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4BE31300C80E
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 May 2026 12:16:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 064B630A4B64
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 May 2026 12:16:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0927366548;
-	Fri,  8 May 2026 12:16:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9222CCC5;
+	Fri,  8 May 2026 12:16:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="e+W7lInc"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="oBslsgyw"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D285318A6DB;
-	Fri,  8 May 2026 12:16:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1929C37F00A;
+	Fri,  8 May 2026 12:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778242575; cv=none; b=qN1Ndx+FMlS+9OZP8s88Z78q2XBPV9Fsn08/rIRpnQ8+rd0I0t/iDvYLt1iiQiV2xKNETt7xd2zeB/SJENUeHay3dQR0R0tMgoUoWjSdT9BfR/QCBxNbhBDp9Jx4btUvFpgMiz4o0fem40MioKsfbRQiikmUoT/ODe+dzyvOgh8=
+	t=1778242576; cv=none; b=MNxuvRJlibjMNvm7taoyjkU+G53970j5L1jYRARG54nIuweft8mdHXwWv0ij/L385I6QOxrZtc7giFwzmtZnNfJe3VhIk0ETKtXZ6nwm9fD6p6tqFspQ9IhhpuvP1ydl4fgk9V5KnbuCY7We2J2Hh73fgCR7OrPzVj88A4mCmgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778242575; c=relaxed/simple;
-	bh=4G3Y6xq4wZzCXzS0j6TRGac8M0LV74cS9SY50eOOF4E=;
+	s=arc-20240116; t=1778242576; c=relaxed/simple;
+	bh=OCr7/orzjZm0TJC3ZdQdc8ZIR6kVqo8sCAQ2Ng4CQEo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hqmMc31NDwm6KKnCMd9PdBCIlqmRMOCBaN3fHvTM84xAzovWSn7NuFocc5E1uTYuHtar8Z9jlAVhyWkYc38Gdp3lnq+LSGp7Q0tj6DCEsbr1L1KNem0D6gxoddsy6xl6OzqsTHR39M3mdm+2RQ5bNmwXyqRf1W8x3sQi3Nwh3ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=e+W7lInc; arc=none smtp.client-ip=115.124.30.119
+	 MIME-Version; b=k2G2P1PJaKoVGIwH+IOx4XJvhWF28zSHpSJRKbtMlHkB6GL0JpmPqohfH6pp30UOSnL+z5q0VlEXK9mcKDLigFMn8ZHHy+IqulAncZuqDTqe+zswBTfSxBZvOyTiOtoVw8sKJQ/kDwT8PoS8pF3d+D7rgwHK4HPjvEwofnyxb/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=oBslsgyw; arc=none smtp.client-ip=115.124.30.111
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1778242564; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=zuuWOmJdIlo1PEaHWCpLgBtQsMQbVbjkhmxvFfLl6Mg=;
-	b=e+W7lIncTdD12sJ1vGTkHwZsCDp4KOkNs9ViaYjbWiRirg/JiF1iz4eBb1+X9GN9bXeOMXyhp06d6lXIC814mpkmnVJSQI6NygspHsTgRtO5e7/ymw9O3+BAYQXMH9ghVqQbR3SwxYMM7kSqju8ZsNq/dw8yH03fZKx6sD9eLNU=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R421e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam011083073210;MF=libaokun@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0X2XQgp9_1778242563;
-Received: from x31h02109.sqa.na131.tbsite.net(mailfrom:libaokun@linux.alibaba.com fp:SMTPD_---0X2XQgp9_1778242563 cluster:ay36)
+	t=1778242566; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=mOG2NnAGPPdQ3W0BX30E8ncse768vHXAuwsNTrJ5Vfw=;
+	b=oBslsgyw53QhYZYqDQ8OoZ3q+LS7yS/f7Rs1zDCitQk66DlKQk5flgwsXL2/gkGqSWKw6ZvDTNVnWzvut3jjw1qGN+0Jw0gPdFfPTyd1tShpDW8vMadK4P3VYJFBWa5h5phDthLN54gG6eULOb96EVDPyOPBPpwAJp6j6Qtwzn0=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033032089153;MF=libaokun@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0X2XQgpZ_1778242564;
+Received: from x31h02109.sqa.na131.tbsite.net(mailfrom:libaokun@linux.alibaba.com fp:SMTPD_---0X2XQgpZ_1778242564 cluster:ay36)
           by smtp.aliyun-inc.com;
           Fri, 08 May 2026 20:16:04 +0800
 From: Baokun Li <libaokun@linux.alibaba.com>
@@ -55,9 +55,9 @@ Cc: linux-crypto@vger.kernel.org,
 	ojaswin@linux.ibm.com,
 	ritesh.list@gmail.com,
 	Baokun Li <libaokun@linux.alibaba.com>
-Subject: [PATCH RFC 06/17] ext4: add ext4_block_bitmap_csum_set_range() for incremental checksum update
-Date: Fri,  8 May 2026 20:15:28 +0800
-Message-ID: <20260508121539.4174601-7-libaokun@linux.alibaba.com>
+Subject: [PATCH RFC 07/17] ext4: use fast incremental CRC update in ext4_mb_mark_context()
+Date: Fri,  8 May 2026 20:15:29 +0800
+Message-ID: <20260508121539.4174601-8-libaokun@linux.alibaba.com>
 X-Mailer: git-send-email 2.43.7
 In-Reply-To: <20260508121539.4174601-1-libaokun@linux.alibaba.com>
 References: <20260508121539.4174601-1-libaokun@linux.alibaba.com>
@@ -68,7 +68,7 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 12D204F6378
+X-Rspamd-Queue-Id: 619DA4F6501
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-6.16 / 15.00];
 	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
@@ -77,18 +77,18 @@ X-Spamd-Result: default: False [-6.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23854-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23856-lists,linux-crypto=lfdr.de];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,mit.edu,dilger.ca,suse.cz,huawei.com,linux.ibm.com,gmail.com,linux.alibaba.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[libaokun@linux.alibaba.com,linux-crypto@vger.kernel.org];
@@ -98,68 +98,83 @@ X-Spamd-Result: default: False [-6.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCPT_COUNT_SEVEN(0.00)[11];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.alibaba.com:mid,linux.alibaba.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,alibaba.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.alibaba.com:mid,linux.alibaba.com:dkim,alibaba.com:email]
 X-Rspamd-Action: no action
 
-Add a helper function ext4_block_bitmap_csum_set_range() that updates
-the block bitmap checksum using crc32c_flip_range() for incremental CRC
-calculation. Unlike ext4_block_bitmap_csum_set() which re-scans the
-entire bitmap buffer, this function efficiently computes the CRC delta
-for a range of flipped bits, avoiding the cost of a full CRC
-recalculation.
+Use ext4_block_bitmap_csum_set_range() in ext4_mb_mark_context() for
+fast incremental block bitmap checksum updates. Instead of re-scanning
+the entire bitmap after every allocation or free, the incremental update
+computes the CRC delta for the modified bit range in O(log N) time.
+
+Add a fast_crc flag that is set when EXT4_MB_BITMAP_MARKED_CHECK is not
+used. When fast_crc is true, all bits in the range are guaranteed to flip,
+so the incremental CRC via ext4_block_bitmap_csum_set_range() is correct.
+Otherwise, fall back to ext4_block_bitmap_csum_set() for a full CRC
+recalculation, since idempotent operations (mb_set_bits/mb_clear_bits
+with EXT4_MB_BITMAP_MARKED_CHECK) may leave some bits unchanged.
+
+For the BLOCK_UNINIT case, the bitmap was just initialized and there is
+no valid old checksum, so fast_crc is forced to false to ensure a full
+CRC recalculation establishes a correct baseline.
 
 Signed-off-by: Baokun Li <libaokun@linux.alibaba.com>
 ---
- fs/ext4/bitmap.c | 24 ++++++++++++++++++++++++
- fs/ext4/ext4.h   |  3 +++
- 2 files changed, 27 insertions(+)
+ fs/ext4/mballoc.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/bitmap.c b/fs/ext4/bitmap.c
-index 46affc9e80ca..00b0a3c74859 100644
---- a/fs/ext4/bitmap.c
-+++ b/fs/ext4/bitmap.c
-@@ -110,3 +110,27 @@ void ext4_block_bitmap_csum_set(struct super_block *sb,
- 	csum = ext4_chksum(sbi->s_csum_seed, (__u8 *)bh->b_data, sz);
- 	ext4_block_bitmap_csum_store(sb, gdp, csum);
- }
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index ff2023c9f52c..77f6309916d1 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4095,6 +4095,7 @@ ext4_mb_mark_context(handle_t *handle, struct super_block *sb, bool state,
+ 	struct buffer_head *gdp_bh;
+ 	int err;
+ 	unsigned int i, already, changed = len;
++	bool fast_crc;
+ 
+ 	KUNIT_STATIC_STUB_REDIRECT(ext4_mb_mark_context,
+ 				   handle, sb, state, group, blkoff, len,
+@@ -4127,12 +4128,28 @@ ext4_mb_mark_context(handle_t *handle, struct super_block *sb, bool state,
+ 			goto out_err;
+ 	}
+ 
++	/*
++	 * fast_crc: Use incremental CRC update via crc32c_flip_range().
++	 * This is only valid when all bits in [blkoff, blkoff+len) are
++	 * guaranteed to be in the opposite state (i.e., every bit will
++	 * actually flip). When EXT4_MB_BITMAP_MARKED_CHECK is set,
++	 * mb_set_bits/mb_clear_bits are idempotent, so some bits may not
++	 * change and incremental CRC would produce incorrect results.
++	 */
++	fast_crc = !(flags & EXT4_MB_BITMAP_MARKED_CHECK);
 +
-+/*
-+ * Update block bitmap checksum using incremental CRC calculation.
-+ *
-+ * This function assumes that ALL bits in the range [offset, offset+len)
-+ * have been flipped (XORed with 1). It uses crc32c_flip_range() to
-+ * efficiently compute the CRC delta without re-scanning the entire bitmap.
-+ * The csum_seed cancels out in the XOR delta, so it is not needed here.
-+ */
-+void ext4_block_bitmap_csum_set_range(struct super_block *sb,
-+				      struct ext4_group_desc *gdp,
-+				      ext4_grpblk_t offset, ext4_grpblk_t len)
-+{
-+	__u32 new_csum, old_csum;
-+
-+	if (!ext4_has_feature_metadata_csum(sb))
-+		return;
-+
-+	old_csum = ext4_block_bitmap_csum_get(sb, gdp);
-+	new_csum = crc32c_flip_range(old_csum, EXT4_CLUSTERS_PER_GROUP(sb),
-+				     offset, len);
-+
-+	ext4_block_bitmap_csum_store(sb, gdp, new_csum);
-+}
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 94283a991e5c..c423a9a04047 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2770,6 +2770,9 @@ int ext4_inode_bitmap_csum_verify(struct super_block *sb,
- void ext4_block_bitmap_csum_set(struct super_block *sb,
- 				struct ext4_group_desc *gdp,
- 				struct buffer_head *bh);
-+void ext4_block_bitmap_csum_set_range(struct super_block *sb,
-+				      struct ext4_group_desc *gdp,
-+				      ext4_grpblk_t offset, ext4_grpblk_t len);
- int ext4_block_bitmap_csum_verify(struct super_block *sb,
- 				  struct ext4_group_desc *gdp,
- 				  struct buffer_head *bh);
+ 	ext4_lock_group(sb, group);
+ 	if (ext4_has_group_desc_csum(sb) &&
+ 	    (gdp->bg_flags & cpu_to_le16(EXT4_BG_BLOCK_UNINIT))) {
+ 		gdp->bg_flags &= cpu_to_le16(~EXT4_BG_BLOCK_UNINIT);
+ 		ext4_free_group_clusters_set(sb, gdp,
+ 			ext4_free_clusters_after_init(sb, group, gdp));
++		/*
++		 * The bitmap was just initialized, so the old checksum
++		 * is invalid for incremental CRC update. Fall back to
++		 * full recalculation.
++		 */
++		fast_crc = false;
+ 	}
+ 
+ 	if (flags & EXT4_MB_BITMAP_MARKED_CHECK) {
+@@ -4154,7 +4171,10 @@ ext4_mb_mark_context(handle_t *handle, struct super_block *sb, bool state,
+ 			ext4_free_group_clusters(sb, gdp) + changed);
+ 	}
+ 
+-	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
++	if (fast_crc)
++		ext4_block_bitmap_csum_set_range(sb, gdp, blkoff, len);
++	else
++		ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
+ 	ext4_group_desc_csum_set(sb, group, gdp);
+ 	ext4_unlock_group(sb, group);
+ 	if (ret_changed)
 -- 
 2.43.7
 
