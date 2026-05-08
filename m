@@ -1,245 +1,241 @@
-Return-Path: <linux-crypto+bounces-23865-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23867-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MApWBj/U/Wl2jgAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23865-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:17:03 +0200
+	id oJh6FQf1/Wn5lAAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23867-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 16:36:55 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FAE44F63B7
-	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 14:17:02 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE18A4F7D82
+	for <lists+linux-crypto@lfdr.de>; Fri, 08 May 2026 16:36:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 00D44301906A
-	for <lists+linux-crypto@lfdr.de>; Fri,  8 May 2026 12:16:31 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 36A39301A515
+	for <lists+linux-crypto@lfdr.de>; Fri,  8 May 2026 14:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA35B384232;
-	Fri,  8 May 2026 12:16:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB133E51CD;
+	Fri,  8 May 2026 14:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Aw4Wh/zW"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="LUnI8b4n"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F453DB63C;
-	Fri,  8 May 2026 12:16:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED7737647E;
+	Fri,  8 May 2026 14:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778242581; cv=none; b=OxKKBC511uCpn/iaal5z2HxU+dmLaLGxkubgceHixyEEbzXoob4AC5xPYrFsWN2A9PvnhmDKnJis3q9IPODgg/HG6QdkRFbKSiujMjOemeEOdqdxt8xzJF0cVUDkhhGw3Dskv4/kwEYV/CmFJuygXx/2i279LkksN9VoyWwnCPs=
+	t=1778250989; cv=none; b=ZhW1IdsBinvhB2FVz9ucUOf0P24EfM3Z8J8b32hdViJe2Nmv0+hQckm8IE12hLOZhrmA7tXpy0LAHTefvthZrH/fFZ+EoiRLWETKwytY1sH97acGXtVM5XLszuM67AKS9YPh0aKwl+D29y4QWD5NHax15KiY0XVOlt4H8VVUFI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778242581; c=relaxed/simple;
-	bh=OUftgixMNWlG++qrrDs5ZeGmxtXp1jfQD5mN2C6rp6E=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q5E+YwD1Sulilr9UsZ1mOyDvoUSIl/898ycOwhosz3AvE1og9bRR5K+ttB01MuNfyx+JnONkXRQV57bMaLOUMsz6HthvV2qVh+L+Qa2ILLPPGi2HEpub5mSxAq2L+GnXcBeaomPRe5xghPqXrvnmiZkvW3TIjKl3pU5GD+HW2qk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Aw4Wh/zW; arc=none smtp.client-ip=115.124.30.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1778242573; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=jzJIYLNOQ5UlZMTTubAeA23KJPWfOAbaezYvUFo6acU=;
-	b=Aw4Wh/zW++Mqs2Wb1rzSIOQ0VmRSdME6eTelCkYCpdGLzbtQZC79JOJGXAxQ4n9PF72S9ERWB4ODpqKalZhqaRW7VCSyeYVL+xaKnNApOgElNu21GXzq79U/CbY2FyB9wx2w5d8gaWyR4DdJuYO3j8MM1NkT6kw+wMBzewOcL/g=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam011083073210;MF=libaokun@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0X2XQgru_1778242572;
-Received: from x31h02109.sqa.na131.tbsite.net(mailfrom:libaokun@linux.alibaba.com fp:SMTPD_---0X2XQgru_1778242572 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 08 May 2026 20:16:13 +0800
-From: Baokun Li <libaokun@linux.alibaba.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org,
-	ebiggers@kernel.org,
-	ardb@kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	yi.zhang@huawei.com,
-	ojaswin@linux.ibm.com,
-	ritesh.list@gmail.com,
-	Baokun Li <libaokun@linux.alibaba.com>
-Subject: [PATCH RFC 17/17] ext4: add ext4_get_flex_group() helper to simplify flex group lookups
-Date: Fri,  8 May 2026 20:15:39 +0800
-Message-ID: <20260508121539.4174601-18-libaokun@linux.alibaba.com>
-X-Mailer: git-send-email 2.43.7
-In-Reply-To: <20260508121539.4174601-1-libaokun@linux.alibaba.com>
-References: <20260508121539.4174601-1-libaokun@linux.alibaba.com>
+	s=arc-20240116; t=1778250989; c=relaxed/simple;
+	bh=HTzF3qjbOgYeg9orOUtAOFYiCZ+t9zseChnZnB9wafc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pwqDONF7XAvMi3GZBMFGSGklMfdTDsq4SoFhMcWEjUKHqftNQ4oQXjF3o36KihPjYeCaQCBsKwCwFr//Ml+RoDgyCmyEG2hjitQleWNZSJNamzk2mR755owr7Xn1ph+9X9ZTmEcsASImbptkGocFIvzjFox4Qckm+m9/VAP2GUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=LUnI8b4n; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6484WM113313225;
+	Fri, 8 May 2026 14:36:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=gWIy2r
+	fhdV6WhckDQliCixZNUHahLJryHMWsID/dvq4=; b=LUnI8b4nsJGZb5vi264cIS
+	ByyD9z/OTphiCN0n4T6lWhX4u4fUEYjLDlQWEbaHdJmr4NCVAqUbjZkNANN9Qvlo
+	PyEXK0VyHMGrlvqFUGM3Ksr+crD1ccZesgz5QrgbTd+jSAxTn/vSrOK92pkZLZpQ
+	ePa18NHl08HlTwTQ6xd5DXmsYPEVvk72XqsrfV75c8WxlxTeeOne1hPLwNhohVbm
+	JfzwnUW71kvN/aTMv+8RjlEYvDL7LAG6kuCzWTZQH+HfBhB1/7xLsDfbsFSDAnzn
+	0oq1k2G+cEgYj9rN9BOSIXCiE5VJPcl+ky4u7MD7s5zKy6PxN0J3u3tvPrsZLiCg
+	==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dw9y1v3et-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 May 2026 14:36:20 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 648EOgXA016049;
+	Fri, 8 May 2026 14:36:19 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4dww3hgg1g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 08 May 2026 14:36:19 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 648EaIDJ15139436
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 8 May 2026 14:36:18 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2214058058;
+	Fri,  8 May 2026 14:36:18 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5A78158059;
+	Fri,  8 May 2026 14:36:17 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  8 May 2026 14:36:17 +0000 (GMT)
+Message-ID: <73f5e02d-d154-47b9-b876-f8c6c184db2f@linux.ibm.com>
+Date: Fri, 8 May 2026 10:36:16 -0400
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 1FAE44F63B7
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] crypto : ecc - Fix carry overflow in vli multiplication
+To: Anastasia Tishchenko <sv3iry@gmail.com>, Lukas Wunner <lukas@wunner.de>,
+        Ignat Korchagin <ignat@linux.win>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20260508114844.29694-1-sv3iry@gmail.com>
+Content-Language: en-US
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20260508114844.29694-1-sv3iry@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-ORIG-GUID: x-JSgRWe9DDA-P8-pn_FEvAfXL9eYELI
+X-Proofpoint-GUID: FEgelG7xWC-hq_a6A92BmNwlhH2hBDDW
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTA4MDE1MCBTYWx0ZWRfX+Hvlnijp83Ba
+ A8cQ7YYyrm/7AxwQ/Q9KINxA7IaQmdltHikhZWIthdGu5IlQ6vNOiIITv0tOmcmy++5NRgWtavG
+ Whr1GRbJIaH2lUdVAwAsjdSDe0lnWNghuRiOaHXotqiiiZ6Rt5i1hC+DdxX/HSSCiFgMFJKw+2p
+ aKmffYbGOJPNtG+5ZSYio6gCw0BD1XaDNEd4R8on6x0LeA0aq1k/9kn/hYyIBoPDj+3DIrICLzh
+ qKGugt8gR8lnFl3vJ/PCziDfqyZu8qEbnbxSha0T3KXjgLesnv/ctuvFa+lsmzZHTk+Y5pSE8w8
+ QYmYqup0RjekN/BTexaLNocE0MlZjbQmZhCl2dyAU9aby0ACbhhBRkCH7EyxIw9vkuY3y/PCe+P
+ guQfDzyphsyGeohzSLdTMUIJqvtTZkvsghqJUntPy4xPmjniDNHIYO8B0G6RsEJAib3DdD9K+IB
+ tpLmH4iGsf9Fr4GCNbg==
+X-Authority-Analysis: v=2.4 cv=UbFhjqSN c=1 sm=1 tr=0 ts=69fdf4e4 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=U7nrCbtTmkRpXpFmAIza:22 a=pGLkceISAAAA:8
+ a=q09hNBxbWzpWlAAnaukA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-05-07_02,2026-05-08_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1011 spamscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 phishscore=0 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2604200000 definitions=main-2605080150
+X-Rspamd-Queue-Id: DE18A4F7D82
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-6.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-23865-lists,linux-crypto=lfdr.de];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,mit.edu,dilger.ca,suse.cz,huawei.com,linux.ibm.com,gmail.com,linux.alibaba.com];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-23867-lists,linux-crypto=lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com,wunner.de,linux.win,gondor.apana.org.au,davemloft.net];
 	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DKIM_TRACE(0.00)[ibm.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[libaokun@linux.alibaba.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.ibm.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.alibaba.com:mid,linux.alibaba.com:dkim,alibaba.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[stefanb@linux.ibm.com,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	RCVD_COUNT_SEVEN(0.00)[11]
 X-Rspamd-Action: no action
 
-Introduce ext4_get_flex_group() that combines ext4_flex_group() and
-sbi_array_rcu_deref() into a single call, replacing the repeated
-pattern across ialloc.c, mballoc.c, resize.c, and super.c.
 
-No functional change.
 
-Signed-off-by: Baokun Li <libaokun@linux.alibaba.com>
----
- fs/ext4/ext4.h    |  7 +++++++
- fs/ext4/ialloc.c  | 19 +++++--------------
- fs/ext4/mballoc.c |  4 +---
- fs/ext4/resize.c  |  4 +---
- fs/ext4/super.c   |  4 +---
- 5 files changed, 15 insertions(+), 23 deletions(-)
+On 5/8/26 7:48 AM, Anastasia Tishchenko wrote:
+> The carry flag calculation fails when r01.m_high is saturated
+> (0xFFFFFFFFFFFFFFFF) and addition of lower bits overflows.
+> 
+> The condition (r01.m_high < product.m_high) doesn't handle the case
+> where r01.m_high == product.m_high and an additional carry exists
+> from lower-bit overflow.
+> 
+> Add proper handling for this boundary by accounting for the carry
+> from the lower addition.
+> 
+> This issue was discovered during formal verification of ECC functions.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index f48cb9d998ab..e38ada51972a 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -3457,6 +3457,13 @@ static inline unsigned int ext4_flex_bg_size(struct ext4_sb_info *sbi)
- 	return 1 << sbi->s_log_groups_per_flex;
- }
- 
-+static inline struct flex_groups *ext4_get_flex_group(struct ext4_sb_info *sbi,
-+						      ext4_group_t block_group)
-+{
-+	return sbi_array_rcu_deref(sbi, s_flex_groups,
-+				   ext4_flex_group(sbi, block_group));
-+}
-+
- static inline loff_t ext4_get_maxbytes(struct inode *inode)
- {
- 	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 25430c572818..d88160afd6b6 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -336,8 +336,7 @@ void ext4_free_inode(handle_t *handle, struct inode *inode)
- 	if (sbi->s_log_groups_per_flex) {
- 		struct flex_groups *fg;
- 
--		fg = sbi_array_rcu_deref(sbi, s_flex_groups,
--					 ext4_flex_group(sbi, block_group));
-+		fg = ext4_get_flex_group(sbi, block_group);
- 		atomic_inc(&fg->free_inodes);
- 		if (is_directory)
- 			atomic_dec(&fg->used_dirs);
-@@ -826,12 +825,8 @@ static void ext4_update_inode_group_desc(struct super_block *sb,
- 	ext4_free_inodes_set(sb, gdp, ext4_free_inodes_count(sb, gdp) - 1);
- 	if (S_ISDIR(mode)) {
- 		ext4_used_dirs_set(sb, gdp, ext4_used_dirs_count(sb, gdp) + 1);
--		if (sbi->s_log_groups_per_flex) {
--			ext4_group_t f = ext4_flex_group(sbi, group);
--
--			atomic_inc(&sbi_array_rcu_deref(sbi, s_flex_groups,
--							f)->used_dirs);
--		}
-+		if (sbi->s_log_groups_per_flex)
-+			atomic_inc(&ext4_get_flex_group(sbi, group)->used_dirs);
- 	}
- 
- 	if (!ext4_has_group_desc_csum(sb))
-@@ -997,7 +992,6 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
- 	int ret2, err;
- 	struct inode *ret;
- 	ext4_group_t i;
--	ext4_group_t flex_group;
- 	struct ext4_group_info *grp = NULL;
- 	bool encrypt = false;
- 
-@@ -1220,11 +1214,8 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
- 	if (S_ISDIR(mode))
- 		percpu_counter_inc(&sbi->s_dirs_counter);
- 
--	if (sbi->s_log_groups_per_flex) {
--		flex_group = ext4_flex_group(sbi, group);
--		atomic_dec(&sbi_array_rcu_deref(sbi, s_flex_groups,
--						flex_group)->free_inodes);
--	}
-+	if (sbi->s_log_groups_per_flex)
-+		atomic_dec(&ext4_get_flex_group(sbi, group)->free_inodes);
- 
- 	/* the inode bitmap is zero-based */
- 	inode->i_ino = bit + 1 + group * EXT4_INODES_PER_GROUP(sb);
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 77f6309916d1..9e30c9eefd35 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4181,9 +4181,7 @@ ext4_mb_mark_context(handle_t *handle, struct super_block *sb, bool state,
- 		*ret_changed = changed;
- 
- 	if (sbi->s_log_groups_per_flex) {
--		ext4_group_t flex_group = ext4_flex_group(sbi, group);
--		struct flex_groups *fg = sbi_array_rcu_deref(sbi,
--					   s_flex_groups, flex_group);
-+		struct flex_groups *fg = ext4_get_flex_group(sbi, group);
- 
- 		if (state)
- 			atomic64_sub(changed, &fg->free_clusters);
-diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index 2c5b851c552a..8d2cd1bc17bb 100644
---- a/fs/ext4/resize.c
-+++ b/fs/ext4/resize.c
-@@ -1495,11 +1495,9 @@ static void ext4_update_super(struct super_block *sb,
- 	ext4_debug("free blocks count %llu",
- 		   percpu_counter_read(&sbi->s_freeclusters_counter));
- 	if (ext4_has_feature_flex_bg(sb) && sbi->s_log_groups_per_flex) {
--		ext4_group_t flex_group;
- 		struct flex_groups *fg;
- 
--		flex_group = ext4_flex_group(sbi, group_data[0].group);
--		fg = sbi_array_rcu_deref(sbi, s_flex_groups, flex_group);
-+		fg = ext4_get_flex_group(sbi, group_data[0].group);
- 		atomic64_add(EXT4_NUM_B2C(sbi, free_blocks),
- 			     &fg->free_clusters);
- 		atomic_add(EXT4_INODES_PER_GROUP(sb) * flex_gd->count,
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 6a77db4d3124..064e06163716 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -3211,7 +3211,6 @@ static int ext4_fill_flex_info(struct super_block *sb)
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_group_desc *gdp = NULL;
- 	struct flex_groups *fg;
--	ext4_group_t flex_group;
- 	int i, err;
- 
- 	sbi->s_log_groups_per_flex = sbi->s_es->s_log_groups_per_flex;
-@@ -3227,8 +3226,7 @@ static int ext4_fill_flex_info(struct super_block *sb)
- 	for (i = 0; i < sbi->s_groups_count; i++) {
- 		gdp = ext4_get_group_desc(sb, i, NULL);
- 
--		flex_group = ext4_flex_group(sbi, i);
--		fg = sbi_array_rcu_deref(sbi, s_flex_groups, flex_group);
-+		fg = ext4_get_flex_group(sbi, i);
- 		atomic_add(ext4_free_inodes_count(sb, gdp), &fg->free_inodes);
- 		atomic64_add(ext4_free_group_clusters(sb, gdp),
- 			     &fg->free_clusters);
--- 
-2.43.7
+Thanks!
+
+> 
+> Signed-off-by: Anastasia Tishchenko <sv3iry@gmail.com>
+> ---
+>   crypto/ecc.c | 10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/crypto/ecc.c b/crypto/ecc.c
+> index 43b0def3a225..dfe96471407c 100644
+> --- a/crypto/ecc.c
+> +++ b/crypto/ecc.c
+> @@ -427,7 +427,10 @@ static void vli_mult(u64 *result, const u64 *left, const u64 *right,
+>   			product = mul_64_64(left[i], right[k - i]);
+>   
+>   			r01 = add_128_128(r01, product);
+> -			r2 += (r01.m_high < product.m_high);
+
+Maybe the following or something like lt_128(r01, product) would be 
+'better' replacing 'r01 < product':
+
+if (cmp_128(r01, product) < 0)
+     r2++;
+
+/* Compare two uint128_t; returns -1 if a<b, 0 if a == b, 1 otherwise */
+static int cmp_128(uint128_t a, uint128_t b)
+{
+     if (a.m_high < b.m_high)
+        return -1;
+     if (a.m_high > b.m_high)
+        return 1;
+     if (a.m_low < b.m_low)
+        return -1;
+     if (a.m_low > b.m_low)
+        return 1;
+     return 0;
+}
+
+
+
+/* r01 < product */
+if (lt_128(r01, product))
+     r2++;
+
+/* Check a < b; return 1 if a < b, 0 otherwise */
+static int lt_128(uint128_t a, uint128_t b)
+{
+     if (a.m_high < b.m_high)
+        return 1;
+     if (a.m_high > b.m_high)
+        return 0;
+     if (a.m_low < b.m_low)
+        return 1;
+     return 0;
+}
+
+> +			if (r01.m_high != product.m_high)
+> +				r2 += (r01.m_high < product.m_high);
+> +			else
+> +				r2 += (r01.m_low < product.m_low);
+>   		}
+>   
+>   		result[k] = r01.m_low;
+> @@ -488,7 +491,10 @@ static void vli_square(u64 *result, const u64 *left, unsigned int ndigits)
+>   			}
+>   
+>   			r01 = add_128_128(r01, product);
+> -			r2 += (r01.m_high < product.m_high);
+> +			if (r01.m_high != product.m_high)
+> +				r2 += (r01.m_high < product.m_high);
+> +			else
+> +				r2 += (r01.m_low < product.m_low);
+>   		}
+>   
+>   		result[k] = r01.m_low;
 
 
