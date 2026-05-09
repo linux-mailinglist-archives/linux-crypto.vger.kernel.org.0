@@ -1,149 +1,203 @@
-Return-Path: <linux-crypto+bounces-23882-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23884-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6Km6DaMI/2mv1QAAu9opvQ
-	(envelope-from <linux-crypto+bounces-23882-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 09 May 2026 12:12:51 +0200
+	id 8HL2LUpQ/2nn4gAAu9opvQ
+	(envelope-from <linux-crypto+bounces-23884-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 09 May 2026 17:18:34 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id B938D4FF246
-	for <lists+linux-crypto@lfdr.de>; Sat, 09 May 2026 12:12:50 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AAE45003DA
+	for <lists+linux-crypto@lfdr.de>; Sat, 09 May 2026 17:18:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1D4673025C52
-	for <lists+linux-crypto@lfdr.de>; Sat,  9 May 2026 10:12:31 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id ACB513004927
+	for <lists+linux-crypto@lfdr.de>; Sat,  9 May 2026 15:18:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4542B3A1A41;
-	Sat,  9 May 2026 10:12:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919FA21CA13;
+	Sat,  9 May 2026 15:18:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pp8/aych"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ak4zh1Ya"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EEE53A16B6
-	for <linux-crypto@vger.kernel.org>; Sat,  9 May 2026 10:12:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53D0F15B0EC;
+	Sat,  9 May 2026 15:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778321547; cv=none; b=sfrUD0meZbCN4b3Ry2WnaToil4sGU+9LNXTWBO84rxT6b/A4Tb/geZ1onWfA3f5NLm+btl6sescyYgd1QFx3MFN3dsA0+BZX/83CIyjRtsjWhKkZOY8eqy+s9g17QDnzIoEfOjRrdtOTy7ReIUVnRUM70PBWubpSaI4P6rA8VAo=
+	t=1778339909; cv=none; b=o8gaIDBGt1MVcAXZsvpyoKEiUdwEcItPkqOfS7w7rsaDis2yMvbM3PdKccEW6kjgoFrv0SuqkTD3FLHhrx5CFgkklmQ3Kcsm965j2I6bkbxcMHHSdgffpkUq3MTaEvEe+439K9rlDH3jWvLPnhhjyQgNmUe9ZEp4pAlWFTiOT7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778321547; c=relaxed/simple;
-	bh=QgJ75jFnjL7d1sl4OoWG5P0JzmlOcIc6pkH89CkMwNk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EcuVnIb94dwDTQ7jSfKjv0pJBO76Zia2FVKwB4/3PeSx/GBIwsbjKsWziknVvWo+fNP/vcvCX+erOflX3+8VsiiTjNY+Nowr9AiQzJZbmHDg8vSnYeVAYtZD27h0ubI0Bhv8qz9TZsGGKiO2Z6g2skOVt7InaXgUk9/mLVR6zeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pp8/aych; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1778321543;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b5fZ0Pbkodc7PSHQ6BqzpKM2cdMLGYSys0q5hgxO3YM=;
-	b=pp8/aychRiUvzmEmRbLPvRbPH/399vrW17t7CkmSDUVjkXvEgKJdfq0Cf3/bhXX/D2ypA8
-	Y+mKA93XxkaRBo2AxXJRmblA0nwnjeRPnqOa2gIjRu7pVgsQgqLAzRUiOMUuMDBAO0fZGR
-	LXf5rDgWrMpfbp3Ot81yUqVgm+xStPY=
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Thorsten Blum <thorsten.blum@linux.dev>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Cc: linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] crypto: atmel-ecc - drop CONFIG_OF guard and of_match_ptr
-Date: Sat,  9 May 2026 12:11:56 +0200
-Message-ID: <20260509101155.2095-4-thorsten.blum@linux.dev>
-In-Reply-To: <20260509101155.2095-3-thorsten.blum@linux.dev>
-References: <20260509101155.2095-3-thorsten.blum@linux.dev>
+	s=arc-20240116; t=1778339909; c=relaxed/simple;
+	bh=/ACUJvZGGTfgk7qwE+CEQ+Q/6FZhULEY3LJDvaunTIY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gY8018dtC5o263xn7D2yyKysc8HdsND7Z+wopoKfnPXI+u0xZtopxyjK1e1/i9yPR+Xv2qJZu5apQwfnTiDfXc/yoRM0psqN0nF7PyBK2P/wznyaliCRlaSkrEtaNhMEQMd2oiqKgvV3Br0EQnaqlquq6vXB8ACmzynbLljMoTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ak4zh1Ya; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90BD6C2BCB2;
+	Sat,  9 May 2026 15:18:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778339908;
+	bh=/ACUJvZGGTfgk7qwE+CEQ+Q/6FZhULEY3LJDvaunTIY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ak4zh1YayxVoIa7LXt8iqHF5BoUHQisuRChzVwMaiNo750MwM4+MdtjKC58dGPpfj
+	 BM+SXNBsRIbdtlMRj/b9xSpkhIIYTaT2XAWyY5tmD+P60x86PkKLPCUde2AVghaYji
+	 vffaYs1tLvqjPhTvoVMrtmwiJLY2vNKLWD8i/CVHp0sF+IxgwpbkjfFS7AlLzVRmbq
+	 c0AYDKFVA0/8Rd6bCSRmjK02fkUi1y8APdtOrxSXIRQ+ydOauosFvg1R4044fFzSht
+	 rf/nlbGGILgZevQ4WWI3/his1uW6ky7job4ba4A6Dbtk+cS36NEFWR1J/BjRx0Z6+p
+	 4rb67D4aAkLjQ==
+Date: Sat, 9 May 2026 18:18:25 +0300
+From: Jarkko Sakkinen <jarkko@kernel.org>
+To: "Niedermayr, BENEDIKT" <benedikt.niedermayr@siemens.com>
+Cc: "Kiszka, Jan" <jan.kiszka@siemens.com>, Peter Huewe <peterhuewe@gmx.de>,
+	"linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Jens Wiklander <jens.wiklander@linaro.org>,
+	OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	"Bauer, Sven" <svenbauer@siemens.com>,
+	"Zeschg, Thomas" <thomas.zeschg@siemens.com>,
+	"Gylstorff, Quirin" <quirin.gylstorff@siemens.com>
+Subject: Re: [PATCH] hwrng: tpm: Do not enable by default
+Message-ID: <af9QQah4QN5VD-4P@kernel.org>
+References: <bbc41534-a2d9-42dc-ac8a-ff8a0b4fd41f@siemens.com>
+ <aP_NN3HwO4Hp0-9T@kernel.org>
+ <96df7b4d-cf1b-471d-9b4b-8741a80fbcc3@siemens.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1372; i=thorsten.blum@linux.dev; h=from:subject; bh=QgJ75jFnjL7d1sl4OoWG5P0JzmlOcIc6pkH89CkMwNk=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDJn/OQoP/LjUcEaOkXntm20ulZ+mViu8vsZ8UEn716fJy w2/r3h7vKOUhUGMi0FWTJHlwawfM3xLayo3mUTshJnDygQyhIGLUwAm4niE4Q+34LrXcfxHPc0b LvzXff2F/5CukaaM2h2D3XMWb1x8T3AnI8PlY/diF76f0q24eyfz9DrDGUtUQrmCrn4WUCiIPt+ 5Yy8PAA==
-X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: B938D4FF246
+In-Reply-To: <96df7b4d-cf1b-471d-9b4b-8741a80fbcc3@siemens.com>
+X-Rspamd-Queue-Id: 5AAE45003DA
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_CC(0.00)[siemens.com,gmx.de,vger.kernel.org,linaro.org,lists.trustedfirmware.org];
+	TAGGED_FROM(0.00)[bounces-23884-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23882-lists,linux-crypto=lfdr.de];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:email,linux.dev:mid,linux.dev:dkim]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jarkko@kernel.org,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	HAS_WP_URI(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[trustedcomputinggroup.org:url,siemens.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-Drop the CONFIG_OF preprocessor guard and remove of_match_ptr() because
-OF matching is stubbed out when CONFIG_OF=n.
+On Wed, Apr 29, 2026 at 02:33:20PM +0000, Niedermayr, BENEDIKT wrote:
+> On 10/27/25 20:51, Jarkko Sakkinen wrote:
+> > On Tue, Oct 21, 2025 at 02:46:15PM +0200, Jan Kiszka wrote:
+> >> From: Jan Kiszka <jan.kiszka@siemens.com>
+> >>
+> >> As seen with optee_ftpm, which uses ms-tpm-20-ref [1], a TPM may write
+> >> the current time epoch to its NV storage every 4 seconds if there are
+> >> commands sent to it. The 60 seconds periodic update of the entropy pool
+> >> that the hwrng kthread does triggers this, causing about 4 writes per
+> >> requests. Makes 2 millions per year for a 24/7 device, and that is a lot
+> >> for its backing NV storage.
+> >>
+> >> It is therefore better to make the user intentionally enable this,
+> >> providing a chance to read the warning.
+> >>
+> >> [1] https://github.com/Microsoft/ms-tpm-20-ref
+> >>
+> >> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+> > 
+> > Looking at DRBG_* from [1] I don't see anything you describe. If OPTEE
+> > writes NVRAM,  then the implementation is broken.
+> > 
+> > Also AFAIK, it is pre-seeded per power cycle. There's nothing that even
+> > distantly relates on using NVRAM.
+> > 
+> > [1] https://trustedcomputinggroup.org/wp-content/uploads/TPM-2.0-1.83-Part-4-Supporting-Routines-Code.pdf
+> 
+> Hi all,
+> 
+> we recently also stumbled over this issue which led me here to this 
+> thread and maybe adding our observations helps to clarify things here a 
+> bit (hopefully) or at least augments the information related to firmware 
+> TPM based implementation based on ms-tpm-20-ref.
+> 
+> Based on the optee_ftpm repo, as Jan already described, which currently 
+> references commit 98b60a44aba7 of [1] suffers this exact issue because 
+> of the NV_CLOCK_UPDATE_INTERVAL [2] which is set to "12" and issues a 
+> write for each command after ~4 seconds have passed.
+> 
+> This config has been changed to "22" (on current master branch [3]) 
+> which is the allowed maximum when following the TPM spec (chapter 36.3.2 
+> in [4]) which leads to round about 70 minutes, but optee_ftpm didn't 
+> move ahead to this commit, yet.
+> This config exists for being able to adapt the write cycles to the 
+> specific wear conditions of the hardware.
+> 
+> Moreover the ms-tpm-20-ref repo seems to not be maintained anymore and 
+> one should rather switch to [6].
+> 
+> So there are currently firmware TPM implementations out there that lead 
+> to these frequent writes.
 
-Reformat atmel_ecc_dt_ids for consistency.
+Really this would need a product and official bug bulletin for it to
+even consider a workaround. Speculation does not count.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
----
- drivers/crypto/atmel-ecc.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+> 
+> AFAIK since the tpm-20-ref implementation basically only supports a file 
+> on disk or RAM backing storage, the optee_ftpm repo [5] provides it's 
+> own _plat_NV* implementations that replace the default ones and finally 
+> call OP-TEE's TEE_* secure storage API, which then routes to whatever 
+> backend OP-TEE is configured with (REE-FS or RPMB) – In our case the RPMB.
+> 
+> Because there are currently implementations out there (e.g. start using 
+> optee_ftpm) it may make sense to add this information to the kernel 
+> config's help text at least?
 
-diff --git a/drivers/crypto/atmel-ecc.c b/drivers/crypto/atmel-ecc.c
-index 3738a4eb8701..c15096676ac5 100644
---- a/drivers/crypto/atmel-ecc.c
-+++ b/drivers/crypto/atmel-ecc.c
-@@ -368,18 +368,12 @@ static void atmel_ecc_remove(struct i2c_client *client)
- 	spin_unlock(&driver_data.i2c_list_lock);
- }
- 
--#ifdef CONFIG_OF
- static const struct of_device_id atmel_ecc_dt_ids[] = {
--	{
--		.compatible = "atmel,atecc508a",
--	}, {
--		.compatible = "atmel,atecc608b",
--	}, {
--		/* sentinel */
--	}
-+	{ .compatible = "atmel,atecc508a", },
-+	{ .compatible = "atmel,atecc608b", },
-+	{ }
- };
- MODULE_DEVICE_TABLE(of, atmel_ecc_dt_ids);
--#endif
- 
- static const struct i2c_device_id atmel_ecc_id[] = {
- 	{ "atecc508a" },
-@@ -391,7 +385,7 @@ MODULE_DEVICE_TABLE(i2c, atmel_ecc_id);
- static struct i2c_driver atmel_ecc_driver = {
- 	.driver = {
- 		.name	= "atmel-ecc",
--		.of_match_table = of_match_ptr(atmel_ecc_dt_ids),
-+		.of_match_table = atmel_ecc_dt_ids,
- 	},
- 	.probe		= atmel_ecc_probe,
- 	.remove		= atmel_ecc_remove,
+Your first forum to report such issues is the TPM vendor.
+
+> 
+> We are currently trying to bump optee_ftpm to use the more recent v1.84, 
+> but since we're no TCG member the PRs on github could get a bit 
+> adventurous (PR's not upstream, yet).
+> Until then this is a valid issue that exists...
+> 
+> 
+> [2] 
+> https://github.com/microsoft/ms-tpm-20-ref/blob/98b60a44aba79b15fcce1c0d1e46cf5918400f6a/TPMCmd/tpm/include/TpmProfile.h#L199 
+> 
+> 
+> [3] 
+> https://github.com/microsoft/ms-tpm-20-ref/blob/98b60a44aba79b15fcce1c0d1e46cf5918400f6a/TPMCmd/tpm/include/TpmProfile.h#L200
+> 
+> [4] 
+> https://trustedcomputinggroup.org/wp-content/uploads/TPM-2.0-1.83-Part-1-Architecture.pdf
+> 
+> [5] https://github.com/OP-TEE/optee_ftpm
+> 
+> [6] https://github.com/TrustedComputingGroup/TPM
+> 
+> BR,
+> Benedikt
+> 
+
+BR, Jarkko
 
