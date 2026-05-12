@@ -1,52 +1,53 @@
-Return-Path: <linux-crypto+bounces-23925-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23927-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CLhNGtu5AmonwAEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23925-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 07:25:47 +0200
+	id YJY8Iga6AmpnwAEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23927-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 07:26:30 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26636519FFB
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 07:25:47 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BCC751A049
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 07:26:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A715E3050E89
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 05:23:33 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F36CC307CE50
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 05:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D40FB33DEE1;
-	Tue, 12 May 2026 05:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC82935676B;
+	Tue, 12 May 2026 05:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="vtscn1Fk"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="l9QL8FjZ"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79DA52D12ED;
-	Tue, 12 May 2026 05:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED91C33260F;
+	Tue, 12 May 2026 05:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778563406; cv=none; b=ksIKtZfa0ZW3YL9IYplyMZM/2eWqAN5j4VZHCzYA1w++eyLeuTlMBXBgwI813MLu9Uzzp4S7MVqVq+KvKOVzi2d/Ziwo0ZD9h3kRGPiTx0rx/viSVXsXvwqEBdcnmrxQGSYMc+PNKLG+fDq5vPanxoYyHfGsQ9Ugv/i72ZCtHdE=
+	t=1778563408; cv=none; b=lCXhCvXcR62BPuZWN6TYtAOTgxN79hrh3chNBQSNvtHXq2gRLNf5xvZ6xzFTla5poDOXeBIKWfJ2LPWsbM3gy5MBFTEcvnK4+nZ0Giz+Ca2qlHfJf93CoXO8hA0917CxQ3RXv5Ab3xFbLY0C0vLIPh7LC3x1wlwyOnGkLBb7/vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778563406; c=relaxed/simple;
-	bh=qj0HhEGSi5uUOjhdkDpAEzZ/VYBnmPrjXqneop/fn4I=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f3q5dVCKIpSVpJgarRM4uVKgNlfsa1DhKBFXbSjT0BADJLTeD+ZRH9ZKxa9hhpX+WcJyMy2BY0YO7Jk/zIcSEiD7uT6Z6PrYaEx6Vli2jb0B4p27pIyp9LoHqR46uqQYfTfwDEx7Gqud+/bPqfwUQb/AJA2I5plMwEOK/fCWD48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=vtscn1Fk; arc=none smtp.client-ip=198.137.202.133
+	s=arc-20240116; t=1778563408; c=relaxed/simple;
+	bh=LS237DMSHu93VVdKtP/ECriEZ+ENITiSKV6/y4WTcuU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tRi4YopYhdbEhH9nET3fvmHmMBmC0FmlGkKImvE7myyt/uz8dneCUvYxKCa9fbUybp4uUg461pZOwrFFasFrHPbX1aBIZJwhf4e1ls6GMdfdbgpMISDASGibGTojMfIRcaem5dDNC5Bf/yom56lhhLtSFJ+ZzuvE6+j7QJXYZTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=l9QL8FjZ; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=hWNuCSvOTgL+hl7LSeigsUSvduHQkUgOajdKryVpMzA=; b=vtscn1Fk3uE4T8sWoxzxlGROEJ
-	GCADN1TTiJPS4GrO9lcYTxNPoCYGR0Fg2YfYSZzEqBWFKq2hhv5PT4Hqz353ftsQAUkD0T8gLGlqd
-	z0A72chaGEeedY1Api/DTbf4rOEzT9+pcvs4aKeu12A42LLGhu1uQsL8R2tZhrUsXMUPt3yTgpzLv
-	u5trTMadFgEa6RMlzUE0dtLyIHiet5/ttZO0xqLdJdPFASjLmSebe8/gCPLk/MFMb4OvN8x2DZjzo
-	uyCvvRPg5vy8g7A8aHtdehArpsSMrcXlUxHEy9FmxQeib99y7ucocuZiPQW6XpLvCGzZ68OHTJZN0
-	5wEgmGCQ==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
+	:Reply-To:Content-Type:Content-ID:Content-Description;
+	bh=lk9xgGRX6KmTgHi8yeCmJiNwyDWaauERdGqaOWPOxNE=; b=l9QL8FjZ7+E5EBMHVT0/gRU+vG
+	eamJddBD4ZK2GrbpvQkqMeld+GJF1U8zc0XZKnsp3cbar4kkaiZ6prkVXfW5QHNmKwOko9E0CAaCG
+	K6nseoa3cjAeTPtKZ1mDOZz3Dzv+qSAlvUcrAyqlkJ2cBKvc5q8k6SA3W89evJiahuLj7tRPCblYk
+	67mWrhIWdo6GJvmWsCiVx9KGhqz2Lx4zA1NFzvV0+RkG0BQpZnrKCUUHTUgRJldV6EUY+DHzEmOhX
+	kjYI6hqQsKxKtPUx90JTmkimbSZePBIxTp2pD0+LosuqW4BQq12FxpZ35qupJ1ptq5qWURy7fZluC
+	n3JlY+qA==;
 Received: from 2a02-8389-2341-5b80-decc-1a96-daaa-a2cc.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:decc:1a96:daaa:a2cc] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wMfZo-0000000FaGb-2eLn;
-	Tue, 12 May 2026 05:22:41 +0000
+	id 1wMfZz-0000000FaPv-0bKv;
+	Tue, 12 May 2026 05:22:51 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Catalin Marinas <catalin.marinas@arm.com>,
@@ -91,10 +92,12 @@ Cc: Catalin Marinas <catalin.marinas@arm.com>,
 	linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	linux-raid@vger.kernel.org
-Subject: cleanup the RAID6 P/Q library v2
-Date: Tue, 12 May 2026 07:20:40 +0200
-Message-ID: <20260512052230.2947683-1-hch@lst.de>
+Subject: [PATCH 01/19] btrfs: require at least 4 devices for RAID 6
+Date: Tue, 12 May 2026 07:20:41 +0200
+Message-ID: <20260512052230.2947683-2-hch@lst.de>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260512052230.2947683-1-hch@lst.de>
+References: <20260512052230.2947683-1-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -103,20 +106,20 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Rspamd-Queue-Id: 26636519FFB
+X-Rspamd-Queue-Id: 1BCC751A049
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.06 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
 	MAILLIST(-0.15)[generic];
 	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), DKIM not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23925-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23927-lists,linux-crypto=lfdr.de];
 	FREEMAIL_CC(0.00)[arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,gmail.com,dabbelt.com,eecs.berkeley.edu,ghiti.fr,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
 	RCPT_COUNT_TWELVE(0.00)[43];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -128,107 +131,40 @@ X-Spamd-Result: default: False [-0.06 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[infradead.org:+];
-	NEURAL_HAM(-0.00)[-0.992];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:mid,infradead.org:url,infradead.org:dkim]
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,lst.de:email,lst.de:mid,infradead.org:dkim]
 X-Rspamd-Action: no action
 
-Hi all,
+While the RAID6 algorithm could in theory support 3 devices by just
+copying the data disk to the two parity disks, this version is not only
+useless because it is a suboptimal version of 3-way mirroring, but also
+broken with various crashes and incorrect parity generation in various
+architecture-optimized implementations.  Disallow it similar to mdraid
+which requires at least 4 devices for RAID 6.
 
-this series cleans up the RAID6 P/Q library to match the recent updates
-to the RAID 5 XOR library and other CRC/crypto libraries.  This includes
-providing properly documented external interfaces, hiding the internals,
-using static_call instead of indirect calls and turning the user space
-test suite into an in-kernel kunit test which is also extended to
-improve coverage.
+Fixes: 53b381b3abeb ("Btrfs: RAID5 and RAID6")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/btrfs/volumes.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Note that this changes registration so that non-priority algorithms are
-not registered, which greatly helps with the benchmark time at boot time.
-I'd like to encourage all architecture maintainers to see if they can
-further optimized this by registering as few as possible algorithms when
-there is a clear benefit in optimized or more unrolled implementations.
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index a88e68f90564..0b54b97bdad8 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -159,7 +159,7 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
+ 		.sub_stripes	= 1,
+ 		.dev_stripes	= 1,
+ 		.devs_max	= 0,
+-		.devs_min	= 3,
++		.devs_min	= 4,
+ 		.tolerated_failures = 2,
+ 		.devs_increment	= 1,
+ 		.ncopies	= 1,
+-- 
+2.53.0
 
-This series sits on top of the "cleanup the RAID5 XOR library v3" series.
-
-A git tree is also available here:
-
-    git://git.infradead.org/users/hch/misc.git lib-raid6
-
-Gitweb:
-
-    https://git.infradead.org/?p=users/hch/misc.git;a=shortlog;h=refs/heads/lib-raid6
-
-Changes since v1:
- - fix arm64 objdir != srcdir builds
- - call the kunit module raid6_kunit.ko from the beginning
- - update MAINTAINERS
- - don't require preemptible context and apply the same restrictions as
-   the merged version of the XOR API
- - fix the arm64 default in Kconfig
- - pick the last registered (and presumably most optimized) algorithm when
-   benchmarking is disabled
- - port over the randomization fixes from the XOR series
- - misc other kunit cleanups
- - require at least 4 devices for RAID6 to skip broken special cases
-
-Diffstat:
- b/Documentation/crypto/async-tx-api.rst           |    4 
- b/MAINTAINERS                                     |    2 
- b/crypto/async_tx/async_pq.c                      |    9 
- b/crypto/async_tx/async_raid6_recov.c             |    9 
- b/drivers/dma/bcm-sba-raid.c                      |    1 
- b/drivers/md/raid5.c                              |    4 
- b/fs/btrfs/raid56.c                               |    8 
- b/fs/btrfs/volumes.c                              |    2 
- b/include/linux/raid/pq.h                         |  233 +------------
- b/include/linux/raid/pq_tables.h                  |   19 +
- b/lib/Kconfig                                     |   11 
- b/lib/Makefile                                    |    1 
- b/lib/raid/Kconfig                                |   33 +
- b/lib/raid/Makefile                               |    2 
- b/lib/raid/raid6/Makefile                         |  126 +++++++
- b/lib/raid/raid6/algos.c                          |  383 ++++++++++++++++++++++
- b/lib/raid/raid6/algos.h                          |   41 ++
- b/lib/raid/raid6/arm/neon.c                       |   23 -
- b/lib/raid/raid6/arm/neon.uc                      |    2 
- b/lib/raid/raid6/arm/pq_arch.h                    |   24 +
- b/lib/raid/raid6/arm/recov_neon.c                 |   27 -
- b/lib/raid/raid6/arm/recov_neon_inner.c           |    2 
- b/lib/raid/raid6/arm64/pq_arch.h                  |    1 
- b/lib/raid/raid6/int.uc                           |   10 
- b/lib/raid/raid6/loongarch/loongarch_simd.c       |   31 -
- b/lib/raid/raid6/loongarch/pq_arch.h              |   23 +
- b/lib/raid/raid6/loongarch/recov_loongarch_simd.c |   39 --
- b/lib/raid/raid6/mktables.c                       |   28 -
- b/lib/raid/raid6/powerpc/altivec.uc               |   32 -
- b/lib/raid/raid6/powerpc/pq_arch.h                |   31 +
- b/lib/raid/raid6/powerpc/vpermxor.uc              |   29 -
- b/lib/raid/raid6/recov.c                          |   62 ---
- b/lib/raid/raid6/riscv/pq_arch.h                  |   21 +
- b/lib/raid/raid6/riscv/recov_rvv.c                |   14 
- b/lib/raid/raid6/riscv/rvv.h                      |   26 -
- b/lib/raid/raid6/s390/pq_arch.h                   |   15 
- b/lib/raid/raid6/s390/recov_s390xc.c              |   14 
- b/lib/raid/raid6/s390/s390vx.uc                   |   15 
- b/lib/raid/raid6/tests/Makefile                   |    3 
- b/lib/raid/raid6/tests/raid6_kunit.c              |  321 ++++++++++++++++++
- b/lib/raid/raid6/x86/avx2.c                       |   47 --
- b/lib/raid/raid6/x86/avx512.c                     |   57 +--
- b/lib/raid/raid6/x86/mmx.c                        |   39 --
- b/lib/raid/raid6/x86/pq_arch.h                    |   97 +++++
- b/lib/raid/raid6/x86/recov_avx2.c                 |   22 -
- b/lib/raid/raid6/x86/recov_avx512.c               |   26 -
- b/lib/raid/raid6/x86/recov_ssse3.c                |   23 -
- b/lib/raid/raid6/x86/sse1.c                       |   49 --
- b/lib/raid/raid6/x86/sse2.c                       |   47 --
- lib/raid6/Makefile                                |   83 ----
- lib/raid6/algos.c                                 |  291 ----------------
- lib/raid6/loongarch.h                             |   38 --
- lib/raid6/test/.gitignore                         |    3 
- lib/raid6/test/Makefile                           |  156 --------
- lib/raid6/test/test.c                             |  152 --------
- lib/raid6/x86.h                                   |   75 ----
- 56 files changed, 1369 insertions(+), 1517 deletions(-)
 
