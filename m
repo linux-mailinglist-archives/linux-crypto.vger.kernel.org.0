@@ -1,142 +1,240 @@
-Return-Path: <linux-crypto+bounces-23920-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23922-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GABWN2RMAmpaqQEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23920-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 11 May 2026 23:38:44 +0200
+	id +veZFxahAmp2vAEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23922-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 05:40:06 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E2375165E4
-	for <lists+linux-crypto@lfdr.de>; Mon, 11 May 2026 23:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C284F519623
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 05:40:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6BE6C302AC28
-	for <lists+linux-crypto@lfdr.de>; Mon, 11 May 2026 21:38:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 90113303FDD6
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 03:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552864D90D3;
-	Mon, 11 May 2026 21:38:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605422E54D1;
+	Tue, 12 May 2026 03:38:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QJGCDQd7"
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="YyygtP7O";
+	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="RxEyw2Yl"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 150454D90C6;
-	Mon, 11 May 2026 21:38:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABCB5281525
+	for <linux-crypto@vger.kernel.org>; Tue, 12 May 2026 03:37:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778535512; cv=none; b=u0Js2Kq36waYlHL+qboAxcqClZMUhAYWCkZJZ3ByhTwY93XXrHpVauoXGb+6KkJrVvcI5KNYmGKO0oKqLPg5aimNYbx3w+F7bHB95MWmF9EkETiKLNXhkNpAuAfhXX1a85fhC2azaqG9juNzOsXR7MPkEMp9yJmgADWj4O973mU=
+	t=1778557080; cv=none; b=MXm7QVCkfMr2SdW0jA7uyO/yfL1cYv0W2Hgz885Ofu5w0Lgb0yZN9buOwlDF1oWs6FJYm7HOLqg8hArO0UyUu3YQlIwwmmaL62VUblndx5PZvcLOpXaLFrB6ZidJ0B0NnC3123CSuvJU+txBDyMGZQJ34jfCMFNq/6LKyusDd/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778535512; c=relaxed/simple;
-	bh=fZhpx1k1xcrrhghih7dNeuimA953Whu88yfFeuou6xw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ag2ETxBqxcsb6WSokAwcaxYtWXPMkDG/nWE2sXbW3Le2RznrgYjJFqzl512FL+lCK84G3wz7wIvy53M5n7WAh1Ii3jXQzRlBGAnn+mMAY4fi+79STWFjaTKE5BMNYiFBywtNshyTRd+nXoETr0SU2rmcUj2pwQokbddLM1N6OBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QJGCDQd7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C9F2C2BCB0;
-	Mon, 11 May 2026 21:38:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778535511;
-	bh=fZhpx1k1xcrrhghih7dNeuimA953Whu88yfFeuou6xw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QJGCDQd7tc8MoxlNTw5nj6nMWf5ehp+blErtcJnFovt4hGMRvgGmv4EmbTT1t8JgH
-	 VWFhLe+Hxji3Z/gntJ93r5oLkOT8AoNKqT56iwx9N9EGXZ9OxO6q7gvVJ9xAkpL4i7
-	 vrtRXxVOcELejhT2Uo2FeDqIif7KjcDZvv7rh4XKrbfHBcJ5KeLAVNntPRJqYx+KYa
-	 fHBsS13dRyiWqH3EihEFCH87w190EE4SLTvo4CII69INrIJ/0crnjLBfD6AVUjPx8J
-	 icFGvTIjwMo/+dGz/q8UK8DUPvA/O68dpubBy3pRaPTRt2BJqT+CZpIKtbLodYnrYe
-	 BqaafnoWrikmA==
-Date: Mon, 11 May 2026 21:38:29 +0000
-From: Eric Biggers <ebiggers@kernel.org>
-To: Ignat Korchagin <ignat@linux.win>
-Cc: Kamran Khan <kz@inspirated.com>,
-	Jeff Barnes <jeffbarnes@linux.microsoft.com>,
-	Andy Lutomirski <luto@amacapital.net>,
-	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] crypto: af_alg - Document the deprecation of AF_ALG
-Message-ID: <20260511213829.GA316710@google.com>
-References: <CALCETrVqG+1yErRJjkxvJrf=A+Vu84HTR4Bx1Pcd8G1C0PJcMA@mail.gmail.com>
- <14A441D8-5370-44BE-8732-99BF8107C3FD@getmailspring.com>
- <0b8bba44-f6bb-4d69-b9d4-5787c276d41a@inspirated.com>
- <20260510163204.GA2279@sol>
- <3bfcf406-fdde-4303-9bd6-0d8d21ddba37@linux.win>
+	s=arc-20240116; t=1778557080; c=relaxed/simple;
+	bh=osXmgGSxSrKx3zpZtjMg9bkFc0mOhov0B774lUtqcLw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=OmjUG42gmODUop036GV6OyJpidtgjyskUe6FRcMgTKPxI+2hH/kDy+adYg0TYn88Tn78Vc0GVbLd1e/lIF5Cu4w/C9ApP9SEyGaIL1adjF7cLS5VeFvjaV+vpwrUzDZf6oNU1W4usQJCT+AKyUZ4A4mhT+SNNXiT6VyuuE9DmY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=YyygtP7O; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=RxEyw2Yl; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64BK6jOI2186435
+	for <linux-crypto@vger.kernel.org>; Tue, 12 May 2026 03:37:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=qcppdkim1; bh=TnhnLrL/izdip9S/qBfDLn
+	OxhSE7toF4Nmjgx76c9jA=; b=YyygtP7OoBIOBb/komBX3mkcS7xYKREvqNEU2L
+	RqM9/snkpNGfOdArpU4EczKZwLiLa0ebAGkd8btYOLNKz2Q9oEj93ZQ5VffNcXjg
+	iyX1DJ9Qyiemm01AYmfUggIkm542985W1egzPlkPyfsm0tZ2ord2MQx11Xb2Zjrv
+	a0R+e05y9ugLA4u3dlS0AjXAd66O8XQnX0V8HEIisoGUu7AWblaxiNRmy8+v5xdZ
+	j1O4iuq4a1XoieBCJftyxo5vT2tGXhLH5o0YH5KejmNvd7kQzC+owX7buE89OzV8
+	gehw1/+MXwfJPHat+wA/u4Ryg9H+cQaABmfMBC6nVIgXKKxg==
+Received: from mail-dy1-f200.google.com (mail-dy1-f200.google.com [74.125.82.200])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4e3nv299se-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-crypto@vger.kernel.org>; Tue, 12 May 2026 03:37:56 +0000 (GMT)
+Received: by mail-dy1-f200.google.com with SMTP id 5a478bee46e88-2f525565b33so6249963eec.0
+        for <linux-crypto@vger.kernel.org>; Mon, 11 May 2026 20:37:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=oss.qualcomm.com; s=google; t=1778557076; x=1779161876; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TnhnLrL/izdip9S/qBfDLnOxhSE7toF4Nmjgx76c9jA=;
+        b=RxEyw2Ylx5akwyX7ZmaXQhuUI6iE5vkBkjgfoCGSlOxceMwQO7sr3Au9AQd14dj3Vo
+         8pG6uqEnRe9aT7NUsvE7KJDTGd6Y2Kc1eyc9xuFdhJN7hwjBBh0X0tJI4ZcrpFbE8ZdN
+         ep85MT7556G4gUVkJvfx8EFSRg1tA2c4tFnlDc+fNyYlqFFZbj4vskyyh9ADmeDZW1QH
+         17cxo4thRUgshf9Fnk65U2yjzLp+1tFN12IlZ1NU420xte2MsnIgq8HtBv2nc/nLpsV0
+         zBvl0VJiHoZo6xYZ8fB1VPUYG4VJCAQre0QoKliz6uZFuMuqufwkQn2KizLJdUwQi77G
+         91Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778557076; x=1779161876;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TnhnLrL/izdip9S/qBfDLnOxhSE7toF4Nmjgx76c9jA=;
+        b=prQOSkdh2xPmyiAwR1zetmE91aGQEbSYAv6mkNudAjEGBlCW2G060FueEwTs5HT6GH
+         75XsSVwJuTjpRoPDFDyFuIplsgZ7vdw4zFcnraOAbDpUJxUQ2evHYc1jxeVk/wBUzdhN
+         IjB5m5LzIXAPEzIKhgtMbMQ+3dvlWopPwy9Xh153pJEIjmf2gO5F0hxBNFxOKjt2ycoI
+         Yr0vezelkxrJ4Zxorb/8BrDoevQQXzlxukT9kHsCQ48b4BXHN9As4GXNiPzmXKbiFUuF
+         oOkxyhQvCQ2c6FNSGDYsp2c1tYB/PM4mkZ7Rij+zgSJN2GKagg7rPoQp1PDhYEJBMelW
+         Ly7w==
+X-Forwarded-Encrypted: i=1; AFNElJ8bCJv/BLv7wYb5p1fu1xxtNYIJsxXhfC5WWPfC1nAuiFTkpkxN42lEisdK7aPNMzzyGtaI7wNlCnnbm0I=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwohFjrVIJQiDmg8dR95So/vsQU/EPznHsPLu6UhV2uJkq6KLcD
+	43LctRuebTU7O843TrxrtZBLyABv1iIA9jn7X0NSja7/lfEoILwHorWOkLwtAd0h52z7L/LCScv
+	6NNQWPwcmknPFpIShwOe0hQlMGllaI3Mw+6rXCBnUs6cKT95M1HsQRnWTgRE4iRuMs7Y=
+X-Gm-Gg: Acq92OGz8gO3XbdZnzT35XQPSs8tl1Y/8SGyeZW7YTyFQKth2RZDqDosdaT2/cO2igB
+	pWCz6D99wTgLo9LUtfR0V3LgFYTQsISeG/F6sKOqLNhqZjLan09Kb/KGP5fDslTedmyF1J3hVZP
+	/r4g7MYh1AxcMP8Ww+soUq6sR0VZVwQVYCM3D34MBNI3pFct72ZscmThQ00CX4xrUAFDxUE9Fxq
+	PuzgZUIABijoElf1hkI98UsncxjYmmJmXNgmqEpTe98gjtjXisTjmSDl+69iCseMUyktgwUdCle
+	SvI9YA8OidOMpTX+qRBBAaJ1DFhI7Vs7AGAJIk4APRyGr/DGJPEORyNmppYohwA60qNpyItgKp7
+	X9qIoeeOH8UbEbJp2IHdWNODWoxtVdr2zcA9iawoVMGSxdsp2+CVkzOPWVeqGIQRWBWdmQddPsy
+	LUlIrT
+X-Received: by 2002:a05:7301:fd87:b0:300:255:22cf with SMTP id 5a478bee46e88-30002555971mr304823eec.28.1778557075595;
+        Mon, 11 May 2026 20:37:55 -0700 (PDT)
+X-Received: by 2002:a05:7301:fd87:b0:300:255:22cf with SMTP id 5a478bee46e88-30002555971mr304807eec.28.1778557074985;
+        Mon, 11 May 2026 20:37:54 -0700 (PDT)
+Received: from u20-san1p10573.qualcomm.com (i-global254.qualcomm.com. [199.106.103.254])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2f8859eb4b7sm16730109eec.2.2026.05.11.20.37.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 May 2026 20:37:54 -0700 (PDT)
+From: Linlin Zhang <linlin.zhang@oss.qualcomm.com>
+To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konradybcio@kernel.org>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>, devicetree@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] soc: qcom: ice: Enable firmware managed resource
+Date: Mon, 11 May 2026 20:37:47 -0700
+Message-Id: <20260512033750.3393050-1-linlin.zhang@oss.qualcomm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3bfcf406-fdde-4303-9bd6-0d8d21ddba37@linux.win>
-X-Rspamd-Queue-Id: 8E2375165E4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: dJz0D30Eoe65RBU27PKc8qSImlWdsfpc
+X-Authority-Analysis: v=2.4 cv=CeM4Irrl c=1 sm=1 tr=0 ts=6a02a094 cx=c_pps
+ a=PfFC4Oe2JQzmKTvty2cRDw==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
+ a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10 a=s4-Qcg_JpJYA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=rJkE3RaqiGZ5pbrm-msn:22
+ a=VwQbUJbxAAAA:8 a=EUspDBNiAAAA:8 a=COk6AnOGAAAA:8 a=Jyhv0Gfyiw9a8mKZ3MwA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=s5zKW874KtQA:10
+ a=6Ab_bkdmUrQuMsNx7PHu:22 a=TjNXssC_j7lpFel5tvFf:22
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTEyMDAzMCBTYWx0ZWRfX/IlLk5+kNoQS
+ /Y9TzsglUOrSwa2d3I97eXKYMi73aKtXn3xz1YtjY670i/ai6Jr1zn/XDb4JD7/XaHoQIwm+Wvm
+ DQnrcwg0gselC4lO9tjGIJKsk1tUbWJuZT0G7ybKGNMXD5Ka5d5Z3YQpEpJfpV6mQmm8RKbNecM
+ 0RHYtNOovj3vInzMeEmeA7hDcFagziY2YY1rwkzrbwRnlMYO7YGEuAKn0YIMo2klUI6trlRDJjP
+ lCzLD2rnlTAw1R3VbWLDoBWCUxVl4uSvW4NUzUuVHAoCTzVXPb+JNQc95MI1vk5WoW7S/RbmfLN
+ yH9iu2l2cp42Qn7deEN/lXoqp4Ws/puNaezHTnouZGjFUF7WnatfNgFjJba3MBJYu/HreizYvNn
+ FM6UT4R0bUDpkuYNeEogHP1M+b1l0Jj9tlZRYnXBJsNH27Ev5yfSA5zSAB4Vh8mtCRR77zVq33c
+ DMDRkT5w5KmQD4iyy5Q==
+X-Proofpoint-GUID: dJz0D30Eoe65RBU27PKc8qSImlWdsfpc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-05-11_05,2026-05-08_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 priorityscore=1501 phishscore=0 suspectscore=0 malwarescore=0
+ clxscore=1015 lowpriorityscore=0 spamscore=0 adultscore=0 bulkscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2605050000 definitions=main-2605120030
+X-Rspamd-Queue-Id: C284F519623
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	DMARC_POLICY_ALLOW(-0.50)[qualcomm.com,reject];
+	R_DKIM_ALLOW(-0.20)[qualcomm.com:s=qcppdkim1,oss.qualcomm.com:s=google];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23920-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[qualcomm.com:+,oss.qualcomm.com:+];
+	TAGGED_FROM(0.00)[bounces-23922-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[oss.qualcomm.com:mid,oss.qualcomm.com:dkim,qualcomm.com:email,qualcomm.com:dkim,shc-kerarch-hyd:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[linlin.zhang@oss.qualcomm.com,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-crypto,dt];
 	RCPT_COUNT_SEVEN(0.00)[11];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Action: no action
 
-On Mon, May 11, 2026 at 10:03:21PM +0100, Ignat Korchagin wrote:
-> I don't think fully discounting hardware offloading is beneficial here. HW
-> accelerators will be produced and without a common interface vendors would
-> start implementing their own "bespoke" drivers with bespoke userspace
-> interfaces (we already had such proposals), which in turn may introduce more
-> attack surface. Yes, AF_ALG needs substantial improvement, but at least it
-> can be a standardisation point.
+From: linlzhan <linlzhan@qti.qualcomm.com>
 
-That isn't the best way to accelerate symmetric crypto anymore though,
-if it ever was.  This has been known for a long time.
+The Qualcomm automotive SA8255p SoC relies on firmware to configure
+platform resources, including clocks, interconnects and TLMM (GPIOs).
+These resources are controlled by the driver via SCMI power and
+performance protocols.
 
-> > In any case, any hypothetical security benefit provided by AF_ALG would
-> > have to be *very high* to outweigh the continuous stream of
-> > vulnerabilities in it.  I understand that people using AF_ALG might not
-> > be familiar with that continuous stream of vulnerabilities, but it would
-> 
-> 
-> Is it actually that much compared to other features/subsystems, like eBPF or
-> user namespaces? But we don't rush to deprecate those - instead trying to
-> harden them and come up with better design.
+The SCMI power protocol is used to enable and disable platform
+resources, including clocks, interconnect paths, and TLMM, by mapping
+resource state transitions to the runtime PM framework’s
+resume/suspend callbacks.
 
-There are plenty of other kernel features with a large attack surface,
-of course.  But they tend to be much more useful than AF_ALG.  It's all
-about weighing benefits vs. risks.
+In this design, the ICE driver acts as an SCMI client, with clocks and
+power domains abstracted and controlled by the SCMI server in firmware.
+This implementation depends on pm_runtime_resume_and_get() and
+pm_runtime_put_sync(), which are available in the OPP tree’s
+linux-next branch.
 
-When we get the point where a large number of Linux users *had* to
-disable AF_ALG as an emergency vulnerability response, and at the same
-time their systems weren't even using AF_ALG so nothing even broke and
-they could have just done that to begin with, I think we get a very
-clear idea of which side is heavier for AF_ALG in the real world.
+v2:
+-- rebase the patchset
+-- update to/cc lists
+-- Link to v1: https://lore.kernel.org/all/20260430032136.3058773-1-linlin.zhang@oss.qualcomm.com/
 
-The main relevance of AF_ALG to the Linux community is that it allows
-their systems to be exploited.
+-- To Linux Community
 
-- Eric
+v6:
+- Protect calling clock API with fw_managed flag in ICE runtime OPS callbacks.
+- Link to v5: http://shc-kerarch-hyd:8080/kernel_archive/20260324095703.1306437-1-linlin.zhang@oss.qualcomm.com/T/#t
+
+v5:
+- Align the continued argument line under the first argument after left parenthesis.
+- Modify the return value in probe function.
+- Link to v4: http://shc-kerarch-hyd:8080/kernel_archive/20260318170626.3654744-1-linlin.zhang@oss.qualcomm.com/T/
+
+v4:
+- Commit and signed-off by OSS mail id
+- Enable runtime PM for ICE dirver
+- Add driver data to diffrenciate the clock managed by the firmware or not
+- Link to v3: http://shc-kerarch-hyd:8080/kernel_archive/20251107091315.476074-1-quic_linlzhan@quicinc.com/
+
+v3:
+- Update the subject of patch 2.
+- Update returned type of remvoe function and firmware flag in ICE diver.
+- Link to v2: http://shc-kerarch-hyd:8080/kernel_archive/20251104104935.2752144-1-quic_linlzhan@quicinc.com/T/#t
+
+v2:
+- Addresssed comments from Badgey
+- Make Document binding of ice pass for binding checking.
+- Link to v1: http://shc-kerarch-hyd:8080/kernel_archive/20251024050921.3573402-1-quic_linlzhan@quicinc.com/T/#t
+
+Initial version:
+- Add fw managed resource abstraction support in ICE driver.
+- Add respective compatible and document it's bindings.
+
+Linlin Zhang (3):
+  dt-bindings: crypto: qcom,ice: Add sa8255p support
+  soc: qcom: ice: Enable PM runtime for ICE driver
+  soc: qcom: ice: Add SCMI support for sa8255p based targets
+
+ .../crypto/qcom,inline-crypto-engine.yaml     |  27 ++++-
+ drivers/soc/qcom/ice.c                        | 108 +++++++++++++++---
+ 2 files changed, 115 insertions(+), 20 deletions(-)
+
+-- 
+2.34.1
+
 
