@@ -1,53 +1,53 @@
-Return-Path: <linux-crypto+bounces-23936-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23937-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aAHFHFG7AmonwAEAu9opvQ
-	(envelope-from <linux-crypto+bounces-23936-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 07:32:01 +0200
+	id sHAIBPa8AmrVwAEAu9opvQ
+	(envelope-from <linux-crypto+bounces-23937-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 07:39:02 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id D251351A1A6
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 07:32:00 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8237C51A3EB
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 07:39:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 90BE530AC2B8
-	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 05:25:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3970B3088557
+	for <lists+linux-crypto@lfdr.de>; Tue, 12 May 2026 05:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4A8387578;
-	Tue, 12 May 2026 05:24:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F29356778;
+	Tue, 12 May 2026 05:25:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Wbe25KFs"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nj+eSR6Y"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BAD4386C17;
-	Tue, 12 May 2026 05:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC8EE33507C;
+	Tue, 12 May 2026 05:25:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778563495; cv=none; b=O9mt00dGcWQNmYBNNmjXjk0KyEZBaUlygzDaVTb8+utGRYrvSMRgQjX+2t2trrForbKcEwPKuimNYL5+7k8IMyQOyvdWj2d4fTUkh5bYZuV91EiyT0zjGa0CIGadJzOhIzVXk5B7JlARfO4qU1ma5nZwCEIyeqcAVzRAAb0xNWM=
+	t=1778563508; cv=none; b=S5WWr4g49MAhuEDv4JlN+w9IgyDvcg6OEVuiOnpbbWh3H55QT9j4Nx58hHnxO9AqYgZFguJhxmAGzb8Z0qz7n7y2c57Nr9r0/Qeg6quyssH1BtvhJN5BDE1Z1Sn+03Yt2r2ILLvK7wB4aQjAwpOOmmApxkF78440lD3249yHf2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778563495; c=relaxed/simple;
-	bh=NkRryQ0i6ywiUMQzUxPLMC9I0mXezUpUFjm9Pwi2mqI=;
+	s=arc-20240116; t=1778563508; c=relaxed/simple;
+	bh=khbyrJqw0K/uLNRto+FGJko9VNpN8A9SHZ1HivoFRUA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=haa2xyrksewvjrlKxLhpahjPAx4wSIBkX2e8pI2N2zGpnPq7JeVJxhdgJlXr8gv36PhLaPVQlQzzBQZhQJSVZDaa0XOvaBXtv9IBrYdCSgaNfUwviuvUW+pVJjk9FNZJpd8UVS8lPYM1CgB8KyyTMwc5gkJRDBVN6O+yY3zBRv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Wbe25KFs; arc=none smtp.client-ip=198.137.202.133
+	 MIME-Version; b=tJDgPNL9v+awkg7+bh+jNgM2huExnWkjVAMtXi3BZM9tEKd8VV3QxCo4/bUD+TBucxD2QwDybx4V5FhIsCgXAp+gL4REgb3satbDUHXuS8I+iqsj6two4rVA3HdqobfwiGuNn8hx+DBVsmLxxngY6xRRuNpWpNlEW6ZvXzm4OQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=nj+eSR6Y; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=yxoWjSN0H+WtKxnq6Rp/z4kFHg7WTRKcoiSjQy5l0WM=; b=Wbe25KFs2KBjUSrTFCrt9e7roY
-	HRn5PbrNolMtTz8VquvyEtaL6OsXkuX5lQTw5wGvhwqXK0/EDLLBWa/FubGe/TKPdTpF+RImR4EW+
-	TQJpbwjYlwzfC8WnWvAC9fegfL3DpIaQOddUZ9wMMlNjW941eb08T3L/Mg76D6NNzne2TZKADxkXw
-	qCCcrUasT8jmvLIpuSvp6V46iRbPFIqqrdtpBDqDWE8V8pfK/gTYPZvBLVMqMUioLek/HEXnDHjLx
-	hSE4poG0HRz/2L6+Q8oDhUaDy2EzfY8BwfMbYppqUE+1jo8TqG9hxsK1x/0gmad/gwlgkRr0ZFxvE
-	lJEgEU9Q==;
+	bh=v4XDa+C/o91FMWjaSNhcRxXMdj1CYKY/YPjwb23rTsE=; b=nj+eSR6Yjql/J4+NOLB1SIR9wA
+	yiTsn5udcxuDswc8RbV0Nz37ZuPaslxNhIKY9akbDGEQQjGYsUCE+Vxzhneju2Evin+QBZeiYTCxR
+	8+/bkPa388JJH9xVoLVtf8cDY6tAsnGW0VnCVXqYjP37KlzIRcMq+WHpabYljLU9+zyOpcc9oiXgh
+	60fqvpn8xmYuAPfWRPlcfGlL2VPXrJt1VVSukKXADFk6a8izV3T8mvjQw/u7+onJwJVS2250slP3l
+	vh/jPtKP1HFqwZvJWzOpwjEp6s628KldCifTx4R9yIU2X5c7CllE5xxW7J265m0ZxofOuRSFTyMeJ
+	sExTVitg==;
 Received: from 2a02-8389-2341-5b80-decc-1a96-daaa-a2cc.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:decc:1a96:daaa:a2cc] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wMfbo-0000000Fc70-0F09;
-	Tue, 12 May 2026 05:24:44 +0000
+	id 1wMfbz-0000000FcGb-2ne1;
+	Tue, 12 May 2026 05:24:56 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Catalin Marinas <catalin.marinas@arm.com>,
@@ -92,9 +92,9 @@ Cc: Catalin Marinas <catalin.marinas@arm.com>,
 	linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	linux-raid@vger.kernel.org
-Subject: [PATCH 11/19] raid6: use static_call for gen_syndrom and xor_syndrom
-Date: Tue, 12 May 2026 07:20:51 +0200
-Message-ID: <20260512052230.2947683-12-hch@lst.de>
+Subject: [PATCH 12/19] raid6: use static_call for raid6_recov_2data and raid6_recov_datap
+Date: Tue, 12 May 2026 07:20:52 +0200
+Message-ID: <20260512052230.2947683-13-hch@lst.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260512052230.2947683-1-hch@lst.de>
 References: <20260512052230.2947683-1-hch@lst.de>
@@ -106,20 +106,20 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Rspamd-Queue-Id: D251351A1A6
+X-Rspamd-Queue-Id: 8237C51A3EB
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.06 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
 	MAILLIST(-0.15)[generic];
 	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), DKIM not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-23936-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-23937-lists,linux-crypto=lfdr.de];
 	FREEMAIL_CC(0.00)[arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,gmail.com,dabbelt.com,eecs.berkeley.edu,ghiti.fr,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
 	RCPT_COUNT_TWELVE(0.00)[43];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -134,88 +134,57 @@ X-Spamd-Result: default: False [-0.06 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,lst.de:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,infradead.org:dkim]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,lst.de:email,lst.de:mid,infradead.org:dkim]
 X-Rspamd-Action: no action
 
-Avoid indirect calls for P/Q parity generation.
+Avoid expensive indirect calls for the recovery routines as well.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- lib/raid/raid6/algos.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ lib/raid/raid6/algos.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/lib/raid/raid6/algos.c b/lib/raid/raid6/algos.c
-index 5bd953032e55..65b75236ecf8 100644
+index 65b75236ecf8..d333318e3301 100644
 --- a/lib/raid/raid6/algos.c
 +++ b/lib/raid/raid6/algos.c
-@@ -14,6 +14,7 @@
- #include <linux/module.h>
- #include <linux/gfp.h>
- #include <linux/raid/pq.h>
-+#include <linux/static_call.h>
- #include <kunit/visibility.h>
- #include "algos.h"
- 
-@@ -23,7 +24,8 @@ static unsigned int raid6_nr_algos;
- static const struct raid6_recov_calls *raid6_recov_algo;
- 
+@@ -26,6 +26,8 @@ static const struct raid6_recov_calls *raid6_recov_algo;
  /* Selected algorithm */
--static struct raid6_calls raid6_call;
-+DEFINE_STATIC_CALL_NULL(raid6_gen_syndrome_impl, *raid6_intx1.gen_syndrome);
-+DEFINE_STATIC_CALL_NULL(raid6_xor_syndrome_impl, *raid6_intx1.xor_syndrome);
+ DEFINE_STATIC_CALL_NULL(raid6_gen_syndrome_impl, *raid6_intx1.gen_syndrome);
+ DEFINE_STATIC_CALL_NULL(raid6_xor_syndrome_impl, *raid6_intx1.xor_syndrome);
++DEFINE_STATIC_CALL_NULL(raid6_recov_2data_impl, *raid6_recov_intx1.data2);
++DEFINE_STATIC_CALL_NULL(raid6_recov_datap_impl, *raid6_recov_intx1.datap);
  
  /**
   * raid6_gen_syndrome - generate RAID6 P/Q parity
-@@ -48,7 +50,7 @@ void raid6_gen_syndrome(int disks, size_t bytes, void **ptrs)
+@@ -126,7 +128,7 @@ void raid6_recov_2data(int disks, size_t bytes, int faila, int failb,
+ 	WARN_ON_ONCE(bytes > PAGE_SIZE);
+ 	WARN_ON_ONCE(failb <= faila);
+ 
+-	raid6_recov_algo->data2(disks, bytes, faila, failb, ptrs);
++	static_call(raid6_recov_2data_impl)(disks, bytes, faila, failb, ptrs);
+ }
+ EXPORT_SYMBOL_GPL(raid6_recov_2data);
+ 
+@@ -151,7 +153,7 @@ void raid6_recov_datap(int disks, size_t bytes, int faila, void **ptrs)
  	WARN_ON_ONCE(bytes & 511);
- 	WARN_ON_ONCE(disks < RAID6_MIN_DISKS);
+ 	WARN_ON_ONCE(bytes > PAGE_SIZE);
  
--	raid6_call.gen_syndrome(disks, bytes, ptrs);
-+	static_call(raid6_gen_syndrome_impl)(disks, bytes, ptrs);
+-	raid6_recov_algo->datap(disks, bytes, faila, ptrs);
++	static_call(raid6_recov_datap_impl)(disks, bytes, faila, ptrs);
  }
- EXPORT_SYMBOL_GPL(raid6_gen_syndrome);
+ EXPORT_SYMBOL_GPL(raid6_recov_datap);
  
-@@ -85,7 +87,7 @@ void raid6_xor_syndrome(int disks, int start, int stop, size_t bytes,
- 	WARN_ON_ONCE(disks < RAID6_MIN_DISKS);
- 	WARN_ON_ONCE(stop < start);
+@@ -324,6 +326,8 @@ static int __init raid6_init(void)
+ 	 */
+ 	if (!raid6_recov_algo)
+ 		raid6_recov_algo = &raid6_recov_intx1;
++	static_call_update(raid6_recov_2data_impl, raid6_recov_algo->data2);
++	static_call_update(raid6_recov_datap_impl, raid6_recov_algo->datap);
+ 	pr_info("raid6: using %s recovery algorithm\n", raid6_recov_algo->name);
  
--	raid6_call.xor_syndrome(disks, start, stop, bytes, ptrs);
-+	static_call(raid6_xor_syndrome_impl)(disks, start, stop, bytes, ptrs);
- }
- EXPORT_SYMBOL_GPL(raid6_xor_syndrome);
- 
-@@ -96,7 +98,7 @@ EXPORT_SYMBOL_GPL(raid6_xor_syndrome);
-  */
- bool raid6_can_xor_syndrome(void)
- {
--	return !!raid6_call.xor_syndrome;
-+	return !!static_call_query(raid6_xor_syndrome_impl);
- }
- EXPORT_SYMBOL_GPL(raid6_can_xor_syndrome);
- 
-@@ -195,7 +197,8 @@ static int raid6_choose_gen(void *(*const dptrs)[RAID6_TEST_DISKS],
- 		return -EINVAL;
- 	}
- 
--	raid6_call = *best;
-+	static_call_update(raid6_gen_syndrome_impl, best->gen_syndrome);
-+	static_call_update(raid6_xor_syndrome_impl, best->xor_syndrome);
- 
- 	pr_info("raid6: using algorithm %s gen() %ld MB/s\n",
- 		best->name,
-@@ -240,7 +243,10 @@ static int __init raid6_select_algo(void)
- 	if (!IS_ENABLED(CONFIG_RAID6_PQ_BENCHMARK) || raid6_nr_algos == 1) {
- 		pr_info("raid6: skipped pq benchmark and selected %s\n",
- 			raid6_algos[raid6_nr_algos - 1]->name);
--		raid6_call = *raid6_algos[raid6_nr_algos - 1];
-+		static_call_update(raid6_gen_syndrome_impl,
-+				raid6_algos[raid6_nr_algos - 1]->gen_syndrome);
-+		static_call_update(raid6_xor_syndrome_impl,
-+				raid6_algos[raid6_nr_algos - 1]->xor_syndrome);
- 		return 0;
- 	}
- 
+ #ifdef MODULE
 -- 
 2.53.0
 
