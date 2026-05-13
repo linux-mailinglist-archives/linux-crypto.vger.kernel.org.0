@@ -1,59 +1,76 @@
-Return-Path: <linux-crypto+bounces-23992-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-23993-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GLntMWvoA2oPAQIAu9opvQ
-	(envelope-from <linux-crypto+bounces-23992-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 04:56:43 +0200
+	id aNAjEpYQBGoMDAIAu9opvQ
+	(envelope-from <linux-crypto+bounces-23993-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 07:48:06 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7200C52C78B
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 04:56:43 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3200152DBB0
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 07:48:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 400423038A48
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 02:52:54 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E7594302C39A
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 05:47:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC04386428;
-	Wed, 13 May 2026 02:52:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XcnQ/Hfv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 584593A759C;
+	Wed, 13 May 2026 05:47:53 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE15314B63;
-	Wed, 13 May 2026 02:52:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CB8384CE0;
+	Wed, 13 May 2026 05:47:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778640773; cv=none; b=fXI30YDXrS9YvazKGeYjqomu0tHIsITjAoDa5iBh/zhvdSlUD4MKXZSXCd5vmGdBxSC3XMWLlOnZaHLnLZNvmvZOtTcbxdHhEYgwCuPyk43IuMlZVIwn/4oRBNss6zOpZO43dUELgq2YKyxNw8rtX9ihHSyy1BOXahHiuJCBRL4=
+	t=1778651272; cv=none; b=jI8qyoHu/2GuGAfG8M7jcUPVCHop4VH80gplVQqW78DQgPiV0xn2xZgUImTTeeAKUTp4O7LTpbJ8iLHXNReJVQYqemBkoMGuIEp2pRHIY4qATK9xHlZTeNxhedQqETdBjyAKbvS8r747ufDwpnCRiynFMPy5BDVmLIBJwmp/Xpg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778640773; c=relaxed/simple;
-	bh=2676fvscMyjK0OHdfxMRrCy/Jw9r9ZG+EZ144GRJAac=;
+	s=arc-20240116; t=1778651272; c=relaxed/simple;
+	bh=gLgo4WQ3hzDs13tL91Gp16GFz3W0lr9TsHhf12nzTgo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MYaDd3pNfvvgQIiF91DXt/WZVQsX/asnq5uZAlqA8PgbtvtBI+D9prFn41gKz6uN3VzFHi64LPE8nqxMQ/CxKfpmzT7RQfp+yAijcHhAZwv5DsmNfTjzm0B+40tTlddxWNHDqxTG2gRUd4gr41XuJlQebhZn0UILdjLdQLKNcB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XcnQ/Hfv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BED52C2BCB0;
-	Wed, 13 May 2026 02:52:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778640773;
-	bh=2676fvscMyjK0OHdfxMRrCy/Jw9r9ZG+EZ144GRJAac=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XcnQ/Hfve8mooLMOavb764ZOVphPq5/lPWXEu6rBY+IHDqJ6WweTBCBNhF0XCPOru
-	 IF36sPg85LRJXDbTPo85WN3VwsYhOQmEiClVuVQ2oUuIxFKGNarkS9VvAm4vRyKnK4
-	 aN/p7lzdOWxo5sjqKuv458SZqheE22c6thBqOS19meaSEDpbCSg1D+LHxNGR3kEV2+
-	 EAAo7uxMCoYTbYgU5PdopOm9aTG0IJZh0y4nTAD2DNQHXRrLpCli0Kl2P+ReTMCbRI
-	 KxUUNk1K5mPtRtijnskA5gldvxC6Xi2nmVlk70rc5SFqIgDMPW62HLjhE8UZ7gRyb8
-	 J+0dmmzTouIqg==
-Date: Tue, 12 May 2026 19:51:30 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: gregkh@linuxfoundation.org
-Cc: lukas@wunner.de, ignat@linux.win, jarkko@kernel.org,
-	yimingqian591@gmail.com, stable@vger.kernel.org,
-	linux-crypto@vger.kernel.org
-Subject: Re: FAILED: patch "[PATCH] lib/crypto: mpi: Fix integer underflow
- in" failed to apply to 6.1-stable tree
-Message-ID: <20260513025130.GA3110@sol>
-References: <2026051223-undercoat-reps-6626@gregkh>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gWWqtE3oERaGl7wV8Z2+x/NZBOSBtbiR91Gz2yyzz3T1Tn/sYgYC/eYW9WDcKlZywJt7uYcTPD6/3UEHhIP9oPxryc2+IqZhjTP5T1WuEDrK+lxUEAV5tW8CyOI1WQdn6GWg5MylbT30u1P6gbRrz5n8RKJJp+9k0RlxuOxM9M4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id B404568B05; Wed, 13 May 2026 07:47:42 +0200 (CEST)
+Date: Wed, 13 May 2026 07:47:42 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: David Sterba <dsterba@suse.cz>
+Cc: Christoph Hellwig <hch@lst.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+	Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+	Li Nan <linan122@huawei.com>, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-raid@vger.kernel.org
+Subject: Re: [PATCH 01/19] btrfs: require at least 4 devices for RAID 6
+Message-ID: <20260513054742.GA1018@lst.de>
+References: <20260512052230.2947683-1-hch@lst.de> <20260512052230.2947683-2-hch@lst.de> <20260512114231.GG2558453@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -62,71 +79,60 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2026051223-undercoat-reps-6626@gregkh>
-X-Rspamd-Queue-Id: 7200C52C78B
+In-Reply-To: <20260512114231.GG2558453@suse.cz>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Rspamd-Queue-Id: 3200152DBB0
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[wunner.de,linux.win,kernel.org,gmail.com,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-23992-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linuxfoundation.org:email]
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.992];
+	RCPT_COUNT_TWELVE(0.00)[45];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	R_DKIM_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-crypto@vger.kernel.org];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_CC(0.00)[lst.de,linux-foundation.org,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,gmail.com,dabbelt.com,eecs.berkeley.edu,ghiti.fr,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
+	TAGGED_FROM(0.00)[bounces-23993-lists,linux-crypto=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[]
 X-Rspamd-Action: no action
 
-[+Cc linux-crypto@vger.kernel.org]
-
-On Tue, May 12, 2026 at 04:01:23PM +0200, gregkh@linuxfoundation.org wrote:
+On Tue, May 12, 2026 at 01:42:31PM +0200, David Sterba wrote:
+> On Tue, May 12, 2026 at 07:20:41AM +0200, Christoph Hellwig wrote:
+> > While the RAID6 algorithm could in theory support 3 devices by just
+> > copying the data disk to the two parity disks, this version is not only
+> > useless because it is a suboptimal version of 3-way mirroring, but also
+> > broken with various crashes and incorrect parity generation in various
+> > architecture-optimized implementations.  Disallow it similar to mdraid
+> > which requires at least 4 devices for RAID 6.
+> > 
+> > Fixes: 53b381b3abeb ("Btrfs: RAID5 and RAID6")
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > 
-> The patch below does not apply to the 6.1-stable tree.
-> If someone wants it applied there, or to any other stable or longterm
-> tree, then please email the backport, including the original git commit
-> id to <stable@vger.kernel.org>.
-> 
-> To reproduce the conflict and resubmit, you may use the following commands:
-> 
-> git fetch https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/ linux-6.1.y
-> git checkout FETCH_HEAD
-> git cherry-pick -x 8c2f1288250a90a4b5cabed5d888d7e3aeed4035
-> # <resolve conflicts, build, test, etc.>
-> git commit -s
-> git send-email --to '<stable@vger.kernel.org>' --in-reply-to '2026051223-undercoat-reps-6626@gregkh' --subject-prefix 'PATCH 6.1.y' HEAD^..
-> 
-> Possible dependencies:
+> This patch should have been sent separately as it has user visible
+> impact and can potentially break some setups.
 
-A couple issues.  First, this email wasn't sent to the subsystem's
-mailing list (linux-crypto@vger.kernel.org in this case).  That greatly
-reduces the number of people who are made aware that this didn't get
-automatically backported.
+It _is_ sent out separate.
 
-Second, the upstream commit cherry-picks to 6.1, 5.15, and 5.10 without
-conflict.  (The file being changed was renamed between 6.1 and 6.6, but
-'git cherry-pick' handles that automatically.)
+> The degenerate modes of
+> raid0, 5, or 6 are explicit as a possible middle step when converting
+> profiles.  We can use a fallback implementation for this case if the
+> accelerated implementations cannot do it.
 
-I don't know what you're doing exactly that caused it to be
-unnecessarily marked as FAILED.  But whatever it is, it's not working,
-and it is causing backports to be missed.
-
-- Eric
+This is not about a degenerated mode.  For a degenerated RAID 6, parity
+generation uses the RAID 5 XOR routines as the second parity will be
+missing.  This is about generating two parities for a single data disk,
+which must be explicitly selected.
 
