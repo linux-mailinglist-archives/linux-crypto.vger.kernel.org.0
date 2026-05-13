@@ -1,146 +1,158 @@
-Return-Path: <linux-crypto+bounces-24014-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24015-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GDerD8ueBGr3LwIAu9opvQ
-	(envelope-from <linux-crypto+bounces-24014-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 17:54:51 +0200
+	id ONWqBm2qBGoxMwIAu9opvQ
+	(envelope-from <linux-crypto+bounces-24015-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 18:44:29 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A728153693E
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 17:54:50 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15BFF5374FE
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 18:44:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B846731AB193
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 15:33:35 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id F03E1306AE94
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 16:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE4F4779BC;
-	Wed, 13 May 2026 15:33:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB05D4C77D0;
+	Wed, 13 May 2026 16:27:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dtXKzVHI"
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Ahhs2ZaN"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD6827442
-	for <linux-crypto@vger.kernel.org>; Wed, 13 May 2026 15:33:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FF5B44A724;
+	Wed, 13 May 2026 16:27:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778686412; cv=none; b=QRRdnAPho/zih6acLLdGGGPdh1VUGmqJakKbtEU/1unl5l9/xyE3Eq3qUZ2bC9lp+zYeQ7/Eym5jXPppu7XuAhzsOb7FxdNV2tCOB7JtOcFXxh0TZivn8zDtS/livFvEAKrGOIjkzWVPhVJ1IXgKugYYYvkbF/dOn26A76vNgW8=
+	t=1778689653; cv=none; b=NjSxIUAqFqfaLka9eAJfmV4qM3i2DpElGcXdG4aWpAiu/CAI112WiUDatUL3WKr8Fc8WjuIv4z3f1um27GLqLoUZufi0skKyuFprwsvHb7KcQ93Mk22bOucZfF9htoOQj1yrLP5bvDtsukxPBisIgcJqUJPHhsBCsabE+x2DFnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778686412; c=relaxed/simple;
-	bh=WjTG+hED0D3CSbUxzhIJGLKkhosJqIXmDoTFHofVXio=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iXs32ZwaziQq7ot2InvbjxsFYqjmpjZ3NWQ8xsIzV2RK+jKvuSiTtcH6uSr6vL/M/5OAcLLHM2YZhY73b23YbSQRkZE/RHyv2HJxwvYmRv0Poj0jYW/0Z2+fPVha6mDkYA3GxbcvFIstbBNLSqYpOdId2jueIcjbpjxck1tJBgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dtXKzVHI; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1778686411; x=1810222411;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=WjTG+hED0D3CSbUxzhIJGLKkhosJqIXmDoTFHofVXio=;
-  b=dtXKzVHIkmmaUI4bOlBL8YqXiFdP7yiCEgBoGKzNBOVcF0i2b7Te6qtc
-   vNnAG2bdD2icVWELumH9VtYcKYRv6l/yPBcWp7AxiRzcKCmZqY2xbN6YK
-   EYsg1QcOruh+Tjya5abQYVgdmy5eLvd1eiaJ7XVtum5CTuzIrS/TxPtDL
-   vHke6v0fQf7ZwGuhE3dvWTYPoIV+IBH/pHhRdcFMEKMs67av9kGPIWcR5
-   /4PbSzf/PIN1ZbaEUt0Z6JuDUJBXK1XtqUAfWi0yDN95cXDV5DJZOjmyI
-   LI97Eudu4Igud1hBL/N8uZOHVhbgNzAq9TuIG51EoEK1fEtF4w3C0znzj
-   w==;
-X-CSE-ConnectionGUID: CI2poggTQliooIbfYzcDgA==
-X-CSE-MsgGUID: BE8857MuROC5yykbb6+wGQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11785"; a="83230752"
-X-IronPort-AV: E=Sophos;i="6.23,233,1770624000"; 
-   d="scan'208";a="83230752"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 May 2026 08:33:31 -0700
-X-CSE-ConnectionGUID: KX6ULEJyTIm4HXZvAoJlwQ==
-X-CSE-MsgGUID: KpojcKaZTc6MhwLtqjX4bA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,233,1770624000"; 
-   d="scan'208";a="242120640"
-Received: from unknown (HELO fedora.iind.intel.com) ([10.49.0.89])
-  by orviesa003.jf.intel.com with ESMTP; 13 May 2026 08:33:29 -0700
-From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-To: herbert@gondor.apana.org.au
-Cc: linux-crypto@vger.kernel.org,
-	qat-linux@intel.com,
-	Fiona Trahe <fiona.trahe@intel.com>,
-	Ahsan Atta <ahsan.atta@intel.com>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [PATCH] Documentation: qat_rl: make rate limiting wording clearer
-Date: Wed, 13 May 2026 16:33:08 +0100
-Message-ID: <20260513153317.32355-1-giovanni.cabiddu@intel.com>
-X-Mailer: git-send-email 2.54.0
+	s=arc-20240116; t=1778689653; c=relaxed/simple;
+	bh=CDzF6zxpWm/EIG7IClV3NwFJ7pzNxzMC2HVtf6q6ESc=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=CwVEUnQ+XZhcOIiU6+3cne3D42kLjnU08brxc+vpnxcgBFX5Fx3khnczAQkMlUr3sZfZAEgHnP7dAczgnnEf+6wU/MqW4Bs6hxmFNJivM3crGjo/WF5GRKpNcBoRNfFI3uxGEK8VOIQNQzhIh4LavpOKCDrvsz7YW89Lo7FquCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=Ahhs2ZaN; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from ehlo.thunderbird.net (c-76-133-66-138.hsd1.ca.comcast.net [76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 64DGEn1a2905667
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 13 May 2026 09:14:50 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 64DGEn1a2905667
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2026042601; t=1778688894;
+	bh=kzc3j2nHoRxQd9M0vkzx/uZg5Iwn8WIixU3RTEBg+i4=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=Ahhs2ZaNxCuIyTcDd/to/S7gqU6ft6zabx6TakulFhnIjDt8bXMJ0LGzYVyEfrxzF
+	 EoSq1ir5sKEz+X8RiAhKD9hHd7SJ2OozMvt9/+9wrxu0pBvVJBlgjVq84smFg5PvWl
+	 ODAygtu3MetLOSzf39fcORVc45KgUJxXa0B3c1WcYV/TBfKv8I2j2JZj6Oo7LMLnaS
+	 F/w+6e9Kh9WjQd20++VspvTwbnc9Zogl0CKsAiiMu7QXkJbZu0hP9l3BvRBi3h/lIE
+	 60H32//SMm5Gsh1hto9j6ldrE4pFtBClA6C9ESo0hnzWXYJCYw3OlK+u43GeYa68K6
+	 OTz8RC1DMTHsw==
+Date: Wed, 13 May 2026 09:14:44 -0700
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Christoph Hellwig <hch@lst.de>, Andrew Morton <akpm@linux-foundation.org>
+CC: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+        Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, Thomas Gleixner <tglx@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+        Song Liu <song@kernel.org>,
+        Yu Kuai <yukuai@alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com>,
+        Li Nan <linan122@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-raid@vger.kernel.org
+Subject: Re: [PATCH 01/19] btrfs: require at least 4 devices for RAID 6
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20260512052230.2947683-2-hch@lst.de>
+References: <20260512052230.2947683-1-hch@lst.de> <20260512052230.2947683-2-hch@lst.de>
+Message-ID: <45B68AA3-36E2-4187-BD30-F4631C7F32C2@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: A728153693E
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 15BFF5374FE
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	DMARC_POLICY_ALLOW(-0.50)[zytor.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[zytor.com:s=2026042601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-24014-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-24015-lists,linux-crypto=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,gmail.com,dabbelt.com,eecs.berkeley.edu,ghiti.fr,redhat.com,alien8.de,linux.intel.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
+	RCPT_COUNT_TWELVE(0.00)[43];
 	MIME_TRACE(0.00)[0:+];
-	HAS_ORG_HEADER(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[giovanni.cabiddu@intel.com,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,intel.com:email,intel.com:mid,intel.com:dkim]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hpa@zytor.com,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[zytor.com:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,zytor.com:mid,zytor.com:dkim,lst.de:email]
 X-Rspamd-Action: no action
 
-From: Fiona Trahe <fiona.trahe@intel.com>
+On May 11, 2026 10:20:41 PM PDT, Christoph Hellwig <hch@lst=2Ede> wrote:
+>While the RAID6 algorithm could in theory support 3 devices by just
+>copying the data disk to the two parity disks, this version is not only
+>useless because it is a suboptimal version of 3-way mirroring, but also
+>broken with various crashes and incorrect parity generation in various
+>architecture-optimized implementations=2E  Disallow it similar to mdraid
+>which requires at least 4 devices for RAID 6=2E
+>
+>Fixes: 53b381b3abeb ("Btrfs: RAID5 and RAID6")
+>Signed-off-by: Christoph Hellwig <hch@lst=2Ede>
+>---
+> fs/btrfs/volumes=2Ec | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/fs/btrfs/volumes=2Ec b/fs/btrfs/volumes=2Ec
+>index a88e68f90564=2E=2E0b54b97bdad8 100644
+>--- a/fs/btrfs/volumes=2Ec
+>+++ b/fs/btrfs/volumes=2Ec
+>@@ -159,7 +159,7 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_N=
+R_RAID_TYPES] =3D {
+> 		=2Esub_stripes	=3D 1,
+> 		=2Edev_stripes	=3D 1,
+> 		=2Edevs_max	=3D 0,
+>-		=2Edevs_min	=3D 3,
+>+		=2Edevs_min	=3D 4,
+> 		=2Etolerated_failures =3D 2,
+> 		=2Edevs_increment	=3D 1,
+> 		=2Encopies	=3D 1,
 
-The term "capability" typically refers to an ability to perform an
-action, whereas "capacity" denotes a measurable amount of resources.
-
-Since the sysfs-driver-qat_rl document describes remaining resources
-available to perform work, "capacity" is the more accurate term.
-
-Replace "capability" with "capacity" in the document.
-
-Signed-off-by: Fiona Trahe <fiona.trahe@intel.com>
-Reviewed-by: Ahsan Atta <ahsan.atta@intel.com>
-Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
----
- Documentation/ABI/testing/sysfs-driver-qat_rl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-driver-qat_rl b/Documentation/ABI/testing/sysfs-driver-qat_rl
-index d534f89b4971..422333a0eb69 100644
---- a/Documentation/ABI/testing/sysfs-driver-qat_rl
-+++ b/Documentation/ABI/testing/sysfs-driver-qat_rl
-@@ -209,7 +209,7 @@ Date:		January 2024
- KernelVersion:	6.7
- Contact:	qat-linux@intel.com
- Description:
--		(RW) This file will return the remaining capability for a
-+		(RW) This file will return the remaining capacity for a
- 		particular service/sla. This is the remaining value that a new
- 		SLA can be set to or a current SLA can be increased with.
- 
--- 
-2.54.0
-
+Yes, if anyone cares about < 4 disks for the RAID-6 case (or < 3 for the R=
+AID-4/5 case), just use the RAID-1 code=2E
 
