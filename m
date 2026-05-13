@@ -1,158 +1,151 @@
-Return-Path: <linux-crypto+bounces-24015-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24016-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ONWqBm2qBGoxMwIAu9opvQ
-	(envelope-from <linux-crypto+bounces-24015-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 18:44:29 +0200
+	id +NfkLMSvBGp6NAIAu9opvQ
+	(envelope-from <linux-crypto+bounces-24016-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 19:07:16 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15BFF5374FE
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 18:44:27 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27D77537AFF
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 19:07:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id F03E1306AE94
-	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 16:27:36 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id A646A300E017
+	for <lists+linux-crypto@lfdr.de>; Wed, 13 May 2026 17:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB05D4C77D0;
-	Wed, 13 May 2026 16:27:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7004539B959;
+	Wed, 13 May 2026 17:04:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Ahhs2ZaN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZoDvSU/O"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FF5B44A724;
-	Wed, 13 May 2026 16:27:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3196738887A;
+	Wed, 13 May 2026 17:04:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778689653; cv=none; b=NjSxIUAqFqfaLka9eAJfmV4qM3i2DpElGcXdG4aWpAiu/CAI112WiUDatUL3WKr8Fc8WjuIv4z3f1um27GLqLoUZufi0skKyuFprwsvHb7KcQ93Mk22bOucZfF9htoOQj1yrLP5bvDtsukxPBisIgcJqUJPHhsBCsabE+x2DFnE=
+	t=1778691888; cv=none; b=f+60IbFCGK1siC0ROhQxDEfgUAQLHsq59fGUUn9xZmUobYk7nCPtZRF3jMNNw5YbmVBfkjHCaE20epuILSsedZbKUxCUkXtJu4BPMtnxPw20LuDtAvgfIGFRfqYdd9jPgXVU4EIiGOX3lGz/qmiKsR6awvjqBtphDx2LABWgIxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778689653; c=relaxed/simple;
-	bh=CDzF6zxpWm/EIG7IClV3NwFJ7pzNxzMC2HVtf6q6ESc=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=CwVEUnQ+XZhcOIiU6+3cne3D42kLjnU08brxc+vpnxcgBFX5Fx3khnczAQkMlUr3sZfZAEgHnP7dAczgnnEf+6wU/MqW4Bs6hxmFNJivM3crGjo/WF5GRKpNcBoRNfFI3uxGEK8VOIQNQzhIh4LavpOKCDrvsz7YW89Lo7FquCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=Ahhs2ZaN; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from ehlo.thunderbird.net (c-76-133-66-138.hsd1.ca.comcast.net [76.133.66.138])
-	(authenticated bits=0)
-	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 64DGEn1a2905667
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Wed, 13 May 2026 09:14:50 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 64DGEn1a2905667
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2026042601; t=1778688894;
-	bh=kzc3j2nHoRxQd9M0vkzx/uZg5Iwn8WIixU3RTEBg+i4=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=Ahhs2ZaNxCuIyTcDd/to/S7gqU6ft6zabx6TakulFhnIjDt8bXMJ0LGzYVyEfrxzF
-	 EoSq1ir5sKEz+X8RiAhKD9hHd7SJ2OozMvt9/+9wrxu0pBvVJBlgjVq84smFg5PvWl
-	 ODAygtu3MetLOSzf39fcORVc45KgUJxXa0B3c1WcYV/TBfKv8I2j2JZj6Oo7LMLnaS
-	 F/w+6e9Kh9WjQd20++VspvTwbnc9Zogl0CKsAiiMu7QXkJbZu0hP9l3BvRBi3h/lIE
-	 60H32//SMm5Gsh1hto9j6ldrE4pFtBClA6C9ESo0hnzWXYJCYw3OlK+u43GeYa68K6
-	 OTz8RC1DMTHsw==
-Date: Wed, 13 May 2026 09:14:44 -0700
-From: "H. Peter Anvin" <hpa@zytor.com>
-To: Christoph Hellwig <hch@lst.de>, Andrew Morton <akpm@linux-foundation.org>
-CC: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-        Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, Thomas Gleixner <tglx@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-        Song Liu <song@kernel.org>,
-        Yu Kuai <yukuai@alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com>,
-        Li Nan <linan122@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-raid@vger.kernel.org
-Subject: Re: [PATCH 01/19] btrfs: require at least 4 devices for RAID 6
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20260512052230.2947683-2-hch@lst.de>
-References: <20260512052230.2947683-1-hch@lst.de> <20260512052230.2947683-2-hch@lst.de>
-Message-ID: <45B68AA3-36E2-4187-BD30-F4631C7F32C2@zytor.com>
+	s=arc-20240116; t=1778691888; c=relaxed/simple;
+	bh=GypdLqU+oACmwsK8Vg+4Mujn2qGmp2FDnQaZtFaemCg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lclTCQgvvXhPkvj1ihGPoNTZD/ziJtHSF0HJz89JTGlVFQ5i1rU9oX9rYPXBTpxNjXaKD3lTPgaqcoGP91HHRavSuqEiBqMsL/mmhqUkWfzUKLTEJ8KFZq3VaF7OampB7JQxrQfCg4cy1SlzXRQuuUBk8BO8GIl6zZYOMZkT+AY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZoDvSU/O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54E44C19425;
+	Wed, 13 May 2026 17:04:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778691887;
+	bh=GypdLqU+oACmwsK8Vg+4Mujn2qGmp2FDnQaZtFaemCg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ZoDvSU/Od2dFhbOfjKZYsrksK6pLg8V8AI90yr65ivoDN5L8nn0YvzZBHni8qhmzB
+	 GIQ/hOP2Oh9GNJC0DKk2FCfCPfu33944rvnSOx3vuq4xaa8YTOeJzM9D36UBzPSxzJ
+	 ey/ULlvAiPqvIMfnt8UN5q9yuAIDJmkSz36vwlxy+fFmh2F8fu6h3nZkifwKhRyvns
+	 hxGWGU05+hBjZs+vstkTZfcGjSVAemMOBzupYcSeTmJGqZ4qKmp2EfhdxZ5U9mKrRx
+	 H63adnSK+g33uRnsUGLmzLcsNKKmW1m7u6cFV2o2Y5tvGgSb/cE4HpipDLLrsRJ4np
+	 qcfAg+A9cDz7g==
+Date: Wed, 13 May 2026 10:04:45 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: lukas@wunner.de, ignat@linux.win, jarkko@kernel.org,
+	yimingqian591@gmail.com, stable@vger.kernel.org,
+	linux-crypto@vger.kernel.org
+Subject: Re: FAILED: patch "[PATCH] lib/crypto: mpi: Fix integer underflow
+ in" failed to apply to 6.1-stable tree
+Message-ID: <20260513170445.GA2128@quark>
+References: <2026051223-undercoat-reps-6626@gregkh>
+ <20260513025130.GA3110@sol>
+ <2026051334-showgirl-hurdle-22eb@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 15BFF5374FE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2026051334-showgirl-hurdle-22eb@gregkh>
+X-Rspamd-Queue-Id: 27D77537AFF
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[zytor.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[zytor.com:s=2026042601];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[wunner.de,linux.win,kernel.org,gmail.com,vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-24016-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-24015-lists,linux-crypto=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,gmail.com,dabbelt.com,eecs.berkeley.edu,ghiti.fr,redhat.com,alien8.de,linux.intel.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,alb-78bjiv52429oh8qptp.cn-shenzhen.alb.aliyuncs.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
-	RCPT_COUNT_TWELVE(0.00)[43];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hpa@zytor.com,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[zytor.com:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,zytor.com:mid,zytor.com:dkim,lst.de:email]
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linuxfoundation.org:email]
 X-Rspamd-Action: no action
 
-On May 11, 2026 10:20:41 PM PDT, Christoph Hellwig <hch@lst=2Ede> wrote:
->While the RAID6 algorithm could in theory support 3 devices by just
->copying the data disk to the two parity disks, this version is not only
->useless because it is a suboptimal version of 3-way mirroring, but also
->broken with various crashes and incorrect parity generation in various
->architecture-optimized implementations=2E  Disallow it similar to mdraid
->which requires at least 4 devices for RAID 6=2E
->
->Fixes: 53b381b3abeb ("Btrfs: RAID5 and RAID6")
->Signed-off-by: Christoph Hellwig <hch@lst=2Ede>
->---
-> fs/btrfs/volumes=2Ec | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/fs/btrfs/volumes=2Ec b/fs/btrfs/volumes=2Ec
->index a88e68f90564=2E=2E0b54b97bdad8 100644
->--- a/fs/btrfs/volumes=2Ec
->+++ b/fs/btrfs/volumes=2Ec
->@@ -159,7 +159,7 @@ const struct btrfs_raid_attr btrfs_raid_array[BTRFS_N=
-R_RAID_TYPES] =3D {
-> 		=2Esub_stripes	=3D 1,
-> 		=2Edev_stripes	=3D 1,
-> 		=2Edevs_max	=3D 0,
->-		=2Edevs_min	=3D 3,
->+		=2Edevs_min	=3D 4,
-> 		=2Etolerated_failures =3D 2,
-> 		=2Edevs_increment	=3D 1,
-> 		=2Encopies	=3D 1,
+On Wed, May 13, 2026 at 12:34:38PM +0200, Greg KH wrote:
+> On Tue, May 12, 2026 at 07:51:30PM -0700, Eric Biggers wrote:
+> > [+Cc linux-crypto@vger.kernel.org]
+> > 
+> > On Tue, May 12, 2026 at 04:01:23PM +0200, gregkh@linuxfoundation.org wrote:
+> > > 
+> > > The patch below does not apply to the 6.1-stable tree.
+> > > If someone wants it applied there, or to any other stable or longterm
+> > > tree, then please email the backport, including the original git commit
+> > > id to <stable@vger.kernel.org>.
+> > > 
+> > > To reproduce the conflict and resubmit, you may use the following commands:
+> > > 
+> > > git fetch https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/ linux-6.1.y
+> > > git checkout FETCH_HEAD
+> > > git cherry-pick -x 8c2f1288250a90a4b5cabed5d888d7e3aeed4035
+> > > # <resolve conflicts, build, test, etc.>
+> > > git commit -s
+> > > git send-email --to '<stable@vger.kernel.org>' --in-reply-to '2026051223-undercoat-reps-6626@gregkh' --subject-prefix 'PATCH 6.1.y' HEAD^..
+> > > 
+> > > Possible dependencies:
+> > 
+> > A couple issues.  First, this email wasn't sent to the subsystem's
+> > mailing list (linux-crypto@vger.kernel.org in this case).  That greatly
+> > reduces the number of people who are made aware that this didn't get
+> > automatically backported.
+> 
+> We never send out these FAILED emails to the mailing lists, as that
+> would make just even more noise.  It's always been this way, sorry.
 
-Yes, if anyone cares about < 4 disks for the RAID-6 case (or < 3 for the R=
-AID-4/5 case), just use the RAID-1 code=2E
+Yes, this has been a problem for a long time, resulting in lots of
+missed backports including the copy.fail ones.  It's time for you to fix
+your process.
+
+> > Second, the upstream commit cherry-picks to 6.1, 5.15, and 5.10 without
+> > conflict.  (The file being changed was renamed between 6.1 and 6.6, but
+> > 'git cherry-pick' handles that automatically.)
+> > 
+> > I don't know what you're doing exactly that caused it to be
+> > unnecessarily marked as FAILED.  But whatever it is, it's not working,
+> > and it is causing backports to be missed.
+> 
+> We don't use git for cherry-picking as we have a patch queue, so renames
+> will often times fail, like it did here.  This has always been the case
+> in the decades we have been running the stable kernels :)
+
+Again, this has been a problem for a long time, and it's time for you to
+fix your process.  You can still have the patch queue; just use git for
+the actual cherry-pick.
+
+- Eric
 
