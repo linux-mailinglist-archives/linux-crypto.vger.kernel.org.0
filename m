@@ -1,477 +1,139 @@
-Return-Path: <linux-crypto+bounces-24115-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24111-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sHp1N3wMB2oLrAIAu9opvQ
-	(envelope-from <linux-crypto+bounces-24115-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:07:24 +0200
+	id cJO/N1ULB2pZrAIAu9opvQ
+	(envelope-from <linux-crypto+bounces-24111-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:02:29 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D88254F14D
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:07:24 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31D7054EFDE
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:02:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EEAF731D304B
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 11:49:37 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6D1C930FFDD5
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 11:48:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2864A47ECD8;
-	Fri, 15 May 2026 11:47:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF08447DF96;
+	Fri, 15 May 2026 11:47:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="uKmFuvVO"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bA4Zedlz"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from canpmsgout09.his.huawei.com (canpmsgout09.his.huawei.com [113.46.200.224])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0EC47ECF7;
-	Fri, 15 May 2026 11:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.224
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B7B480345
+	for <linux-crypto@vger.kernel.org>; Fri, 15 May 2026 11:47:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778845659; cv=none; b=u8XS8SPRCKyJC/LwOt3SngM27QYEcwhmiqgAI+a9ySDJPn9GM6ZXAOK6C87KUoJMs8nDNY1pzYrov5wL2VeJY4dtztoZJyXTd8WitB2P6qSQ50pCIqaNTj6QdUolZAKo7FToJVEIFgb2CetZiceajReDvTgFedBL/dlYg4NtCpc=
+	t=1778845645; cv=none; b=ENH2DwmG/8ujo5hhpdfQefMqtCmO+60gGCjliRn3rP6oNY/qggY/fY4toaYGDwAmGK/hjyMmxhLmcdIijG2qpoBgnkqEb+P4RX0K+LFIKBKx+2MXWBuWxnvJCNARPwArhSzr1+TkHShHVSycD1Y9cT1Pesfee5I8d43FbZAZkrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778845659; c=relaxed/simple;
-	bh=I3VQUKnHRI9ymIEh3LXLwWX3fBfVOdGIguEdBVpKGBU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qQFqBsA/OgDqLR+Va162wxDFulgFNnc4WIt6N2E1sVK683hxYj/uMFYNuq2YjvBL4CDIOUbsZDs98cF4vCTXxH69K23r2L2t8Aemjy+S7YKGxndknVhaVgI1+85bMqi+jKqXQGYcWloVrYXq5wKXDeMbzy+3q33hNnMLR9S9IWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=uKmFuvVO; arc=none smtp.client-ip=113.46.200.224
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
-	c=relaxed/relaxed; q=dns/txt;
-	h=From;
-	bh=1StHRbjZe33u09qvjJIyBacshDRBsVjhYEI8azP6mPA=;
-	b=uKmFuvVOn/lE3cwsIp8bZ4mlu5Q/rpisBcabCCoduOv3Wy4cDy5SYgZBKHZSk0UTMZJEuTr0y
-	Uttat879KIwOv+0gfyGUVNo7L+dKQ0PvtpoJXCasXV6bdsbellvJ/IUaSo4cipmZOMvxdYrtIDq
-	98ht5+pSpJ9Fl0V6GsRGNKw=
-Received: from mail.maildlp.com (unknown [172.19.162.92])
-	by canpmsgout09.his.huawei.com (SkyGuard) with ESMTPS id 4gH4xJ5dlfz1cyPB;
-	Fri, 15 May 2026 19:39:48 +0800 (CST)
-Received: from kwepemr100008.china.huawei.com (unknown [7.202.195.119])
-	by mail.maildlp.com (Postfix) with ESMTPS id DD07440562;
-	Fri, 15 May 2026 19:47:25 +0800 (CST)
-Received: from localhost.localdomain (10.50.163.32) by
- kwepemr100008.china.huawei.com (7.202.195.119) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.36; Fri, 15 May 2026 19:47:25 +0800
-From: ZongYu Wu <wuzongyu1@huawei.com>
-To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-	<fanghao11@huawei.com>, <liulongfang@huawei.com>, <qianweili@huawei.com>,
-	<wangzhou1@hisilicon.com>
-Subject: [PATCH 3/3] crypto: hisilicon/hpre - implement full backlog support for hpre driver
-Date: Fri, 15 May 2026 19:46:01 +0800
-Message-ID: <20260515114601.2492524-4-wuzongyu1@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20260515114601.2492524-1-wuzongyu1@huawei.com>
-References: <20260515114601.2492524-1-wuzongyu1@huawei.com>
+	s=arc-20240116; t=1778845645; c=relaxed/simple;
+	bh=GVzpf8DHrtIE2e0iLrgK05eawGI15jKhZ0DshiAXIe8=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=n99WR7sFcg55RNZVURFMcK2xXp+jkw4aflHq08AG0H30j5lSW1+KhmuEyXiPTOg7QAnXeMm5U/v+qTr09+/3pzAPTdfnYbFSm4x9wGlwYeG9NYjpWfc0UFWl1w3nHidJL1BB1w7RWgbN9JWy6dX8v/IMhPRZg6poQt9Fa9sltNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bA4Zedlz; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1778845639;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lDpsJ9vTI5/XpFdT7cxzYBQrIqR/7gB5JKH/whriB4o=;
+	b=bA4Zedlzw2E19x2KoCp1eOrIzYUTj/slIO7GpDxUYhVwINRfIPTiqDDuZ5rD+gTcLd1c8o
+	/uFaDBULLxm8IbBNtzd5oGSLO7Lg9qm27vX5uN6RtLSS1K5G/8lgJSaw8jXvlYgET62V/c
+	4OtPvlBADZWCK88o7g7t90m7Db+UpXU=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-576-UAqYTvpgM-SMWa-X9yYaYQ-1; Fri,
+ 15 May 2026 07:47:14 -0400
+X-MC-Unique: UAqYTvpgM-SMWa-X9yYaYQ-1
+X-Mimecast-MFC-AGG-ID: UAqYTvpgM-SMWa-X9yYaYQ_1778845632
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 575081800451;
+	Fri, 15 May 2026 11:47:11 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.44.48.83])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 2C0B419560A2;
+	Fri, 15 May 2026 11:47:06 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20260510232455.2245650-1-michael.bommarito@gmail.com>
+References: <20260510232455.2245650-1-michael.bommarito@gmail.com> <20260502132506.1936358-1-michael.bommarito@gmail.com>
+To: Michael Bommarito <michael.bommarito@gmail.com>
+Cc: dhowells@redhat.com, Herbert Xu <herbert@gondor.apana.org.au>,
+    "David S. Miller" <davem@davemloft.net>,
+    linux-crypto@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    linux-afs@lists.infradead.org, Ilya Dryomov <idryomov@gmail.com>,
+    Xiubo Li <xiubli@redhat.com>, ceph-devel@vger.kernel.org,
+    stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] crypto: krb5 - filter out async aead implementations at alloc
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
- kwepemr100008.china.huawei.com (7.202.195.119)
-X-Rspamd-Queue-Id: 4D88254F14D
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2632014.1778845625.1@warthog.procyon.org.uk>
+Date: Fri, 15 May 2026 12:47:05 +0100
+Message-ID: <2632015.1778845625@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Rspamd-Queue-Id: 31D7054EFDE
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_FROM(0.00)[bounces-24115-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[redhat.com,gondor.apana.org.au,davemloft.net,vger.kernel.org,kernel.org,auristor.com,lists.infradead.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-24111-lists,linux-crypto=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wuzongyu1@huawei.com,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[huawei.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	HAS_ORG_HEADER(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dhowells@redhat.com,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	FROM_HAS_DN(0.00)[]
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Action: no action
 
-From: lizhi <lizhi206@huawei.com>
+Michael Bommarito <michael.bommarito@gmail.com> wrote:
 
-When the hardware queue returns -EBUSY, requests are queued instead of
-being failed immediately. The driver retries queued requests from the
-completion path after earlier requests have finished.
+> -	ci = crypto_alloc_aead(krb5->encrypt_name, 0, 0);
+> +	ci = crypto_alloc_aead(krb5->encrypt_name, 0, CRYPTO_ALG_ASYNC);
 
-This reduces request failures caused by temporary hardware congestion and
-improves throughput and stability under high load.
+Apologies, but doesn't that do the opposite of what we want?
 
-Signed-off-by: lizhi <lizhi206@huawei.com>
-Signed-off-by: Zongyu Wu <wuzongyu1@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre_crypto.c | 223 +++++++++++++++-----
- 1 file changed, 166 insertions(+), 57 deletions(-)
+Documentation/crypto/architecture.rst says:
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-index 09077abbf6ad..5d5c4d5a9fbc 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
-@@ -30,6 +30,7 @@ struct hpre_ctx;
- #define HPRE_DH_G_FLAG		0x02
- #define HPRE_TRY_SEND_TIMES	100
- #define HPRE_INVLD_REQ_ID		(-1)
-+#define HPRE_ALG_TYPE_MASK	0x1F
- 
- #define HPRE_SQE_ALG_BITS	5
- #define HPRE_SQE_DONE_SHIFT	30
-@@ -39,6 +40,7 @@ struct hpre_ctx;
- #define HPRE_DFX_US_TO_NS	1000
- 
- #define HPRE_ENABLE_HPCORE_SHIFT	7
-+#define HPRE_ECDH_CLR_DATA_SHIFT	2
- 
- /* due to nist p521  */
- #define HPRE_ECC_MAX_KSZ	66
-@@ -138,6 +140,8 @@ struct hpre_asym_request {
- 	int err;
- 	hpre_cb cb;
- 	struct timespec64 req_time;
-+	struct crypto_async_request *base;
-+	struct list_head list;
- };
- 
- static inline unsigned int hpre_align_sz(void)
-@@ -241,8 +245,8 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
- 				 struct scatterlist *dst,
- 				 struct scatterlist *src)
- {
--	struct device *dev = ctx->dev;
- 	struct hpre_sqe *sqe = &req->req;
-+	struct device *dev = ctx->dev;
- 	dma_addr_t tmp;
- 
- 	tmp = le64_to_cpu(sqe->in);
-@@ -270,6 +274,34 @@ static void hpre_hw_data_clr_all(struct hpre_ctx *ctx,
- 	}
- }
- 
-+static void hpre_ecdh_hw_data_clr_all(struct hpre_ctx *ctx,
-+				      struct hpre_asym_request *req,
-+				      struct scatterlist *dst,
-+				      struct scatterlist *src)
-+{
-+	struct hpre_sqe *sqe = &req->req;
-+	struct device *dev = ctx->dev;
-+	dma_addr_t dma;
-+
-+	dma = le64_to_cpu(sqe->in);
-+	if (unlikely(dma_mapping_error(dev, dma)))
-+		return;
-+
-+	/* req->src may contain garbage value, check both src and req->src before freeing */
-+	if (src && req->src)
-+		dma_free_coherent(dev, ctx->key_sz << HPRE_ECDH_CLR_DATA_SHIFT,
-+				  req->src, dma);
-+
-+	dma = le64_to_cpu(sqe->out);
-+	if (unlikely(dma_mapping_error(dev, dma)))
-+		return;
-+
-+	if (req->dst)
-+		dma_free_coherent(dev, ctx->key_sz << 1, req->dst, dma);
-+	if (dst)
-+		dma_unmap_single(dev, dma, ctx->key_sz << 1, DMA_FROM_DEVICE);
-+}
-+
- static int hpre_alg_res_post_hf(struct hpre_ctx *ctx, struct hpre_sqe *sqe,
- 				void **kreq)
- {
-@@ -323,6 +355,94 @@ static bool hpre_is_bd_timeout(struct hpre_asym_request *req,
- 	return true;
- }
- 
-+static int hpre_send(struct hpre_ctx *ctx, struct hpre_sqe *msg)
-+{
-+	struct hpre_dfx *dfx = ctx->hpre->debug.dfx;
-+	int cnt = 0;
-+	int ret;
-+
-+	do {
-+		ret = hisi_qp_send(ctx->qp, msg);
-+		if (ret != -EBUSY)
-+			break;
-+		atomic64_inc(&dfx[HPRE_SEND_BUSY_CNT].value);
-+	} while (cnt++ < HPRE_TRY_SEND_TIMES);
-+
-+	if (likely(!ret)) {
-+		atomic64_inc(&dfx[HPRE_SEND_CNT].value);
-+		return ret;
-+	}
-+
-+	if (ret != -EBUSY)
-+		atomic64_inc(&dfx[HPRE_SEND_FAIL_CNT].value);
-+
-+	return ret;
-+}
-+
-+static int hpre_send_backlog(struct hpre_ctx *ctx, struct hpre_sqe *msg)
-+{
-+	struct hpre_dfx *dfx = ctx->hpre->debug.dfx;
-+	int ret;
-+
-+	ret = hisi_qp_send(ctx->qp, msg);
-+	if (likely(!ret))
-+		atomic64_inc(&dfx[HPRE_SEND_CNT].value);
-+	else if (unlikely(ret != -EBUSY))
-+		atomic64_inc(&dfx[HPRE_SEND_FAIL_CNT].value);
-+	else
-+		atomic64_inc(&dfx[HPRE_SEND_BUSY_CNT].value);
-+
-+	return ret;
-+}
-+
-+static void hpre_alg_hw_data_clr_all(struct hpre_ctx *ctx, struct hpre_asym_request *h_req)
-+{
-+	switch (le32_to_cpu(h_req->req.dw0) & HPRE_ALG_TYPE_MASK) {
-+	case HPRE_ALG_DH_G2:
-+	case HPRE_ALG_DH:
-+		hpre_hw_data_clr_all(ctx, h_req, h_req->areq.dh->dst, h_req->areq.dh->src);
-+		break;
-+	case HPRE_ALG_NC_NCRT:
-+	case HPRE_ALG_NC_CRT:
-+		hpre_hw_data_clr_all(ctx, h_req, h_req->areq.rsa->dst, h_req->areq.rsa->src);
-+		break;
-+	case HPRE_ALG_ECC_MUL:
-+		hpre_ecdh_hw_data_clr_all(ctx, h_req, h_req->areq.ecdh->dst, h_req->areq.ecdh->src);
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+static void hpre_alg_send_backlog(struct hisi_qp *qp)
-+{
-+	struct hpre_asym_request *req, *tmp;
-+	int ret;
-+
-+	spin_lock_bh(&qp->backlog.lock);
-+	list_for_each_entry_safe(req, tmp, &qp->backlog.list, list) {
-+		ret = hpre_send_backlog(req->ctx, &req->req);
-+		switch (ret) {
-+		case 0:
-+			list_del(&req->list);
-+			crypto_request_complete(req->base, -EINPROGRESS);
-+			break;
-+		case -EBUSY:
-+			/* Device is busy and stop send any request. */
-+			goto unlock;
-+		default:
-+			/* Current no fallback for any send error. */
-+			list_del(&req->list);
-+			hpre_alg_hw_data_clr_all(req->ctx, req);
-+			crypto_request_complete(req->base, -EIO);
-+			break;
-+		}
-+	}
-+
-+unlock:
-+	spin_unlock_bh(&qp->backlog.lock);
-+}
-+
- static void hpre_dh_cb(struct hpre_ctx *ctx, void *resp)
- {
- 	struct hpre_dfx *dfx = ctx->hpre->debug.dfx;
-@@ -377,6 +497,7 @@ static void hpre_alg_cb(struct hisi_qp *qp, void *resp)
- 	}
- 
- 	h_req->cb(h_req->ctx, resp);
-+	hpre_alg_send_backlog(qp);
- }
- 
- static int hpre_ctx_init(struct hpre_ctx *ctx, u8 type)
-@@ -450,25 +571,39 @@ static int hpre_msg_request_set(struct hpre_ctx *ctx, void *req, bool is_rsa)
- 	return 0;
- }
- 
--static int hpre_send(struct hpre_ctx *ctx, struct hpre_sqe *msg)
-+static int hpre_alg_try_enqueue(struct hpre_asym_request *hpre_req)
- {
--	struct hpre_dfx *dfx = ctx->hpre->debug.dfx;
--	int ctr = 0;
-+	struct hisi_qp *qp = hpre_req->ctx->qp;
-+
-+	/* Check if any request is already backlogged */
-+	if (!list_empty(&qp->backlog.list))
-+		return -EBUSY;
-+
-+	/* Try to enqueue to HW ring */
-+	return hpre_send_backlog(hpre_req->ctx, &hpre_req->req);
-+}
-+
-+static int hpre_alg_send_message(struct hpre_asym_request *hpre_req)
-+{
-+	struct hisi_qp *qp = hpre_req->ctx->qp;
- 	int ret;
- 
--	do {
--		atomic64_inc(&dfx[HPRE_SEND_CNT].value);
--		ret = hisi_qp_send(ctx->qp, msg);
--		if (ret != -EBUSY)
--			break;
--		atomic64_inc(&dfx[HPRE_SEND_BUSY_CNT].value);
--	} while (ctr++ < HPRE_TRY_SEND_TIMES);
-+	if (!(hpre_req->base->flags & CRYPTO_TFM_REQ_MAY_BACKLOG)) {
-+		ret = hpre_send(hpre_req->ctx, &hpre_req->req);
-+		if (ret == -EBUSY)
-+			return -ENOSPC;
-+	} else {
-+		ret = hpre_alg_try_enqueue(hpre_req);
-+		if (ret == -EBUSY) {
-+			spin_lock_bh(&qp->backlog.lock);
-+			list_add_tail(&hpre_req->list, &qp->backlog.list);
-+			spin_unlock_bh(&qp->backlog.lock);
-+			return -EBUSY;
-+		}
-+	}
- 
- 	if (likely(!ret))
--		return ret;
--
--	if (ret != -EBUSY)
--		atomic64_inc(&dfx[HPRE_SEND_FAIL_CNT].value);
-+		return -EINPROGRESS;
- 
- 	return ret;
- }
-@@ -482,6 +617,7 @@ static int hpre_dh_compute_value(struct kpp_request *req)
- 	struct hpre_sqe *msg = &hpre_req->req;
- 	int ret;
- 
-+	hpre_req->base = &req->base;
- 	ret = hpre_msg_request_set(ctx, req, false);
- 	if (unlikely(ret))
- 		return ret;
-@@ -503,14 +639,12 @@ static int hpre_dh_compute_value(struct kpp_request *req)
- 	else
- 		msg->dw0 = cpu_to_le32(le32_to_cpu(msg->dw0) | HPRE_ALG_DH);
- 
--	/* success */
--	ret = hpre_send(ctx, msg);
--	if (likely(!ret))
--		return -EINPROGRESS;
-+	ret = hpre_alg_send_message(hpre_req);
-+	if (likely(ret == -EINPROGRESS || ret == -EBUSY))
-+		return ret;
- 
- clear_all:
- 	hpre_hw_data_clr_all(ctx, hpre_req, req->dst, req->src);
--
- 	return ret;
- }
- 
-@@ -755,6 +889,7 @@ static int hpre_rsa_enc(struct akcipher_request *req)
- 	struct hpre_sqe *msg = &hpre_req->req;
- 	int ret;
- 
-+	hpre_req->base = &req->base;
- 	/* For unsupported key size and unavailable devices, use soft tfm instead */
- 	if (ctx->fallback) {
- 		akcipher_request_set_tfm(req, ctx->rsa.soft_tfm);
-@@ -781,10 +916,9 @@ static int hpre_rsa_enc(struct akcipher_request *req)
- 	if (unlikely(ret))
- 		goto clear_all;
- 
--	/* success */
--	ret = hpre_send(ctx, msg);
--	if (likely(!ret))
--		return -EINPROGRESS;
-+	ret = hpre_alg_send_message(hpre_req);
-+	if (likely(ret == -EINPROGRESS || ret == -EBUSY))
-+		return ret;
- 
- clear_all:
- 	hpre_hw_data_clr_all(ctx, hpre_req, req->dst, req->src);
-@@ -801,6 +935,7 @@ static int hpre_rsa_dec(struct akcipher_request *req)
- 	struct hpre_sqe *msg = &hpre_req->req;
- 	int ret;
- 
-+	hpre_req->base = &req->base;
- 	/* For unsupported key size and unavailable devices, use soft tfm instead */
- 	if (ctx->fallback) {
- 		akcipher_request_set_tfm(req, ctx->rsa.soft_tfm);
-@@ -834,10 +969,9 @@ static int hpre_rsa_dec(struct akcipher_request *req)
- 	if (unlikely(ret))
- 		goto clear_all;
- 
--	/* success */
--	ret = hpre_send(ctx, msg);
--	if (likely(!ret))
--		return -EINPROGRESS;
-+	ret = hpre_alg_send_message(hpre_req);
-+	if (likely(ret == -EINPROGRESS || ret == -EBUSY))
-+		return ret;
- 
- clear_all:
- 	hpre_hw_data_clr_all(ctx, hpre_req, req->dst, req->src);
-@@ -1387,32 +1521,6 @@ static int hpre_ecdh_set_secret(struct crypto_kpp *tfm, const void *buf,
- 	return 0;
- }
- 
--static void hpre_ecdh_hw_data_clr_all(struct hpre_ctx *ctx,
--				      struct hpre_asym_request *req,
--				      struct scatterlist *dst,
--				      struct scatterlist *src)
--{
--	struct device *dev = ctx->dev;
--	struct hpre_sqe *sqe = &req->req;
--	dma_addr_t dma;
--
--	dma = le64_to_cpu(sqe->in);
--	if (unlikely(dma_mapping_error(dev, dma)))
--		return;
--
--	if (src && req->src)
--		dma_free_coherent(dev, ctx->key_sz << 2, req->src, dma);
--
--	dma = le64_to_cpu(sqe->out);
--	if (unlikely(dma_mapping_error(dev, dma)))
--		return;
--
--	if (req->dst)
--		dma_free_coherent(dev, ctx->key_sz << 1, req->dst, dma);
--	if (dst)
--		dma_unmap_single(dev, dma, ctx->key_sz << 1, DMA_FROM_DEVICE);
--}
--
- static void hpre_ecdh_cb(struct hpre_ctx *ctx, void *resp)
- {
- 	unsigned int curve_sz = hpre_ecdh_get_curvesz(ctx->curve_id);
-@@ -1538,6 +1646,7 @@ static int hpre_ecdh_compute_value(struct kpp_request *req)
- 	struct hpre_sqe *msg = &hpre_req->req;
- 	int ret;
- 
-+	hpre_req->base = &req->base;
- 	ret = hpre_ecdh_msg_request_set(ctx, req);
- 	if (unlikely(ret)) {
- 		dev_err(dev, "failed to set ecdh request, ret = %d!\n", ret);
-@@ -1563,9 +1672,9 @@ static int hpre_ecdh_compute_value(struct kpp_request *req)
- 	msg->dw0 = cpu_to_le32(le32_to_cpu(msg->dw0) | HPRE_ALG_ECC_MUL);
- 	msg->resv1 = ctx->enable_hpcore << HPRE_ENABLE_HPCORE_SHIFT;
- 
--	ret = hpre_send(ctx, msg);
--	if (likely(!ret))
--		return -EINPROGRESS;
-+	ret = hpre_alg_send_message(hpre_req);
-+	if (likely(ret == -EINPROGRESS || ret == -EBUSY))
-+		return ret;
- 
- clear_all:
- 	hpre_ecdh_hw_data_clr_all(ctx, hpre_req, req->dst, req->src);
--- 
-2.43.0
+	The mask flag restricts the type of cipher. The only allowed flag is
+	CRYPTO_ALG_ASYNC to restrict the cipher lookup function to
+	asynchronous ciphers. Usually, a caller provides a 0 for the mask
+	flag.
+
+Don't we want only synchronous ciphers?
+
+David
 
 
