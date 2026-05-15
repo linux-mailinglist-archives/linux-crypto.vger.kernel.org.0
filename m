@@ -1,34 +1,34 @@
-Return-Path: <linux-crypto+bounces-24119-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24120-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MFy5D/4pB2resQIAu9opvQ
-	(envelope-from <linux-crypto+bounces-24119-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 16:13:18 +0200
+	id OGocMp0tB2oLsgIAu9opvQ
+	(envelope-from <linux-crypto+bounces-24120-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 16:28:45 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE1685511DC
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 16:13:17 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD4155516EC
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 16:28:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1B8C23061DD6
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:04:50 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E1644306A550
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:12:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE7CB480967;
-	Fri, 15 May 2026 14:04:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 086B7481FAA;
+	Fri, 15 May 2026 14:12:58 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mailout3.hostsharing.net (mailout3.hostsharing.net [144.76.133.104])
+Received: from mailout1.hostsharing.net (mailout1.hostsharing.net [83.223.95.204])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C1F47B401;
-	Fri, 15 May 2026 14:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.133.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45AA93CC7C5;
+	Fri, 15 May 2026 14:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.95.204
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778853888; cv=none; b=LN3GbqTgtoUNY76GVT9f5IHm9fxN5mAQKNP4lTk4RKnExmnj227G+TFIHqbWMWPw4MIC4g6Q24nL1BiFAD+AGAQzPAahwceB8BGJ0d+to6LPB89w8BaPZvd+FoiKibRsa9nVTFkiy0o9f94nellV9LqK1IGwIfbOLtfkSOMmpGQ=
+	t=1778854377; cv=none; b=dqWIFscI6zjI9nIeVUCWbcPxrqRg2hF/3g9pa6HTus4YU8vUILAR5CFiYCyj4rS4HsCKSs4qd2wAE693y37FQNS5w5RxQI9wZpxGL1YJJvhYHsECNgNzV0j7AUgZybyCdLFiS/YeFxUcagI0YJ0bS4WHcWEchT7ZQ2B7af/xknU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778853888; c=relaxed/simple;
+	s=arc-20240116; t=1778854377; c=relaxed/simple;
 	bh=G7X4JCRz268Rl2Qhi1tq+hbnRYpNYtxE67LEFk1e7bU=;
-	h=From:Date:Subject:To:Cc:Message-Id; b=Sf65Jv1Y2KgcCSxgk5iPEop87LQPySPddS+aBnLhcacvjQnAdbQHC59IJxpcwBUzWZXuI3c6PF925SNIIMhghjg6kfy8oVqPqm+8pKWZfYsn4pNKIvUX+jQjP2gX3eY+88a0K0e1UvVQP/utlsPwMskto+MXIl3AYApFYQmMRO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=pass smtp.mailfrom=wunner.de; arc=none smtp.client-ip=144.76.133.104
+	h=From:Date:Subject:To:Cc:Message-Id; b=cDQF9J9UxONYKVoHia2AK+BtVEr6xXIPQG7tL075/FvnaZheW2tzemsskKLYdWf5HU4pC6N4U9drqERewlkVBD/CODuPhvPvVVCNC1TGp7fpgtLd+/VaxjA1LKLU7SE3WFUFuhAyTdW8XmPm5WZEJnMu3SgEk0+rQmS5PxhVLW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=pass smtp.mailfrom=wunner.de; arc=none smtp.client-ip=83.223.95.204
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wunner.de
 Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
@@ -36,32 +36,32 @@ Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
 	 key-exchange x25519 server-signature ECDSA (secp384r1) server-digest SHA384
 	 client-signature ECDSA (secp384r1) client-digest SHA384)
 	(Client CN "*.hostsharing.net", Issuer "GlobalSign GCC R6 AlphaSSL CA 2025" (verified OK))
-	by mailout3.hostsharing.net (Postfix) with ESMTPS id C2564C2D;
-	Fri, 15 May 2026 16:04:38 +0200 (CEST)
+	by mailout1.hostsharing.net (Postfix) with ESMTPS id D0DA635B;
+	Fri, 15 May 2026 16:12:47 +0200 (CEST)
 Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 90EAF602DFAC; Fri, 15 May 2026 16:04:38 +0200 (CEST)
+	id BA651602DFAC; Fri, 15 May 2026 16:12:47 +0200 (CEST)
 From: Lukas Wunner <lukas@wunner.de>
-Date: Fri, 15 May 2026 16:04:40 +0200
-Subject: [PATCH 6.1-stable] lib/crypto: mpi: Fix integer underflow in
+Date: Fri, 15 May 2026 16:12:47 +0200
+Subject: [PATCH 5.15-stable] lib/crypto: mpi: Fix integer underflow in
  mpi_read_raw_from_sgl()
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Sasha Levin <sashal@kernel.org>
 Cc: stable@vger.kernel.org, linux-crypto@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>, Ignat Korchagin <ignat@linux.win>, Jarkko Sakkinen <jarkko@kernel.org>, Yiming Qian <yimingqian591@gmail.com>
-Message-Id: <20260515140438.90EAF602DFAC@h08.hostsharing.net>
+Message-Id: <20260515141247.BA651602DFAC@h08.hostsharing.net>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-X-Rspamd-Queue-Id: AE1685511DC
+X-Rspamd-Queue-Id: CD4155516EC
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.96 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-24119-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-24120-lists,linux-crypto=lfdr.de];
 	PRECEDENCE_BULK(0.00)[];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,linux.win,gmail.com];
 	RCVD_TLS_LAST(0.00)[];
@@ -74,12 +74,12 @@ X-Spamd-Result: default: False [-0.96 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[lukas@wunner.de,linux-crypto@vger.kernel.org];
 	NEURAL_HAM(-0.00)[-0.999];
 	RCVD_COUNT_FIVE(0.00)[5];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,h08.hostsharing.net:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,h08.hostsharing.net:mid,wunner.de:email,linux.win:email]
 X-Rspamd-Action: no action
 
 commit 8c2f1288250a90a4b5cabed5d888d7e3aeed4035 upstream.
