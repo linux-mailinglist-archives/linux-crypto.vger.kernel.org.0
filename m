@@ -1,120 +1,134 @@
-Return-Path: <linux-crypto+bounces-24132-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24134-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cOtdN12CB2qQ5gIAu9opvQ
-	(envelope-from <linux-crypto+bounces-24132-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 22:30:21 +0200
+	id QFsGJ5uJB2ol7gIAu9opvQ
+	(envelope-from <linux-crypto+bounces-24134-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 23:01:15 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21F0F5576F9
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 22:30:20 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C3B3557999
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 23:01:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8D703300FF86
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 20:30:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 18E0D3050C8A
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 20:58:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10F333E3167;
-	Fri, 15 May 2026 20:30:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 470173859D3;
+	Fri, 15 May 2026 20:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PHc3J6vr"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="B+viHLWg"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F29C3E2AD4
-	for <linux-crypto@vger.kernel.org>; Fri, 15 May 2026 20:30:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFFB13A961B
+	for <linux-crypto@vger.kernel.org>; Fri, 15 May 2026 20:58:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778877018; cv=none; b=eN0rNsavvsLC3B9iAMREOK/CLNNvUdiRtWfh48bQT29zuzWJFlOZBU+4YC/Z/BN2tQboTQY3nx9dSBizuFHV9Ws1hurydizO6UV8AmvdiKm47myAY2YQLHAa30fRQvqSuHUp7fwej/Z/mw1GsfTRRmGFsyPuHs/G/FkBTjIJrj4=
+	t=1778878700; cv=none; b=ICQQMT4u52LXYQFPhWLvOtLLW7FnuXkxylEwRQWQbJI2TbyUiI0FXkBF2RHdNDnd1qFmkVJXn66lQZZZyTTo1X7PGIj5eO2qfGG+f/1qw90ShO0ADPpXmlIE+U9eCIqHMTMsw9oDc3+06ug2KPoSBhPnsSqqdwfsrZh7KksYxhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778877018; c=relaxed/simple;
-	bh=Q8X3Cfsu45fvncATKmw13bJFse7MnTZYaL27Q0//WKk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uxzNksq1tVUH0MYybuSJi6gYpGRjGPOaBRY91+Lc5sV/2J8DG04ATdPCJhDA23VvAEV19tTajJg3ev11p+7ETYTvTLRO4rf+Pp8QJduKHsjxAN8qTucHD00csdxgKfJLc9fkhO9lgKuKLSmRyBDKa5poexafNnpsZUUJDh53QFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PHc3J6vr; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1778877013;
+	s=arc-20240116; t=1778878700; c=relaxed/simple;
+	bh=qoIdKi3EBZW/eOldO5hee96vIJOQaNLXmYonDVJE700=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=mXCBglrMoQ+nTRhS7K0oFuDAficEw2Qw72vyhUcNmXaR5+RPstdOhmv4TPnwmjKQLHnafCajzBf8lz83hiT+AgLOvrFdGKN2tQ1VoU2NX5tzyyNJnN15jyge1VstdFBBKMPZkEmeorGK4TS+ByNUZy7R3E/xAbq7kIn/HBRiYR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=B+viHLWg; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1778878698;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=DoOscPPbEq+IsrvoFBtYmGkOpWEY5ZhOZDh4BoQkSzU=;
-	b=PHc3J6vrb8NtBt640oarelPk5aRnfNS2YuFma4X7BqcLegm8HmkVQmONqcN7uluRBbnTgT
-	SPC36gGi3Og8IOgyrxZI+mJxwE2PND5slfu8ydnErK1ei2j9u4zck4f0VHlCdPjASJ1vu5
-	U6qbwP7vpGrN1lkEtCxKphJCWLu2cfI=
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Cc: Thorsten Blum <thorsten.blum@linux.dev>,
-	linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: atmel-i2c - drop redundant void * callback cast in enqueue
-Date: Fri, 15 May 2026 22:29:48 +0200
-Message-ID: <20260515202946.725533-3-thorsten.blum@linux.dev>
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zNN6VmRPbN6JATFiof7VWl17ex7Nku19+5A2NoErxNY=;
+	b=B+viHLWgAcw9byIItevthIiVUXeK9tMKmvpH6gHv+a2RP1Z2dIU2jwNb/A4YoF3Orb4PX9
+	DD70kAPHswMJZEcZcf3IIXQs6HtCNo1xztSSqr5gjWrgAmbVQmJ4fTz9WjJYrf2ZE1fVsK
+	VwZMGcNAayFakYlNSdpvX80vJJxKuOc=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-398-KV87kLXOOwyAAvK4XRLgAQ-1; Fri,
+ 15 May 2026 16:58:12 -0400
+X-MC-Unique: KV87kLXOOwyAAvK4XRLgAQ-1
+X-Mimecast-MFC-AGG-ID: KV87kLXOOwyAAvK4XRLgAQ_1778878691
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6BB991956060;
+	Fri, 15 May 2026 20:58:10 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.44.48.83])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 7EE371956053;
+	Fri, 15 May 2026 20:58:06 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20260515201416.GA3484095@google.com>
+References: <20260515201416.GA3484095@google.com> <20260508182318.GA4145640@google.com> <20260428024400.123337-3-ebiggers@kernel.org> <20260428024400.123337-1-ebiggers@kernel.org> <286248.1778263325@warthog.procyon.org.uk> <287476.1778266603@warthog.procyon.org.uk>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: dhowells@redhat.com, netdev@vger.kernel.org,
+    linux-afs@lists.infradead.org,
+    Marc Dionne <marc.dionne@auristor.com>, linux-crypto@vger.kernel.org,
+    linux-kernel@vger.kernel.org,
+    "David S . Miller" <davem@davemloft.net>,
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+    Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>
+Subject: Re: [PATCH net-next 2/5] net/rxrpc: Use local FCrypt-PCBC implementation
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=688; i=thorsten.blum@linux.dev; h=from:subject; bh=Q8X3Cfsu45fvncATKmw13bJFse7MnTZYaL27Q0//WKk=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDFnsTVa6UytjG7780pcP1KvOspV6bt5tUKh8dNK6X/uyC vQdavZ2lLIwiHExyIopsjyY9WOGb2lN5SaTiJ0wc1iZQIYwcHEKwEQsMxj+x91e0XTv37aLJ9mF KyaGHozx3v9i2f+qK8tumvy5scbi6TVGhsfl+kYHPNjqi97nMG1Q6d3m/0fEI+1B2DYFX+Z7C4r cuAA=
-X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 21F0F5576F9
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2658458.1778878685.1@warthog.procyon.org.uk>
+Date: Fri, 15 May 2026 21:58:05 +0100
+Message-ID: <2658459.1778878685@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-Rspamd-Queue-Id: 0C3B3557999
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-24134-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-24132-lists,linux-crypto=lfdr.de];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	HAS_ORG_HEADER(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dhowells@redhat.com,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:email,linux.dev:mid,linux.dev:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,warthog.procyon.org.uk:mid]
 X-Rspamd-Action: no action
 
-The callback already has the correct type - remove the redundant cast.
+Eric Biggers <ebiggers@kernel.org> wrote:
 
-Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
----
- drivers/crypto/atmel-i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Seems that the latest is now
+> https://lore.kernel.org/netdev/20260514155304.2249591-4-dhowells@redhat.com/
+> which is back to just using a linear buffer unconditionally.  I'll
+> resend this series after that goes in.
 
-diff --git a/drivers/crypto/atmel-i2c.c b/drivers/crypto/atmel-i2c.c
-index 0e275dbdc8c5..ff19857894d0 100644
---- a/drivers/crypto/atmel-i2c.c
-+++ b/drivers/crypto/atmel-i2c.c
-@@ -294,7 +294,7 @@ void atmel_i2c_enqueue(struct atmel_i2c_work_data *work_data,
- 				   void *areq, int status),
- 		       void *areq)
- {
--	work_data->cbk = (void *)cbk;
-+	work_data->cbk = cbk;
- 	work_data->areq = areq;
- 
- 	INIT_WORK(&work_data->work, atmel_i2c_work_handler);
+Sounds good.  It turned out to be a bit faster just extracting the data into a
+flat buffer in recvmsg.
+
+I wonder about modifying the crypto/krb5/ code to use lib/crypto/ instead, but
+that might be a little trickier as Chuck has patches to make NFS use it.
+
+David
+
 
