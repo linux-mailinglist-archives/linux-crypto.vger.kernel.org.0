@@ -1,139 +1,186 @@
-Return-Path: <linux-crypto+bounces-24111-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24116-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cJO/N1ULB2pZrAIAu9opvQ
-	(envelope-from <linux-crypto+bounces-24111-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:02:29 +0200
+	id cEBTM2MNB2pwrAIAu9opvQ
+	(envelope-from <linux-crypto+bounces-24116-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:11:15 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31D7054EFDE
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:02:29 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DD4454F34B
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:11:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6D1C930FFDD5
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 11:48:43 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id A88783014367
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 12:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF08447DF96;
-	Fri, 15 May 2026 11:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF4BA478842;
+	Fri, 15 May 2026 12:05:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bA4Zedlz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ObRWGohN"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com [74.125.224.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B7B480345
-	for <linux-crypto@vger.kernel.org>; Fri, 15 May 2026 11:47:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778845645; cv=none; b=ENH2DwmG/8ujo5hhpdfQefMqtCmO+60gGCjliRn3rP6oNY/qggY/fY4toaYGDwAmGK/hjyMmxhLmcdIijG2qpoBgnkqEb+P4RX0K+LFIKBKx+2MXWBuWxnvJCNARPwArhSzr1+TkHShHVSycD1Y9cT1Pesfee5I8d43FbZAZkrY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778845645; c=relaxed/simple;
-	bh=GVzpf8DHrtIE2e0iLrgK05eawGI15jKhZ0DshiAXIe8=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=n99WR7sFcg55RNZVURFMcK2xXp+jkw4aflHq08AG0H30j5lSW1+KhmuEyXiPTOg7QAnXeMm5U/v+qTr09+/3pzAPTdfnYbFSm4x9wGlwYeG9NYjpWfc0UFWl1w3nHidJL1BB1w7RWgbN9JWy6dX8v/IMhPRZg6poQt9Fa9sltNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bA4Zedlz; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1778845639;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lDpsJ9vTI5/XpFdT7cxzYBQrIqR/7gB5JKH/whriB4o=;
-	b=bA4Zedlzw2E19x2KoCp1eOrIzYUTj/slIO7GpDxUYhVwINRfIPTiqDDuZ5rD+gTcLd1c8o
-	/uFaDBULLxm8IbBNtzd5oGSLO7Lg9qm27vX5uN6RtLSS1K5G/8lgJSaw8jXvlYgET62V/c
-	4OtPvlBADZWCK88o7g7t90m7Db+UpXU=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-576-UAqYTvpgM-SMWa-X9yYaYQ-1; Fri,
- 15 May 2026 07:47:14 -0400
-X-MC-Unique: UAqYTvpgM-SMWa-X9yYaYQ-1
-X-Mimecast-MFC-AGG-ID: UAqYTvpgM-SMWa-X9yYaYQ_1778845632
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 575081800451;
-	Fri, 15 May 2026 11:47:11 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.44.48.83])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 2C0B419560A2;
-	Fri, 15 May 2026 11:47:06 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20260510232455.2245650-1-michael.bommarito@gmail.com>
-References: <20260510232455.2245650-1-michael.bommarito@gmail.com> <20260502132506.1936358-1-michael.bommarito@gmail.com>
-To: Michael Bommarito <michael.bommarito@gmail.com>
-Cc: dhowells@redhat.com, Herbert Xu <herbert@gondor.apana.org.au>,
-    "David S. Miller" <davem@davemloft.net>,
-    linux-crypto@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>,
-    Marc Dionne <marc.dionne@auristor.com>,
-    linux-afs@lists.infradead.org, Ilya Dryomov <idryomov@gmail.com>,
-    Xiubo Li <xiubli@redhat.com>, ceph-devel@vger.kernel.org,
-    stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] crypto: krb5 - filter out async aead implementations at alloc
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14EAA45BD57
+	for <linux-crypto@vger.kernel.org>; Fri, 15 May 2026 12:05:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=74.125.224.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778846749; cv=pass; b=Ve5DpNh0e3xaDxjk8CjkVr7m0gok3JTmhYAGNhoYSU8bKk+1ibNSxXFLv4zO8mWKlsveKqsUamFPD+TR+Au4pviINz5YqDagHw1c+wsUt0q02PqusCZJX3HUd58Q6fg2eemGn5Y5wlNVM7BiK2ajEUmeBtQhmnArZrq3HS/d/6E=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778846749; c=relaxed/simple;
+	bh=kW/9C30akUjzDwJkUoDa2H1DV7Pw0sHZs6bPnj1YUMU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SXeq89DNQLHi9UOSPcJRfZDa4pgD+jyocE13sivZmhTjZv0DFAqOK5XuNDkPr4UAm/L8XB/mUElPStljZQwEgFvYO5lv63XJ8IwbY3/MaZ3vrdk5Slw4oq8a/O3LE2RXrJAhIcy+XcvWZVM143vhqzaB0DFWt9+/cwgE0gQXKZA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ObRWGohN; arc=pass smtp.client-ip=74.125.224.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yx1-f51.google.com with SMTP id 956f58d0204a3-65c7efdb7d8so11874457d50.3
+        for <linux-crypto@vger.kernel.org>; Fri, 15 May 2026 05:05:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778846747; cv=none;
+        d=google.com; s=arc-20240605;
+        b=GOez1c7a/IwoRv+58nzNxrSdPL0arqugnWaMphpEUkpztYY3FTNxdtsN/c3NMC3g3m
+         ZiiN9zsW2iy4B6EkBcG9p5xvzNF7B9jCrhi8QA/x9WYeHwt3OopDhEs9ArB0VcAXjZDS
+         tMmgugcZRKYygjQzQd6XCmflO5Qkrjl1w03NZ3MD1/1ROsEYuoa/wfqVOk4W17JCLHbF
+         Fn3AKz0t03QDviYEXQu5iu1xudfdkcBp2RGE9/yWXLAnBseWJZy5Y/p+8+msxYWjG/OM
+         fDr/kEydafOgYbI1YY2pOvDwuVoD03FyTV0ghqlTo7JtqWx9+MH9QrvtRpu5HcaiDcQK
+         In4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=5kVosTkW8SNhxTSi2C8qw8i0G8BjP9k3uqUmOQ8n5rQ=;
+        fh=KQt55VT0N3/YP6aqKKFLsr3yYCdSolWTjnnRDiI1OO8=;
+        b=GkAn95ek+/5MzTz8wpJ5lNrUAQhdNHYlqbuRSbTGIF031o+Khit3QkXM6FMffF62SB
+         sklT1qYay0VvyCqO5GhXznq0FbX9kDsHXBJYRL40cE3kci/vryixz8Mg0OeEVvB2+Wyp
+         v2YQKt+BtXQpHZhHTuLAmCfjHg6q4NYvPnANl6F8A539RqWyiTsrDqWRqRwMbxc9ugpr
+         uaCxlr+rkbH9l1Kzs2Te9RQQvDDD3K4+7SXzRt9VOVYGCrihT8LWjVSArWTyb6XTRH/0
+         Hv0sHKs3i1qZIDNK4RUKCvWwOSYOU9P9kOIHJDJzmbRbJEFCEbRRj8O7dOO7BcUn9i8e
+         boVQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778846747; x=1779451547; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5kVosTkW8SNhxTSi2C8qw8i0G8BjP9k3uqUmOQ8n5rQ=;
+        b=ObRWGohNPKlEIwNYMDzlGOfDGrfA0/ChbEswY1kRthJJGcNomAK0xpDMuew4l0iLhr
+         +MGUgLRQhLOGdUXc7C2xZ34+D0oC5mTRS14fw/8q+yWwoVLpzoZZZRdQrUSkn3xg8D7B
+         SdCtX0BU4KJ4PlWy0Y7q73GXg/LsTukEJd2c2eiD6Y3CxdHMg3dQPz0hy1qiPSCZ7461
+         0GwxtKhYgSYuWTQBy5dlc8BzBY71LPkuea4d9z/4jRKxP6knqbINdSx4Ui9MZrVz9isL
+         WiPegBHtAO/W5c1jWEUzDyWwqmvnFCzcCRXFpm545Dl9b8dIRfUw2vJFph/4roNXxywC
+         uA7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778846747; x=1779451547;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=5kVosTkW8SNhxTSi2C8qw8i0G8BjP9k3uqUmOQ8n5rQ=;
+        b=sIKbxzbj2ar202IYmu13o7XKHMSF2L6JlGn4mQSfytNXmvZ/GGW0dmPCkdLj/V2/u9
+         MxcmL3lyr+uda6ISfVGSrTDAVUpur5maV2CKHfZtE0iBTPPWbOFKdgVT1FoaJUgqDcP6
+         0pKwP4wCkgbhmebEzmdoBe46fC1ZPB+CgutXCSLOXqze1YcPFbSGpBOGj7PnNEbRRs3L
+         YqxWDjM47mbctawmpJfFOKMvzTGTAJMGJIZB4vIwrVieWO3QQIkXY08/jlJLlHB9Tfdw
+         rX6+oZycWHbo5UXW3xpWYq67Vb1WpwlFA+m+r68g/btAPSMkUVT9Svg76ITI2GxfcCzV
+         +PEw==
+X-Forwarded-Encrypted: i=1; AFNElJ+kmQvJAKGE4feLbUr/EwQa2L3GKaTEqoqeC1TRS82hbJOZKg1jsvcGcpRPKJIE0OOgoPUge5qCORnkRaI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy24AbhL0ju4BE9kU1arkYH2JdD7aqWXuBffm+ABjR4wTI0xs54
+	MvjWsPFCvIGZ+O8BLq2g1Ax89qQenA2VM+Ih/Lwv0AJ5Xm6TsLfv8xWoQYHiNJvNKyZN2lAS24M
+	UuOKYivhdJokRwybzsElG2/flqQk/yTE=
+X-Gm-Gg: Acq92OE/Fp6SqyjbOaG+AOjxP/1XIucBz/hcTQJpCFodc9CcUn8GHq2O0ZMql1jnIUs
+	PhAdU1JGCkJwD7Gd/2CAi+lppWo32Q4IvxL1/t7Hno2HsS/ngywavrqsGNYQzUFIc/DEKHisVpm
+	FhDojNHwQvYS0FvU27DuaDVaORAgQmh53gzcWe0im+poaJq/FLgA4/3yiX9XEgKFVBYSD1s/z9Z
+	gf3XmAh5rNH6cWxUEd5G4wKvs8nJ0zIGGueucibH6p2GYSXOg5dno9Ukv0cCYBteyiDsojcPZVx
+	YC5CWun3Svq9G/fy+JpAgkb7Xtyd8T0YOzrP
+X-Received: by 2002:a05:690e:686:b0:65c:5bfd:b205 with SMTP id
+ 956f58d0204a3-65e2290ca0amr2685003d50.62.1778846746950; Fri, 15 May 2026
+ 05:05:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2632014.1778845625.1@warthog.procyon.org.uk>
-Date: Fri, 15 May 2026 12:47:05 +0100
-Message-ID: <2632015.1778845625@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
-X-Rspamd-Queue-Id: 31D7054EFDE
+References: <20260502132506.1936358-1-michael.bommarito@gmail.com>
+ <20260510232455.2245650-1-michael.bommarito@gmail.com> <2632015.1778845625@warthog.procyon.org.uk>
+In-Reply-To: <2632015.1778845625@warthog.procyon.org.uk>
+From: Michael Bommarito <michael.bommarito@gmail.com>
+Date: Fri, 15 May 2026 08:05:33 -0400
+X-Gm-Features: AVHnY4I29IMk4pfB2O_u4c2IAaqwMg7WHsEKDsh2DM4cK4qrbnRcwgxc05ExzdQ
+Message-ID: <CAJJ9bXy2Kor7mn=KYGvN0UnAwN2=oibsyrqLZ9Aq9rTRV-fukg@mail.gmail.com>
+Subject: Re: [PATCH v2] crypto: krb5 - filter out async aead implementations
+ at alloc
+To: David Howells <dhowells@redhat.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
+	linux-crypto@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>, 
+	Marc Dionne <marc.dionne@auristor.com>, linux-afs@lists.infradead.org, 
+	Ilya Dryomov <idryomov@gmail.com>, Xiubo Li <xiubli@redhat.com>, ceph-devel@vger.kernel.org, 
+	stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 8DD4454F34B
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[redhat.com,gondor.apana.org.au,davemloft.net,vger.kernel.org,kernel.org,auristor.com,lists.infradead.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-24111-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-24116-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[gondor.apana.org.au,davemloft.net,vger.kernel.org,kernel.org,auristor.com,lists.infradead.org,gmail.com,redhat.com];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	MIME_TRACE(0.00)[0:+];
-	HAS_ORG_HEADER(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dhowells@redhat.com,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-crypto];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[michaelbommarito@gmail.com,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	TO_DN_SOME(0.00)[]
 X-Rspamd-Action: no action
 
-Michael Bommarito <michael.bommarito@gmail.com> wrote:
+On Fri, May 15, 2026 at 7:47=E2=80=AFAM David Howells <dhowells@redhat.com>=
+ wrote:
+>
+> Michael Bommarito <michael.bommarito@gmail.com> wrote:
+>
+> > -     ci =3D crypto_alloc_aead(krb5->encrypt_name, 0, 0);
+> > +     ci =3D crypto_alloc_aead(krb5->encrypt_name, 0, CRYPTO_ALG_ASYNC)=
+;
+>
+> Apologies, but doesn't that do the opposite of what we want?
+>
+> Documentation/crypto/architecture.rst says:
+>
+>         The mask flag restricts the type of cipher. The only allowed flag=
+ is
+>         CRYPTO_ALG_ASYNC to restrict the cipher lookup function to
+>         asynchronous ciphers. Usually, a caller provides a 0 for the mask
+>         flag.
+>
+> Don't we want only synchronous ciphers?
 
-> -	ci = crypto_alloc_aead(krb5->encrypt_name, 0, 0);
-> +	ci = crypto_alloc_aead(krb5->encrypt_name, 0, CRYPTO_ALG_ASYNC);
+This suggestion originally came from Herbert, but when I checked it, I
+missed that note and just looked at the code at crypto/api.c:71:
 
-Apologies, but doesn't that do the opposite of what we want?
+71         if ((q->cra_flags ^ type) & mask)
+  1             continue;
 
-Documentation/crypto/architecture.rst says:
+crypto_alloc_sync_aead does the same thing at L212 in aead.c.
 
-	The mask flag restricts the type of cipher. The only allowed flag is
-	CRYPTO_ALG_ASYNC to restrict the cipher lookup function to
-	asynchronous ciphers. Usually, a caller provides a 0 for the mask
-	flag.
+So the bit mask should filter the way we want, despite the
+documentation's implication.  Perhaps we should separately update that
+line in the docs to be more clear about filter and how to properly use
+it.
 
-Don't we want only synchronous ciphers?
-
-David
-
+Thanks,
+Mike
 
