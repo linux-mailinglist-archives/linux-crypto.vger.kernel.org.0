@@ -1,224 +1,134 @@
-Return-Path: <linux-crypto+bounces-24110-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24112-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gK0eLBMOB2p0rAIAu9opvQ
-	(envelope-from <linux-crypto+bounces-24110-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:14:11 +0200
+	id QFtyFdMRB2rgrQIAu9opvQ
+	(envelope-from <linux-crypto+bounces-24112-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:30:11 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A921A54F42F
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:14:10 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E42754F926
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 14:30:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 347EE30C239F
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 11:35:13 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B83E5302C2D6
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 11:49:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E78C347CC74;
-	Fri, 15 May 2026 11:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24DCC480DCF;
+	Fri, 15 May 2026 11:47:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="EoOKpKHy";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="MnVxm2zp"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="rt2kj0Rx"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from canpmsgout06.his.huawei.com (canpmsgout06.his.huawei.com [113.46.200.221])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6905044CAEC
-	for <linux-crypto@vger.kernel.org>; Fri, 15 May 2026 11:35:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 643DF47D95C;
+	Fri, 15 May 2026 11:47:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.221
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778844909; cv=none; b=HADIymZ5yfjkqdD0ocCV6dj2PI0DqDUHVtmM3z1xz1GGRlShvuaU4shVkqehRLgbpTb7QHApgQC5gHw+sVaTgTIkNd/CKVym2ofOYk/qHJgDAZm0njmHjn4zmK+21JCDUDV8MvpjCiqYaPCuoEapXglSwl1pkxeZUaS+nm0bWhI=
+	t=1778845654; cv=none; b=j1PvqMMawSM/AApF+KPuXXgww+DfHke9wFuz0ifQhtYhSVibrF6GQ6/iVzvkF7kCoF6FW8M9YA6vay39J5NZhOye38RTYreDDey48XjBfWeJ8hHjo9DI6un2WaxGHLhDJhuH0kjOnRfUTXHiZRrJ5VBTKArZtCALq8s9SqKQvtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778844909; c=relaxed/simple;
-	bh=T4RPsJkMOjmqToX2fSIVToaY5p+Zr9IfoSeYrjrwy0M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Rl3Kv/60k2X/mxyAqzjqufBTUj3Vp5hq/d2YVhllMtbNCgqCmXnBTwlWda+1DVsZ4Hv80lCGrYEVFBTtIHOy8cKxXu/x1JZd/TavBNHL1ZqGBrB4x3wAROxQyDE7hHIdGBExIEzeosOUDnRm2xUQK1fhG2Fy3TA64zGefw1+/jo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=EoOKpKHy; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=MnVxm2zp; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64FBFAZU4020769
-	for <linux-crypto@vger.kernel.org>; Fri, 15 May 2026 11:35:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	yf/PRgtxZLbnp0+s5IzrvGK7cZi2mh15dVgMB+bKXAw=; b=EoOKpKHyinnHxXmI
-	GDj0IAmi4UNwW0CoUT0zzHchW4Ldux2rw0gSKs/4m6FM7DwvCGdNrlb7eaaITMv9
-	EsrQHyJCxoc9omWKdNAgxgYAq2iIc1OKFRvlOfSUn+iXcyulmagfMkz4WdzFvceS
-	xrpsvTOl+c8kpe4WyTquBCPVRL4txhMCVsujkSKrN5G5rkL4MJoZOHvOkrz+rxhD
-	mco19r8IDVuKCsk7tA8iIH9VIXfHXZvNiI71UduHxMhH/TQYwUNX1KrITaennsUF
-	lPnmO/BTc8ckeBxnpK292D/xSqZpz5Up7KJiXguc9M7IGKO0OZLWiE8jgSfugB0H
-	n++pdg==
-Received: from mail-dy1-f198.google.com (mail-dy1-f198.google.com [74.125.82.198])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4e5m1ru2nf-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-crypto@vger.kernel.org>; Fri, 15 May 2026 11:35:07 +0000 (GMT)
-Received: by mail-dy1-f198.google.com with SMTP id 5a478bee46e88-2bda35eab74so661726eec.0
-        for <linux-crypto@vger.kernel.org>; Fri, 15 May 2026 04:35:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1778844907; x=1779449707; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yf/PRgtxZLbnp0+s5IzrvGK7cZi2mh15dVgMB+bKXAw=;
-        b=MnVxm2zpkttGF9UH72jpb5auhyKdgNCZIJ+z6TuvcQbmUG/3wuUUGHXx9T18cYg02o
-         UGN+TpJFr0M7pS8DabqCYs+gzdOO9nCNTx+ryJCvSOpIKinzo3yGU5s3b9AEoJnFaNcM
-         bYikYF8xFsvjMcEvQz/RekS0qx5xODFMtCvTD+aZJ/ny0sGRKD8RC6Yx7dkG3Kb5HLzV
-         dhdOOLhXCcCdtPLtoATiFEtgZ6unZXztneFgzrvXmf963D70I1Bss2n8zJfk0K/pLE8f
-         uUKOR6ezCGg9rsQtxsYAahqAp+mWstPawFiR59rVBgvKYwWtPy/3TEdCVqawZ04tPLEw
-         R8ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778844907; x=1779449707;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yf/PRgtxZLbnp0+s5IzrvGK7cZi2mh15dVgMB+bKXAw=;
-        b=CFQwPm/MPbfjzFvI1JkqFFYc3fwKMqJbMAFL4xCmiFmNHuEqh3GRPZgoO4tVCB0BK2
-         WWQFlvwoB+otXx0zDhMYyFpALxGfEwXyN26YsO9IBw7w3+dakAkLcBRGiFcCf6+95ejq
-         ne8Usfi2OkJPDoi2k0WpFknbBaAxJJaViR4wyD9AGTKn4Is8bf2IEKfHyItg/kxTgQx9
-         QuoWivXuJyrSvRDnoCNmlJBsShKEIs8n/m/rtNM7roQOnMnGmBMULJfJLiUW4I0fa2L8
-         6QTLK1xvd5w3Rc4gnGHX/ZtyTgym70Sw9gM5mFKZi9YOev6P8JLIAKerrNZZAh6BN7bT
-         vE5A==
-X-Forwarded-Encrypted: i=1; AFNElJ93Nysd6WAExA/CodU/9YQPk8BBmnnSpTfb8X9iKEdk6hK3gTb1oq+tRkTwtsi//mq4RxCc+E1i2MRdWh0=@vger.kernel.org
-X-Gm-Message-State: AOJu0YywOmrQiTBwMfotnUsX9JakYaQ1TbX9l2D06AWrg5qBvtcobD9W
-	4CGHT+Mw2QV52BvaTa6du3IayHvclFo9Xh3pNcrCPp02be03u2CI5P2s6g9au0rmiqIHUrPtJHU
-	AFAmd41RZm/YDe4kIBW/JsGBGH9/qcPm2qs7lCAXN7VBb7gLKcx4jWqZZqfEAHKeh8IA=
-X-Gm-Gg: Acq92OFCkGZTQE7nQGk02OvUSRP8zKuSSW3OHwEyuQE/9Lv9rMzqqzVl5x2qV87qhY8
-	1Cqy5Ogb1xMpKEBvP9qChEFj9DpG09ituDwJOYwRzUAKPNE77f+9YwJjnau2jG2RxCrGd2IBAaw
-	DHJ8HQrJBtAN6lj+dJzqpvxAtUMCb25osTb+IVq6kjLibFGZMpKF8ndN7cwwwRlZVWbxuAKmbMA
-	vb/wKap3rqmHo2grtLqBkK8FN6MgSnzzYUMw4bc5UHU2s7vHNvuTWctjJIJB7gYbyiHw8mFiXUU
-	jPFzNhMnTZtrQsxwpsVVw3kUz2/3ibLIbagQwFvirtnT+pU/SzwO2KJB3yP1KFIVSwuVYT5rIUV
-	D/6qNuna/1/hQs1UpbyqJekEMFxLmilJpPZqMQc/abNhBq0jSAVV2rNnVa1WQvoJVtTpGystthS
-	KrJH64
-X-Received: by 2002:a05:7301:400a:b0:2ea:ea7:480e with SMTP id 5a478bee46e88-303979815cbmr1450772eec.10.1778844906932;
-        Fri, 15 May 2026 04:35:06 -0700 (PDT)
-X-Received: by 2002:a05:7301:400a:b0:2ea:ea7:480e with SMTP id 5a478bee46e88-303979815cbmr1450757eec.10.1778844906404;
-        Fri, 15 May 2026 04:35:06 -0700 (PDT)
-Received: from [10.110.108.188] (i-global254.qualcomm.com. [199.106.103.254])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30296dcc464sm6948503eec.14.2026.05.15.04.35.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 May 2026 04:35:05 -0700 (PDT)
-Message-ID: <05799dd6-e2db-4756-b532-2220874c6d64@oss.qualcomm.com>
-Date: Fri, 15 May 2026 19:35:01 +0800
+	s=arc-20240116; t=1778845654; c=relaxed/simple;
+	bh=M6xjZTrvGZyJ27gJgmWGvYtGS17h8GVu6LgrtVBmXgQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NiijZh889mGYhEYTVPwYGCpkF3cwbuk9Zr6O2VeV1nRlR+rxVUr0le6x7g/n+lP1lYNMWClqA+WAKPPrYXvdx7VWzQM1NGlmeilb0BBWvkJN+sNlaEc4Tpj7Od2n+TbvUZTB+Oit4xYYeLg+LOVw/J7adN8yegXqaRBdOt2GriA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=rt2kj0Rx; arc=none smtp.client-ip=113.46.200.221
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=uVVeZYKktBUn0kyfdPJ1iLoyXoJIz7xRo8HlOTQ5K+g=;
+	b=rt2kj0RxQGKKCGxOJKY1erc7f8F2Q9xhl5d3pKsz+8UTIsW9D0KAg07ZAFOVzLt34JH/l/Bur
+	Yl4eXVeFTTJWpXd2pcWRs6kNLTDGoUJ+gdnTmxiUWyC1n1zBhbaHY9F3K0S/FoKB8MIOGpSRKy9
+	RBBjVMxTGx/o3vVKGovpLCI=
+Received: from mail.maildlp.com (unknown [172.19.162.223])
+	by canpmsgout06.his.huawei.com (SkyGuard) with ESMTPS id 4gH4xG43xzzRhQy;
+	Fri, 15 May 2026 19:39:46 +0800 (CST)
+Received: from kwepemr100008.china.huawei.com (unknown [7.202.195.119])
+	by mail.maildlp.com (Postfix) with ESMTPS id 96FDD40571;
+	Fri, 15 May 2026 19:47:24 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ kwepemr100008.china.huawei.com (7.202.195.119) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.36; Fri, 15 May 2026 19:47:24 +0800
+From: ZongYu Wu <wuzongyu1@huawei.com>
+To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+	<fanghao11@huawei.com>, <liulongfang@huawei.com>, <qianweili@huawei.com>,
+	<wangzhou1@hisilicon.com>
+Subject: [PATCH 0/3] crypto: hisilicon - improve backlog handling
+Date: Fri, 15 May 2026 19:45:58 +0800
+Message-ID: <20260515114601.2492524-1-wuzongyu1@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] soc: qcom: ice: Enable firmware managed resource
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>, devicetree@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20260512033750.3393050-1-linlin.zhang@oss.qualcomm.com>
- <20260514-provocative-golden-woodpecker-b3e494@quoll>
-Content-Language: en-US
-From: Linlin Zhang <linlin.zhang@oss.qualcomm.com>
-In-Reply-To: <20260514-provocative-golden-woodpecker-b3e494@quoll>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: VXCnUT1EPm5ZEUhShXyvx1xs1ddWj_ud
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTE1MDExNiBTYWx0ZWRfX8KWMgOJ0wCDf
- K9z/TeXvrhlxXLNF75rDQ3jby9aPARa2wMAjLAttqw/VXXGiIPF3kHV68zZkIeuTvcZaejOPlRo
- /tqcNejukGpCcwot9vzR58RnmqhEYGOxrp2ek8wpLLxaxc6LYkfdWsIRDNlvYAu+3rsKZrqvnRy
- zmnY2XC4tHDOnlqQi99gwrbKGt06BhtB8BplNtIOLPRlyjB34P2g8FxyezwyYZzt3I4HhI1jDnw
- 3iGS1wLg4etNqVJwLMCK183BeElKcxVulC3+bWMqhAQppqX8+cXlPST4HvOZhtXcK9BkTwg5dkW
- bX7EUBkhkZjTV7Qm8B+LqRYCcwk54wnKKoyIvBnlN1fscIZTWRcwh92/QCTuPgeNZEQQP3ym8Ue
- gcU36zyFqkO2fb2HurwZSVo3mePhtufjOFP3YCxXC0OO5TMlqqZAJVdMme+3kMUNINmVDkPE7h0
- SoMcm6+AoLIiRS1iLpw==
-X-Proofpoint-ORIG-GUID: VXCnUT1EPm5ZEUhShXyvx1xs1ddWj_ud
-X-Authority-Analysis: v=2.4 cv=JPELdcKb c=1 sm=1 tr=0 ts=6a0704eb cx=c_pps
- a=wEP8DlPgTf/vqF+yE6f9lg==:117 a=JYp8KDb2vCoCEuGobkYCKw==:17
- a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=DJpcGTmdVt4CTyJn9g5Z:22
- a=VwQbUJbxAAAA:8 a=EUspDBNiAAAA:8 a=LxNlghVGCEmHBxfPrBcA:9 a=QEXdDO2ut3YA:10
- a=s5zKW874KtQA:10 a=bBxd6f-gb0O0v-kibOvt:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-05-15_02,2026-05-13_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0 clxscore=1015 phishscore=0 priorityscore=1501 spamscore=0
- malwarescore=0 suspectscore=0 impostorscore=0 adultscore=0 bulkscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2605130000 definitions=main-2605150116
-X-Rspamd-Queue-Id: A921A54F42F
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems200001.china.huawei.com (7.221.188.67) To
+ kwepemr100008.china.huawei.com (7.202.195.119)
+X-Rspamd-Queue-Id: 5E42754F926
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[qualcomm.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[qualcomm.com:s=qcppdkim1,oss.qualcomm.com:s=google];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-24110-lists,linux-crypto=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[wuzongyu1@huawei.com,linux-crypto@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-24112-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[qualcomm.com:+,oss.qualcomm.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[linlin.zhang@oss.qualcomm.com,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	DKIM_TRACE(0.00)[huawei.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	RCVD_COUNT_FIVE(0.00)[6];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,huawei.com:email,huawei.com:mid,huawei.com:dkim]
 X-Rspamd-Action: no action
 
+From: Chenghai Huang <huangchenghai2@huawei.com>
 
+This series improves backlog handling for HiSilicon crypto drivers.
+The ZIP and HPRE drivers are extended to support backlog queuing when
+the hardware queue is temporarily busy. Instead of failing requests
+immediately under hardware congestion, requests can now be queued and
+resubmitted when previous requests complete.
 
-On 5/14/2026 8:52 PM, Krzysztof Kozlowski wrote:
-> On Mon, May 11, 2026 at 08:37:47PM -0700, Linlin Zhang wrote:
->> From: linlzhan <linlzhan@qti.qualcomm.com>
->>
->> The Qualcomm automotive SA8255p SoC relies on firmware to configure
->> platform resources, including clocks, interconnects and TLMM (GPIOs).
->> These resources are controlled by the driver via SCMI power and
->> performance protocols.
->>
->> The SCMI power protocol is used to enable and disable platform
->> resources, including clocks, interconnect paths, and TLMM, by mapping
->> resource state transitions to the runtime PM framework?s
->> resume/suspend callbacks.
->>
->> In this design, the ICE driver acts as an SCMI client, with clocks and
->> power domains abstracted and controlled by the SCMI server in firmware.
->> This implementation depends on pm_runtime_resume_and_get() and
->> pm_runtime_put_sync(), which are available in the OPP tree?s
->> linux-next branch.
->>
->> v2:
->> -- rebase the patchset
->> -- update to/cc lists
->> -- Link to v1: https://lore.kernel.org/all/20260430032136.3058773-1-linlin.zhang@oss.qualcomm.com/
->>
->> -- To Linux Community
->>
->> v6:
->> - Protect calling clock API with fw_managed flag in ICE runtime OPS callbacks.
->> - Link to v5: http://shc-kerarch-hyd:8080/kernel_archive/20260324095703.1306437-1-linlin.zhang@oss.qualcomm.com/T/#t
-> 
-> Please do not include non-working links in public postings.
+The series also fixes a use-after-free issue in the SEC2 backlog path.
+The crypto core may release the request and its tfm context immediately
+after crypto_request_complete() returns. The SEC2 driver must therefore
+avoid accessing context memory that may already have been freed while
+processing backlog requests.
 
-Thanks for your comment!
+Chenghai Huang (1):
+  crypto: hisilicon/zip - add backlog support for zip
 
-I'll remove them in next patch
+Wenkai Lin (1):
+  crypto: hisilicon/sec2 - fix UAF in sec_alg_send_backlog
 
-> 
-> Best regards,
-> Krzysztof
-> 
+lizhi (1):
+  crypto: hisilicon/hpre - implement full backlog support for hpre
+    driver
+
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 223 +++++++++++----
+ drivers/crypto/hisilicon/sec2/sec_crypto.c  |  23 +-
+ drivers/crypto/hisilicon/zip/zip_crypto.c   | 286 +++++++++++++-------
+ 3 files changed, 359 insertions(+), 173 deletions(-)
+
+-- 
+2.43.0
 
 
