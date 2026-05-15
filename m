@@ -1,67 +1,68 @@
-Return-Path: <linux-crypto+bounces-24098-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24099-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QEWwLh35BmpUpwIAu9opvQ
-	(envelope-from <linux-crypto+bounces-24098-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 12:44:45 +0200
+	id oDr5Our5BmpUpwIAu9opvQ
+	(envelope-from <linux-crypto+bounces-24099-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 12:48:10 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6324854D9A9
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 12:44:45 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D22D54DA70
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 12:48:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1394F319FA3D
-	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 10:26:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5248731E4A9B
+	for <lists+linux-crypto@lfdr.de>; Fri, 15 May 2026 10:27:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 285C83D092A;
-	Fri, 15 May 2026 10:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C933D1709;
+	Fri, 15 May 2026 10:27:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="ZCfFx8yX"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="m41ViD7k"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E013D0922;
-	Fri, 15 May 2026 10:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53B133D0BFF;
+	Fri, 15 May 2026 10:27:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778840762; cv=none; b=V9ctg8uEBoybYb802xPsPAuA5KyxB6ZOBHOBAYg7NRXJlcEA1srG04EdJglbsM8Qv3mWOPrZfwvIdYGnsImT5wQ9ypB0alJR//B5SenSKCkUTFyzLOPt0ShN/UKhuCjevH6/RG5BjJ2dtOCe2U/ixHpGFi4aX3ASbRKj4LJDOPs=
+	t=1778840840; cv=none; b=e9C4FrUW7bdfhop3bpeiIy5i3qyydZ+L8Ty5sy2EIJSuCFKUxqodwQvJGWUZojw7pASIJD5rWuZxuIq60l1v1fzy7C+RMcIJkWXXIjkE4xnWzQ1B1taSNMh76NmwI8pwXtA67QBFxwqT160J+ny0Z8KcH3rSrPP5lz3qRNLtUeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778840762; c=relaxed/simple;
-	bh=a4t2zbgEs7wMNizoN4MmBSU3c/KM1ikNm7qqhoK8acQ=;
+	s=arc-20240116; t=1778840840; c=relaxed/simple;
+	bh=c468QXYz5itwD5TKpkIk1ARB0vs+NdzRfjROrTmrJsQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yizrnz65L72OCW8pHk5aHhdUpMDwXYEd3LmIoyZTy8wYCIQXyrghw9Fu1ExYCKr2EbVEmfR52qcgDnv3/UOkHtSEo4I4NXImNm0YYNUam45dR6ipJKjl5dku81wKx+EZqWZOAzd2YfdfxpgJ0xycHRNiSuNe1jfi+a5NGpnYznc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=ZCfFx8yX; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=l2h2sTWJTWnFMraXfBWpQ1dtiqErNGj9BttAkhotXcXE7ql+t/qvFIBAwM1e9y3i39/JRZSZDmb+nlivhqQaKc4UsKqBNpLvwxFyw174DMcdVDwH5dyX3Mh6j3aAlgCL4JFqrdkzZaOlF89ELTebk9RCrWT2VSQv8ecmLwHJu/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=m41ViD7k; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=fHS5nLFEqwme9DhbjhJcBd3DSgo9yk+52kAgrx6WOtk=; 
-	b=ZCfFx8yXVNdeRA7RnYf7RJdX0kywe9Zjf7UOkZYB5iYiA0E4iyGmIIowaEUaD5qEHo2k+/97PYI
-	DfHdVUvi5igyTcxny3wwLUB1ucidN7BTD48K7waCgb1bCfylP+k2RnkgtdBxyYFBRHBYOU8mpedlh
-	/61CfobByOfjE1Tk+w+8lqhcbohDq14yjq1i0oN3ctEXdGSsI8IlSTVGp3cgVG60gMMY8iJ+vbguQ
-	BROwIr0YgESBn48VednZIyU4whC3wjg5Qfb0wm2rc3zdRBaFZH+ISmctatrq2O4z2sSQluzVEqvZq
-	dYkhI/borpEF5PJ/WakrK5B4JmEPF2k/ErRw==;
+	from:content-type:reply-to; bh=9G1ALRqYKbjNfcTKGMoNtfKv7WmzEN5J93MbDdOhgmw=; 
+	b=m41ViD7kr8cluaR9ueZnWAEOxUXBwKRYxMXsLBYLjCenZ5yadDrvmt5jXda4wrXgPCqNkURH7Bj
+	oYP9zv/5JRSwr5rKOpBKU5zKgUmyb5d5i3NwmtujeBPi/RgGE6YxRh4Z32YM6S6xfXJjdUEP6eyUs
+	WEeq1uN8hhn2HZkbOfC5XpJk3ZfO3JvgkO/TqAoYAsbU0DJyLcKamlg8O+vxk1czZzuAhZuDo93gy
+	ol9O/ki29wJRLVjNx7ywDV9DiOHslWtga0d04GPjpI13x7OH/OLugYbHAYQtpIMR5xgC/v+T4m27Y
+	JeG13Jn4sVzzga36F01/zVd6q0UbNT8eohWg==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1wNpju-00EOda-0a;
-	Fri, 15 May 2026 18:25:55 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 15 May 2026 18:25:54 +0800
-Date: Fri, 15 May 2026 18:25:54 +0800
+	id 1wNpl3-00EOev-0G;
+	Fri, 15 May 2026 18:27:06 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 15 May 2026 18:27:05 +0800
+Date: Fri, 15 May 2026 18:27:05 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Shawn Guo <shengchao.guo@oss.qualcomm.com>
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Konrad Dybcio <konradybcio@kernel.org>,
-	Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>,
-	Deepti Jaggi <deepti.jaggi@oss.qualcomm.com>,
-	linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] dt-bindings: crypto: qcom,prng: Document TRNG on Nord
- SoC
-Message-ID: <agb0skPLcH189txP@gondor.apana.org.au>
-References: <20260510021809.1130114-1-shengchao.guo@oss.qualcomm.com>
+To: Michael Bommarito <michael.bommarito@gmail.com>
+Cc: David Howells <dhowells@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-crypto@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	linux-afs@lists.infradead.org, Ilya Dryomov <idryomov@gmail.com>,
+	Xiubo Li <xiubli@redhat.com>, ceph-devel@vger.kernel.org,
+	stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] crypto: krb5 - filter out async aead implementations
+ at alloc
+Message-ID: <agb0-eaQSBTRu7RB@gondor.apana.org.au>
+References: <20260502132506.1936358-1-michael.bommarito@gmail.com>
+ <20260510232455.2245650-1-michael.bommarito@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -70,55 +71,71 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260510021809.1130114-1-shengchao.guo@oss.qualcomm.com>
-X-Rspamd-Queue-Id: 6324854D9A9
+In-Reply-To: <20260510232455.2245650-1-michael.bommarito@gmail.com>
+X-Rspamd-Queue-Id: 4D22D54DA70
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	TAGGED_FROM(0.00)[bounces-24098-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FREEMAIL_CC(0.00)[redhat.com,davemloft.net,vger.kernel.org,kernel.org,auristor.com,lists.infradead.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-24099-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[]
 X-Rspamd-Action: no action
 
-On Sun, May 10, 2026 at 10:18:09AM +0800, Shawn Guo wrote:
-> From: Deepti Jaggi <deepti.jaggi@oss.qualcomm.com>
+On Sun, May 10, 2026 at 07:24:55PM -0400, Michael Bommarito wrote:
+> krb5_aead_encrypt(), krb5_aead_decrypt() in rfc3961_simplified.c and
+> rfc8009_encrypt(), rfc8009_decrypt() in rfc8009_aes2.c set a NULL
+> completion callback and treat any negative return from
+> crypto_aead_{encrypt,decrypt}() as terminal, falling through to
+> kfree_sensitive(buffer).  When the encrypt_name resolves to an
+> async AEAD instance the request returns -EINPROGRESS, the buffer
+> is freed while the backend's worker still holds a pointer, and the
+> worker dereferences the freed slab on completion.
 > 
-> Document True Random Number Generator on Qualcomm Nord SoC.
+> KASAN report under UML+SLUB with a synthetic async aead backend
+> bound to krb5->encrypt_name:
 > 
-> Signed-off-by: Deepti Jaggi <deepti.jaggi@oss.qualcomm.com>
-> Signed-off-by: Shawn Guo <shengchao.guo@oss.qualcomm.com>
+>   BUG: KASAN: slab-use-after-free in t5_stub_complete+0x7d/0xc7
+> 
+> The helpers were written synchronously, so filter the async
+> instances out at allocation time instead of plumbing
+> crypto_wait_req() through every call site.
+> 
+> Reachable via net/rxrpc/rxgk.c, fs/afs/cm_security.c and
+> net/ceph/crypto.c on systems with an async AEAD provider bound to
+> the krb5 enctype name.
+> 
+> Fixes: 00244da40f78 ("crypto/krb5: Implement the Kerberos5 rfc3961 encrypt and decrypt functions")
+> Fixes: 6c3c0e86c2ac ("crypto/krb5: Implement the AES enctypes from rfc8009")
+> Cc: stable@vger.kernel.org
+> Suggested-by: Herbert Xu <herbert@gondor.apana.org.au>
+> Assisted-by: Claude:claude-opus-4-7
+> Signed-off-by: Michael Bommarito <michael.bommarito@gmail.com>
 > ---
-> Changes in v3:
->  - Improve commit log to drop "compatible with qcom,trng" part
->  - Link to v2 (TRNG): https://lore.kernel.org/all/20260427012308.231350-1-shengchao.guo@oss.qualcomm.com/
-> 
-> Changes in v2:
->  - Improve commit log to make the compatibility explicit
->  - Add missing SoB
->  - Link to v1: https://lore.kernel.org/all/20260420025732.1240525-1-shengchao.guo@oss.qualcomm.com/
-> 
->  Documentation/devicetree/bindings/crypto/qcom,prng.yaml | 1 +
->  1 file changed, 1 insertion(+)
+>  crypto/krb5/krb5_api.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Patch applied.  Thanks.
 -- 
