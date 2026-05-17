@@ -1,258 +1,221 @@
-Return-Path: <linux-crypto+bounces-24210-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24212-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qCv9AfsECmqNwAQAu9opvQ
-	(envelope-from <linux-crypto+bounces-24210-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sun, 17 May 2026 20:12:11 +0200
+	id CMuNNWoFCmqkwAQAu9opvQ
+	(envelope-from <linux-crypto+bounces-24212-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sun, 17 May 2026 20:14:02 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8906D562EB7
-	for <lists+linux-crypto@lfdr.de>; Sun, 17 May 2026 20:12:10 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DFFF562F35
+	for <lists+linux-crypto@lfdr.de>; Sun, 17 May 2026 20:14:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2BD8E305ECC2
-	for <lists+linux-crypto@lfdr.de>; Sun, 17 May 2026 18:07:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9874B301CFFD
+	for <lists+linux-crypto@lfdr.de>; Sun, 17 May 2026 18:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EEC43CCA11;
-	Sun, 17 May 2026 18:07:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9E663C0625;
+	Sun, 17 May 2026 18:13:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dKuh9FhI"
+	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="T/luTTRS";
+	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="eoGtqcNK"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E32563CB8FF
-	for <linux-crypto@vger.kernel.org>; Sun, 17 May 2026 18:07:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5114D3C0A14
+	for <linux-crypto@vger.kernel.org>; Sun, 17 May 2026 18:13:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779041228; cv=none; b=mkbrk4LJbTHLeD+u6H8QWj7wbdhmmkCPCEx57l9W3ukr5UsV+x4+Hr+LxTpoIxxdaF5k4uC5HL+42zBSTj49Fb85WO+bHcKrJVkbxSPZdqlMEiFZaADN02zlJyv8ey8Ei6KTLYvNHNBxZIyLwhCrb178C9NlenjwFHfYW6GNfYE=
+	t=1779041624; cv=none; b=TekL68L+CtUKrP6Gw07lrelauFo4KaUtmeclOOBhA887yFPGYEQLnWwTQw55qZwd33L2Z/CU2n0+UHiJr4d1LdQCtrTaaFfUdvc84aRMeuCYGZho6KDbqPUk3ebH/VXC2r32IpvoECrTLyax8JDOXzAoXHck3PFp3yY7Xj5DDx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779041228; c=relaxed/simple;
-	bh=q9vahDLeF0paWqfekbQjBqfdEH/373Mc1f3Pd2pMUUY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lmOIgeVc38Ojd6CGYN6nDsyLSa7E/ioGg5QQXQqWSOjPrsRd8ae8k7XYAOl16dLqEkULgw9WuIwkQ6k9zNUGZ7dobulDGfReDLe0CTOdKvioyRJjKqa97ZgiQMKyg1Kyj51d52CxU3Nk+0Nevhc1ZsIpnrmEqmxNDpG1nWvfsAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dKuh9FhI; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-48fe6629235so1840675e9.1
-        for <linux-crypto@vger.kernel.org>; Sun, 17 May 2026 11:07:03 -0700 (PDT)
+	s=arc-20240116; t=1779041624; c=relaxed/simple;
+	bh=8eVmxtcYmSeoUBzl3bHvfv6EisD5Oywosw3966cGgXQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H8nZm4ToT7xP+45GhfDY8RT1ENHWqi0+u4r3fjGZsF5ZYGCkluV8UrgmbFfhGz1JXFnnQYo23M6tIoYlVaBsrjieNAkJs0V8UZl65EV/ocOoXKEdmzt27bS1uXe8hM5QSYr9+XKPBFCWO7I17aXoKN8zvpAWnT0lI5JNedS1IwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=T/luTTRS; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=eoGtqcNK; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64H3wIsp2749800
+	for <linux-crypto@vger.kernel.org>; Sun, 17 May 2026 18:13:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
+	cc:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=qcppdkim1; bh=1Qv0uuV8Ex5OvKUJ759UY79R
+	1wNp48m7rDkw4nsWu9A=; b=T/luTTRSCy6ThZnqIMq4Yv9t7QpQoo3sMj3NuAPs
+	RfWctSvaJ1iz8NPlEmCJxGfPfEaLbU/o6srfIXsRyDzyj/WfigponPfPIqjUJdia
+	8QF0U4Go3zbojf6o5Jn1DgtCS33XiUZYfw/BqPIRxGRH+AJBdh2XCYluPWmsk86F
+	TVpSGq/sBx2kRcUdD6r9jk9uKsC7k6Hw+ut6Xjbde5VS2NNbrETq38gtMpq1koWI
+	IJZ0S+Wu0kgDCe7OcjRlAgv3vBu+PQX0eX/XPqvcPEVXo1zb7mzXhejUj4cJickR
+	5vyVHRuVAmCRA5/v9kM9GTEQ+Fxd2iP2J8gOkhMVD/npaA==
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com [209.85.219.69])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4e6h01kbts-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-crypto@vger.kernel.org>; Sun, 17 May 2026 18:13:42 +0000 (GMT)
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-8acb85a973cso17818386d6.3
+        for <linux-crypto@vger.kernel.org>; Sun, 17 May 2026 11:13:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779041220; x=1779646020; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UnEz4kb5yNtR6Ed+ZspZs0azXccaDtFZKA7zrYYeQpw=;
-        b=dKuh9FhIzz4XizwKw+FsPfOH3Br6zOu+c8EYdmVrxGFV/JkVWv8GECL75gA1MbXoqk
-         wiiuT02KBR4McjN9nw76hkYaXSfS0ZK+Q8QKWSSnN8ZJ8Y9LyDuBhfha7PoFOQErVXE9
-         2GtyJI863PkYH08upvx0FTM2hkxh84s/Z5EwgsuN3O466uaM0pzjjlpPQxEV4RLWsVUa
-         xpfqAFJC61EzYwoi3XXHgGnHW5164fUtQ1nAniTBlwEv3e0po/N7ulchDv8WYmErReMx
-         j93YqN6MFMNXOCAm0JE1jZB2JTh5oJmnDFaYpfOhQGNfqYhcIA0My9ebGfoj/UjKKdz2
-         cF/g==
+        d=oss.qualcomm.com; s=google; t=1779041621; x=1779646421; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Qv0uuV8Ex5OvKUJ759UY79R1wNp48m7rDkw4nsWu9A=;
+        b=eoGtqcNKKy2dptGtrTNgKWXbnNe1bwR+OVEyw+1BQj7m8nB1hrjm9d+ZfKAw4uH/HS
+         1KyClEIoQEqFfcIXiAEMhl6UEpaeWF0UK52xZ0OOcNdqqgfR98VUwriRfS2628ovBsat
+         wjTiJr6715TgPwDMjzexAZB8f8NWHUNp0tN0zqtIRC3PqmVue7iVHnZtdCBfcf+oNrKU
+         Ei5mphVgHmW7FOC0fqk0e/3D8Tz4uvFso+ILSZOtTRIkJoiMUzVLmhN4kQ3y5hsY79gz
+         0MuGo8cZ7/eLQxqbWxEQ7+bb86zzhLQuKcX/pHTLl1GCnsXuLF1spkMTOFRqyurd4US3
+         T+6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779041220; x=1779646020;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=UnEz4kb5yNtR6Ed+ZspZs0azXccaDtFZKA7zrYYeQpw=;
-        b=X36+atWoKM2QEgNzM9EQME87XHGsobWtEsN7Znku9jUBeP2Q6OXpxLxzrQJLeLwzqh
-         CxofQEs1f3dAWFPkdSz2Q1LzIQb0/T12kfB9ntZpNqj/GAcIAN8O6nOh+JVm9xInG7Ge
-         lUQVuLxsb3UJ9wRTBBMk5iwHbASyuhklQ3KknCSLDm9eR+SGsoghp1aPSPUp2Boo/DT1
-         jtYjwGVtLglNykXlOUeFz+Z7ucKh6bKGW1CWxPMtU3RXkpzAUFdwxQRoElhjBEhg9xPK
-         AgilDcapRUB55Bm2ngGv0swCCxbKiK5e+RfvT3bBYCc6hrepNtpa0iXR5KwiyOZILgBs
-         FmYg==
-X-Gm-Message-State: AOJu0YwPD+80hbEOxkD6mYZ3yaolCSIkHlu/CnpTtVQG2jMhTkF+2hcv
-	AeH2u4AI93EIN8QTLRF28+wjAWRpuAaF4s1U4h8gunkuOtaY2DOBUCUB
-X-Gm-Gg: Acq92OGyh9IeZxTJ2KeW9ZYkQoi4TzsZ+K1uFlKyUvklLyZ1kQbvcuy6KDg21sZGheI
-	joh1bI8SeSg8w29rqvSj+2S2Dp0bBngqHjeJHEpYievQPT078vQOmRC+lh9MESaSVtVRP0s0Tl0
-	vxqq3063TVhTjYPD9d3/nL/t+QaIjA7PVjXDxTCW//Zc6mzBPdWx4wN/RCESqM/iNKxqU3K0VW5
-	SiRAHq44q3kMEBN9jN0ukX+z+nH9deb8feyThQdD9bFsFJ0WN3yzTUIySBT3FPF5gR5vAHKkfhP
-	ZFxUrTSaEtUXy/AhRGpkNWecB1/91jDNqwbH64b+qT7Jq+bVkz2Y0HvpVFtZQzg4PCbCcSzr+pJ
-	bxDdQqxgdg+EZh7n6ltTN2wci9DEdQhz8RvNpRbPbs49u16DOJEdQnmo/w4TnxYBvssjW8RlzG3
-	STYzB6EY412IiMSXzFbKNrsxxNJOgcQAHYfamO5JJ2qQUp6LXyEpHSt46aQwroLwI=
-X-Received: by 2002:a05:600c:a48:b0:489:e696:127d with SMTP id 5b1f17b1804b1-48fe63022e8mr80058775e9.5.1779041220235;
-        Sun, 17 May 2026 11:07:00 -0700 (PDT)
-Received: from menon.v.cablecom.net (84-74-0-139.dclient.hispeed.ch. [84.74.0.139])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-45da15a6454sm31766775f8f.34.2026.05.17.11.06.59
+        d=1e100.net; s=20251104; t=1779041621; x=1779646421;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1Qv0uuV8Ex5OvKUJ759UY79R1wNp48m7rDkw4nsWu9A=;
+        b=EOyA1aE2VolayKHYkg4QYdmN1kRcFozozov3FT6mKXION8c1aoeRg+tjm5VoJ2+9d9
+         ImwrvteJ+1zOfa0JoG6zKv1xaDMGYMqPOAK7TQYV9Y8WUVnkCRv8ykKWeDu8ODo26vYq
+         01ZhIZ/x79GlLkQcUf1ZMv46h8FYim3YvRR2qga0eQSthsxxznw7JJ4TLaEjpJ+fOzJm
+         LiN/vNmSpJZfoUWSET+H1EOcm7hJrzlV1bB8Tg9XIKqDZ93ddeewZar1pjRDp1xQXrT/
+         DGYYhv/D0quPQJU5HNfPlnqB5IULYuU4OmejwsPS9CaJJN+EqEBnauaVYwR8//HMa/Bi
+         B0kA==
+X-Forwarded-Encrypted: i=1; AFNElJ9qyKNevLIq+TVoUUY4c3wEU3StY/axgP6GFmBzckJoWpv71R122Q5CMZBLN8K2YiGJcxJ/B/7k+7aYJX0=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxkjgTzvdrCQWV5PQAd+qrtVwQs9jiylOxPHuVU3OmyhBuQty1M
+	IMDohDLwRbosu99DEFicgGfVhnKOHA6pelPsOpblLAMmAGAYj0kcRboBQhjVtoSTQpXYnbtt8PG
+	UAYcEgydRvR+7veGLA23uaHdd/UYEoM/TfzO/PbAEpAOxBzZCBJkr5c98EbOxZeycfE0=
+X-Gm-Gg: Acq92OEU/eL82FmfLCdy1CkW+d65Xn8oKG3DnS/WhKMg6s1NAt9wx9wXs7bA5kA6lOD
+	P1YWZcEI0Oglt1VAIIpJFPtTnR58WoP/GrEKDe5EbNIfkJjTNnX2g4fuzA6f6nBMxhDHiZQkKbt
+	QWYooqSXplx65rebJt1KShlhgjts/WulgoO38JtKYqL1OG7U+IJu2MVTQNnTHh0MG1a6wt2rfCx
+	txfY+cfqgZ/jNAtXzA6AyTtY7B8NRfQeV+C7TLetjSIJq/VR1cJpC0h6Yfv6MKouTstCChRC7SM
+	iVAch3s2n1G7KpymGYLPQyrMMwaYVm7sguRcJ6FDXlnz/16IlSbJohchQNvj8aF+jnUok6W2+EX
+	TCfakmpLRJAV9nuHw9D0g96G5JL24kOWBlJlHmu0FZ2qNndcvVBbcd6pLV+SH0K16rXt844RGA+
+	tHsl/eE2tYb2Mb/SEF+RvklAxCU2bABnR7oeQ=
+X-Received: by 2002:ac8:5cc5:0:b0:50e:62ba:3ff7 with SMTP id d75a77b69052e-5165a075923mr178267131cf.26.1779041621542;
+        Sun, 17 May 2026 11:13:41 -0700 (PDT)
+X-Received: by 2002:ac8:5cc5:0:b0:50e:62ba:3ff7 with SMTP id d75a77b69052e-5165a075923mr178266581cf.26.1779041621074;
+        Sun, 17 May 2026 11:13:41 -0700 (PDT)
+Received: from umbar.lan (2001-14ba-a073-af00-264b-feff-fe8b-be8a.rev.dnainternet.fi. [2001:14ba:a073:af00:264b:feff:fe8b:be8a])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-395882c41c1sm6557951fa.12.2026.05.17.11.13.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 May 2026 11:06:59 -0700 (PDT)
-From: Lothar Rubusch <l.rubusch@gmail.com>
-To: thorsten.blum@linux.dev,
-	herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	nicolas.ferre@microchip.com,
-	alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev
-Cc: linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	l.rubusch@gmail.com
-Subject: [PATCH 12/12] crypto: atmel - add capability-based I2C client selection
-Date: Sun, 17 May 2026 18:06:39 +0000
-Message-Id: <20260517180639.9657-14-l.rubusch@gmail.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20260517180639.9657-1-l.rubusch@gmail.com>
-References: <20260517180639.9657-1-l.rubusch@gmail.com>
+        Sun, 17 May 2026 11:13:39 -0700 (PDT)
+Date: Sun, 17 May 2026 21:13:36 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
+To: Oli R <sigmatwojastara@gmail.com>
+Cc: Rob Clark <robin.clark@oss.qualcomm.com>,
+        Dmitry Baryshkov <lumag@kernel.org>,
+        Abhinav Kumar <abhinav.kumar@linux.dev>,
+        Jessica Zhang <jesszhan0024@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        James Clark <james.clark@linaro.org>, Shuah Khan <shuah@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, Boqun Feng <boqun@kernel.org>,
+        "open list:DRM DRIVER for Qualcomm display hardware" <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER for Qualcomm display hardware" <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER for Qualcomm display hardware" <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:AMD CRYPTOGRAPHIC COPROCESSOR (CCP) DRIVER - DB..." <linux-crypto@vger.kernel.org>,
+        "open list:PERFORMANCE EVENTS SUBSYSTEM" <linux-perf-users@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH] treewide: replace /usr/bin/python3 shebangs with env
+ python3
+Message-ID: <u7c5s7dtvzmqteqvrhr5p2a6wc7sdtmhfksw5344grs2gzgot5@n2ybljjcrju6>
+References: <20260515180806.246914-1-sigmatwojastara@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 8906D562EB7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260515180806.246914-1-sigmatwojastara@gmail.com>
+X-Proofpoint-ORIG-GUID: DSDrnFcD7z-MESGWJFUJPmY4N80wqy_-
+X-Authority-Analysis: v=2.4 cv=XbG5Co55 c=1 sm=1 tr=0 ts=6a0a0556 cx=c_pps
+ a=wEM5vcRIz55oU/E2lInRtA==:117 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
+ a=NGcC8JguVDcA:10 a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=u7WPNUs3qKkmUXheDGA7:22 a=ZpdpYltYx_vBUK5n70dp:22 a=pGLkceISAAAA:8
+ a=EUspDBNiAAAA:8 a=Vby_bzTUFChIRH6wvO4A:9 a=CjuIK1q_8ugA:10
+ a=OIgjcC2v60KrkQgK7BGD:22
+X-Proofpoint-GUID: DSDrnFcD7z-MESGWJFUJPmY4N80wqy_-
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTE3MDE5NyBTYWx0ZWRfX8DBxA4D/oEkO
+ au6DkhEXMVkmvS6rX+0QqHAaVCOjVU3/qGqCik/5nBR1w41Fu2QKeNPtiDPU1hOOEFJL0jiCLwS
+ Tla1to/ZmPICDWj1uQY1yCjLZe2j1g/ENGN7aZtXf6FJbQaI+B9YxUpcaGthyNlJsM0GLxClliQ
+ 1BxLP9eSDLCT9iI9BGwAFMT+5/4K2FGVKC4Hi5FD75yxEyUVSLCrKXRrGDm/Y7+JY55sBe6DiQl
+ 6djGj9+Ep9atVx9vlkrvpJy2+Ir7k4zJHo3xbolig/1Giz96dh+mVUKlVrzu2vKSFqBloZJA2Tg
+ LbuVnZxRTxs+FE6a4hXGUjzM8LJIMlBY8syhmh2mg0mRetpV2jpHVecs52Uk3XY/fKWRTSlCHRG
+ pG32qLXO8YGeacrr1QKhoeqIEE2iwNVRpHj+fO7i0NspmqWamleB+TxizLrtRROlRbjJOHpn9av
+ 0e36IMW1Vg6DDRj7LUw==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-05-17_04,2026-05-15_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0 suspectscore=0 malwarescore=0 priorityscore=1501 clxscore=1011
+ lowpriorityscore=0 phishscore=0 adultscore=0 spamscore=0 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2605130000 definitions=main-2605170197
+X-Rspamd-Queue-Id: 4DFFF562F35
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[qualcomm.com,reject];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[qualcomm.com:s=qcppdkim1,oss.qualcomm.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_ALL(0.00)[];
+	TAGGED_FROM(0.00)[bounces-24212-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-24210-lists,linux-crypto=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FREEMAIL_CC(0.00)[oss.qualcomm.com,kernel.org,linux.dev,gmail.com,poorly.run,somainline.org,ffwll.ch,amd.com,infradead.org,redhat.com,arm.com,linux.intel.com,google.com,intel.com,linaro.org,efficios.com,vger.kernel.org,lists.freedesktop.org];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[qualcomm.com:email,qualcomm.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,oss.qualcomm.com:dkim];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dmitry.baryshkov@oss.qualcomm.com,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[qualcomm.com:+,oss.qualcomm.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lrubusch@gmail.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
-	NEURAL_HAM(-0.00)[-0.999];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	RCPT_COUNT_TWELVE(0.00)[31];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Action: no action
 
-Add capability filtering to the I2C client allocator to support
-feature-aware selection of hardware clients.
+On Fri, May 15, 2026 at 08:07:59PM +0200, Oli R wrote:
+> Use /usr/bin/env python3 instead of hardcoded interpreter paths
+> to improve portability across environments where python3 is not
+> installed in /usr/bin.
+> 
+> No functional changes intended.
+> 
+> Signed-off-by: Oli R <sigmatwojastara@gmail.com>
+> ---
+>  drivers/gpu/drm/msm/registers/gen_header.py                     | 2 +-
 
-Each client now exposes supported features via a capability mask. The
-allocator selects only clients matching the requested capability and still
-prefers the least-loaded device.
+Acked-by: Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com> # drm/msm
 
-ECC marks ECDH support during probe and requests matching clients during
-tfm setup. SHA204A exposes no capabilities for now.
 
-This is preparatory work for upcoming features that will extend hardware
-usage beyond a single algorithm type.
+>  scripts/macro_checker.py                                        | 2 +-
+>  tools/crypto/ccp/dbc.py                                         | 2 +-
+>  tools/crypto/ccp/dbc_cli.py                                     | 2 +-
+>  tools/crypto/ccp/test_dbc.py                                    | 2 +-
+>  tools/perf/tests/shell/lib/perf_json_output_lint.py             | 2 +-
+>  .../selftests/devices/probe/test_discoverable_devices.py        | 2 +-
+>  tools/testing/selftests/rseq/rseq-slice-hist.py                 | 2 +-
+>  8 files changed, 8 insertions(+), 8 deletions(-)
 
-Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
----
- drivers/crypto/atmel-ecc.c     | 4 +++-
- drivers/crypto/atmel-i2c.c     | 5 ++++-
- drivers/crypto/atmel-i2c.h     | 8 +++++++-
- drivers/crypto/atmel-sha204a.c | 2 ++
- 4 files changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/crypto/atmel-ecc.c b/drivers/crypto/atmel-ecc.c
-index f877f236552f..0eeee9ae6c48 100644
---- a/drivers/crypto/atmel-ecc.c
-+++ b/drivers/crypto/atmel-ecc.c
-@@ -214,7 +214,7 @@ static int atmel_ecdh_init_tfm(struct crypto_kpp *tfm)
- 	struct atmel_ecdh_ctx *ctx = kpp_tfm_ctx(tfm);
- 
- 	ctx->curve_id = ECC_CURVE_NIST_P256;
--	ctx->client = atmel_i2c_client_alloc();
-+	ctx->client = atmel_i2c_client_alloc(ATMEL_CAP_ECDH);
- 	if (IS_ERR(ctx->client)) {
- 		pr_err("tfm - i2c_client binding failed\n");
- 		return PTR_ERR(ctx->client);
-@@ -286,6 +286,8 @@ static int atmel_ecc_probe(struct i2c_client *client)
- 
- 	i2c_priv = i2c_get_clientdata(client);
- 
-+	i2c_priv->caps = BIT(ATMEL_CAP_ECDH);
-+
- 	spin_lock(&atmel_i2c_mgmt.i2c_list_lock);
- 	list_add_tail(&i2c_priv->i2c_client_list_node,
- 		      &atmel_i2c_mgmt.i2c_client_list);
-diff --git a/drivers/crypto/atmel-i2c.c b/drivers/crypto/atmel-i2c.c
-index 4beab68997c4..b7ee2ec37531 100644
---- a/drivers/crypto/atmel-i2c.c
-+++ b/drivers/crypto/atmel-i2c.c
-@@ -57,7 +57,7 @@ static void atmel_i2c_checksum(struct atmel_i2c_cmd *cmd)
- 	*__crc16 = cpu_to_le16(bitrev16(crc16(0, data, len)));
- }
- 
--struct i2c_client *atmel_i2c_client_alloc(void)
-+struct i2c_client *atmel_i2c_client_alloc(enum atmel_i2c_capability cap)
- {
- 	struct atmel_i2c_client_priv *i2c_priv, *min_i2c_priv = NULL;
- 	struct i2c_client *client = ERR_PTR(-ENODEV);
-@@ -73,6 +73,9 @@ struct i2c_client *atmel_i2c_client_alloc(void)
- 
- 	list_for_each_entry(i2c_priv, &atmel_i2c_mgmt.i2c_client_list,
- 			    i2c_client_list_node) {
-+		if (!(i2c_priv->caps & BIT(cap)))
-+			continue;
-+
- 		tfm_cnt = atomic_read(&i2c_priv->tfm_count);
- 		if (tfm_cnt < min_tfm_cnt) {
- 			min_tfm_cnt = tfm_cnt;
-diff --git a/drivers/crypto/atmel-i2c.h b/drivers/crypto/atmel-i2c.h
-index ba5a860011c8..70579b438256 100644
---- a/drivers/crypto/atmel-i2c.h
-+++ b/drivers/crypto/atmel-i2c.h
-@@ -115,6 +115,10 @@ struct atmel_i2c_cmd {
- #define ECDH_PREFIX_MODE		0x00
- 
- /* Used for binding tfm objects to i2c clients. */
-+enum atmel_i2c_capability {
-+	ATMEL_CAP_ECDH = 0,
-+};
-+
- struct atmel_i2c_client_mgmt {
- 	struct list_head i2c_client_list;
- 	spinlock_t i2c_list_lock;
-@@ -130,6 +134,7 @@ extern struct atmel_i2c_client_mgmt atmel_i2c_mgmt;
-  * @wake_token_sz       : size in bytes of the wake_token
-  * @tfm_count           : number of active crypto transformations on i2c client
-  * @hwrng               : hold the hardware generated rng
-+ * @caps                : feature capability of the particular driver
-  *
-  * Reads and writes from/to the i2c client are sequential. The first byte
-  * transmitted to the device is treated as the byte size. Any attempt to send
-@@ -146,6 +151,7 @@ struct atmel_i2c_client_priv {
- 	size_t wake_token_sz;
- 	atomic_t tfm_count ____cacheline_aligned;
- 	struct hwrng hwrng;
-+	u32 caps;
- };
- 
- /**
-@@ -190,7 +196,7 @@ void atmel_i2c_init_genkey_cmd(struct atmel_i2c_cmd *cmd, u16 keyid);
- int atmel_i2c_init_ecdh_cmd(struct atmel_i2c_cmd *cmd,
- 			    struct scatterlist *pubkey);
- 
--struct i2c_client *atmel_i2c_client_alloc(void);
-+struct i2c_client *atmel_i2c_client_alloc(enum atmel_i2c_capability cap);
- void atmel_i2c_unregister_client(struct atmel_i2c_client_priv *i2c_priv);
- 
- #endif /* __ATMEL_I2C_H__ */
-diff --git a/drivers/crypto/atmel-sha204a.c b/drivers/crypto/atmel-sha204a.c
-index 923e462ff6b0..1a28c6434669 100644
---- a/drivers/crypto/atmel-sha204a.c
-+++ b/drivers/crypto/atmel-sha204a.c
-@@ -173,6 +173,8 @@ static int atmel_sha204a_probe(struct i2c_client *client)
- 
- 	i2c_priv = i2c_get_clientdata(client);
- 
-+	i2c_priv->caps = 0;
-+
- 	/* add to client list */
- 	spin_lock(&atmel_i2c_mgmt.i2c_list_lock);
- 	list_add_tail(&i2c_priv->i2c_client_list_node,
 -- 
-2.53.0
-
+With best wishes
+Dmitry
 
