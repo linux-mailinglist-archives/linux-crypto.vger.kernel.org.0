@@ -1,51 +1,51 @@
-Return-Path: <linux-crypto+bounces-24251-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24255-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6MOqCLgjC2pJDwUAu9opvQ
-	(envelope-from <linux-crypto+bounces-24251-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 18 May 2026 16:35:36 +0200
+	id UIo6LAEkC2p5DwUAu9opvQ
+	(envelope-from <linux-crypto+bounces-24255-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 18 May 2026 16:36:49 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B98BF56EEF1
-	for <lists+linux-crypto@lfdr.de>; Mon, 18 May 2026 16:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 133B456EF45
+	for <lists+linux-crypto@lfdr.de>; Mon, 18 May 2026 16:36:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E36EA3012263
-	for <lists+linux-crypto@lfdr.de>; Mon, 18 May 2026 14:31:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0B1793044081
+	for <lists+linux-crypto@lfdr.de>; Mon, 18 May 2026 14:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A42E3451D6;
-	Mon, 18 May 2026 14:31:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64E8E3F788A;
+	Mon, 18 May 2026 14:31:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="MSNhITbF"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="1TwPrf2r"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
+Received: from canpmsgout12.his.huawei.com (canpmsgout12.his.huawei.com [113.46.200.227])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E4C2C3244;
-	Mon, 18 May 2026 14:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D3130C632;
+	Mon, 18 May 2026 14:31:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.227
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779114691; cv=none; b=qPGmscedv4GqfnyP5fgzO8LfEgidC1GsavD7479YD0f7XFQTCSaQNMBXYif9RNp7071YhL6yXnnXUhhCsrUgZ7qo6lpxk55VnG1FSkyaDl+erBlsDBOCLTFvJL2Nl7gvkLP0K4rpxGA/DoF+HZOaL9/ufHIS8Y8QxUE/Jp8nOZo=
+	t=1779114697; cv=none; b=Uk/1DcNXd6MmymF2uTMxJgRdn6fmx7ZzmR81TKS9DE6RzoPwhgcpORYbanvwcNwCbX36Fvb/GELj0slASDposqXSlmct9iM9UMTeg1XQjnZnJsVkRi4VLcBICIdtlonkwLPhSPMpKl6f3sZChJRytJFT7pAey0HNCxQLX43IK3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779114691; c=relaxed/simple;
-	bh=rNQZz1Pk3AFcWq7hWC8RyDtq/M93duNNUUiZQ17ZkrI=;
+	s=arc-20240116; t=1779114697; c=relaxed/simple;
+	bh=Yjd44ld67t99rFPyQOmE3FDR1Bab02bHUQ3VQg2EcoY=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TKtxpg5y/D0jdd9pz59aqfPI2tTYfghoFTuCpmDSS6Vq3kWX4Z6hlBpMz8CY1OfJbKXZhIC/J5+V41sHHL72kPuh3xCNIeOuHpV+jeqUy/7Sid3y0FWbekmh6T28xGmKjZXPyhUtft9hA1u/IUCHLn7JTPUcPzbjdB28oa/wFUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=MSNhITbF; arc=none smtp.client-ip=113.46.200.217
+	 MIME-Version:Content-Type; b=CVM1LhKJNusKM4nPIpow8RX7PTFev9uCTaQsngAwDsRyBBQSzQOhfiCZYcFi7hPUjXeoFjCRiGc2FxASKXNUggygV2mqlfVecsJE6q8PZyMjNcyF3HmCgnvfumqrvH9GCUmNltq1WR1pYcqJyMvfWjqLWMUvglpoI7aI2ZqkP6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=1TwPrf2r; arc=none smtp.client-ip=113.46.200.227
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=Haii3oyNo3W/HLHEmJWCWcR06NTtGEdS6MRylW8BA6E=;
-	b=MSNhITbFwYYJBKoBOB+2nzbIU2d1O/N/Vb5GEOJ32xn0R03QSLimYfW2r2hOGDOq4Vf2psFRB
-	uEmYKKFNrxhDqwLo/BHp2VWX5se/Lg+gEjszaO0GVdzZgELPWK663qxTmfrd0aPhDMzF4RPqa/9
-	t8g2b62CsTY8eqH+cVIDTwQ=
-Received: from mail.maildlp.com (unknown [172.19.163.104])
-	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4gK0RC5sb7zcb14;
-	Mon, 18 May 2026 22:23:51 +0800 (CST)
+	bh=mi89BOFRCY8D4yiPfVakvGZRIRJXMPZGBz9M8stKJkE=;
+	b=1TwPrf2rUsfNyHCSjPZ2b79fOLISMDNmtf66Za194WIHMNr6noqDxmQxtMlQufqfFSeEkdVRB
+	4zLgnD9nVyuW8KlbqLWPW9E4wMasz8/40xTZsn5l9wyJXByWzuwTfDfAtVo1PWqSgJLelkmbySo
+	lnBGh5tyTerwOTK92dE3CO0=
+Received: from mail.maildlp.com (unknown [172.19.163.214])
+	by canpmsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4gK0Rq1WWXznTV5;
+	Mon, 18 May 2026 22:24:23 +0800 (CST)
 Received: from kwepemr100008.china.huawei.com (unknown [7.202.195.119])
-	by mail.maildlp.com (Postfix) with ESMTPS id 987994048F;
+	by mail.maildlp.com (Postfix) with ESMTPS id EC6B54056C;
 	Mon, 18 May 2026 22:31:22 +0800 (CST)
 Received: from localhost.localdomain (10.50.163.32) by
  kwepemr100008.china.huawei.com (7.202.195.119) with Microsoft SMTP Server
@@ -56,9 +56,9 @@ To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
 	<fanghao11@huawei.com>, <liulongfang@huawei.com>, <qianweili@huawei.com>,
 	<wangzhou1@hisilicon.com>, <huangchenghai2@huawei.com>
-Subject: [PATCH 5/6] crypto: hisilicon - mask all error type when removing driver
-Date: Mon, 18 May 2026 22:29:55 +0800
-Message-ID: <20260518142956.3593934-6-wuzongyu1@huawei.com>
+Subject: [PATCH 6/6] crypto: hisilicon/qm - support doorbell enable control
+Date: Mon, 18 May 2026 22:29:56 +0800
+Message-ID: <20260518142956.3593934-7-wuzongyu1@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20260518142956.3593934-1-wuzongyu1@huawei.com>
 References: <20260518142956.3593934-1-wuzongyu1@huawei.com>
@@ -83,7 +83,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FROM_NEQ_ENVFROM(0.00)[wuzongyu1@huawei.com,linux-crypto@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-24251-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-24255-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -96,208 +96,187 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCVD_COUNT_FIVE(0.00)[6];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: B98BF56EEF1
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,huawei.com:email,huawei.com:mid,huawei.com:dkim]
+X-Rspamd-Queue-Id: 133B456EF45
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Weili Qian <qianweili@huawei.com>
+From: Zongyu Wu <wuzongyu1@huawei.com>
 
-Each bit in the error interrupt register corresponds to a specific
-error type. A bit value of 0 enables the interrupt, and a bit value
-of 1 disables the interrupt. Currently, when disabling interrupts,
-it incorrectly enables the interrupt types that were not enabled.
-Therefore, when disabling interrupts, all bits should be directly
-written to 1.
+The driver notifies the hardware to handle task through
+doorbell. Currently, doorbell is enabled by default. To
+prevent the process from sending doorbells during hardware
+reset scenarios, which could cause the hardware to process
+doorbells and trigger new errors:
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
+For example, when the physical machine is resetting the device,
+doorbells are still being sent from the virtual machine.
+
+Therefore, the driver disables doorbell during hardware
+unavailability. After hardware initialization is completed,
+doorbell is enabled, and any task sent during the unavailability
+period will return errors.
+
+The hardware supports the PF to disable doorbells for all functions,
+while the VF can only disable its own doorbell function. When the PF
+is reset, it will disable doorbells for all functions. When VF is
+reset, it only disables its own doorbell and does not affect tasks
+on other functions.
+
 Signed-off-by: Zongyu Wu <wuzongyu1@huawei.com>
 ---
- drivers/crypto/hisilicon/hpre/hpre_main.c |  9 +++----
- drivers/crypto/hisilicon/qm.c             | 30 ++++++-----------------
- drivers/crypto/hisilicon/sec2/sec_main.c  |  3 ++-
- drivers/crypto/hisilicon/zip/zip_main.c   | 10 +++-----
- 4 files changed, 18 insertions(+), 34 deletions(-)
+ drivers/crypto/hisilicon/qm.c | 54 +++++++++++++++++++++++++++++++----
+ include/linux/hisi_acc_qm.h   | 12 ++++++++
+ 2 files changed, 61 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index a484381f522a..b6903fce6071 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -55,6 +55,8 @@
- #define HPRE_RAS_FE_ENB			0x301418
- #define HPRE_OOO_SHUTDOWN_SEL		0x301a3c
- #define HPRE_HAC_RAS_FE_ENABLE		0
-+#define HPRE_RAS_MASK_ALL		GENMASK(31, 0)
-+#define HPRE_RAS_CLEAR_ALL		GENMASK(31, 0)
- 
- #define HPRE_CORE_ENB		(HPRE_CLSTR_BASE + HPRE_CORE_EN_OFFSET)
- #define HPRE_CORE_INI_CFG	(HPRE_CLSTR_BASE + HPRE_CORE_INI_CFG_OFFSET)
-@@ -820,11 +822,8 @@ static void hpre_master_ooo_ctrl(struct hisi_qm *qm, bool enable)
- 
- static void hpre_hw_error_disable(struct hisi_qm *qm)
- {
--	struct hisi_qm_err_mask *dev_err = &qm->err_info.dev_err;
--	u32 err_mask = dev_err->ce | dev_err->nfe | dev_err->fe;
--
- 	/* disable hpre hw error interrupts */
--	writel(err_mask, qm->io_base + HPRE_INT_MASK);
-+	writel(HPRE_RAS_MASK_ALL, qm->io_base + HPRE_INT_MASK);
- 	/* disable HPRE block master OOO when nfe occurs on Kunpeng930 */
- 	hpre_master_ooo_ctrl(qm, false);
- }
-@@ -835,7 +834,7 @@ static void hpre_hw_error_enable(struct hisi_qm *qm)
- 	u32 err_mask = dev_err->ce | dev_err->nfe | dev_err->fe;
- 
- 	/* clear HPRE hw error source if having */
--	writel(err_mask, qm->io_base + HPRE_HAC_SOURCE_INT);
-+	writel(HPRE_RAS_CLEAR_ALL, qm->io_base + HPRE_HAC_SOURCE_INT);
- 
- 	/* configure error type */
- 	writel(dev_err->ce, qm->io_base + HPRE_RAS_CE_ENB);
 diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 90b447b934c6..bfee16503c38 100644
+index bfee16503c38..a951d2ef7833 100644
 --- a/drivers/crypto/hisilicon/qm.c
 +++ b/drivers/crypto/hisilicon/qm.c
-@@ -128,7 +128,6 @@
+@@ -247,6 +247,11 @@
+ #define QM_QOS_MAX_CIR_U		6
+ #define QM_AUTOSUSPEND_DELAY		3000
  
- #define QM_ABNORMAL_INT_SOURCE		0x100000
- #define QM_ABNORMAL_INT_MASK		0x100004
--#define QM_ABNORMAL_INT_MASK_VALUE	0x7fff
- #define QM_ABNORMAL_INT_STATUS		0x100008
- #define QM_ABNORMAL_INT_SET		0x10000c
- #define QM_ABNORMAL_INF00		0x100010
-@@ -153,6 +152,8 @@
- #define QM_DB_TIMEOUT			BIT(10)
- #define QM_OF_FIFO_OF			BIT(11)
- #define QM_RAS_AXI_ERROR		(BIT(0) | BIT(1) | BIT(12))
-+#define QM_RAS_MASK_ALL			GENMASK(31, 0)
-+#define QM_RAS_CLEAR_ALL		GENMASK(31, 0)
- 
- #define QM_RESET_WAIT_TIMEOUT		400
- #define QM_PEH_VENDOR_ID		0x1000d8
-@@ -1504,7 +1505,7 @@ static int qm_get_vft_v2(struct hisi_qm *qm, u32 *base, u32 *number)
- 
- static void qm_hw_error_init_v1(struct hisi_qm *qm)
- {
--	writel(QM_ABNORMAL_INT_MASK_VALUE, qm->io_base + QM_ABNORMAL_INT_MASK);
-+	writel(QM_RAS_MASK_ALL, qm->io_base + QM_ABNORMAL_INT_MASK);
++#define QM_DB_DROP_ALL_FUNC_ENABLE	GENMASK(63, 0)
++#define QM_DB_DROP_ALL_FUNC_DISABLE	0
++#define QM_DEV_DB_DROP			0x0100250
++#define QM_FUN_DB_DROP			0x0038
++
+ /* qm function err mask */
+ #define QM_FUNC_AXI_ERR_ST0		0x100280
+ #define QM_RAS_FUNC_ERROR		(BIT(0) | BIT(1))
+@@ -577,6 +582,29 @@ static int qm_wait_reset_finish(struct hisi_qm *qm)
+ 	return 0;
  }
  
- static void qm_hw_error_cfg(struct hisi_qm *qm)
-@@ -1513,7 +1514,7 @@ static void qm_hw_error_cfg(struct hisi_qm *qm)
- 
- 	qm->error_mask = qm_err->nfe | qm_err->ce | qm_err->fe;
- 	/* clear QM hw residual error source */
--	writel(qm->error_mask, qm->io_base + QM_ABNORMAL_INT_SOURCE);
-+	writel(QM_RAS_CLEAR_ALL, qm->io_base + QM_ABNORMAL_INT_SOURCE);
- 	if (qm->ver >= QM_HW_V5)
- 		writeq(QM_FUNC_RAS_CLEAR_ALL, qm->io_base + QM_FUNC_AXI_ERR_ST0);
- 
-@@ -1526,43 +1527,28 @@ static void qm_hw_error_cfg(struct hisi_qm *qm)
- 
- static void qm_hw_error_init_v2(struct hisi_qm *qm)
++static void qm_fun_db_ctrl(struct hisi_qm *qm, bool enable)
++{
++	u32 val;
++
++	if (qm->ver >= QM_HW_V5) {
++		val = readl(qm->io_base + QM_FUN_DB_DROP);
++		val = enable ? (val | BIT(0)) : (val & ~BIT(0));
++
++		writel(val, qm->io_base + QM_FUN_DB_DROP);
++	}
++}
++
++static void qm_dev_db_ctrl(struct hisi_qm *qm, bool enable)
++{
++	u64 val;
++
++	if (qm->ver >= QM_HW_V5 && qm->fun_type == QM_HW_PF) {
++		val = enable ? QM_DB_DROP_ALL_FUNC_ENABLE : QM_DB_DROP_ALL_FUNC_DISABLE;
++
++		writeq(val, qm->io_base + QM_DEV_DB_DROP);
++	}
++}
++
+ static int qm_reset_prepare_ready(struct hisi_qm *qm)
  {
--	u32 irq_unmask;
--
- 	qm_hw_error_cfg(qm);
+ 	struct pci_dev *pdev = qm->pdev;
+@@ -3434,6 +3462,9 @@ static int __hisi_qm_start(struct hisi_qm *qm)
+ 	if (ret)
+ 		return ret;
  
--	irq_unmask = ~qm->error_mask;
--	irq_unmask &= readl(qm->io_base + QM_ABNORMAL_INT_MASK);
--	writel(irq_unmask, qm->io_base + QM_ABNORMAL_INT_MASK);
-+	writel(~qm->error_mask, qm->io_base + QM_ABNORMAL_INT_MASK);
++	/* Enables the doorbell function when the device is enabled. */
++	qm_dev_db_ctrl(qm, false);
++	qm_fun_db_ctrl(qm, false);
+ 	qm_init_prefetch(qm);
+ 	qm_enable_eq_aeq_interrupts(qm);
+ 
+@@ -3541,7 +3572,7 @@ static void qm_invalid_queues(struct hisi_qm *qm)
+ 	if (qm->status.stop_reason == QM_NORMAL)
+ 		return;
+ 
+-	if (qm->status.stop_reason == QM_DOWN)
++	if (qm->status.stop_reason == QM_DOWN || qm->status.stop_reason == QM_SHUTDOWN)
+ 		hisi_qm_cache_wb(qm);
+ 
+ 	for (i = 0; i < qm->qp_num; i++) {
+@@ -3585,6 +3616,8 @@ int hisi_qm_stop(struct hisi_qm *qm, enum qm_stop_reason r)
+ 
+ 	if (qm->status.stop_reason != QM_NORMAL) {
+ 		hisi_qm_set_hw_reset(qm, QM_RESET_STOP_TX_OFFSET);
++		if (qm->status.stop_reason != QM_SHUTDOWN)
++			qm_fun_db_ctrl(qm, true);
+ 		/*
+ 		 * When performing soft reset, the hardware will no longer
+ 		 * do tasks, and the tasks in the device will be flushed
+@@ -4611,6 +4644,8 @@ static int qm_controller_reset_prepare(struct hisi_qm *qm)
+ 	if (ret)
+ 		pci_err(pdev, "failed to stop by vfs in soft reset!\n");
+ 
++	qm_dev_db_ctrl(qm, true);
++
+ 	return 0;
  }
  
- static void qm_hw_error_uninit_v2(struct hisi_qm *qm)
- {
--	u32 irq_mask = qm->error_mask;
--
--	irq_mask |= readl(qm->io_base + QM_ABNORMAL_INT_MASK);
--	writel(irq_mask, qm->io_base + QM_ABNORMAL_INT_MASK);
-+	writel(QM_RAS_MASK_ALL, qm->io_base + QM_ABNORMAL_INT_MASK);
- }
- 
- static void qm_hw_error_init_v3(struct hisi_qm *qm)
- {
--	u32 irq_unmask;
--
- 	qm_hw_error_cfg(qm);
- 
- 	/* enable close master ooo when hardware error happened */
- 	writel(qm->err_info.qm_err.shutdown_mask, qm->io_base + QM_OOO_SHUTDOWN_SEL);
--
--	irq_unmask = ~qm->error_mask;
--	irq_unmask &= readl(qm->io_base + QM_ABNORMAL_INT_MASK);
--	writel(irq_unmask, qm->io_base + QM_ABNORMAL_INT_MASK);
-+	writel(~qm->error_mask, qm->io_base + QM_ABNORMAL_INT_MASK);
- }
- 
- static void qm_hw_error_uninit_v3(struct hisi_qm *qm)
- {
--	u32 irq_mask = qm->error_mask;
--
--	irq_mask |= readl(qm->io_base + QM_ABNORMAL_INT_MASK);
--	writel(irq_mask, qm->io_base + QM_ABNORMAL_INT_MASK);
-+	writel(QM_RAS_MASK_ALL, qm->io_base + QM_ABNORMAL_INT_MASK);
- 
- 	/* disable close master ooo when hardware error happened */
- 	writel(0x0, qm->io_base + QM_OOO_SHUTDOWN_SEL);
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index e8bea1e496f7..752565200c16 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -48,6 +48,7 @@
- #define SEC_OOO_SHUTDOWN_SEL		0x301014
- #define SEC_RAS_DISABLE		0x0
- #define SEC_AXI_ERROR_MASK		(BIT(0) | BIT(1))
-+#define SEC_RAS_CLEAR_ALL		GENMASK(31, 0)
- 
- #define SEC_MEM_START_INIT_REG	0x301100
- #define SEC_MEM_INIT_DONE_REG		0x301104
-@@ -752,7 +753,7 @@ static void sec_hw_error_enable(struct hisi_qm *qm)
+@@ -5019,16 +5054,25 @@ void hisi_qm_reset_prepare(struct pci_dev *pdev)
+ 	ret = hisi_qm_stop(qm, QM_DOWN);
+ 	if (ret) {
+ 		pci_err(pdev, "Failed to stop QM, ret = %d.\n", ret);
+-		hisi_qm_set_hw_reset(qm, QM_RESET_STOP_TX_OFFSET);
+-		hisi_qm_set_hw_reset(qm, QM_RESET_STOP_RX_OFFSET);
+-		return;
++		goto err_prepare;
  	}
  
- 	/* clear SEC hw error source if having */
--	writel(err_mask, qm->io_base + SEC_CORE_INT_SOURCE);
-+	writel(SEC_RAS_CLEAR_ALL, qm->io_base + SEC_CORE_INT_SOURCE);
+ 	ret = qm_wait_vf_prepare_finish(qm);
+ 	if (ret)
+ 		pci_err(pdev, "failed to stop by vfs in FLR!\n");
  
- 	/* enable RAS int */
- 	writel(dev_err->ce, qm->io_base + SEC_RAS_CE_REG);
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index 5135b3028cb2..706a73656977 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -64,7 +64,8 @@
- #define HZIP_OOO_SHUTDOWN_SEL		0x30120C
- #define HZIP_SRAM_ECC_ERR_NUM_SHIFT	16
- #define HZIP_SRAM_ECC_ERR_ADDR_SHIFT	24
--#define HZIP_CORE_INT_MASK_ALL		GENMASK(12, 0)
-+#define HZIP_CORE_INT_MASK_ALL		GENMASK(31, 0)
-+#define HZIP_CORE_RAS_CLEAR_ALL		GENMASK(31, 0)
- #define HZIP_AXI_ERROR_MASK		(BIT(2) | BIT(3))
- #define HZIP_SQE_SIZE			128
- #define HZIP_PF_DEF_Q_NUM		64
-@@ -696,7 +697,7 @@ static void hisi_zip_hw_error_enable(struct hisi_qm *qm)
- 	}
++	qm_dev_db_ctrl(qm, true);
++
+ 	pci_info(pdev, "FLR resetting...\n");
++
++	return;
++
++err_prepare:
++	pci_info(pdev, "FLR resetting prepare failed!\n");
++	atomic_set(&qm->status.flags, QM_STOP);
++	hisi_qm_set_hw_reset(qm, QM_RESET_STOP_TX_OFFSET);
++	hisi_qm_set_hw_reset(qm, QM_RESET_STOP_RX_OFFSET);
++	qm_dev_db_ctrl(qm, true);
+ }
+ EXPORT_SYMBOL_GPL(hisi_qm_reset_prepare);
  
- 	/* clear ZIP hw error source if having */
--	writel(err_mask, qm->io_base + HZIP_CORE_INT_SOURCE);
-+	writel(HZIP_CORE_RAS_CLEAR_ALL, qm->io_base + HZIP_CORE_INT_SOURCE);
+@@ -5122,7 +5166,7 @@ void hisi_qm_dev_shutdown(struct pci_dev *pdev)
+ 	struct hisi_qm *qm = pci_get_drvdata(pdev);
+ 	int ret;
  
- 	/* configure error type */
- 	writel(dev_err->ce, qm->io_base + HZIP_CORE_INT_RAS_CE_ENB);
-@@ -713,11 +714,8 @@ static void hisi_zip_hw_error_enable(struct hisi_qm *qm)
+-	ret = hisi_qm_stop(qm, QM_DOWN);
++	ret = hisi_qm_stop(qm, QM_SHUTDOWN);
+ 	if (ret)
+ 		dev_err(&pdev->dev, "Fail to stop qm in shutdown!\n");
+ }
+diff --git a/include/linux/hisi_acc_qm.h b/include/linux/hisi_acc_qm.h
+index 0a2da1029a3f..f7570a409905 100644
+--- a/include/linux/hisi_acc_qm.h
++++ b/include/linux/hisi_acc_qm.h
+@@ -115,10 +115,22 @@
  
- static void hisi_zip_hw_error_disable(struct hisi_qm *qm)
- {
--	struct hisi_qm_err_mask *dev_err = &qm->err_info.dev_err;
--	u32 err_mask = dev_err->ce | dev_err->nfe | dev_err->fe;
--
- 	/* disable ZIP hw error interrupts */
--	writel(err_mask, qm->io_base + HZIP_CORE_INT_MASK_REG);
-+	writel(HZIP_CORE_INT_MASK_ALL, qm->io_base + HZIP_CORE_INT_MASK_REG);
+ #define QM_ECC_MBIT			BIT(2)
  
- 	hisi_zip_master_ooo_ctrl(qm, false);
++/**
++ * enum qm_stop_reason - Queue manager stop reasons
++ * @QM_NORMAL:      Graceful stop. Used for device unbind, driver removal,
++ *                  or runtime power management (runtime_suspend).
++ * @QM_SOFT_RESET:  Error recovery reset. Triggered by unrecoverable hardware
++ *                  errors (e.g., PCIe AER, timeout) to recover device state.
++ * @QM_DOWN:        Function Level Reset. Used when the device needs to
++ *                  be reset at the function level without resetting the link.
++ * @QM_SHUTDOWN:    System shutdown. Used during system poweroff, reboot, or
++ *                  kexec to ensure hardware is in a safe state.
++ */
+ enum qm_stop_reason {
+ 	QM_NORMAL,
+ 	QM_SOFT_RESET,
+ 	QM_DOWN,
++	QM_SHUTDOWN,
+ };
  
+ enum qm_state {
 -- 
 2.33.0
 
