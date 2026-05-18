@@ -1,202 +1,140 @@
-Return-Path: <linux-crypto+bounces-24249-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24253-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SEtfDZ0WC2o5/wQAu9opvQ
-	(envelope-from <linux-crypto+bounces-24249-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 18 May 2026 15:39:41 +0200
+	id CKJEKqgkC2rTDwUAu9opvQ
+	(envelope-from <linux-crypto+bounces-24253-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 18 May 2026 16:39:36 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9EDA56DCA3
-	for <lists+linux-crypto@lfdr.de>; Mon, 18 May 2026 15:39:40 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E3B156EFED
+	for <lists+linux-crypto@lfdr.de>; Mon, 18 May 2026 16:39:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 87B4E3041A9C
-	for <lists+linux-crypto@lfdr.de>; Mon, 18 May 2026 13:35:24 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DB7C030416AF
+	for <lists+linux-crypto@lfdr.de>; Mon, 18 May 2026 14:31:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC653FAE0E;
-	Mon, 18 May 2026 13:35:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E6A2D0610;
+	Mon, 18 May 2026 14:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="i9Zmae9L"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="0NCq3aI2"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from BL0PR03CU003.outbound.protection.outlook.com (mail-eastusazon11012050.outbound.protection.outlook.com [52.101.53.50])
+Received: from canpmsgout09.his.huawei.com (canpmsgout09.his.huawei.com [113.46.200.224])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C2A15B998;
-	Mon, 18 May 2026 13:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.53.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779111321; cv=fail; b=qJiY4tOpIjkuciOtcWLmQUXUBlyyt7i6OxoQ7Q0yLzfU/Tb3g5M0gI8ROD3qiCjrQUNU3WjVO/lUSM1aD87rPhUbDygnhQ7WDd5V+ljwGcY8zFY8wtJbLxqWsZm+koB1vQys5SrtW5d3i2UAiHMgI1up/47V65NyGVttF5YG940=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779111321; c=relaxed/simple;
-	bh=/KUVdPiHfnU44tMRlTkz3snoS6bq7UpLxiSJkPlXaYE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=KGOUIK8HUBMd7PA+1lq0s7NB5bhmtbw88HLXvGIE2MW+fESYrBR9oPQPuUJJepPtNzycd5SFz/RwNFK+Q7Qhs6kubNkW0kGx44xMblxIehySaMaHKPNIHtcWpdopdMmG+T2KgUOpE8leRL8ZrtR/U6WrCIY2laVfl+Xa9Ezn7BQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=i9Zmae9L; arc=fail smtp.client-ip=52.101.53.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=u87fIRImQo5ImzNK7XPuY5KS1sdkWjAe8OlupNrIacW7xxZr2WafXJyaTa8IiAKrhmDYWqBKI59yipEJnNtH4Sx4xqxYX1vXsVcWAg7im6cRgJvBS0KK9cBBBIGLz72jigOX6yPf80iYGAhEJp2fclyfWp/S/p7nvQP/RwOcn251jjfdi1X2xN0NwSY2qwsImZYcwa4vbPH7bgy3ZNDQjLmgLUc3+p0YWGfYoQ0lhserv03FAEB2dF/cARbaPf5iJfpS6X9bKwLm4HgTVW5cp328lk+X22vZHAolU3IxFLAy10fWz6y/oNja2dEXR0sc8iPOSOCGRlQ2Wane54i5ag==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6/VLuO6JgSSeSH9aocs/cRorybr46PGcnWEpbNuOZL0=;
- b=FiMrM6sKu2nUETdCEGA9nIdUodETlzBlYu8uj/eEWeQ1tIPKmHzcPAP/97jfbbnWVctLX3eRh/0nxsva23k1+66H+YZ2VXcblQB0S+l5tt31QM3fxftkCUMffJ5c9/EWlSRUN/f1yekq2QcgsW5EtOb4ieK7xZTl6ZIbHRNe6L8spF/x+AIKqdMiPG9Gn6qD1EKbPDK1ocR7/wOXVq3fj3xzEKftnsPTEPdsZDOTFKB/rvdu6mDltkP8E52n30jDGP8eesb3jJNwFc7RnEWWwDLeHao7jNXoyhth1rJ82iTDgbD8EQbXjtnj/Iy3kSaHgvPKEx+J9Ba6F+woWAig9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.21.195) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=ti.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6/VLuO6JgSSeSH9aocs/cRorybr46PGcnWEpbNuOZL0=;
- b=i9Zmae9LWJQhDbP7FpmuKYj1EWWv56OUIhu7CoRhzfQ3hlAeMZZ81IH9UMci1Obh0krZ/ZURs8vLYcIEB7FRmb64vtaBUXWqp6yzhfrvKdfl7Kki4PM0ILRSWC0OyaBEvDjRKDcMY84QI59T/zPWTvjv2fKs9xaVmfHT6WpwxcQ=
-Received: from CH2PR18CA0016.namprd18.prod.outlook.com (2603:10b6:610:4f::26)
- by DM4PR10MB5992.namprd10.prod.outlook.com (2603:10b6:8:af::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.25.24; Mon, 18 May
- 2026 13:35:11 +0000
-Received: from DM2PEPF00003FC2.namprd04.prod.outlook.com
- (2603:10b6:610:4f:cafe::54) by CH2PR18CA0016.outlook.office365.com
- (2603:10b6:610:4f::26) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.25.23 via Frontend Transport; Mon, 18
- May 2026 13:35:10 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.195)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.21.195 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.21.195; helo=flwvzet201.ext.ti.com; pr=C
-Received: from flwvzet201.ext.ti.com (198.47.21.195) by
- DM2PEPF00003FC2.mail.protection.outlook.com (10.167.23.20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.48.11 via Frontend Transport; Mon, 18 May 2026 13:35:08 +0000
-Received: from DFLE208.ent.ti.com (10.64.6.66) by flwvzet201.ext.ti.com
- (10.248.192.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Mon, 18 May
- 2026 08:35:08 -0500
-Received: from DFLE205.ent.ti.com (10.64.6.63) by DFLE208.ent.ti.com
- (10.64.6.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Mon, 18 May
- 2026 08:35:08 -0500
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DFLE205.ent.ti.com
- (10.64.6.63) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37 via Frontend
- Transport; Mon, 18 May 2026 08:35:08 -0500
-Received: from [10.24.69.191] (pratham-workstation-pc.dhcp.ti.com [10.24.69.191])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 64IDZ4lo1971801;
-	Mon, 18 May 2026 08:35:05 -0500
-Message-ID: <e3612486-20ee-4c0c-b5f5-677ee9f724dd@ti.com>
-Date: Mon, 18 May 2026 19:05:04 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B212FFF99;
+	Mon, 18 May 2026 14:31:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.224
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1779114693; cv=none; b=mhZDum5ymIjA23M444mBEeNyvfHlHYyFcCGJT4Bk4q7d2u4Boz94P3rlCbNfU8rwrrVvVx9GzCprSTHiXJ7uYGYFaNJ1ilmPL5yhKIqE0x2/FOWHrI5/ZX6uXu7yl3iTElC3WqU31L/HVrRHpEa/GIBTV6wXBZdBA5Lgr8btMuc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1779114693; c=relaxed/simple;
+	bh=6zRLbEGja04YfEmsW+p0HxJ9Xzfe3NaD6Yc8rl9HLRs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZvMST66vVCPkb32aYTYFjB6mTJlPLPzRlC7Q6xMOXsEmZYb1j+rTt3lTwJ+/EjukjTCQdXPXjkKAodlnRyX909AeUIL9HZ333WhqadfJw5mLCxtu8jbEnm05GVF+fYDuePQ936eR1Mt0k5sAnlsU8fFtFPgt11wPxH0cNKQLXew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=0NCq3aI2; arc=none smtp.client-ip=113.46.200.224
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=+8XT8O6CaNYjbH7mg1oZghNgUEHo6uC588vWWamN3tk=;
+	b=0NCq3aI2aP4BoyoXRFdlHhcAgsqW/rSaDv41aRCYNXZYZ4HcNb0U6aEBa2xq4aTAv9hiPJiJP
+	+4sjRBhlGzweUEjkrAASOEPDls8B23yvG3C3BUt0KgdKnBzdwLE6u2/OEnhYe+VrgHQHsW2bnYi
+	pnXAhGevYk3wRK1eHikMV2E=
+Received: from mail.maildlp.com (unknown [172.19.162.92])
+	by canpmsgout09.his.huawei.com (SkyGuard) with ESMTPS id 4gK0R16yn0z1cyPh;
+	Mon, 18 May 2026 22:23:41 +0800 (CST)
+Received: from kwepemr100008.china.huawei.com (unknown [7.202.195.119])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0821440565;
+	Mon, 18 May 2026 22:31:21 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ kwepemr100008.china.huawei.com (7.202.195.119) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.36; Mon, 18 May 2026 22:31:20 +0800
+From: ZongYu Wu <wuzongyu1@huawei.com>
+To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+	<fanghao11@huawei.com>, <liulongfang@huawei.com>, <qianweili@huawei.com>,
+	<wangzhou1@hisilicon.com>, <huangchenghai2@huawei.com>
+Subject: [PATCH 0/6] crypto: hisilicon/qm - support function reset and VF isolation
+Date: Mon, 18 May 2026 22:29:50 +0800
+Message-ID: <20260518142956.3593934-1-wuzongyu1@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] crypto: ti - Add support for SHA224/256/384/512 in
- DTHEv2 driver
-To: Herbert Xu <herbert@gondor.apana.org.au>
-CC: "David S. Miller" <davem@davemloft.net>, Manorit Chawdhry
-	<m-chawdhry@ti.com>, Kamlesh Gurudasani <kamlesh@ti.com>, Shiva Tripathi
-	<s-tripathi1@ti.com>, Kavitha Malarvizhi <k-malarvizhi@ti.com>, "Vishal
- Mahaveer" <vishalm@ti.com>, Praneeth Bajjuri <praneeth@ti.com>,
-	<linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>
-References: <20260226131103.3560884-1-t-pratham@ti.com>
- <20260226131103.3560884-2-t-pratham@ti.com>
- <abTdJSPtLYN0VJWm@gondor.apana.org.au>
-Content-Language: en-US
-From: T Pratham <t-pratham@ti.com>
-In-Reply-To: <abTdJSPtLYN0VJWm@gondor.apana.org.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-C2ProcessedOrg: 333ef613-75bf-4e12-a4b1-8e3623f5dcea
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM2PEPF00003FC2:EE_|DM4PR10MB5992:EE_
-X-MS-Office365-Filtering-Correlation-Id: 13e6f33a-09c0-42c0-40fd-08deb4e24789
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|82310400026|376014|36860700016|18002099003|22082099003|56012099003|4143699003;
-X-Microsoft-Antispam-Message-Info:
-	+fuLaEp2BXsCH4dZjDWLvLDfSK5DARLNMD3x/QzbEnY0fzJGJt3D85L89aitE7Wv0NgCIFvb/4GY072E7Y+R/ChoTNOIopVIiyWK3/HvHokLq1jNQccUhCHJpl2S0QcLYbUcPf3fJmWtTv3dsTWQughAIeIGQDX7g1pbpnf1/0Kr005exXsmvTTt99H6CvBamil3rwPYk8Yg92vzQLNwvumlvXr8SitPciwMZUCN0RdQV4ix5AGgISk9FF7Ds1s+9nr0org9UjZWgaY7NId7dDnpNZaNIfH199edZTYF/Xx7RGEq7iXXoPwz8v9RaFmAogR/KKutWp4pOsG0jJ0Ft6QL4AmXpdbjUggZPrW8r5ylerfRbRLqOcPBDEd0cmu/u33ay4E1eW7Q/O3R88tOwlEk8gCrCABeo2HQWgwUuA8uuAl/KQAoMf3mH2wxYwzokmGwyEOXTnfqewWM0PXHszVCun2o6ay+Vyybmm8q19UWLbUkjRfdZj7O//TV5OCh4ArBeDOtuK2DmhxepShXEuwbFr6Fw6aXRulgyDJ+f7z4KkF67IfpKPtbIoCPrumBiV0Rol0InG0TaU673Q70vPW8AqioevMSOE28bWdJeEDKA+PRgMz8a6un8P0WkB1oAUPXUsQJzzvHLhmsvzq+x4699fitxIu/IM+LdHzkc/ZPuxS/UvF+PFY9P1Pv4Mwh0UURePoHsY+oyMJdDKyDPbT5KC68hY1tMnD0I9nX/Nk=
-X-Forefront-Antispam-Report:
-	CIP:198.47.21.195;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet201.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(1800799024)(82310400026)(376014)(36860700016)(18002099003)(22082099003)(56012099003)(4143699003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	oZrvnB3anUP7IaoF1YmYP25eG5x6o7Vagq5S16sanrk0rVAvWt7RIGkazhpF0Zj1IunOfhWNfSB/+7AiY9dkYbhPwUVZRAvBYNW7NjK6xQtYBPd+2hio6abnWd3eoBnGnxb53lwId/ovyi7pO7nKzro+YMpiUVxLw43QdxGWCzNFt05K0OEfkgMcNIAxprcjFSn2LxOmMy0ufrjva2H/qjBh4lKqk7r2Mjnjks3rSY9C1TOXxe39N4kkbbcZ5yMLDR+NrkZs8arBzG82surOg4yUYQIdGg70kYojCzMto8WtwdUGsMsGkwUYnXpMpgvw+Pod2U5OTITYF7MDsbfpIqrKkBtTwch0rIiLVFT/ofOxPhYHFB+89JGsOdRDTCV85/PlbKqfG/enI6nOxzWBjb7TI2kv0siTS/GS6Mhd6bUiz5C433IsvusXUJIdLjPA
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 May 2026 13:35:08.8006
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13e6f33a-09c0-42c0-40fd-08deb4e24789
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.195];Helo=[flwvzet201.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DM2PEPF00003FC2.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB5992
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[ti.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[ti.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ kwepemr100008.china.huawei.com (7.202.195.119)
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	DKIM_TRACE(0.00)[ti.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[t-pratham@ti.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[wuzongyu1@huawei.com,linux-crypto@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-24253-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-24249-lists,linux-crypto=lfdr.de];
-	RCVD_COUNT_SEVEN(0.00)[10]
-X-Rspamd-Queue-Id: B9EDA56DCA3
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	DKIM_TRACE(0.00)[huawei.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	RCVD_COUNT_FIVE(0.00)[6];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,huawei.com:mid,huawei.com:dkim,3.support:url]
+X-Rspamd-Queue-Id: 1E3B156EFED
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 3/14/26 09:29, Herbert Xu wrote:
-> On Thu, Feb 26, 2026 at 06:41:01PM +0530, T Pratham wrote:
->>
->> +static int dthe_hash_export(struct ahash_request *req, void *out)
->> +{
->> +	struct dthe_hash_req_ctx *rctx = ahash_request_ctx(req);
->> +	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
->> +	struct dthe_tfm_ctx *ctx = crypto_ahash_ctx(tfm);
->> +	union {
->> +		u8 *u8;
->> +		u64 *u64;
->> +	} p = { .u8 = out };
->> +
->> +	memcpy(out, rctx->phash, ctx->phash_size);
->> +	p.u8 += ctx->phash_size;
->> +	put_unaligned(rctx->digestcnt[0], p.u64++);
->> +	if (ctx->phash_size >= SHA512_DIGEST_SIZE)
->> +		put_unaligned(rctx->digestcnt[1], p.u64++);
->> +
->> +	return 0;
->> +}
-> 
-> The hash state must always be exported, even right after initialisation.
-> So you need to export the initial SHA stats if phash_available is
-> false.
-> 
-> Cheers,
+This patch set adds function reset and function isolation capabilities,
+and fixes issues related to reset operations.
 
-Hi,
-I fixed the above and will send a new patch. But I had a question.
-What is the expected export/import format for HMAC algorithms? Can't
-seem to find a struct similar to sha512_state/sha256_state for hmac.
+1.Currently, the device only supports global reset when an error occurs.
+However, some errors only affect a single function's operation without
+affecting other functions. Therefore, the PF can notify the VF driver
+to perform a reset, rather than using a global reset that affects all
+task.
+2.When device reset fails or the reset frequency exceeds the
+user-configured threshold, the device on the physical machine will
+be isolated. Add functionality for devices in virtual machines to
+obtain the isolation status of the PF.
+3.Support for doorbell enable control, which disables doorbell before
+reset and enables doorbell after device initialization.
+
+Weili Qian (2):
+  crypto: hisilicon/qm - disable error report before flr
+  crypto: hisilicon - mask all error type when removing driver
+
+Zhushuai Yin (3):
+  crypto: hisilicon/qm - allow VF devices to query hardware isolation
+    status
+  crypto: hisilicon/qm - place the interrupt status interface after the
+    PM usage counter
+  crypto: hisilicon/qm - support function-level error reset
+
+Zongyu Wu (1):
+  crypto: hisilicon/qm - support doorbell enable control
+
+ drivers/crypto/hisilicon/hpre/hpre_main.c |  19 +-
+ drivers/crypto/hisilicon/qm.c             | 334 ++++++++++++++++++----
+ drivers/crypto/hisilicon/sec2/sec_main.c  |  13 +-
+ drivers/crypto/hisilicon/zip/zip_main.c   |  20 +-
+ include/linux/hisi_acc_qm.h               |  15 +-
+ 5 files changed, 308 insertions(+), 93 deletions(-)
 
 -- 
-Regards
-T Pratham <t-pratham@ti.com>
+2.33.0
+
 
