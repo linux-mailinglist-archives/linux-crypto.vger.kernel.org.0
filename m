@@ -1,80 +1,81 @@
-Return-Path: <linux-crypto+bounces-24325-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24327-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mLycE/rNDGqDmQUAu9opvQ
-	(envelope-from <linux-crypto+bounces-24325-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2026 22:54:18 +0200
+	id OC24MhXODGpMmQUAu9opvQ
+	(envelope-from <linux-crypto+bounces-24327-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2026 22:54:45 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B0EF584E91
-	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2026 22:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 50800584EA0
+	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2026 22:54:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E379730F0377
-	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2026 20:48:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 58CBE30F8178
+	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2026 20:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F2B3C0604;
-	Tue, 19 May 2026 20:48:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F123BFAED;
+	Tue, 19 May 2026 20:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bOV0P4GI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pd8igZkI"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB683BFE4F
-	for <linux-crypto@vger.kernel.org>; Tue, 19 May 2026 20:48:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAAB63C1F26
+	for <linux-crypto@vger.kernel.org>; Tue, 19 May 2026 20:48:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779223705; cv=none; b=pMMfUFKahEBNIn+YGtZjmq3pzbp6lPq8VnUQ/sctgls6WB4VyRO+xHNXHmvBCgtjBFk9GSDOveFmuz2A6DugwafOfbaZ6WQpFerOhi5hZwdV0QPgyrhfofpNMU0MMPss6RfVX8Gy74ZDAnhaJ22d//1I1N4EQSiv6iHf3nQUV+Y=
+	t=1779223708; cv=none; b=XP/IWpJCGdtNWGu40rOsSGMkk160Y4tjhMrg9VpZfECv+8DjvaITAjnb52ci1rhOxIMnbmRltQuTGSiJbtzwWYMEhwwGLCg16MYmC0vfAF67z4ystFSoqE59lmAVQx50cICTnyJLeDxIwoXhf2GrZPdx86SWJZdAqAMxpzwQKOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779223705; c=relaxed/simple;
-	bh=m0BO1BJp7UiRiIUF0q/PMhak4m/3xBhMeT8SNCZ26Ow=;
+	s=arc-20240116; t=1779223708; c=relaxed/simple;
+	bh=HcGNt0IMVlN/ojuZul68gyUXfj92IbH1U64eeoIpt3w=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lfx7HCZaaxJkBSdkysvKCQY/+beojNcQCOz9yNXZmIinaj6sr/s856xY6IQbJsNCD6Wvo29ovHWcvJlyyazxC2LG6ug2Si566ad70epdx2JeRk3PmnRBNbdK6eAoSPFn0fRhGtR2KZ3gxDX2mXJkaIIh6aD9YBF/sdgys5kgFGM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bOV0P4GI; arc=none smtp.client-ip=209.85.221.41
+	 MIME-Version; b=j4hWsw7lVSaOulU1Bq785B26GzEcRivRq23avsmtJY1sBxUit4hZSyV2tk5yjsv94Zkcpghx7lVcSjTSqDp+IcTaU/MrLPJhl1gD5UpyogoNeLXElgbPfZkwIK5Eh6IYXKX8NZh5cAK8SMlxXOc5rS10WDFuCwn2+QK5WJZG5bM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pd8igZkI; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-44c44af71f8so494201f8f.1
-        for <linux-crypto@vger.kernel.org>; Tue, 19 May 2026 13:48:20 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-43d7670826bso297569f8f.3
+        for <linux-crypto@vger.kernel.org>; Tue, 19 May 2026 13:48:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779223699; x=1779828499; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1779223700; x=1779828500; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CeQLtV3ZJs9NMCaLxxe8lNWCUSJcJ/X+OKLcCSGP6Uw=;
-        b=bOV0P4GImCXLytP0eBSoMlpSuoSGpGWwPGSeZHXaHRCLSq175q41SaSba54ZS5HeVH
-         6G/T5O4Ge66ezr20J1G1AyCNeSIysE3oko6PkgTShUIXpxfck7loVSCs/5C/in8hoV41
-         LNGNaVcfAVq7Ln6a41Di7zmujj8yqB26MBMjkenWj6uQl+XbSiLCoJhzFHd896H8kUwX
-         TRylbwKQHc2mHHHKDA0CeJtSYS/84lW5fzmJD24U9jQpu9pccwjimXFqv0eG2PvYRSHx
-         Xeo8FTWffAqebl8g7DrbflzaKxWhV6Ww/VyuJbcJbhYPFs1mw79Pz7XeDYRNByp6e4+Y
-         Y90A==
+        bh=+dQdC9oLqGqR6Yemw3ngZxXH5nQjTXJGwmXiYcKTYls=;
+        b=Pd8igZkIw9G8LfKTgHoNZlhYGcxeqABunGWVVA3e9CvynGho4AFCPd1Yxv9zm5Ix3V
+         o8Al9G/QLCWWm6/SM0ffhJonYMoeiwEzHlPnFx/c/AgYlN4soKTd1Pm8btr7dRdH7rcK
+         izsGdwxy+59l7mEsutOFBTLpSstnLFOx6vqjBD+39V+7TGcoSKotrwLcD4U+VIhlV4RM
+         vgjCkjpwgTtyBDosOYXMfU/iSfA82+DNDtX8kILOgJb78xZzKIFajCVAMfwbrZtgI7X/
+         Alp3aC9RRX8pvXta6XGnGg6bRLzkEFB/5PE9/WSP0P9E5j7gmyIdT4bY6YT8A0gKjsh2
+         UdEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779223699; x=1779828499;
+        d=1e100.net; s=20251104; t=1779223700; x=1779828500;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=CeQLtV3ZJs9NMCaLxxe8lNWCUSJcJ/X+OKLcCSGP6Uw=;
-        b=Xug3x5pPgaC9O1XxAhmhmsZemtZGL3pYLdECmS1vo+8Ynf3Dj7u21Le4eDBFHWzV0b
-         8JpH2U0JzlcLhQvaVa2YlMp7CPXZl9DiCdWmmeA4ue/aydGu+r3A2Q4cV2BJZl6dBLdU
-         egj06yDIHCOgf1dSJ+ajVsfPbr71dB6qsLkWKIyYfZqTzI1IT3pagdowg2VKTk24p2WM
-         4sag++dGhFLCjN4MKlZZELVUYu28X/Y70Y35MJkFzVg03C00t+O4JGF9DbYNr22ZNAzF
-         Fv6o7WRS56CYuJk/1ypOSyCzoIh0CAthkr5pWzZAmNiH3+YfoE9cXmf8gK12O89lttOx
-         hGzg==
-X-Gm-Message-State: AOJu0YzmWg0YWuGbMImwXDeDWCi0dsTQ5X+3JXasTKfMI76Xd4MQ28pA
-	LD+DZKR4H8zBVmi2YiEaprWX0J/cwyJUcIWDcxGzjDsweXtDcDRpYQ0u
-X-Gm-Gg: Acq92OES6QCUzLkPDb8ZIcOLq4s3XJ7nTmF+mThMps+aGJBIeaYE8HcO2AUs+VN4CZD
-	yMGBCsGvTwKLKnaqzIyyfbIRRJoYWML3ym7W8Oj2EM8xzI4QupjXIMjLr9P6xOIr+W+A47c02CD
-	g5qyEML97txL/U8eH9f1rBxdTRra0e/Y4gjZiHOud4Tk0xZX7m5fwRIeCHJoQ871qD4iQfzD6FW
-	es0CJSqsTJYvNIWYsHALXc6z3eRb2mNEew5kpI5pqKmfL0wE4nF7z3Jnmj3hROnszXt1juljR7H
-	ShrIi80BjQIon/XM2iGxqi60wcG6XQtFKeLKK0VhgaNhzOQwSlCKHYzTxMaIZ39E1MtZkHf9zO6
-	XaS5vm4Am7m3ixDEMOCAArAXfLLXMimNobIX+YbsA19WO+tNScjTlhad3U89jm/0d0nSs+U5UFk
-	krVSR6d6S9iPxceKqxEMsQHIcTq+40l6A1imsBfEmtQM/Nwi8N92fMIVx9aU3THpg=
-X-Received: by 2002:a05:600c:4fc5:b0:489:1dc6:d6e with SMTP id 5b1f17b1804b1-48fe5fcf406mr148338135e9.1.1779223699130;
-        Tue, 19 May 2026 13:48:19 -0700 (PDT)
+        bh=+dQdC9oLqGqR6Yemw3ngZxXH5nQjTXJGwmXiYcKTYls=;
+        b=LCJbWL0e+9CYHJMsNlhvPSLBop1XBrjoGIFn+8f1tlaSLTP5CIkJNxQxdBKItKVzxe
+         03srQy+OrnRnh8qDS0w5bZkKd+U2FA1/n0AA1nOcV5lFMN8At1oB6ywsMiFwpAbG5Wid
+         H2QplknoPqCN9t2z1QdI+ZhG7RcLnCYIHAzSRprgfFxwsG886pn6jpEVuiVIvyDedPZp
+         9hIgkQ6wRb8S0SurDU2ayQSwVIUwNj4KClFVa+h0JEToc3FVi9sWeeUfLQNup/UDcFo1
+         Pyv9VAhcsCQ3jDFslPS0NgXVdGUGBI92npMntmkxtN8ZsYJFNMgmYqZK3iT0+A42AUB/
+         8vNQ==
+X-Gm-Message-State: AOJu0YzN2nYKZDckQSi//hm+wKq6xx01jhkMbqM3TFuo2KzcfSmMS6Sl
+	LILR/VYUu/Wy1+RXtWCYiYj3M4lvxYHfuACDLVndtc1h8aCEJy1cbPjD
+X-Gm-Gg: Acq92OFwXDKG0TBk6LcEeTf5Pa3JabmytaZaiRSx2wpiBQOU583ZVzsVn5cFukGt7OG
+	6QxD30U6tuBPPtyUdWi3aK+K3u3AQIEwmWayiR2ujv0HYzBdYUnL2RtKy0RY4baWfQnz626j980
+	3r+6bnayqG2geb+WGmR6QVvrIC7PokJg5CM3aw8H0uk6QPM0bIuFVAy6EEk+GpUfelVqz5w+SzV
+	z5GsV6t2Qdh6Kzc1CQmDoqrjfy9MHTVTdh2FckXM+i4gubLhTPNye29jBwAqLnFpAu8yxQ5/aDF
+	TlT7QIuIEpNhiIpevZTKOkNs1XSB812A06UXsu4yzVxQ8wJoqgB+C750Lye5VOeOGVKVCOtI1Fr
+	2j6hwhw+Pj9YKbjBKVOtGm8qobj45FGCOcULoa2p3hz9ja69Q7bzNqms16Y3RJDX6f2xXvflDvc
+	ypKPmcLLOPhxOb4ayH02LiIBaqBl4/mk1YnnRUiTDwtdeupOByodkIomBsIHn5lZ5Z2STZlWYkI
+	g==
+X-Received: by 2002:a05:600c:198d:b0:487:1826:e138 with SMTP id 5b1f17b1804b1-48fe6309a99mr184655105e9.1.1779223700120;
+        Tue, 19 May 2026 13:48:20 -0700 (PDT)
 Received: from menon.v.cablecom.net (84-74-0-139.dclient.hispeed.ch. [84.74.0.139])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48fe4dac000sm356457755e9.0.2026.05.19.13.48.18
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48fe4dac000sm356457755e9.0.2026.05.19.13.48.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2026 13:48:18 -0700 (PDT)
+        Tue, 19 May 2026 13:48:19 -0700 (PDT)
 From: Lothar Rubusch <l.rubusch@gmail.com>
 To: thorsten.blum@linux.dev,
 	herbert@gondor.apana.org.au,
@@ -86,9 +87,9 @@ Cc: linux-crypto@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	l.rubusch@gmail.com
-Subject: [PATCH v2 10/12] crypto: atmel-sha204a - integrate into core management tracking
-Date: Tue, 19 May 2026 20:48:01 +0000
-Message-Id: <20260519204803.17034-11-l.rubusch@gmail.com>
+Subject: [PATCH v2 11/12] crypto: atmel-sha204a - fix heap info leak on I2C transfer failure
+Date: Tue, 19 May 2026 20:48:02 +0000
+Message-Id: <20260519204803.17034-12-l.rubusch@gmail.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20260519204803.17034-1-l.rubusch@gmail.com>
 References: <20260519204803.17034-1-l.rubusch@gmail.com>
@@ -115,7 +116,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-24325-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-24327-lists,linux-crypto=lfdr.de];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
@@ -129,109 +130,57 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[10];
 	MID_RHS_MATCH_FROM(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 9B0EF584E91
+X-Rspamd-Queue-Id: 50800584EA0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Register the SHA204A I2C device instance into the shared atmel_i2c client
-management tracking list during the probe phase. This allows the driver to
-participate in the central hardware selection infrastructure.
+When a non-blocking read operation is requested, the driver dynamically
+allocates memory to track asynchronous transfer status. If the underlying
+I2C transmission fails, atmel_sha204a_rng_done() logs a rate-limited
+warning but incorrectly proceeds to cache the pointer to this uninitialized
+buffer inside the rng->priv data field anyway.
 
-Rework the error-unwind paths inside atmel_sha204a_probe() to prevent stale
-entries from remaining in the global tracking structures if a partial
-initialization failure occurs. If sysfs group creation fails, explicitly
-trigger devm_hwrng_unregister() to preserve the strict lifecycle ordering
-introduced in previous stability fixes.
+On subsequent execution passes, atmel_sha204a_rng_read_nonblocking()
+detects the stale rng->priv value, skips executing a hardware data read,
+and copies up to 32 bytes of uninitialized kernel heap data from this
+garbage memory pool straight back into the system's hwrng data stream.
 
-Convert the removal path to use the core teardown helpers. Ensure the
-device readiness state is deactivated using atmel_i2c_deactivate_client()
-before any local hardware cleanup runs, and call
-atmel_i2c_unregister_client() at the end of the sequence to safely drop the
-node from global tracking.
+Fix this information disclosure vector by immediately releasing the
+allocated asynchronous work data buffer and explicitly clearing the
+tracking pointer context whenever an I2C transaction returns a non-zero
+error status.
 
-No functional change intended beyond improved lifecycle handling.
+Additionally, ensure that tfm counter is decremented within the error path
+to prevent reference counter stagnation, which would otherwise leave the
+driver in a permanently busy state. Finding by a sashiko side-review.
 
+Fixes: da001fb651b0 ("crypto: atmel-i2c - add support for SHA204A random number generator")
 Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
 ---
- drivers/crypto/atmel-sha204a.c | 31 +++++++++++++++++++++++++------
- 1 file changed, 25 insertions(+), 6 deletions(-)
+ drivers/crypto/atmel-sha204a.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/crypto/atmel-sha204a.c b/drivers/crypto/atmel-sha204a.c
-index 3853d2b95449..38a269186e2a 100644
+index 38a269186e2a..3d29543032cc 100644
 --- a/drivers/crypto/atmel-sha204a.c
 +++ b/drivers/crypto/atmel-sha204a.c
-@@ -172,9 +172,15 @@ static int atmel_sha204a_probe(struct i2c_client *client)
- 		return ret;
+@@ -31,10 +31,15 @@ static void atmel_sha204a_rng_done(struct atmel_i2c_work_data *work_data,
+ 	struct atmel_i2c_client_priv *i2c_priv = work_data->ctx;
+ 	struct hwrng *rng = areq;
  
- 	i2c_priv = i2c_get_clientdata(client);
-+	i2c_priv->ready = false;
- 
- 	i2c_priv->caps = 0;
- 
-+	spin_lock(&atmel_i2c_mgmt.i2c_list_lock);
-+	list_add_tail(&i2c_priv->i2c_client_list_node,
-+		      &atmel_i2c_mgmt.i2c_client_list);
-+	spin_unlock(&atmel_i2c_mgmt.i2c_list_lock);
-+
- 	memset(&i2c_priv->hwrng, 0, sizeof(i2c_priv->hwrng));
- 
- 	i2c_priv->hwrng.name = dev_name(&client->dev);
-@@ -185,15 +191,28 @@ static int atmel_sha204a_probe(struct i2c_client *client)
- 		i2c_priv->hwrng.quality = *quality;
- 
- 	ret = devm_hwrng_register(&client->dev, &i2c_priv->hwrng);
--	if (ret)
-+	if (ret) {
- 		dev_warn(&client->dev, "failed to register RNG (%d)\n", ret);
-+		goto err_list_del;
+-	if (status)
++	if (status) {
+ 		dev_warn_ratelimited(&i2c_priv->client->dev,
+ 				     "i2c transaction failed (%d)\n",
+ 				     status);
++		kfree(work_data);
++		rng->priv = 0;
++		atomic_dec(&i2c_priv->tfm_count);
++		return;
 +	}
  
- 	ret = sysfs_create_group(&client->dev.kobj, &atmel_sha204a_groups);
- 	if (ret) {
- 		dev_err(&client->dev, "failed to register sysfs entry\n");
--		return ret;
-+		goto err_hwrng_unregister;
- 	}
- 
-+	spin_lock(&atmel_i2c_mgmt.i2c_list_lock);
-+	i2c_priv->ready = true;
-+	spin_unlock(&atmel_i2c_mgmt.i2c_list_lock);
-+
-+	return 0;
-+
-+err_hwrng_unregister:
-+	devm_hwrng_unregister(&client->dev, &i2c_priv->hwrng);
-+err_list_del:
-+	atmel_i2c_unregister_client(i2c_priv);
-+
- 	return ret;
- }
- 
-@@ -201,12 +220,13 @@ static void atmel_sha204a_remove(struct i2c_client *client)
- {
- 	struct atmel_i2c_client_priv *i2c_priv = i2c_get_clientdata(client);
- 
--	devm_hwrng_unregister(&client->dev, &i2c_priv->hwrng);
--	atmel_i2c_flush_queue();
-+	atmel_i2c_deactivate_client(i2c_priv);
- 
-+	devm_hwrng_unregister(&client->dev, &i2c_priv->hwrng);
- 	sysfs_remove_group(&client->dev.kobj, &atmel_sha204a_groups);
--
- 	kfree((void *)i2c_priv->hwrng.priv);
-+
-+	atmel_i2c_unregister_client(i2c_priv);
- }
- 
- static const struct of_device_id atmel_sha204a_dt_ids[] = {
-@@ -239,7 +259,6 @@ static int __init atmel_sha204a_init(void)
- 
- static void __exit atmel_sha204a_exit(void)
- {
--	atmel_i2c_flush_queue();
- 	i2c_del_driver(&atmel_sha204a_driver);
- }
- 
+ 	rng->priv = (unsigned long)work_data;
+ 	atomic_dec(&i2c_priv->tfm_count);
 -- 
 2.39.5
 
