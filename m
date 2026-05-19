@@ -1,178 +1,153 @@
-Return-Path: <linux-crypto+bounces-24329-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24330-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WDn/KCfODGqDmQUAu9opvQ
-	(envelope-from <linux-crypto+bounces-24329-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2026 22:55:03 +0200
+	id 6L6aMX7RDGrImQUAu9opvQ
+	(envelope-from <linux-crypto+bounces-24330-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2026 23:09:18 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 350BA584ED7
-	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2026 22:55:02 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29DEF585009
+	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2026 23:09:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C8FF43100A84
-	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2026 20:49:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 78AB3301BC1D
+	for <lists+linux-crypto@lfdr.de>; Tue, 19 May 2026 21:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0035A3C1413;
-	Tue, 19 May 2026 20:48:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF033B52F5;
+	Tue, 19 May 2026 21:07:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e76ZOV3d"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lTdKMwgu"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41893C342B
-	for <linux-crypto@vger.kernel.org>; Tue, 19 May 2026 20:48:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0C63E2ABA
+	for <linux-crypto@vger.kernel.org>; Tue, 19 May 2026 21:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779223715; cv=none; b=BtkzMKIFl47CeaWemqHT+qV1iFR/sXBJvAaHOz4RpvzWWj5dWohMrWeilxqdkMfuyu2YHi345srNGtz5wXBUzkBX+XQxxBN/ayzWUmvbbZQnHij+wmQ+Lt0QJlMt9Ok/+BM44+uryRgs+SL8z8QrxlY7I8q2f4JVHqRu1UD/bbo=
+	t=1779224837; cv=none; b=ijabXq1jKnuoW0PR5hgk2KJzv1IpQF0xsfEpbFjDeVbiGHECJYFk5xLi/e6fWOZ18I7vE2oyEbph6WSbuqzMBgsvUih31PDY235iG1CRnuMjj46GanHKGUBrxcCLgX116jawQmIGys06UTwqA8gkZ3I9gunCf7qlIAJHlnsx3ZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779223715; c=relaxed/simple;
-	bh=XMfcMq6rOzpfpas4yxMb/mzY/1QxzkR88p4GpeyFGgo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HWIZtLCoBXkaDg0z4GzRdNetB0OPygv/9rILkhKOuTj3q2oWGpYtNbv/IoJcqeT0Kss6gjWqIxDCmfmwtJRc3zq0jtbcEcIwy8t6ZKq9I+C1/WhunUnvMlUucFDIr7do6Xni5zx0OxXXPPwSban9qm/gcUJ+dmQ1xCCgYP9uruA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e76ZOV3d; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-4462f8d2488so257938f8f.0
-        for <linux-crypto@vger.kernel.org>; Tue, 19 May 2026 13:48:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779223701; x=1779828501; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/yTt0exYCuTu7jCoMn14Ieq943zuwmtiBW2wGq9ojPY=;
-        b=e76ZOV3dkDe95sVQmOMbnf/TTwTMbEc5F1k7+OjZswwJBvu0NIKc3ofalThlyO8RmD
-         rc5Zs81G2i85OY+bvy0lh4WXhIhBUgnKPr4fvaGMT7wCQHtTGCmvPwpGpEIZCoOJeLUx
-         cWPZIxZPG4ByCoOhEMjcA+zV9OSimLTyu/co07JfAiP5F3ZQknWCw9a7wL2JAhKe/uAZ
-         1ZsisZPyzJS3ZHWY6E0jYcJkwRJs8MsHkz0STs7wHgldLSsZGtjbMLEdPH8YihNBVim7
-         4mumjBwevTZdBl0DB+GNsag7M/3ZaPo9DVsSEkCtMmjfus9/IPqJrZdqDzU9cfiuiVmQ
-         jWrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779223701; x=1779828501;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=/yTt0exYCuTu7jCoMn14Ieq943zuwmtiBW2wGq9ojPY=;
-        b=gP9Rya6gYF9lpA5modB999IJWHZOgezf3/l6NY7eL5/lCw67Fmo7L4ifsmkhkN6RVs
-         dzh+Yzwikpi5A+dFKaYdcM+w8Ib6ilX/iIF8+OaFPfzs5VN4JR5dGby8+XrJl/0PbZfu
-         gJUptZHKc0o6kdpY7KEac3kgXFwkhv9wD2zlepbms6ffFa8UKOr0uinMp9UacRnqFprh
-         cdL4BMm1X2oXP13Eua3GOG1/vkzNwYl0jO8ZY3Q8fh5o4AAgQuAmYI3KvbF52Jt1EPcF
-         Ty7D4YPVOBDKBr+k0MNiHy9W4AYGXwGFTEMLcrRRgB5XNu/ml5aM51AUoboKMWYB6EcX
-         jdZg==
-X-Gm-Message-State: AOJu0Yx/rTa7XFgEHrsLkc6jp09+9teWxx0ex5gzv8eO6XnBsT6mOJeK
-	p2qjN7cPWIfz+WLT0RYxDUP3ztqUTUX1okJBOo7q2wZUJnlfCZn6W+oW
-X-Gm-Gg: Acq92OGRHJzPwTebDBxEJHwh6lXcsJQysrnwmtPj6QRcuJ+32b0BaCeeF2Ap0FaO1JO
-	tEZwSPLoTgrpQfJzJbnDcJA3Wq5R/PJIqfKyucPynBTXF5MNBRO/69xhFZtU77p+6PBYY7GqNg+
-	n2cfvcFyXlpA+6fI+sGI8FVhTTudERdfkXkAGtaQEFXVgDAjz6/qMQT7wOVQIGCfH09CdZMBKPk
-	fDK8txmuOg30KRyu1Czqah+eruWtl/n25R4bYwsJgbjCQPr73zlamNCiNAMZopmQt/z/mzxN2cL
-	OemMi/TxSFYQWiZnFOCp7wU6+5EjGcjDrZ85qrivx6kGl+XJA5oirER+c/1UVGvdUV1n308kYXm
-	smAPb3CTrcOHHPtzFJQwPsxj3GN6z8CTr7CLXmM+kz3vrwPLzdOCqS5FQX/tmYDfixnkJ8xJqP0
-	+OeSt+qQk/YQiSnsMf5N7Kd1DWuyPEIca8LAKw2dJrHr5f3F0p88aqvRtmv9A4uJjlKIeRRvkyo
-	A==
-X-Received: by 2002:a05:600c:4fd4:b0:48d:1021:e5d1 with SMTP id 5b1f17b1804b1-48fe61f717emr143199075e9.3.1779223701114;
-        Tue, 19 May 2026 13:48:21 -0700 (PDT)
-Received: from menon.v.cablecom.net (84-74-0-139.dclient.hispeed.ch. [84.74.0.139])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48fe4dac000sm356457755e9.0.2026.05.19.13.48.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 May 2026 13:48:20 -0700 (PDT)
-From: Lothar Rubusch <l.rubusch@gmail.com>
-To: thorsten.blum@linux.dev,
-	herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	nicolas.ferre@microchip.com,
-	alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev
-Cc: linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	l.rubusch@gmail.com
-Subject: [PATCH v2 12/12] crypto: atmel-sha204a - switch to module_i2c_driver
-Date: Tue, 19 May 2026 20:48:03 +0000
-Message-Id: <20260519204803.17034-13-l.rubusch@gmail.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20260519204803.17034-1-l.rubusch@gmail.com>
-References: <20260519204803.17034-1-l.rubusch@gmail.com>
+	s=arc-20240116; t=1779224837; c=relaxed/simple;
+	bh=U9iDPDpVT94+lCmCK0EMWw3CyWJQ1GHru/EB4+W39yA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VVkodssA40/6xFFT+34RkQhtPtKyf7XsHSTKPfCVaD6y7LajEaD3z72SDmT99Ja4L5IvOK3/z9abpOxUH4ZPjJZpuNyIGHz/FODGMw4GUluNduIqmxtPRBNnRzE1DsDNBTGWPg+jA29LyeZXhjXNH3OquOSQFiv1y8vk4tsU+8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lTdKMwgu; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EB091F000E9;
+	Tue, 19 May 2026 21:07:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779224836;
+	bh=uyUQZCjeK4lCCRQ8jEnZOHnLHqRi9BJ/mOdvARIkkDM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=lTdKMwguFbU7LkOy+bRwZRYFLWi2uy0WhNG/yDVpRa9iKQnNd5sbJyGoY8bVMDerL
+	 y+aP50rfNhJc8xKcyb9hOdKB2jBvVOs98dGw7CZ8jKGBLK9Jxal6yPuowDxZeNSs4N
+	 1DKemjdpzX+Lef5acWy79SxUvCk5oXywCUw/IJrKRH4+2bZBzx7ZSRhWCVUz492vZS
+	 kCPq2byolKWCAC8LvMOnUJpEEgibEZWplkEJQlsQvTrbBrR3i18jqpFGcfr//530B1
+	 eJ7HH4ySli05PpNqHn0dKTupqGQDWQ0yCd6hcYp+z8TYDhdJDtlmRAqfXMIKlP3oIW
+	 lRN+KvWBJQ4Nw==
+Date: Tue, 19 May 2026 21:07:14 +0000
+From: Eric Biggers <ebiggers@kernel.org>
+To: Simon Richter <Simon.Richter@hogyros.de>
+Cc: Demi Marie Obenour <demiobenour@gmail.com>,
+	linux-crypto@vger.kernel.org,
+	Herbert Xu <herbert@gondor.apana.org.au>
+Subject: Re: Which, if any, of the async crypto drivers are ever useful in
+ the real world?
+Message-ID: <20260519210714.GB1875993@google.com>
+References: <d7084ad8-92e7-4959-8f47-c61029c2ea73@gmail.com>
+ <e07dc0ab-fcc3-4525-a758-f7b4808953c8@hogyros.de>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e07dc0ab-fcc3-4525-a758-f7b4808953c8@hogyros.de>
+X-Spamd-Result: default: False [-1.16 / 15.00];
+	SUBJECT_ENDS_QUESTION(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-24330-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,gondor.apana.org.au];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-24329-lists,linux-crypto=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lrubusch@gmail.com,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linaro.org:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 350BA584ED7
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 29DEF585009
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Replace custom module init/exit functions with module_i2c_driver() for
-driver registration.
+On Wed, May 20, 2026 at 05:36:04AM +0900, Simon Richter wrote:
+> Hi,
+> 
+> On 5/18/26 19:11, Demi Marie Obenour wrote:
+> 
+> > Is it really *always* better to do the cryptography inline or on the
+> > CPU?
+> 
+> If there is an inline crypto engine, that is preferable, because we can
+> submit a single async request and have the hardware mediate the async
+> requests to the lower layers for us, reducing overhead.
+> 
+> The CPU is a good choice if there is some acceleration built into it (like
+> AES-NI or NEON), request sizes are small, there is no batching, the CPU is
+> otherwise idle and total throughput per stream is manageable with a single
+> core.
+> 
+> That's a lot of conditions, but they happen to be fulfilled in a typical
+> desktop PC use case, and usually there is no async offload option there
+> anyway, so we end up on a CPU.
 
-Update remove path to unregister the client from the shared I2C management
-list before flushing pending work and cleaning up sysfs and hwrng
-resources.
+CPU is often preferable even when those conditions aren't met.
 
-No functional change intended.
+It's really the other way around.  There's a long list of things that
+would have to go right for a standalone symmetric crypto engine to be
+worthwhile.
 
-Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
----
- drivers/crypto/atmel-sha204a.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+Here are the results of some real world tests:
 
-diff --git a/drivers/crypto/atmel-sha204a.c b/drivers/crypto/atmel-sha204a.c
-index 3d29543032cc..c65630a989a5 100644
---- a/drivers/crypto/atmel-sha204a.c
-+++ b/drivers/crypto/atmel-sha204a.c
-@@ -257,18 +257,7 @@ static struct i2c_driver atmel_sha204a_driver = {
- 	.driver.of_match_table	= atmel_sha204a_dt_ids,
- };
- 
--static int __init atmel_sha204a_init(void)
--{
--	return i2c_add_driver(&atmel_sha204a_driver);
--}
--
--static void __exit atmel_sha204a_exit(void)
--{
--	i2c_del_driver(&atmel_sha204a_driver);
--}
--
--module_init(atmel_sha204a_init);
--module_exit(atmel_sha204a_exit);
-+module_i2c_driver(atmel_sha204a_driver);
- 
- MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
- MODULE_DESCRIPTION("Microchip / Atmel SHA204A (I2C) driver");
--- 
-2.39.5
+    - https://lore.kernel.org/linux-crypto/20250615184638.GA1480@sol/
+    - https://lore.kernel.org/linux-crypto/20250616164752.GB1373@sol/
+    - https://lore.kernel.org/linux-fscrypt/20250704070322.20692-1-ebiggers@kernel.org/
 
+> fscrypt went the other direction, splitting requests from upper layers into
+> individual data objects, submitting each separately and waiting for
+> completion, which I can understand from a software complexity perspective,
+> but it maximizes overhead for offloading.
+
+Most kernel code that uses cryptography is synchronous.  So this is the
+norm, not the exception.  Using the async callbacks is the exception,
+and history has shown that it's very hard to implement correctly: it
+typically results in lots of bug fixes being needed.  It's also very
+common for the async drivers themselves to have bugs, so anyone
+prioritizing correctness can't really use them anyway.
+    
+> In general, if an offload engine with an async driver exists, I would expect
+> that it provides a benefit over the CPU, in the worst case it frees up a CPU
+> core even if there is no significant performance difference, and it uses
+> less energy than a general-purpose core would.
+
+For standalone symmetric crypto engines, real-world tests show
+otherwise.
+
+- Eric
 
