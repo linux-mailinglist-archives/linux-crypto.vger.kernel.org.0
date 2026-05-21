@@ -1,184 +1,141 @@
-Return-Path: <linux-crypto+bounces-24389-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24392-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yHZIAJPiDmrACwYAu9opvQ
-	(envelope-from <linux-crypto+bounces-24389-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 May 2026 12:46:43 +0200
+	id GLl+Baz/DmpfEAYAu9opvQ
+	(envelope-from <linux-crypto+bounces-24392-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 May 2026 14:50:52 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CE2E5A38BE
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 May 2026 12:46:42 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D81E5A52A6
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 May 2026 14:50:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 99785318D6A3
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 May 2026 10:20:26 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8B0673036752
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 May 2026 12:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F4837CD4F;
-	Thu, 21 May 2026 10:20:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 276AB3D75A5;
+	Thu, 21 May 2026 12:36:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XelEORNV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qb84f0Wd"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75BC93806A3
-	for <linux-crypto@vger.kernel.org>; Thu, 21 May 2026 10:20:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC4E3D45EF;
+	Thu, 21 May 2026 12:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779358825; cv=none; b=OfGvlROhJGVeQzuCATsAF/mL+QJc5lHfd+sF60AvCjT+tCMBEdMOEwepxwlKcdXiTv814I4HSA0ZJYQMEiHEESCre3RViy9LAy2tm3f7lvQ8MxqFftokQjxYSZ/w8mJEXtpkWWbXVNW/WMbrlWlkHH5r1JKzY4m/vgGscuv1eRM=
+	t=1779366983; cv=none; b=AWx1xKGaqbtZLYZauk6fhmYsyFA1AbNEISJ259Ij2Y9JtrX6l/Vq1D4mSEQuFYjxdUCiW5lwaoUa9gio39YnH6AbbyOT5Usmyp1WfaRHRgJxXg2LioU+x6QGV8Hs/gjjh2kLz3p/bJqG5J1Em3+MsVcpI+IP9OI4d7gQYn6aCTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779358825; c=relaxed/simple;
-	bh=RsFsKMxlnM+epZ0LmkhDQ62s1eZGdm98OBx+teTEx84=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=oKYXya6ylxOVPaMihtiBBKPwpqT1zOR5ruzbpv4GlWZd8VdSgrJVSRW6guUXGDkLR/l17JSGLi8Wox8si7xi7meMV8nqnJPVOZOLE0TfWfFJEzUSfJ9kQ1+hYnsFlreA82T0SLneO0YayLqrDSmqvS2ZWGzNP+OuJ9BPvW5WEb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XelEORNV; arc=none smtp.client-ip=185.246.85.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-03.galae.net (Postfix) with ESMTPS id CF5EE4E42D02;
-	Thu, 21 May 2026 10:20:21 +0000 (UTC)
-Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id A3BEE60495;
-	Thu, 21 May 2026 10:20:21 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 612EE107E9CE4;
-	Thu, 21 May 2026 12:20:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1779358821; h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:in-reply-to:references;
-	bh=gjx/FpZorTQ8sC52xT/+ZbpzyTFqM8yxsw1eW1fSB1A=;
-	b=XelEORNVxZnjWKnqE2ArOZdi7Jvzsv6eA7Y16GL5HUqD0UIq+K2/BZAz1u91XADTkV+yFy
-	kW9tmPeZeMZ5CMSkjw77Wi/Yk5ObSJvwMTo6YmRjbX6eq90Z7mx46Rzweh/kmDSkBz9Kh3
-	mFMBNucesGEgin0Vig8j6VfpsDbK5XxDxsUtxj60wtvRUlAL5shBR2fu1ZbHBE5LQV++o3
-	CP7GU4tlSoebz8GIuCZBvoRKFEGoAh6yDNCfm8ZYIxy7j0xBUR9cGzlR5tyX3RTcw1TlL0
-	m7XpdTY435kydzUFMGNRzm/uXi4g26KHOVc+8bZZfCA4PfyT7WokfntKtskxGg==
+	s=arc-20240116; t=1779366983; c=relaxed/simple;
+	bh=hTCV6Tywmfns991pR2bgVGuKHYp0MV9vZhRRF16DNuM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=HQLXCDmUANxAo8nFXWd5fKviRTiK0Pel2h8r44kENmzXwRX18JLJPR11Xy6kr3inItnljvV8hgmoMV8kGqmT4z4tpvdrHkuT7w3AnMWE8vc+WQlkkULfTYSRiv1+xr85G9V26QzoIIRUjVkbCEpsIEw5u9K51P8HdwTSEzdrc7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qb84f0Wd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9B12EC2BCB9;
+	Thu, 21 May 2026 12:36:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1779366982;
+	bh=hTCV6Tywmfns991pR2bgVGuKHYp0MV9vZhRRF16DNuM=;
+	h=From:Subject:Date:To:Cc:From;
+	b=Qb84f0WdKfuvObNwglS4zHpFDa40iT1+NLl0pJ0U3OMdyZgnEtyKGioPYvvAKmb8S
+	 QVNMVkxbDgh/+jXV3PsH7V5utLtDAlGtAYRUHQUHw+7oF9qUavrW1lXz+qfE8wiNuM
+	 MmeBdrEU5tEKI1o2HX4EoZ3NnoFrE5tT6nXvRB8Ls6xfZEa4Qqo14inASd7SJjBNCk
+	 GUsWI4KOWhsFUxjTNTV38+2l7Z4g90ZCUw/t3IZkyJ3LNyfWGYGi1+ji5Emqg9Zi0R
+	 2AhPAOZNUQDstlgRUpQ8E0UQgCOKDqSUWKeuGCv6MmZLH1XFolpQBH0vj3SDqzZQV0
+	 qdgRVZ0FrcQlA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C239CD5BB0;
+	Thu, 21 May 2026 12:36:22 +0000 (UTC)
+From: Manivannan Sadhasivam <mani@kernel.org>
+Subject: [PATCH 0/2] dt-bindings: crypto: Add Qualcomm Hawi crypto support
+Date: Thu, 21 May 2026 12:36:19 +0000
+Message-Id: <20260521-hawi-crypto-v1-0-9176a3b51bc0@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 21 May 2026 12:20:18 +0200
-Message-Id: <DIOA24QU02W5.2RSVK05RE7BJK@bootlin.com>
-Cc: <herve.codina@bootlin.com>, <miquel.raynal@bootlin.com>,
- <stable@vger.kernel.org>, <thomas.petazzoni@bootlin.com>, "Herbert Xu"
- <herbert@gondor.apana.org.au>, <linux-crypto@vger.kernel.org>, "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>, "Sasha Levin"
- <sashal@kernel.org>
-Subject: Re: [PATCH] crypto: talitos - fix rename first/last to
- first_desc/last_desc
-From: "Paul Louvel" <paul.louvel@bootlin.com>
-To: "Paul Louvel" <paul.louvel@bootlin.com>, "Goetz Goerisch"
- <ggoerisch@gmail.com>
-X-Mailer: aerc 0.21.0-0-g5549850facc2
-References: <142603430.61540.1779296295550@app.mailbox.org>
- <DIO9YUHO5VGT.3BLGH04NVJNHP@bootlin.com>
-In-Reply-To: <DIO9YUHO5VGT.3BLGH04NVJNHP@bootlin.com>
-X-Last-TLS-Session-Version: TLSv1.3
-X-Spamd-Result: default: False [-1.66 / 15.00];
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEP8DmoC/yXMTQqAIBBA4avErBPSKKKrRAvTsaaFhfaLePesl
+ t/ivQAeHaGHNgvg8CBPi03geQZqknZERjoZRCHqohKcTfIkpty9bgvjZTMYLWSNqoJUrA4NXd+
+ t63/7fZhRbe8CYnwAXxPLB28AAAA=
+X-Change-ID: 20260521-hawi-crypto-138bfd2a6ec5
+To: Herbert Xu <herbert@gondor.apana.org.au>, 
+ "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
+ Bjorn Andersson <andersson@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, mani@kernel.org, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=691; i=mani@kernel.org;
+ h=from:subject:message-id;
+ bh=hTCV6Tywmfns991pR2bgVGuKHYp0MV9vZhRRF16DNuM=;
+ b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBqDvxEy+aGqC5dsRtzhdhhiv61/ks24RXASkfTR
+ ka7eKsSbqKJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCag78RAAKCRBVnxHm/pHO
+ 9SwUB/9+ar1g3oJI9EXFpGPYwFFsr8iJiIfXZ3FVfMRm9Xt1+J4CIhdVjRoWM+tG6L6h8r9QnZx
+ GSS8M7xEEZE+yA3vKf6yOv97z9NiH2hWnMuwoKKca4Dt36uKgfc7Pj3XAAmUhaS7RFpQuAqrIlJ
+ f+vJ31JZvsWWlRKKFmkLDzQ1WpYN20p/T9isCCCFs5O2C4oTlrwaqAV5Zf/2VtiQTnKAWdu7Zl6
+ D3+DblwAfR541UoVVykKt3Jjj2ZRLv8YsxAAb2YrsU3rB+JzAB5Izdc6hjt66zrNBwKUbuR1f81
+ 7PII99Ck8cLH+BNRKbF0bKswmk4+vez8G3HCyaJxoC0RqcFc
+X-Developer-Key: i=mani@kernel.org; a=openpgp;
+ fpr=C668AEC3C3188E4C611465E7488550E901166008
+X-Endpoint-Received: by B4 Relay for mani@kernel.org/default with
+ auth_id=787
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
-	MV_CASE(0.50)[];
-	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-24389-lists,linux-crypto=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[bootlin.com,gmail.com];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[bootlin.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-24392-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[paul.louvel@bootlin.com,linux-crypto@vger.kernel.org];
-	NEURAL_HAM(-0.00)[-1.000];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,bootlin.com:url,bootlin.com:dkim,bootlin.com:mid]
-X-Rspamd-Queue-Id: 5CE2E5A38BE
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mani@kernel.org,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-crypto,dt];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 4D81E5A52A6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu May 21, 2026 at 12:16 PM CEST, Paul Louvel wrote:
-> On Wed May 20, 2026 at 6:58 PM CEST, Goetz Goerisch wrote:
->> Hi,
->>
->> Commit a1b80018b8cec27fc06a8b04a7f8b5f6cfe86eae
->> was backported to 6.6.y with a866e2b1c65edaee2e1bb1024ee2c761ced335f8
->> It renames last to last_desc but misses one occurrence which leads to co=
-mpile errors on mpc85xx
->
-> Hi Goetz,
->
-> Thank you for the patch. I did not catch that since I worked on a mainlin=
-e tree,
-> and that specific line was removed in 9826d1d6ed5f ("crypto: talitos - st=
-op
-> using crypto_ahash::init"), which was not backported into the stable tree=
-.
->
->> drivers/crypto/talitos.c: In function 'ahash_digest':
->> drivers/crypto/talitos.c:2204:16: error: 'struct talitos_ahash_req_ctx' =
-has no member named 'last'
->>  2204 | req_ctx->last =3D 1;
->>       |        ^~4
->>
->> Fixes: a866e2b1c65e ("crypto: talitos - rename first/last to first_desc/=
-last_desc")
->> Signed-off-by: Goetz Goerisch <ggoerisch@gmail.com>
->> ---
->>  drivers/crypto/talitos.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
->> index 347483f6fc5d..ed160c591346 100644
->> --- a/drivers/crypto/talitos.c
->> +++ b/drivers/crypto/talitos.c
->> @@ -2201,7 +2201,7 @@ static int ahash_digest(struct ahash_request *areq=
-)
->>  	struct crypto_ahash *ahash =3D crypto_ahash_reqtfm(areq);
->> =20
->>  	ahash->init(areq);
->> -	req_ctx->last =3D 1;
->> +	req_ctx->last_desc =3D 1;
->
-> Instead of renaming req_ctx->last, commit 9826d1d6ed5f8 ("crypto: talitos=
- - stop
-> using crypto_ahash::init") should be applied. Ideally before commit
-> 655ef638a2bc ("crypto: talitos - fix SEC1 32k ahash request limitation") =
-to
-> avoid any compilation breakage and ensure correctness of the code.
+Hi,
 
-Small correction:
+This series adds the crypto (ICE, TRNG) dt-binding support for Qualcomm's
+upcoming Hawi SoC.
 
-Ideally before commit 00463d5f864a ("crypto: talitos - fix SEC1 32k ahash
-request limitation") to avoid any compilation breakage and ensure correctne=
-ss of
-the code.
+Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
+---
+Manivannan Sadhasivam (2):
+      dt-bindings: crypto: qcom,prng: Document Hawi TRNG
+      dt-bindings: crypto: qcom,inline-crypto-engine: Document Hawi ICE
 
->
->> =20
->>  	return ahash_process_req(areq, areq->nbytes);
->>  }
->
-> Paul.
+ Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml | 1 +
+ Documentation/devicetree/bindings/crypto/qcom,prng.yaml                 | 1 +
+ 2 files changed, 2 insertions(+)
+---
+base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
+change-id: 20260521-hawi-crypto-138bfd2a6ec5
 
+Best regards,
+--  
+Manivannan Sadhasivam <mani@kernel.org>
 
-
-
---=20
-Paul Louvel, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
 
 
