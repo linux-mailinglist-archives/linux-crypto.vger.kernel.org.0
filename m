@@ -1,51 +1,51 @@
-Return-Path: <linux-crypto+bounces-24387-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24388-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CAD7EHPhDmqnCwYAu9opvQ
-	(envelope-from <linux-crypto+bounces-24387-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 May 2026 12:41:55 +0200
+	id UMAIHovcDmrmCgYAu9opvQ
+	(envelope-from <linux-crypto+bounces-24388-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 May 2026 12:20:59 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACEAA5A37A3
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 May 2026 12:41:54 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8D045A32CA
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 May 2026 12:20:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BC2F0310519E
-	for <lists+linux-crypto@lfdr.de>; Thu, 21 May 2026 10:16:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 618F230D4B63
+	for <lists+linux-crypto@lfdr.de>; Thu, 21 May 2026 10:17:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CBB439989B;
-	Thu, 21 May 2026 10:16:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C851337CD4F;
+	Thu, 21 May 2026 10:17:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mYYTcEPJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TNbDVWNu"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19969377ECC;
-	Thu, 21 May 2026 10:16:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9785A39B493;
+	Thu, 21 May 2026 10:17:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779358603; cv=none; b=E5qfltfa+1MyI1p7MEukhgC8TA6hE1MrQcXeTH347ZCRAyNDF4KB4nc8jH9H4Lz/4msvM1kGap1KFhjg9/KsqpFHSKD+ZyQBNHm3pgrgAMdbqOt3P9qtPcy9lRbdG9Occ3jQz5L96cZQdx2IyngVqmSWE5W50dlR3RneINisVpc=
+	t=1779358660; cv=none; b=NuBgFKyAxbK8rG6Da2z3qVr0+xnEruMnlBLuSk1saJJKacOnm+VAqndbWLEJwBFTVVwJVTZFGA+52B5Z5VnAg7cCkZPj9ZF9A4hayRSU7TUab2cwZATNUnRtn4Jdg52QCveZl+qwmyQvQ5ipvA8MLEE7eLCI6vLT0GgukO2QCqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779358603; c=relaxed/simple;
-	bh=FaUVibulVpONjxnfNoiS62K37ikrx4m81rj4DYDEk+g=;
+	s=arc-20240116; t=1779358660; c=relaxed/simple;
+	bh=NX+SHlbIHgMcz7R0g4wKvlco1BE/kCYIXO9pu92Ipxs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c0jllZlEryMcUp2mmXeaKmEX97k9gPV17TvaUzYjamGiW8bhxI6j3ePoxCp76qG7fFLrbsqVIru6ch83yHauUrMa0iMNzjH8XXAZ8hiwaP8FgKhd/XYfiRW3OzlaU3SDLhVjMpZZ06rehJDKaMA92DpHUiK+yYxiTklSq1ouoJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mYYTcEPJ; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 007091F000E9;
-	Thu, 21 May 2026 10:16:38 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=mI+1xhJHJu/v2qqsx9W0Rpn0RP3SIMH1SjVYJ17EkaYw9MnbHBqKDHj7aY4AeEzzKCXA/mxfhboDUAGeMPM8JjLaDmeb++7GYnGu+ns4K+J6omH0jQmOoo1J9HEhdrpt1aAOmBUWUrUHsVrWIKzgjodj6WLmxoFNmVQr7jaCjc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TNbDVWNu; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F6271F000E9;
+	Thu, 21 May 2026 10:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779358601;
-	bh=NZAW49y/Gw7hMVNl6ABs1n9zxGhT5Y2pHplCGbww0vw=;
+	s=k20260515; t=1779358659;
+	bh=xsJEfdjdSp338K+IP1dasVBlu2UlR0ryRzkAdf1kOjQ=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=mYYTcEPJjNa0WKxR5eH+YcorbRVqQ4eW9JCR/VjVtCawkyl5X1/PENfec6h8he06H
-	 CFEAazf5g19YuWXxjBfRZDLHUqJLs9DFOEfX4VIBQCLCiHBza008rpI3MagccDjUE0
-	 FKEE699iBtbT162HGvFw4iT888BWAdLx0grjGnwspUsB8HtC4BRR1o/gkRXf5dWwfe
-	 VG05Z/oK19zc9UM+C9Io9EQIrATyJ0EXywS1GEUMs09h+a8zpWlLM0RO4iVkMDqNGi
-	 WHs+LDAwz7cR7NQLzrUoh6aDx83VlButFHWzBeHGq5iUx5KsfdOZK8ez20CVgTzGj/
-	 XOBCnmXxuuBSA==
-Message-ID: <5c03ea16-036f-4967-9678-29774f151fe3@kernel.org>
-Date: Thu, 21 May 2026 12:16:37 +0200
+	b=TNbDVWNu+W8zkMoaJcidGY1IqUcI4LoxZRzPPkfvMGnhxm0ihTNOJVlfbuVqsnXvG
+	 QZe69uzg4CtBBeq6xf4WAJFY2W+mrLWK86pOYeq4PGvQCCcpWeY7Ip5gBkJcl0YO/G
+	 bXKtindRJmdR1dqmrtjmmjhyTdqSDQ3n3vbOiKtfi4aZ7DIeWA6JXYINk0daL98yN6
+	 7CoixUwEGwDvQ0r3slK4ol5kdwjxiockgmyiJvk2qAPHAeeLHouFWLve5HMGZX6nKg
+	 BkdS+6YKpl+rQCr334jcZZuVADsesAijXb6QIkMSmdaB7k2gzeXd2SKftGnwtP2m5s
+	 GnjXJG4pbfn2A==
+Message-ID: <2c2c82f5-21d2-4851-86c8-0dbc05537427@kernel.org>
+Date: Thu, 21 May 2026 12:17:34 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -53,7 +53,8 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 02/12] crypto: atmel-ecc - fix use after free situation
+Subject: Re: [PATCH v3 11/12] crypto: atmel-sha204a - fix heap info leak on
+ I2C transfer failure
 To: Lothar Rubusch <l.rubusch@gmail.com>, thorsten.blum@linux.dev,
  herbert@gondor.apana.org.au, davem@davemloft.net,
  nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
@@ -62,7 +63,7 @@ To: Lothar Rubusch <l.rubusch@gmail.com>, thorsten.blum@linux.dev,
 Cc: linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org
 References: <20260520155703.23018-1-l.rubusch@gmail.com>
- <20260520155703.23018-3-l.rubusch@gmail.com>
+ <20260520155703.23018-12-l.rubusch@gmail.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -108,7 +109,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  jWt87ecuHlpL3uuQ0ZZNWqHgZoQLXoqC2ZV5KrtKWb/jyiFX/sxSrodALf0zf+tfHv0FZWT2
  zHjUqd0t4njD/UOsuIMOQn4Ig0SdivYPfZukb5cdasKJukG1NOpbW7yRNivaCnfZz6dTawXw
  XRIV/KDsHQiyVxKvN73bThKhONkcX2LWuD928tAR6XMM2G5ovxLe09vuOzzfTWQDsm++9UKF a/A=
-In-Reply-To: <20260520155703.23018-3-l.rubusch@gmail.com>
+In-Reply-To: <20260520155703.23018-12-l.rubusch@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -116,12 +117,12 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-24387-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-24388-lists,linux-crypto=lfdr.de];
 	FREEMAIL_TO(0.00)[gmail.com,linux.dev,gondor.apana.org.au,davemloft.net,microchip.com,bootlin.com,tuxon.dev,linaro.org,kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -137,40 +138,39 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: ACEAA5A37A3
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: E8D045A32CA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 20/05/2026 17:56, Lothar Rubusch wrote:
-> Fixes the very likely race condition, having multiple of such devices
-> attached (identified by sashiko feedback).
+On 20/05/2026 17:57, Lothar Rubusch wrote:
+> When a non-blocking read operation is requested, the driver dynamically
+> allocates memory to track asynchronous transfer status. If the underlying
+> I2C transmission fails, atmel_sha204a_rng_done() logs a rate-limited
+> warning but incorrectly proceeds to cache the pointer to this uninitialized
+> buffer inside the rng->priv data field anyway.
 > 
-> The Scenario:
->     Thread A (Device 1 Probe): Successfully adds i2c_priv to the global
->              list (Line 324). The lock is released.
->     Thread B (An active crypto request): Concurrently calls
->               atmel_ecc_i2c_client_alloc(). It scans the global list, sees
->               Device 1, and assigns a crypto job to it.
->     Thread A: Moves to line 332. crypto_register_kpp() fails (e.g., out of
->               memory or name clash).
->     Thread A: Enters the error path. It removes Device 1 from the list and
->               frees the i2c_priv memory.
->     Thread B: Is still actively trying to talk to the I2C hardware using
->               the i2c_priv pointer it grabbed in Step 2. The memory is now
->               gone. Result: Kernel crash (Use-After-Free).
+> On subsequent execution passes, atmel_sha204a_rng_read_nonblocking()
+> detects the stale rng->priv value, skips executing a hardware data read,
+> and copies up to 32 bytes of uninitialized kernel heap data from this
+> garbage memory pool straight back into the system's hwrng data stream.
 > 
-> Fixes: 11105693fa05 ("crypto: atmel-ecc - introduce Microchip / Atmel ECC driver")
+> Fix this information disclosure vector by immediately releasing the
+> allocated asynchronous work data buffer and explicitly clearing the
+> tracking pointer context whenever an I2C transaction returns a non-zero
+> error status.
+> 
+> Additionally, duplicate the tfm counter decrement within the new error
+> path to ensure the reference counter is properly released before executing
+> the early return, maintaining the driver's availability for subsequent
+> requests.
+> 
+> Fixes: da001fb651b0 ("crypto: atmel-i2c - add support for SHA204A random number generator")
 
-Please add Cc-stable
 
-> Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
-> ---
-
-And fixes must be before any code refactorings, so your rename patch
-should be after.
-
+This and other fixes should be first in the patchset. Or even separate
+patchset.
 
 Best regards,
 Krzysztof
