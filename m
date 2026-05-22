@@ -1,81 +1,81 @@
-Return-Path: <linux-crypto+bounces-24494-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24490-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sKKAOz/iEGpqfAYAu9opvQ
-	(envelope-from <linux-crypto+bounces-24494-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 23 May 2026 01:09:51 +0200
+	id ODpEA1ThEGo1fAYAu9opvQ
+	(envelope-from <linux-crypto+bounces-24490-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 23 May 2026 01:05:56 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D50F5BB5C1
-	for <lists+linux-crypto@lfdr.de>; Sat, 23 May 2026 01:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80D915BB563
+	for <lists+linux-crypto@lfdr.de>; Sat, 23 May 2026 01:05:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C0B1E3010C07
-	for <lists+linux-crypto@lfdr.de>; Fri, 22 May 2026 23:02:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6BE623043517
+	for <lists+linux-crypto@lfdr.de>; Fri, 22 May 2026 23:01:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1745B390CAB;
-	Fri, 22 May 2026 23:02:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A91B43911C3;
+	Fri, 22 May 2026 23:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ld2kjpY/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EDQTLb1D"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D12364047
-	for <linux-crypto@vger.kernel.org>; Fri, 22 May 2026 23:01:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D91C26E6E1
+	for <linux-crypto@vger.kernel.org>; Fri, 22 May 2026 23:01:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779490921; cv=none; b=FbQ8yHaDh0X8pA29Rds/udPO7awxK7YxzKUyywwiq3WGoc48vOarUnoIFYAg2pbTL1OSJn9dmW0m3i860ajN9UUHHI3kM/t807BVVzBC38T1+Yv6OtKP8CuCqBkcmerYF7DGdb707uzUdEfVnYjYDfgeaGxp4hTCNWKaAIdiX3c=
+	t=1779490914; cv=none; b=Ihs1iIyaMrSv/zRGlUUb1EYCa0efZZ7atd60/YpRZ/fCIC21+G/Z3UuqfLOjD7Y+lACh5kJyiTq4tVTJEQSN5sAfBZcqbqa64cAu8tdG14QI2TTy0+j3EsYT/yMvMtiXWENHOW1gVe6q7suG86bA+N0qjIdJBE6NJMKTEzaMhqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779490921; c=relaxed/simple;
-	bh=DR3UsQTK+NNUD6IDUcIq7ubGv0mDBUfxKOqc2gCxbaM=;
+	s=arc-20240116; t=1779490914; c=relaxed/simple;
+	bh=lLAfj7LcfoRlLXCDmBp3fzB+hmnVRfZLW5UuPbQYpsw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QZJHlljyuh/NB0qJTKHQNQcpXMhqAj6UXnfuF1hn6OJzvP4DLSFx/XoZtTCCEBGqE5FeHYuVlPTlnZQQAm1MI3H/pDb+M1Ex/jp/0LIL6WfJRoTWfVs39OlQOvXilUnktpSBHpOGkdOJ+LnDSVKoU5ToMvClKN/s7vvVQcg0GO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ld2kjpY/; arc=none smtp.client-ip=209.85.221.52
+	 MIME-Version; b=aVObE7JOllM0XNaMozhCNUxhtLj+1RhEQcif7q44eS9+V/p/aLuPWe5w9Rnf2NyXfVQf9S/bAr0gP0p+qB3NFCcMi5mlxX5j5h+Crpg7qbQ6Gyymhv3WoRZwmWDG1gLjLVh2naIvDTRBut0iW2dh4aHprBzd3q2rv+qu+9/NSC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EDQTLb1D; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-44ad87a57f6so612354f8f.2
-        for <linux-crypto@vger.kernel.org>; Fri, 22 May 2026 16:01:48 -0700 (PDT)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-490402da691so822325e9.3
+        for <linux-crypto@vger.kernel.org>; Fri, 22 May 2026 16:01:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779490907; x=1780095707; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1779490909; x=1780095709; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Sb5MNahpjnP/vNHphvg5+I/zYJ16o/85c7lKSptPrvw=;
-        b=ld2kjpY/j6ANda6f55zLNjiMf+Es3knUpF2KnqR5kUQuiSJyBBLtxrWrqtOwt1Tdoj
-         0bBBvrV4oJ9v1MXuxivn1/EZSEeUyIDnxEWEdPkf3m1eiNHcYQLGR87r3AfhUwXRHlO2
-         oQJq/QcIlurqjr50OtrWXTIudpGFNpc2CiHZfbSvKwqY3MZSdmDbtjrYB+iGVSQC97mh
-         m9ZCLIu+8sYwDnzO4MB6RgY42nqDAIY24bF1HKSagS+ljxLoFhUp1ZJORSpQjnMigkbg
-         JKiwUahHUkhliGyx2i+8vzgpuW+ipkAfefaO0HnMC71lhbynF1dkVagV0R7hKE9JkpSu
-         ADKA==
+        bh=MSCRzF6jccIrpW3KuBs+JWgBL0z6wfFkzmIVCZCEAZo=;
+        b=EDQTLb1DX9XO1KCn2z49CzSX7sf0eEy1ZO9Z9WYBkR6jHTqgjHULk/x1y86dfAMFhr
+         e0CmSxlktBHveULUtYQmwn4YFKG9jTpY50rLJYxON5KnbtWPNq3O9+KeGF4ezRaZcdOU
+         xfwZ2oE6LTXWMjW11jD7NPKkRMvWKRSuMqnwXzfsxukK1tnio/WFEH33rAmhPrQxT/Xj
+         yblyLARY1EXF22kGWdQpr5owtmYWq0PQHqwmNCgJmADDthI844k9JMGOg4UQSqhjM8Y8
+         olU76I+5xeC8+qz79+zYQl5amjkFrx+OlbHmd/IfvT5rEGs3UuGZR6LkNeWQx8ymTL9V
+         VAjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779490907; x=1780095707;
+        d=1e100.net; s=20251104; t=1779490909; x=1780095709;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Sb5MNahpjnP/vNHphvg5+I/zYJ16o/85c7lKSptPrvw=;
-        b=HFHg51viIFq9aHLF8cSyzOyBu6QIrv1ihZwxWmnmsKcR5GXPUfBhJ0uCSSJfLcn8IG
-         yjhpv7Os648XWTLJTIyobiPoYY7i1nE3UiaVZhSzgsg3xUQAF8H4LyUpFwEJLNacQxxh
-         Ux/QRNghddzheYhCSlHd6z9cLvbI/ahGQlUqdN2KCDiNtH1hZCVMpC3SH9TJROt+dmWt
-         d68ExbZ0CjbNP/G3ytWNVZnoRKr15GWWxG8P8Gw7B1oaZZEcbZtmGBLNL+M0HkrUaS0D
-         +UTZYmXZqdkrOk3hZgboonB5kh+KXIx7bpSwPM6mqNV5xOD0eIRqtwpqFfbu0HO2MPX8
-         s0Zw==
-X-Gm-Message-State: AOJu0YzB4ZAPF9Ca6PpQJyrA860P+8jQ7tPjwwh5dAJHD/qjDDp4oo0e
-	VDqmWbSJxkKbBZZOfFBfPndsAAJOCj5oOYchJt5HeNoyyGW+dbjWbtrK
-X-Gm-Gg: Acq92OED1p6Ip3jaNnGkSR34HxfNSN535XFpqptpB2BE9Hi/OcNZlHnyshJpS4OL4nX
-	GUmTPYBV4iBYh6sjQjHmFw13dtPRXKIjF9LKUrDwXQ8AjCX5Ng58EQm0MfBszUe4ngIXDFksvkC
-	yJ/2E3V62sHgkIDyiGMGoEdkR5F+XXy+pMrHsRnPnX0toDZmzNILHWxtxkDbZbt6xuNhLBj0KlJ
-	ut+eICbUsP0HJ8fPKBjkY6duYyGJmQUsvwxOtGxqkNRGXM5/zpsZrfp5FGrTlaYDERnTU9aPylj
-	WFWUGUZD6fHwqXNIU4ZxQwWKacdZShb5NaLwbfD++ng4I3LmJuGGnk321WlQbOIQqudRWhBq5bw
-	OFRJhKomuhaRqTNiq726PrH6wRaD8lzHO1gigue/gouRGSnq4f3dabeNqGr79uOS6EjIyBVbZbw
-	lspAAEbuTBRz8lGui/mnYxrQh+WWNMjNKgOAOTDqiSNjSzvMmuMwen0TlmdMcAfaIdZQnhpczuc
-	g==
-X-Received: by 2002:a05:600c:a09:b0:48e:65f3:a950 with SMTP id 5b1f17b1804b1-4904248ad8cmr37124745e9.1.1779490906790;
-        Fri, 22 May 2026 16:01:46 -0700 (PDT)
+        bh=MSCRzF6jccIrpW3KuBs+JWgBL0z6wfFkzmIVCZCEAZo=;
+        b=UXMIcQul4ZWGMS19MzuOu0PZvjAdcGC4PgN5LynXG2fwRjAkM0bg4T4aBlYgM7cZ/B
+         AFnihd9TG7PYZ10GNZbDRmvPCxJwkotKip7cZxvOf4XGZGfxmDnxRHXwSVedbSHCCsfu
+         lbW546RyAgLnoxfnQXZZ6w1fNonLn5grKlzMFPy+QoVG3beZfnI1pAPcFXgv2a5UdaWe
+         KFvb0gnamBUHW1EiQ5nMcaIehvT87xN06Bj7B+5Nfc7WF+Ry7qK76NnBh67speYSFqLp
+         S4u5FcE7/zugj/VBpnFKsr2fo1IR0fwpZk/TiXYQyBXoxIqCVs7sHHLQaMxWhWTMJ9DQ
+         a2ig==
+X-Gm-Message-State: AOJu0YzKSpnL0UxFSA/iza0C+jDrKLbqOp7N7HJmtRLbA9iZz3hrMjjq
+	ww7+8LDF5XOVB/mESRzngvckY9s58gNHInUGPFtHvIeXLGDOx4JqPHgg
+X-Gm-Gg: Acq92OEGvcjKB7vjzofoeQf3kLgLZvAsXbfAOxTToSD6h2GHOnLcJjY1XEvAbp2Yin+
+	3DZEUlrQ1cZ8/OETX2aiM3odaetLOMhvym2KtCCgAJLa6mED+nieXKxmxJ9kIepPoZ93FZzF3UW
+	RxZTpIKU+Phd2l/g4HLZ6XCY68fM5gQf1cwGJ0/+mYyYSLOyWs+6NqSejDeDNksi4UZHyNzQSO2
+	XR63Zw070NCmYv1yzzbz7WlGMlteNIj0RdS1ca/ea0TLgqkOkLjMnjSImC2D95hBci1UpU1dkPT
+	Ano9zMmjhD4oGLZAUyBHqBs95AnZP0ViRSSMri3UzV8mTgj1VGfFet1JE61J0DY9Gm85CkjsbNw
+	Z01UmQTDigewOuo4kBnOysQcI5KdrJNHwLo75YR2MddnE7ngK8pbf7ljUwbCcAYqP2bg9rC3OwV
+	DDrx64dvPxeK5enXLjlzue0r+Z6WyPh5QkPGE1OzgXF9ZWSdBE3e/TjWwi0Xg8Vk0XOP26i4+qL
+	A==
+X-Received: by 2002:a05:600c:1f8f:b0:490:3cb8:b853 with SMTP id 5b1f17b1804b1-49042cf87abmr35801335e9.7.1779490908611;
+        Fri, 22 May 2026 16:01:48 -0700 (PDT)
 Received: from menon.v.cablecom.net (84-74-0-139.dclient.hispeed.ch. [84.74.0.139])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490456274ebsm67100265e9.15.2026.05.22.16.01.45
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490456274ebsm67100265e9.15.2026.05.22.16.01.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 May 2026 16:01:46 -0700 (PDT)
+        Fri, 22 May 2026 16:01:48 -0700 (PDT)
 From: Lothar Rubusch <l.rubusch@gmail.com>
 To: thorsten.blum@linux.dev,
 	herbert@gondor.apana.org.au,
@@ -91,9 +91,9 @@ Cc: linux-crypto@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	l.rubusch@gmail.com
-Subject: [PATCH v4 05/12] crypto: atmel - rename atmel_ecc_driver_data to atmel_i2c_client_mgmt
-Date: Fri, 22 May 2026 23:01:27 +0000
-Message-Id: <20260522230134.32414-6-l.rubusch@gmail.com>
+Subject: [PATCH v4 06/12] crypto: atmel-i2c - move client management instance into core
+Date: Fri, 22 May 2026 23:01:28 +0000
+Message-Id: <20260522230134.32414-7-l.rubusch@gmail.com>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20260522230134.32414-1-l.rubusch@gmail.com>
 References: <20260522230134.32414-1-l.rubusch@gmail.com>
@@ -115,7 +115,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-24494-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-24490-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -134,49 +134,83 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 5D50F5BB5C1
+X-Rspamd-Queue-Id: 80D915BB563
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Rename struct atmel_ecc_driver_data to atmel_i2c_client_mgmt to reflect its
-generic role in shared I2C client tracking and locking. A subsequent change
-will move the client management infrastructure into the atmel-i2c core
-driver.
+Move the global 'atmel_i2c_mgmt' tracking instance out of the ECC driver
+and into the atmel-i2c core library.
 
-No functional changes intended.
+This change consolidates the shared I2C client infrastructure into a
+central core driver. This centralization allows both the ECC and
+upcoming SHA204A driver modules to access and reference a unified,
+common device-management context.
+
+As part of this relocation, replace the explicit runtime initialization
+calls inside the module init block with static, compile-time macros
+(__SPIN_LOCK_UNLOCKED and LIST_HEAD_INIT). Export the tracking structure
+via EXPORT_SYMBOL_GPL() to make it available to dependent sub-modules.
+
+No functional change intended.
 
 Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
 ---
- drivers/crypto/atmel-ecc.c | 2 +-
- drivers/crypto/atmel-i2c.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/crypto/atmel-ecc.c | 4 ----
+ drivers/crypto/atmel-i2c.c | 6 ++++++
+ drivers/crypto/atmel-i2c.h | 1 +
+ 3 files changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/crypto/atmel-ecc.c b/drivers/crypto/atmel-ecc.c
-index d12a9dbe45a7..d6ae113c45df 100644
+index d6ae113c45df..1ae9c52812df 100644
 --- a/drivers/crypto/atmel-ecc.c
 +++ b/drivers/crypto/atmel-ecc.c
-@@ -28,7 +28,7 @@ static int atmel_ecc_kpp_refcnt;
+@@ -28,8 +28,6 @@ static int atmel_ecc_kpp_refcnt;
  DECLARE_COMPLETION(atmel_ecc_unreg_done);
  static bool atmel_ecc_unreg_active;
  
--static struct atmel_ecc_driver_data atmel_i2c_mgmt;
-+static struct atmel_i2c_client_mgmt atmel_i2c_mgmt;
- 
+-static struct atmel_i2c_client_mgmt atmel_i2c_mgmt;
+-
  /**
   * struct atmel_ecdh_ctx - transformation context
+  * @client     : pointer to i2c client device
+@@ -458,8 +456,6 @@ static struct i2c_driver atmel_ecc_driver = {
+ 
+ static int __init atmel_ecc_init(void)
+ {
+-	spin_lock_init(&atmel_i2c_mgmt.i2c_list_lock);
+-	INIT_LIST_HEAD(&atmel_i2c_mgmt.i2c_client_list);
+ 	return i2c_add_driver(&atmel_ecc_driver);
+ }
+ 
+diff --git a/drivers/crypto/atmel-i2c.c b/drivers/crypto/atmel-i2c.c
+index ff19857894d0..a42b0ea30033 100644
+--- a/drivers/crypto/atmel-i2c.c
++++ b/drivers/crypto/atmel-i2c.c
+@@ -21,6 +21,12 @@
+ #include <linux/workqueue.h>
+ #include "atmel-i2c.h"
+ 
++struct atmel_i2c_client_mgmt atmel_i2c_mgmt = {
++	.i2c_list_lock = __SPIN_LOCK_UNLOCKED(atmel_i2c_mgmt.i2c_list_lock),
++	.i2c_client_list = LIST_HEAD_INIT(atmel_i2c_mgmt.i2c_client_list),
++};
++EXPORT_SYMBOL_GPL(atmel_i2c_mgmt);
++
+ static const struct {
+ 	u8 value;
+ 	const char *error_text;
 diff --git a/drivers/crypto/atmel-i2c.h b/drivers/crypto/atmel-i2c.h
-index b320559e50eb..660ca861b705 100644
+index 660ca861b705..82321c35c21f 100644
 --- a/drivers/crypto/atmel-i2c.h
 +++ b/drivers/crypto/atmel-i2c.h
-@@ -115,7 +115,7 @@ struct atmel_i2c_cmd {
- #define ECDH_PREFIX_MODE		0x00
- 
- /* Used for binding tfm objects to i2c clients. */
--struct atmel_ecc_driver_data {
-+struct atmel_i2c_client_mgmt {
+@@ -119,6 +119,7 @@ struct atmel_i2c_client_mgmt {
  	struct list_head i2c_client_list;
  	spinlock_t i2c_list_lock;
  } ____cacheline_aligned;
++extern struct atmel_i2c_client_mgmt atmel_i2c_mgmt;
+ 
+ /**
+  * atmel_i2c_client_priv - i2c_client private data
 -- 
 2.39.5
 
