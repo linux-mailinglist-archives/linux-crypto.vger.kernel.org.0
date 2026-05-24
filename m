@@ -1,182 +1,160 @@
-Return-Path: <linux-crypto+bounces-24516-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24519-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SChzHIcDEmqntQYAu9opvQ
-	(envelope-from <linux-crypto+bounces-24516-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 23 May 2026 21:44:07 +0200
+	id mET9G3uJEmp10gYAu9opvQ
+	(envelope-from <linux-crypto+bounces-24519-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sun, 24 May 2026 07:15:39 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB0055C07F0
-	for <lists+linux-crypto@lfdr.de>; Sat, 23 May 2026 21:44:06 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12A365C166B
+	for <lists+linux-crypto@lfdr.de>; Sun, 24 May 2026 07:15:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 23DF430252AC
-	for <lists+linux-crypto@lfdr.de>; Sat, 23 May 2026 19:43:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C3B453010161
+	for <lists+linux-crypto@lfdr.de>; Sun, 24 May 2026 05:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 210BE33BBC0;
-	Sat, 23 May 2026 19:43:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07F402F8BC3;
+	Sun, 24 May 2026 05:15:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="knl2A0RY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wk9eNaJU"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C879D269CE6;
-	Sat, 23 May 2026 19:43:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CD7C2F7478;
+	Sun, 24 May 2026 05:15:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779565389; cv=none; b=LNXWOv+2nIb0bbyTO3hkmwjN75vxnIeno42/2NwF5kcSIQO1lioYelZx7dafcuSdgVqHhKgfNY74A/yF+1Eg/4ri0NmNzUui1218q89V2uTutScboiiOkdVzuI1Rp82hsYqumXCPjdCMxzBn923CIJp8nR0Vj2hvDMxMglKuYfI=
+	t=1779599729; cv=none; b=U0BPH5EO9wVLqRkPJXdZZZpNQCt1DC3JOGSrJUGseKg00P0p2SLD7ylTZ1yWK20uAmPv441daYqZal3g+byYbYEg0ZkJpCuqFgy2yH9a8TLhIB2+LFVGJCsAvU+Ya12EUQ5EIoknuN80vgho7aN+J0ExghE7uUoY6RZ5sT7exd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779565389; c=relaxed/simple;
-	bh=OzRx4Jea/gQowRgqur1LzxDMUuIgE+6OcV41//cfvS0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=GF7eyF4KHev8Jh/H8pn2trWcA05mA/B8/oLM5T2g/KeIhr1s9w/xIc52rslRv31CQIBj8w8ny13ufJg21QDlDkV0oO0MpfCzoVnliTEuMEtmOXcFAJk0TCyRVc3i+3J3zvrrvhYzvydwTo10QCTkwxg+KzCYjxtdIvO4t7a2rP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=knl2A0RY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 90CD5C2BCF5;
-	Sat, 23 May 2026 19:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1779565389;
-	bh=OzRx4Jea/gQowRgqur1LzxDMUuIgE+6OcV41//cfvS0=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=knl2A0RYLu6aIFzU87tH3SBjrcf/u7kNd4FpOXmXiV3CP6UPAMrjie9ToMOyUVABc
-	 6Zp3WIo3C1rmkisFUl9G4PQIvA2qrvIOfjDetWjGr5jMYALEwEY2vZxrWyhh0kGN+5
-	 XFVllvQeLK/B7h1hTWLC+eYRJiwLQZG/0LSzv7c5jxYCnwwZDl9zEjcdchJyFWHNEh
-	 sZu5huo7RIlEPyFpD1qaj+hbo0Aiwyx3gAGy4d9BBq2yVm4WoVxsg1H38HHRD8elhF
-	 qMOzFbZmPkDlkE31JOGdUhC1vepCKl4iSFTaPGhi6OnD2nUrkIXHrEZfE+lZ8rdpXb
-	 U5jVdMt9Yk46A==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85334CD5BB8;
-	Sat, 23 May 2026 19:43:09 +0000 (UTC)
-From: Demi Marie Obenour via B4 Relay <devnull+demiobenour.gmail.com@kernel.org>
-Date: Sat, 23 May 2026 15:43:04 -0400
-Subject: [PATCH 3/3] AF_ALG: Document that it is *always* slower
+	s=arc-20240116; t=1779599729; c=relaxed/simple;
+	bh=fHWc8nAYAz7OPYn3/irAz5Zps16T5mscYvl+m9RoEZY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WG/X+9ZQJk8ku/eljNB7aU/2gxftReiL3S7TQAOzqXX3pMulGw0tmKn2Xd59vLoTvXGz5yQWCkHzJtz+CM/pIybWpnOK/d0qWfi9ZpbJXwRqdxbpogjKf/OI4WIWN0Cl9oNa7vYduO8b7EePBb14tTS5Dca0nV4A4GZwPtpeDWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wk9eNaJU; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 6CC361F000E9;
+	Sun, 24 May 2026 05:15:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779599728;
+	bh=S2EiS1f01ryjm2Z8gBccKQbpE/j6NghwVq278P3vsdk=;
+	h=From:To:Cc:Subject:Date;
+	b=Wk9eNaJU8xlbXe8SagSUSUQQjTC50r8gbhA0p9LXeIVeq96+POQEj8oo+PAysX3cm
+	 tw4hMvZAjWwNjSd67a4/0s8TCzwonShYPDLAzIcEsrD5yfk2gIaAT7znPe0vzUaPv5
+	 UV1MME/TD7CxrB79BedOZE8qvDvyUHdYeFAnlyPdZNGmiHfnGd4VHUV/BADpUw7uuS
+	 PbSTw83K99U+AZeC27sWol4xIy1D2YQszYQ6AAOrmVR8Ol8uxJ0VJEPrICtx5vVxir
+	 qkFf8tIYXyjDCCVoekQqrTNXqP1cVxU3I53AvzDk84/g86XQocsl+f+vIImIQPwDzO
+	 TYHgIG5KZUTog==
+From: Jarkko Sakkinen <jarkko@kernel.org>
+To: keyrings@vger.kernel.org
+Cc: David Howells <dhowells@redhat.com>,
+	linux-crypto@vger.kernel.org,
+	linux-integrity@vger.kernel.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Stefan Berger <stefanb@linux.ibm.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Jarkko Sakkinen <jarkko@kernel.org>,
+	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Mimi Zohar <zohar@linux.ibm.com>,
+	Paul Moore <paul@paul-moore.com>,
+	James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>,
+	linux-security-module@vger.kernel.org (open list:SECURITY SUBSYSTEM),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v8 0/3]
+Date: Sun, 24 May 2026 08:15:11 +0300
+Message-ID: <20260524051519.3708075-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260523-af-alg-harden-v1-3-c76755c3a5c5@gmail.com>
-References: <20260523-af-alg-harden-v1-0-c76755c3a5c5@gmail.com>
-In-Reply-To: <20260523-af-alg-harden-v1-0-c76755c3a5c5@gmail.com>
-To: Herbert Xu <herbert@gondor.apana.org.au>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Kuniyuki Iwashima <kuniyu@google.com>, Paolo Abeni <pabeni@redhat.com>, 
- Willem de Bruijn <willemb@google.com>, Jens Axboe <axboe@kernel.dk>, 
- Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>, 
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
- Arnaldo Carvalho de Melo <acme@kernel.org>, 
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
- Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
- Adrian Hunter <adrian.hunter@intel.com>, 
- James Clark <james.clark@linaro.org>, Jonathan Corbet <corbet@lwn.net>, 
- Shuah Khan <skhan@linuxfoundation.org>, Eric Biggers <ebiggers@google.com>, 
- Ard Biesheuvel <ardb@kernel.org>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
- io-uring@vger.kernel.org, netdev@vger.kernel.org, 
- linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org, 
- Demi Marie Obenour <demiobenour@gmail.com>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1779565388; l=2773;
- i=demiobenour@gmail.com; s=20250731; h=from:subject:message-id;
- bh=cCZclUN91iyFrsr3PZ6oslmjWDYG7uvJ1BorPBKSILk=;
- b=tMvuqZQCtqZsAaMqHEV39cBc/++4hmxFbFBMdRmtHQtjclb/Ws8rPWSMTsw9+kwtC7mX2BxyO
- lWvyv8MjokkBQ9W7YuISmmpzpSoOKpUxcuzWE1mfMgEZmwyHZtvfm6N
-X-Developer-Key: i=demiobenour@gmail.com; a=ed25519;
- pk=4iGY+ynEKxIfs+fIUK9EzsvZ44yGE0GvXLeLTPKKPhI=
-X-Endpoint-Received: by B4 Relay for demiobenour@gmail.com/20250731 with
- auth_id=473
-X-Original-From: Demi Marie Obenour <demiobenour@gmail.com>
-Reply-To: demiobenour@gmail.com
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	FREEMAIL_REPLYTO_NEQ_FROM(2.00)[];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-24516-lists,linux-crypto=lfdr.de,demiobenour.gmail.com];
-	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-24519-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_REPLYTO(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[30];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	HAS_REPLYTO(0.00)[demiobenour@gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[devnull@kernel.org,linux-crypto@vger.kernel.org];
-	REPLYTO_DOM_NEQ_FROM_DOM(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jarkko@kernel.org,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: CB0055C07F0
+X-Rspamd-Queue-Id: 12A365C166B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Demi Marie Obenour <demiobenour@gmail.com>
+This series introduces key type for operating with asymmetric keys using
+a TPM2 chip.
 
-Without support for zero-copy or off-CPU offloads, AF_ALG is always
-slower than software cryptography. Its only advantage is that it might
-save code size. However, this is largely mitigated by lightweight
-userspace cryptographic libraries.
+Change Log
+==========
 
-Signed-off-by: Demi Marie Obenour <demiobenour@gmail.com>
----
- Documentation/crypto/userspace-if.rst | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+v8:
+- Reset patch change logs given the overhaul of the code and patches.
+- Have only single new subkey type.
+- Make key type only use TPM operations.
+- Use TPM2_Sign for both ECC and RSA keys.
+- Align key descriptions with other key types.
 
-diff --git a/Documentation/crypto/userspace-if.rst b/Documentation/crypto/userspace-if.rst
-index b31117d4415dda6ad6ca36275e615bec7df9552e..ab93300c8e04524469f284704c7c5ed582fdcbc0 100644
---- a/Documentation/crypto/userspace-if.rst
-+++ b/Documentation/crypto/userspace-if.rst
-@@ -28,8 +28,8 @@ functionality than that. It actually provides access to all software algorithms.
- 
- This includes arbitrary compositions of different algorithms created via a
- complex template system, as well as algorithms that only make sense as internal
--implementation details of other algorithms. It also includes full zero-copy
--support, which is difficult for the kernel to implement securely.
-+implementation details of other algorithms. In the past, it also included full
-+zero-copy support, which was difficult for the kernel to implement securely.
- 
- Ultimately, these algorithms are just math computations. They use the same
- instructions that userspace programs already have access to, just accessed in a
-@@ -38,6 +38,21 @@ much more convoluted and less efficient way.
- Indeed, userspace code is nearly always what is being used anyway. These same
- algorithms are widely implemented in userspace crypto libraries.
- 
-+Even when zero-copy and off-CPU accelerators were supported, AF_ALG was usually
-+much slower than optimized software cryptography in userspace. This was
-+especially true for the small message sizes usually seen in performance-critical
-+workloads. While it was possible to demonstrate performance wins for hashing
-+large files on embedded devices, it is hard to imagine a situation where this
-+would be performance-critical.
-+
-+Nowadays, AF_ALG no longer supports zero-copy or off-CPU accelerators.
-+Therefore, it is *always* slower than an optimized userspace implementation,
-+even for large messages. The only possible advantage left is that it avoids
-+duplicating code between kernel and userspace. However, userspace
-+implementations, especially hardware-accelerated ones, do not need to be large.
-+Just because OpenSSL is huge does not mean that all userspace cryptography
-+libraries are.
-+
- Meanwhile, AF_ALG hasn't been withstanding modern vulnerability discovery tools
- such as syzbot and large language models. It receives a steady stream of CVEs.
- Some of the examples include:
+Previous versions
+=================
+
+* v7: https://lore.kernel.org/linux-integrity/20240528210823.28798-1-jarkko@kernel.org/
+* v6: https://lore.kernel.org/linux-integrity/20240528035136.11464-1-jarkko@kernel.org/
+* v5: https://lore.kernel.org/linux-integrity/20240523212515.4875-1-jarkko@kernel.org/
+* v4: https://lore.kernel.org/linux-integrity/20240522005252.17841-1-jarkko@kernel.org/
+* v3: https://lore.kernel.org/linux-integrity/20240521152659.26438-1-jarkko@kernel.org/
+* v2: https://lore.kernel.org/linux-integrity/336755.1716327854@warthog.procyon.org.uk/
+* v1: https://lore.kernel.org/linux-integrity/20240520184727.22038-1-jarkko@kernel.org/
+* Derived from https://lore.kernel.org/all/20200518172704.29608-1-prestwoj@gmail.com/
+
+
+Jarkko Sakkinen (3):
+  lib/asn1_encoder: Add asn1_encode_integer_bytes()
+  crypto: Migrate TPMKey ASN.1 objects from trusted-keys
+  keys: asymmetric: tpm2_asymmetric
+
+ crypto/Kconfig                            |    7 +
+ crypto/Makefile                           |    6 +
+ crypto/asymmetric_keys/Kconfig            |   17 +
+ crypto/asymmetric_keys/Makefile           |    1 +
+ crypto/asymmetric_keys/tpm2_asymmetric.c  | 1096 +++++++++++++++++++++
+ crypto/tpm2_key.asn1                      |   11 +
+ crypto/tpm2_key.c                         |  150 +++
+ include/crypto/tpm2_key.h                 |   46 +
+ include/linux/asn1_encoder.h              |    3 +
+ include/linux/tpm.h                       |   10 +
+ lib/asn1_encoder.c                        |   62 ++
+ security/keys/trusted-keys/Kconfig        |    2 +-
+ security/keys/trusted-keys/Makefile       |    2 -
+ security/keys/trusted-keys/tpm2key.asn1   |   11 -
+ security/keys/trusted-keys/trusted_tpm2.c |  119 +--
+ 15 files changed, 1421 insertions(+), 122 deletions(-)
+ create mode 100644 crypto/asymmetric_keys/tpm2_asymmetric.c
+ create mode 100644 crypto/tpm2_key.asn1
+ create mode 100644 crypto/tpm2_key.c
+ create mode 100644 include/crypto/tpm2_key.h
+ delete mode 100644 security/keys/trusted-keys/tpm2key.asn1
 
 -- 
-2.54.0
-
+2.47.3
 
 
