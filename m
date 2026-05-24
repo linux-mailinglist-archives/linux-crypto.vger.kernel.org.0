@@ -1,145 +1,140 @@
-Return-Path: <linux-crypto+bounces-24539-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24540-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AP8YKURpE2qOAQcAu9opvQ
-	(envelope-from <linux-crypto+bounces-24539-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sun, 24 May 2026 23:10:28 +0200
+	id hL6IDQduE2oCBAcAu9opvQ
+	(envelope-from <linux-crypto+bounces-24540-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sun, 24 May 2026 23:30:47 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E61E5C44FA
-	for <lists+linux-crypto@lfdr.de>; Sun, 24 May 2026 23:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6442C5C458E
+	for <lists+linux-crypto@lfdr.de>; Sun, 24 May 2026 23:30:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 39E07300A114
-	for <lists+linux-crypto@lfdr.de>; Sun, 24 May 2026 21:10:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 279B930097CA
+	for <lists+linux-crypto@lfdr.de>; Sun, 24 May 2026 21:30:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F365833B6EA;
-	Sun, 24 May 2026 21:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6DC42FFFBE;
+	Sun, 24 May 2026 21:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b="bWcPg2/4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CMOXgSwD"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx4.wp.pl (mx4.wp.pl [212.77.101.11])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB7633DEC2
-	for <linux-crypto@vger.kernel.org>; Sun, 24 May 2026 21:09:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.77.101.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508352F872;
+	Sun, 24 May 2026 21:30:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779657004; cv=none; b=boZW/zrZOKoP0tZwFHiDh0jlYC/ZgJQ9w86iDXdtR8X7xV/N7B4BpT19o2hP6sjevE8GiNfs6nTlmnqQwpktebb+/oo+LFhZefduvNA2sPVB9KH1ViRo3GEl+OqeA9AWBUmEAQ7hi9GmPerl2SifOqtniaqVUK8zLdl2LRO4VKA=
+	t=1779658240; cv=none; b=bHjajEPUUf9SFZC0cFua7pYpuVRz+HI7aSaWb+TLrqgNQtvXKLwnzbyFjGi3AbhkeMv9NhXegkKU6dwJTXMPqADSHbNzkEOB1HSqT0j7EpNxzoiSTNuje1qGZ+nUsa+fNZIp3RY5c2pcwfEWsRIlZpCvpSh0XXPo6coANUdAM0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779657004; c=relaxed/simple;
-	bh=Tb2Ldi9OKa2c4FpJbAVSvDyJ20G5JFc4XDg6jtza/Cw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ef2gmgKE5eAUttZYtK+lhEtY12dqlNeYrPMSWtigLcMCRHA+hKsWL8Vt+2qwD3OMsP7m/k81t+giqTSzeneiDGQQ59hOTYbIk29wrUIwDmgfzigXpSz3+jnzyJoab3+X04agl8QhJlfaZ2RiEQuSgMjM+3kszh+Y+7YVurgEe+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl; spf=pass smtp.mailfrom=wp.pl; dkim=pass (2048-bit key) header.d=wp.pl header.i=@wp.pl header.b=bWcPg2/4; arc=none smtp.client-ip=212.77.101.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=wp.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wp.pl
-Received: (wp-smtpd smtp.wp.pl 32184 invoked from network); 24 May 2026 23:09:50 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=20241105;
-          t=1779656990; bh=i/5SUts/HsARtJThCXml0mjybiWuiq3vVlYkikbna5o=;
-          h=Subject:To:Cc:From;
-          b=bWcPg2/4Pt3pea2pjwd5N8qYDe/WAwXkPCMONcPQH4qisVQ01pWJGn61SIr7gWld8
-           SBXU3Hcjij3SdOUBcYSDQOVJwuzYZYzGqcsfkSspftGQCVE9rHRNY6aUJk3vR9BnLD
-           lktWbRa4yPfh3rPf+izcFhSOgH7PEAFfk/1tTj2hB7JxV74q74X55avY6WXI6BX3o+
-           eR7OmZQi3DaFSIG8Kq94+/DX7jHfSPIOy2aUtp9IzhLcyNb9fRiNC+By/SbX5ei83p
-           e29OIcMSmKBB94vQZRmwxGsL9hdy5DezuyYf7zXplAiD3Y6uolYTPGYv6N2+bxh/sX
-           lo3tiWuWemQVg==
-Received: from 83.24.127.64.ipv4.supernova.orange.pl (HELO [192.168.3.203]) (olek2@wp.pl@[83.24.127.64])
-          (envelope-sender <olek2@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with TLS_AES_256_GCM_SHA384 encrypted SMTP
-          for <hurryman2212@gmail.com>; 24 May 2026 23:09:50 +0200
-Message-ID: <ddb3ad67-5125-457a-b033-8804f08b4439@wp.pl>
-Date: Sun, 24 May 2026 23:09:50 +0200
+	s=arc-20240116; t=1779658240; c=relaxed/simple;
+	bh=qGi5JkH0/9nqzEpO+GWiB18MbRy1xh7/jEpBaJ6mNB4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=meKgpsZ68u8mYdI7TKob0PTq16k3htV8oXkNcKaGqDUmMLlj0ye2muf5zTxBsXYIiW27uCmGgl1ZFwAwmN95mHCF/QIQlpyn1KGEt5dQPOjtfvyecqXqkcxIgaNeoMGgR3dhheEV6XAQpQqFy2tPqwSgvguLQ00maU2gEUpRBEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CMOXgSwD; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1779658235;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=9a9YmhOCMXCdtmBjQ+c3tIWRUeS6et3diSyOkSzdMjQ=;
+	b=CMOXgSwDG0TJmSezRu5hp0o52kttpkinATv/up81d1a0uLK6EJHSy4N8uHxdc3d5gAQD27
+	CXja7J4X3NPetR2yR1XaxTyzwQ71zAQTD0wr+xalOULW3dpkw62OGRgc5AaTXbGJFQGKXN
+	JkRlLmD6IxFsZjPKYNvi/TqkFck6j5s=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	=?UTF-8?q?Breno=20Leit=C3=A3o?= <leitao@debian.org>,
+	Nayna Jain <nayna@linux.ibm.com>,
+	Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>
+Cc: linux-crypto@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@linux.dev>
+Subject: [PATCH] MAINTAINERS: powerpc: update VMX AES entries
+Date: Sun, 24 May 2026 23:29:45 +0200
+Message-ID: <20260524212943.799757-3-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] crypto: eip93: return IRQ request errors from probe
-To: Jihong Min <hurryman2212@gmail.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, linux-crypto@vger.kernel.org
-Cc: Christian Marangi <ansuelsmth@gmail.com>,
- Antoine Tenart <atenart@kernel.org>, "David S . Miller"
- <davem@davemloft.net>, Richard van Schagen <vschagen@icloud.com>,
- linux-kernel@vger.kernel.org, Benjamin Larsson
- <benjamin.larsson@genexis.eu>, Mieczyslaw Nalewaj <namiltd@yahoo.com>
-References: <20260524194528.3666383-1-hurryman2212@gmail.com>
- <20260524194528.3666383-2-hurryman2212@gmail.com>
-Content-Language: pl
-From: Aleksander Jan Bajkowski <olek2@wp.pl>
-In-Reply-To: <20260524194528.3666383-2-hurryman2212@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-WP-MailID: 10078de62747bcf64ebc8a71ee6a6f68
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000009 [oQoX]                               
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1384; i=thorsten.blum@linux.dev; h=from:subject; bh=qGi5JkH0/9nqzEpO+GWiB18MbRy1xh7/jEpBaJ6mNB4=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDFnCuSdeGsnPZfY4WZV/++7m+9//Hln+dD+3SJxKp+WLh eV3DD7ZdpSyMIhxMciKKbI8mPVjhm9pTeUmk4idMHNYmUCGMHBxCsBEmucy/HeXczjC2Hiw8tDJ BanrBarm8luYid3PTQor+C6w9mFgtgwjw1G5yxcm3Aw8sbiHcfvxBIlE9o9CS22vakdczPzFvfH TVy4A
+X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[wp.pl,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[wp.pl:s=20241105];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-24539-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-24540-lists,linux-crypto=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_TO(0.00)[gondor.apana.org.au,davemloft.net,debian.org,linux.ibm.com,gmail.com,kernel.org];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,gondor.apana.org.au,vger.kernel.org];
-	FREEMAIL_CC(0.00)[gmail.com,kernel.org,davemloft.net,icloud.com,vger.kernel.org,genexis.eu,yahoo.com];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[wp.pl];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[olek2@wp.pl,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[wp.pl:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[wp.pl:mid,wp.pl:dkim]
-X-Rspamd-Queue-Id: 0E61E5C44FA
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,aesp8-ppc.pl:url]
+X-Rspamd-Queue-Id: 6442C5C458E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Jihjong,
-I sent same patch a few days ago. You can find it on Patchwork[1].
+Commit 7cf2082e74ce ("lib/crypto: powerpc/aes: Migrate POWER8 optimized
+code into library") removed arch/powerpc/crypto/aes.c and moved
+arch/powerpc/crypto/aesp8-ppc.pl to lib/crypto/powerpc/.
 
-1. 
-https://patchwork.kernel.org/project/linux-crypto/patch/20260518212506.292170-1-olek2@wp.pl/
-Best regards,
-Aleksander
+However, the "IBM Power VMX Cryptographic instructions" entry still
+references the removed file and no longer covers the moved aesp8-ppc.pl.
 
-On 24/05/2026 21:45, Jihong Min wrote:
-> devm_request_threaded_irq() can fail, but eip93_crypto_probe()
-> continues as if the interrupt handler was installed. Return the error
-> immediately so the driver does not register algorithms for a device that
-> cannot signal completions.
->
-> Fixes: 9739f5f93b78 ("crypto: eip93 - Add Inside Secure SafeXcel EIP-93 crypto engine support")
-> Originally-by: Mieczyslaw Nalewaj <namiltd@yahoo.com>
-> Assisted-by: Codex:gpt-5.5
-> Signed-off-by: Jihong Min <hurryman2212@gmail.com>
-> ---
->   drivers/crypto/inside-secure/eip93/eip93-main.c | 2 ++
->   1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/crypto/inside-secure/eip93/eip93-main.c b/drivers/crypto/inside-secure/eip93/eip93-main.c
-> index 7dccfdeb7b11..276839e1a515 100644
-> --- a/drivers/crypto/inside-secure/eip93/eip93-main.c
-> +++ b/drivers/crypto/inside-secure/eip93/eip93-main.c
-> @@ -433,6 +433,8 @@ static int eip93_crypto_probe(struct platform_device *pdev)
->   	ret = devm_request_threaded_irq(eip93->dev, eip93->irq, eip93_irq_handler,
->   					NULL, IRQF_ONESHOT,
->   					dev_name(eip93->dev), eip93);
-> +	if (ret)
-> +		return ret;
->   
->   	eip93->ring = devm_kcalloc(eip93->dev, 1, sizeof(*eip93->ring), GFP_KERNEL);
->   	if (!eip93->ring)
+Remove the stale entry, add lib/crypto/powerpc/aesp8-ppc.pl, and tighten
+the arch/powerpc/crypto/aesp8-ppc.* pattern to match the remaining
+header only.
+
+Fixes: 7cf2082e74ce ("lib/crypto: powerpc/aes: Migrate POWER8 optimized code into library")
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+---
+ MAINTAINERS | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b539be153f6a..c48cdb05e6dc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12349,13 +12349,13 @@ L:	linux-crypto@vger.kernel.org
+ S:	Supported
+ F:	arch/powerpc/crypto/Kconfig
+ F:	arch/powerpc/crypto/Makefile
+-F:	arch/powerpc/crypto/aes.c
+ F:	arch/powerpc/crypto/aes_cbc.c
+ F:	arch/powerpc/crypto/aes_ctr.c
+ F:	arch/powerpc/crypto/aes_xts.c
+-F:	arch/powerpc/crypto/aesp8-ppc.*
++F:	arch/powerpc/crypto/aesp8-ppc.h
+ F:	arch/powerpc/crypto/ppc-xlate.pl
+ F:	arch/powerpc/crypto/vmx.c
++F:	lib/crypto/powerpc/aesp8-ppc.pl
+ F:	lib/crypto/powerpc/gf128hash.h
+ F:	lib/crypto/powerpc/ghashp8-ppc.pl
+ 
 
