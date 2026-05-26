@@ -1,62 +1,62 @@
-Return-Path: <linux-crypto+bounces-24601-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24602-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cLSHNdqeFWr9WgcAu9opvQ
-	(envelope-from <linux-crypto+bounces-24601-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 26 May 2026 15:23:38 +0200
+	id mIgiDdGtFWqzXwcAu9opvQ
+	(envelope-from <linux-crypto+bounces-24602-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 26 May 2026 16:27:29 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70B775D65C7
-	for <lists+linux-crypto@lfdr.de>; Tue, 26 May 2026 15:23:38 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A8955D7770
+	for <lists+linux-crypto@lfdr.de>; Tue, 26 May 2026 16:27:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C2A8D30058EB
-	for <lists+linux-crypto@lfdr.de>; Tue, 26 May 2026 13:23:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C39D5305C5B0
+	for <lists+linux-crypto@lfdr.de>; Tue, 26 May 2026 14:17:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2BB924E4C6;
-	Tue, 26 May 2026 13:23:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D597C3D47C5;
+	Tue, 26 May 2026 14:17:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="THHFZjPa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cRt+GCB+"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380964315A
-	for <linux-crypto@vger.kernel.org>; Tue, 26 May 2026 13:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978923B9935;
+	Tue, 26 May 2026 14:17:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779801814; cv=none; b=FO8vnVMySQGJltNOlsk3Y0smZRshqAkYw+k2bTNxozjQD/V2W8pPj27gYrPb2H/z0SQl0FTGesvJ1hZog+z5V1rcgg/5Hf40jiNw6yG3LA8wMRJ1FY0L34axjqVSLP4c84So6jS/15K6qpjV6PMVFbh1Zg09Y4HpjzgL4HXXf5Q=
+	t=1779805033; cv=none; b=CIs9CfE2hhW10VMCAj++zRP2QjLDBbc5sA1lG8o8Ib2XY/lssjbZKjapu+2vwv1PRBFXQIdhfRwFlhHCspVxZ+ls/cTsdJCIYG7MUFHLBZEmLC3WAI+H1HDokPh73zRlLcqgVrcLFptElWsI/7O/5MC5alxHXPu9OlTlGXKc1vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779801814; c=relaxed/simple;
-	bh=gCfswUgGOoy46ti3xo1eu8Ugo/7hokJi7BX3VtOeQWs=;
+	s=arc-20240116; t=1779805033; c=relaxed/simple;
+	bh=uJFgd3/ogk0JmiL+ilZMgsxh3azG0zM/yHpAHSbKVLo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EGauwIv11T2QPlH10ZkPXXpb03Q2S+VR0UirNaKZfNwbuJ8P3oMGSq5nl3Qsr7+57tAtA92aK5c3D9RRzoHxX8EzJBgAG++T0MZ44xS1j464LYpuPsA7ukjx9DKNpnSRGPvI6QZUWnXUiBlgEeK2/d3i4CwraHJjBjKNg5AJzHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=THHFZjPa; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 26 May 2026 15:23:25 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1779801810;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dA1O+oAgkTJZXV4+UuR5kAXFpZlcMZyWQGu/ArL/mPc=;
-	b=THHFZjPa+PNUTkzfwtnycYqtnqa/Q+TcFiLXqacr1iXLTst404xjB04Of8sKarPnbJuYjL
-	cno4WnHNtID9GBkIjyUNSstJve1dXErAwiWcOVx+OJkkmBEX2YrHGh9tth1c5HX00sCAFL
-	Cj27oNarGKQ8YhYyza28odI5pc2rhKk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Thorsten Blum <thorsten.blum@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=h6eQlltXVALhMEiKAF106K3luEXHslNmCSovfbpCIzN8j1VfexoUT0NPjCQAfYReUGbDr8THzJW4IL/V1J6q9zuhGtbKw81jm5imsOA35bRxWox8rRJsMumdD7Wx2Ok5mFny9ZYEXYvI8wzsjv1ls6qiSlwCVn9lxJ9dUqyRos0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cRt+GCB+; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 307DE1F000E9;
+	Tue, 26 May 2026 14:17:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1779805032;
+	bh=MOmfqqaPenCKNf8Jd7LGVJ2lCf/SJRwRNixbV+upgkg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=cRt+GCB+krSclmk2bvdkFkbTtWOZBrucfMRvXAHVRk6KLh8bnLT41k9GNxpGpTJMW
+	 nBUUIrDjzji/xaDRhcaF/p5EErQ+uKcRK9+x1mrFkf3451MBDfJhlk1kPMZGUz3fsR
+	 5nN53DLvus5UQdtU7ubxb06GgfpKwyqgsHX4Gj+Co+ifdEBHJ+HyXe24p8EmzfKaDh
+	 TbSqYEJfzT00O5wW8C2gbm9wU/fl7TQrHeFd6N7lYF2tMMEp+s3+bOcvNVOpEJKDsZ
+	 s92seROqPXr9tQV3w883KirwTJZMumj9e+iwhH8H89f1VugAN6aDTYk14/L4owwkOm
+	 pIh3SiHVsPM+Q==
+Date: Tue, 26 May 2026 15:17:07 +0100
+From: Simon Horman <horms@kernel.org>
 To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>,
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Kuniyuki Iwashima <kuniyu@google.com>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Willem de Bruijn <willemb@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>,
-	netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+	Jakub Kicinski <kuba@kernel.org>, linux-crypto@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 1/6] sock: add sock_kzalloc helper
-Message-ID: <ahWezce_kddgrgy6@linux.dev>
+Message-ID: <20260526141707.GL1506108@horms.kernel.org>
 References: <20260427104129.309982-7-thorsten.blum@linux.dev>
  <ahBRCxCXbCq5LeCc@linux.dev>
  <ahVkZOxZtFes6Huf@gondor.apana.org.au>
@@ -69,34 +69,34 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <ahVkZOxZtFes6Huf@gondor.apana.org.au>
-X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-24601-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[linux.dev:+];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_FROM(0.00)[bounces-24602-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[horms@kernel.org,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:mid,linux.dev:dkim,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: 70B775D65C7
+	RCPT_COUNT_SEVEN(0.00)[10];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+X-Rspamd-Queue-Id: 8A8955D7770
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -133,15 +133,7 @@ On Tue, May 26, 2026 at 05:14:12PM +0800, Herbert Xu wrote:
 > 
 > This patch needs an ack from the netdev maintainers.
 
-Jakub, netdev folks,
+In which case it probably needs to hit the netdev mailing list.
 
-Could you take a look at this small include/net/sock.h addition and
-provide an Acked-by: tag if you're okay with it going through Herbert's
-crypto tree?
-
-The series has Reviewed-by: tags from Kuniyuki, but it hadn't been Cc'ed
-to netdev before.
-
-Thanks,
-Thorsten
+Thanks!
 
