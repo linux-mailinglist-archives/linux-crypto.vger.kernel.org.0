@@ -1,582 +1,183 @@
-Return-Path: <linux-crypto+bounces-24575-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24577-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cEslKSiZFGoUOwcAu9opvQ
-	(envelope-from <linux-crypto+bounces-24575-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 25 May 2026 20:47:04 +0200
+	id YGHiLrb/FGp2SAcAu9opvQ
+	(envelope-from <linux-crypto+bounces-24577-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 26 May 2026 04:04:38 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04C915CDC8A
-	for <lists+linux-crypto@lfdr.de>; Mon, 25 May 2026 20:47:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D2C25CFB45
+	for <lists+linux-crypto@lfdr.de>; Tue, 26 May 2026 04:04:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A95B43025287
-	for <lists+linux-crypto@lfdr.de>; Mon, 25 May 2026 18:46:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1BEC8301ECCB
+	for <lists+linux-crypto@lfdr.de>; Tue, 26 May 2026 02:01:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21657386C3E;
-	Mon, 25 May 2026 18:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC5802E62B5;
+	Tue, 26 May 2026 02:01:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QAdMyPX5"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="e07O8oYp"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9461B3806B3;
-	Mon, 25 May 2026 18:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8BE45BE3;
+	Tue, 26 May 2026 02:01:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779734781; cv=none; b=ZzyuB82wnips36TKZBLKMUpU/oFpq9wU/WtzVQwazD8zBOdQz6TXK+wx2kzEJc4hrlPP+bp3eKwA6vRjBGnLD8mKPve/ghtd91rzFlnKNJLgVZJSw7bq1nOaSFJVoLbHPpz33BDMEdedb9HHUx/uhUcUyM6I8egiunrv2xUHKUA=
+	t=1779760898; cv=none; b=f95GK19OGqNzzgbVKuRV/bGe+9BQaQ0d7m11k0YQKt1Ww+vbGvvWTzSMhAL38j6QSxzRYXsUBZlGJLgtB01os1CB/WUX9AsS+6iLshcf9B3BV1HxKRqlNRI7tnJFi9gGHBGoYnA7SVwqVu8zLG5TvB64D/zqxPbKo1mZdwXA6po=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779734781; c=relaxed/simple;
-	bh=k3ASMflhdpyc05U2qF1XqUUAJlRlOdHgrkFRSls081I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oUBD12fAUU+XxGI+PT9Ej0oqqmK94mGVn6L0w4oU12KXQU6uHx/WmfqZm56BAJLKCMCYP96lRfCJPW4iNoTIdE9K2+un6DR8YmzrStSJpdJqc6mgH0qIND8hmGYDWZzxeuGqN7Xl55go3QcTwUv81qW7QkrdIIrB6Ery+Rj64tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QAdMyPX5; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4497B1F00ACF;
-	Mon, 25 May 2026 18:46:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1779734774;
-	bh=fFXbVaHvCTBsufnxi0mxN9Ep3h34qAHfanI3JPSWrXI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=QAdMyPX5RWV2O2HGDsiFry+RxxMPB/6RXlXjdC2eILVj862WyfPrDM71qtyEy8ZuW
-	 +W+WGWywNGCVVDFXch/X+lF34lHma6C5NDzJi74PpolYIs+iWCdS3hc8MyC855IkBS
-	 bHGHoGKEjdwf+O7F4sDjOmGoCGr97L4GErG4o8chM48N20QzKPWXvwtd+lYxZlbbDQ
-	 DggfP0dzvv+H7kmOn3QlVI5TS3rjx5zs1+Vl2+2CVr4zKR+BCVEM+cGmmxt272D614
-	 8m0t2qv7PcxE1cpi146bKAnafFeY/L/BXPWq70R1jlFJjY+HOoSwQyi4aH+8vqvBCq
-	 jUK9C/fLOtnZQ==
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Ard Biesheuvel <ardb@kernel.org>,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Ryan Appel <ryan.appel.333@gmail.com>,
-	Chris Leech <cleech@redhat.com>,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 5/5] lib/crypto: xwing: Add KUnit tests for X-Wing KEM
-Date: Mon, 25 May 2026 13:44:03 -0500
-Message-ID: <20260525184403.101818-6-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20260525184403.101818-1-ebiggers@kernel.org>
-References: <20260525184403.101818-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1779760898; c=relaxed/simple;
+	bh=WZccG3fnlNQe3qXKwjjLMWKLgAPr8Y1x9vAwmdo+axI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Hsd2rnPx0v0g+l5FP/egfbXJ6l/9w2lPHiYlvlEgoXdwiswfuhauI6q2HlQ/VZ7lSzTgftpr2hB3qQZmNspnfRkQXOYQOJF2XetJiIPb2ff1lQzzfAKbWPscvWdFqkHW3AMoXm0zsqUyPR/1sgp/Jh0iG+pkLqEDcb8VDfCHlC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=e07O8oYp; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 64PMJaPi739435;
+	Tue, 26 May 2026 02:01:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=WZccG3
+	fnlNQe3qXKwjjLMWKLgAPr8Y1x9vAwmdo+axI=; b=e07O8oYpnAJrIw6Z+lwL17
+	kQdN5s3lJ95ksVqy5Iki3/EtExPvuwr4qcpwtEQbgXU3vhFSBBYztPUHvlXbpCnF
+	UwrqOXSFHxYidWCzaizY/1X9qCyNjD1AUeNajbc8Vu8NJN0egfSw4+/PpY/RRJ1N
+	p8hdocibjnqUA/mgBHn82eFQvS+PXvpbhWSixHL/xbZP+CpQ9I3gWXWAmnE1B4ZK
+	5GG2zEW9m6LHXfmshGIhOSOEl40wbZcJhWIpOFHY+5CfzGHWI3JNYRqCO031MS9L
+	w4Ma81lKrBLGiidt/V4ebSRbCmPTbZjBErGl9lvNLxaRfbrrC5UeNCz5qehB3JWQ
+	==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4eb4qbsvu0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 May 2026 02:01:18 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 64Q1s7IX003587;
+	Tue, 26 May 2026 02:01:17 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 4ebrsg740v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 26 May 2026 02:01:17 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 64Q21Htk4653802
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 26 May 2026 02:01:17 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 147FC58054;
+	Tue, 26 May 2026 02:01:17 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5714658064;
+	Tue, 26 May 2026 02:01:13 +0000 (GMT)
+Received: from [9.123.2.213] (unknown [9.123.2.213])
+	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 26 May 2026 02:01:13 +0000 (GMT)
+Message-ID: <6d525c47-a667-4440-8910-81b20a6d8eef@linux.ibm.com>
+Date: Tue, 26 May 2026 07:30:55 +0530
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] MAINTAINERS: powerpc: update VMX AES entries
+To: Eric Biggers <ebiggers@kernel.org>,
+        Thorsten Blum <thorsten.blum@linux.dev>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        =?UTF-8?Q?Breno_Leit=C3=A3o?=
+ <leitao@debian.org>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20260524212943.799757-3-thorsten.blum@linux.dev>
+ <20260524213525.GA112327@quark>
+Content-Language: en-US
+From: Madhavan Srinivasan <maddy@linux.ibm.com>
+In-Reply-To: <20260524213525.GA112327@quark>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTI2MDAwOCBTYWx0ZWRfX4ckxd1zouxHm
+ rwDijT5ca6g5HotfZr9RrgBr/bqA/oU1R83xA8+oo/PVhXIbnqEYGAMf5+CL8xKjUDmAnvJdIcO
+ PY+qHEiUbFUxAkwctfF5YiF93WlEsMuCxKl61Dq2tRTkj0pidgCsK7oYe6Y5D/oAQA071NFxF7C
+ efnBrFXLr/AR0ZtCZvqbBt+zjNelgZOzW4R6CuajLBno6tsBrbrLUZs5ItPMz5yiWc0skdeNbtL
+ g4z0asQT/ELww3YwElRX4C8Dp4Sdl/MmCevTfDz6hMwrfaSTQx2uVmnWEh52jA9uEwIMDcUGaSS
+ +PR/8f0ATMsEOVe5MYnBjFEO9Zz6YmkpLhI2XZWWgpxVcTjoyni5HGnCX3gYMim3/ASDE7wOduL
+ PIA+QToZAd7lultSMCW0W/aQY+lRi0NY9F7y/pTz2alcy96j+B0cS21Uo206Z/eQzMTztO5oMu9
+ 87jHDCJZbICSvnvVrqQ==
+X-Authority-Analysis: v=2.4 cv=KItqylFo c=1 sm=1 tr=0 ts=6a14feef cx=c_pps
+ a=AfN7/Ok6k8XGzOShvHwTGQ==:117 a=AfN7/Ok6k8XGzOShvHwTGQ==:17
+ a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=uAbxVGIbfxUO_5tXvNgY:22 a=VwQbUJbxAAAA:8
+ a=QeX2k3-f3KgXQTKCy84A:9 a=QEXdDO2ut3YA:10 a=0lgtpPvCYYIA:10
+X-Proofpoint-ORIG-GUID: V5B_mq3WKa17XdYF6enYRCQ_VXJ2y8sX
+X-Proofpoint-GUID: QbJddNLEi_mvrceoSBn4RXYgu4UJthR0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-05-25_07,2026-05-18_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0 priorityscore=1501
+ clxscore=1011 adultscore=0 suspectscore=0 bulkscore=0 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2605130000 definitions=main-2605260008
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,zx2c4.com,gondor.apana.org.au,gmail.com,redhat.com];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-24575-lists,linux-crypto=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[gondor.apana.org.au,davemloft.net,debian.org,linux.ibm.com,gmail.com,kernel.org,vger.kernel.org,lists.ozlabs.org];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-24577-lists,linux-crypto=lfdr.de];
+	DKIM_TRACE(0.00)[ibm.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.ibm.com:mid,linux.dev:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,aesp8-ppc.pl:url];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	FROM_NEQ_ENVFROM(0.00)[maddy@linux.ibm.com,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: 04C915CDC8A
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	RCVD_COUNT_SEVEN(0.00)[11]
+X-Rspamd-Queue-Id: 1D2C25CFB45
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Add a KUnit test suite for the X-Wing key encapsulation mechanism.
 
-This includes:
+On 5/25/26 3:05 AM, Eric Biggers wrote:
+> On Sun, May 24, 2026 at 11:29:45PM +0200, Thorsten Blum wrote:
+>> Commit 7cf2082e74ce ("lib/crypto: powerpc/aes: Migrate POWER8 optimized
+>> code into library") removed arch/powerpc/crypto/aes.c and moved
+>> arch/powerpc/crypto/aesp8-ppc.pl to lib/crypto/powerpc/.
+>>
+>> However, the "IBM Power VMX Cryptographic instructions" entry still
+>> references the removed file and no longer covers the moved aesp8-ppc.pl.
+>>
+>> Remove the stale entry, add lib/crypto/powerpc/aesp8-ppc.pl, and tighten
+>> the arch/powerpc/crypto/aesp8-ppc.* pattern to match the remaining
+>> header only.
+>>
+>> Fixes: 7cf2082e74ce ("lib/crypto: powerpc/aes: Migrate POWER8 optimized code into library")
+>> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> Acked-by: Eric Biggers <ebiggers@kernel.org>
+>
+> If this doesn't get picked up through the powerpc tree, I can take this
+> through libcrypto-next.
+>
+> - Eric
 
-- Test key generation, encapsulation, and decapsulation against the
-  test vectors from the X-Wing specification
-- Test encapsulation/decapsulation round trips
-- Benchmark key generation, encapsulation, and decapsulation
+I can take this via ppc tree.
 
-This isn't intended to fully test the underlying KEMs.  Those already
-have their own KUnit tests.
-
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
----
- lib/crypto/.kunitconfig                 |   1 +
- lib/crypto/tests/Kconfig                |   9 ++
- lib/crypto/tests/Makefile               |   1 +
- lib/crypto/tests/xwing-testvecs.h       | 138 ++++++++++++++++++++++++
- lib/crypto/tests/xwing_kunit.c          | 129 ++++++++++++++++++++++
- scripts/crypto/import-xwing-testvecs.py | 111 +++++++++++++++++++
- 6 files changed, 389 insertions(+)
- create mode 100644 lib/crypto/tests/xwing-testvecs.h
- create mode 100644 lib/crypto/tests/xwing_kunit.c
- create mode 100755 scripts/crypto/import-xwing-testvecs.py
-
-diff --git a/lib/crypto/.kunitconfig b/lib/crypto/.kunitconfig
-index 32e5b4471da8..b42d8aaed244 100644
---- a/lib/crypto/.kunitconfig
-+++ b/lib/crypto/.kunitconfig
-@@ -17,5 +17,6 @@ CONFIG_CRYPTO_LIB_POLYVAL_KUNIT_TEST=y
- CONFIG_CRYPTO_LIB_SHA1_KUNIT_TEST=y
- CONFIG_CRYPTO_LIB_SHA256_KUNIT_TEST=y
- CONFIG_CRYPTO_LIB_SHA512_KUNIT_TEST=y
- CONFIG_CRYPTO_LIB_SHA3_KUNIT_TEST=y
- CONFIG_CRYPTO_LIB_SM3_KUNIT_TEST=y
-+CONFIG_CRYPTO_LIB_XWING_KUNIT_TEST=y
-diff --git a/lib/crypto/tests/Kconfig b/lib/crypto/tests/Kconfig
-index 0a110a0733d2..485b5fd81539 100644
---- a/lib/crypto/tests/Kconfig
-+++ b/lib/crypto/tests/Kconfig
-@@ -147,10 +147,18 @@ config CRYPTO_LIB_SM3_KUNIT_TEST
- 	default KUNIT_ALL_TESTS
- 	select CRYPTO_LIB_BENCHMARK_VISIBLE
- 	help
- 	  KUnit tests for the SM3 cryptographic hash function.
- 
-+config CRYPTO_LIB_XWING_KUNIT_TEST
-+	tristate "KUnit tests for X-Wing" if !KUNIT_ALL_TESTS
-+	depends on KUNIT && CRYPTO_LIB_XWING
-+	default KUNIT_ALL_TESTS
-+	select CRYPTO_LIB_BENCHMARK_VISIBLE
-+	help
-+	  KUnit tests for the X-Wing key encapsulation mechanism.
-+
- config CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT
- 	tristate "Enable all crypto library code for KUnit tests"
- 	depends on KUNIT
- 	select CRYPTO_LIB_AES_CBC_MACS
- 	select CRYPTO_LIB_BLAKE2B
-@@ -165,10 +173,11 @@ config CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT
- 	select CRYPTO_LIB_SHA1
- 	select CRYPTO_LIB_SHA256
- 	select CRYPTO_LIB_SHA512
- 	select CRYPTO_LIB_SHA3
- 	select CRYPTO_LIB_SM3
-+	select CRYPTO_LIB_XWING
- 	help
- 	  Enable all the crypto library code that has KUnit tests.
- 
- 	  Enable this only if you'd like to test all the crypto library code,
- 	  even code that wouldn't otherwise need to be built.
-diff --git a/lib/crypto/tests/Makefile b/lib/crypto/tests/Makefile
-index 3a73d2f33f75..acc8ddc19978 100644
---- a/lib/crypto/tests/Makefile
-+++ b/lib/crypto/tests/Makefile
-@@ -15,5 +15,6 @@ obj-$(CONFIG_CRYPTO_LIB_POLYVAL_KUNIT_TEST) += polyval_kunit.o
- obj-$(CONFIG_CRYPTO_LIB_SHA1_KUNIT_TEST) += sha1_kunit.o
- obj-$(CONFIG_CRYPTO_LIB_SHA256_KUNIT_TEST) += sha224_kunit.o sha256_kunit.o
- obj-$(CONFIG_CRYPTO_LIB_SHA512_KUNIT_TEST) += sha384_kunit.o sha512_kunit.o
- obj-$(CONFIG_CRYPTO_LIB_SHA3_KUNIT_TEST) += sha3_kunit.o
- obj-$(CONFIG_CRYPTO_LIB_SM3_KUNIT_TEST) += sm3_kunit.o
-+obj-$(CONFIG_CRYPTO_LIB_XWING_KUNIT_TEST) += xwing_kunit.o
-diff --git a/lib/crypto/tests/xwing-testvecs.h b/lib/crypto/tests/xwing-testvecs.h
-new file mode 100644
-index 000000000000..057ca37c7ef7
---- /dev/null
-+++ b/lib/crypto/tests/xwing-testvecs.h
-@@ -0,0 +1,138 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/* This file was generated by import-xwing-testvecs.py */
-+
-+static const struct xwing_testvec {
-+	u8 seed[XWING_SEED_BYTES];
-+	u8 pk_hash[SHA3_256_DIGEST_SIZE];
-+	u8 sk_hash[SHA3_256_DIGEST_SIZE];
-+	u8 eseed[XWING_ESEED_BYTES];
-+	u8 ct_hash[SHA3_256_DIGEST_SIZE];
-+	u8 ss[XWING_SHARED_SECRET_BYTES];
-+} xwing_testvecs[] = {
-+	{
-+		.seed = {
-+			0x7f, 0x9c, 0x2b, 0xa4, 0xe8, 0x8f, 0x82, 0x7d,
-+			0x61, 0x60, 0x45, 0x50, 0x76, 0x05, 0x85, 0x3e,
-+			0xd7, 0x3b, 0x80, 0x93, 0xf6, 0xef, 0xbc, 0x88,
-+			0xeb, 0x1a, 0x6e, 0xac, 0xfa, 0x66, 0xef, 0x26,
-+		},
-+		.pk_hash = {
-+			0x51, 0x21, 0x74, 0x59, 0x04, 0x64, 0x3a, 0xd9,
-+			0xdf, 0xac, 0xca, 0x78, 0x69, 0x29, 0x2c, 0x19,
-+			0xa8, 0xa6, 0x95, 0x33, 0xb5, 0x3e, 0x60, 0x66,
-+			0x6b, 0x7d, 0xb9, 0x10, 0xb4, 0xad, 0x63, 0x67,
-+		},
-+		.sk_hash = {
-+			0x1f, 0x32, 0xc4, 0xb1, 0xa9, 0x65, 0xfa, 0x90,
-+			0x33, 0xb7, 0x85, 0xc2, 0xa2, 0x4b, 0x81, 0xdc,
-+			0xd1, 0xbc, 0x81, 0xe9, 0xbe, 0x0c, 0x20, 0x4f,
-+			0x20, 0xfd, 0xd1, 0x50, 0x92, 0xbb, 0x6d, 0x4a,
-+		},
-+		.eseed = {
-+			0x3c, 0xb1, 0xee, 0xa9, 0x88, 0x00, 0x4b, 0x93,
-+			0x10, 0x3c, 0xfb, 0x0a, 0xee, 0xfd, 0x2a, 0x68,
-+			0x6e, 0x01, 0xfa, 0x4a, 0x58, 0xe8, 0xa3, 0x63,
-+			0x9c, 0xa8, 0xa1, 0xe3, 0xf9, 0xae, 0x57, 0xe2,
-+			0x35, 0xb8, 0xcc, 0x87, 0x3c, 0x23, 0xdc, 0x62,
-+			0xb8, 0xd2, 0x60, 0x16, 0x9a, 0xfa, 0x2f, 0x75,
-+			0xab, 0x91, 0x6a, 0x58, 0xd9, 0x74, 0x91, 0x88,
-+			0x35, 0xd2, 0x5e, 0x6a, 0x43, 0x50, 0x85, 0xb2,
-+		},
-+		.ct_hash = {
-+			0xc0, 0xab, 0xd1, 0x49, 0xf8, 0x3f, 0x45, 0x32,
-+			0x4a, 0xc3, 0xa7, 0xdd, 0xc7, 0x60, 0x6c, 0x71,
-+			0xf2, 0x57, 0xe5, 0xea, 0x86, 0x11, 0x35, 0x22,
-+			0x83, 0x4a, 0x0e, 0xe1, 0xbc, 0xb3, 0x4e, 0x3e,
-+		},
-+		.ss = {
-+			0xd2, 0xdf, 0x05, 0x22, 0x12, 0x8f, 0x09, 0xdd,
-+			0x8e, 0x2c, 0x92, 0xb1, 0xe9, 0x05, 0xc7, 0x93,
-+			0xd8, 0xf5, 0x7a, 0x54, 0xc3, 0xda, 0x25, 0x86,
-+			0x1f, 0x10, 0xbf, 0x4c, 0xa6, 0x13, 0xe3, 0x84,
-+		},
-+	},
-+	{
-+		.seed = {
-+			0xba, 0xdf, 0xd6, 0xdf, 0xaa, 0xc3, 0x59, 0xa5,
-+			0xef, 0xbb, 0x7b, 0xcc, 0x4b, 0x59, 0xd5, 0x38,
-+			0xdf, 0x9a, 0x04, 0x30, 0x2e, 0x10, 0xc8, 0xbc,
-+			0x1c, 0xbf, 0x1a, 0x0b, 0x3a, 0x51, 0x20, 0xea,
-+		},
-+		.pk_hash = {
-+			0x79, 0x9b, 0x60, 0x16, 0xe5, 0xda, 0xa5, 0x6f,
-+			0xfa, 0x1b, 0x5e, 0x79, 0xf7, 0xca, 0xf7, 0x34,
-+			0x13, 0xce, 0xec, 0xd6, 0xdf, 0x42, 0x86, 0x42,
-+			0x40, 0x4c, 0xac, 0x41, 0xdd, 0xee, 0x48, 0x53,
-+		},
-+		.sk_hash = {
-+			0x1d, 0x31, 0x12, 0xef, 0x3c, 0xb6, 0x68, 0x10,
-+			0xd3, 0xad, 0x64, 0x18, 0x57, 0x9a, 0x5c, 0x8c,
-+			0xd9, 0xd1, 0xfa, 0x13, 0xf6, 0xdd, 0xc7, 0xc1,
-+			0x29, 0x7c, 0x09, 0x63, 0xe8, 0xbb, 0xb0, 0x24,
-+		},
-+		.eseed = {
-+			0x17, 0xcd, 0xa7, 0xcf, 0xad, 0x76, 0x5f, 0x56,
-+			0x23, 0x47, 0x4d, 0x36, 0x8c, 0xcc, 0xa8, 0xaf,
-+			0x00, 0x07, 0xcd, 0x9f, 0x5e, 0x4c, 0x84, 0x9f,
-+			0x16, 0x7a, 0x58, 0x0b, 0x14, 0xaa, 0xbd, 0xef,
-+			0xae, 0xe7, 0xee, 0xf4, 0x7c, 0xb0, 0xfc, 0xa9,
-+			0x76, 0x7b, 0xe1, 0xfd, 0xa6, 0x94, 0x19, 0xdf,
-+			0xb9, 0x27, 0xe9, 0xdf, 0x07, 0x34, 0x8b, 0x19,
-+			0x66, 0x91, 0xab, 0xae, 0xb5, 0x80, 0xb3, 0x2d,
-+		},
-+		.ct_hash = {
-+			0x76, 0x80, 0xb7, 0xba, 0x47, 0xae, 0x09, 0xba,
-+			0xc4, 0xb4, 0x30, 0x01, 0xed, 0xce, 0xf9, 0xd9,
-+			0x8e, 0x50, 0xdf, 0x20, 0x02, 0x6e, 0x70, 0xba,
-+			0x6a, 0x42, 0x44, 0x47, 0xe1, 0xf2, 0xb9, 0x61,
-+		},
-+		.ss = {
-+			0xf2, 0xe8, 0x62, 0x41, 0xc6, 0x4d, 0x60, 0xf6,
-+			0x64, 0x9f, 0xbc, 0x6c, 0x5b, 0x7d, 0x17, 0x18,
-+			0x0b, 0x78, 0x0a, 0x3f, 0x34, 0x35, 0x5e, 0x64,
-+			0xa8, 0x57, 0x49, 0x94, 0x9c, 0x45, 0xf1, 0x50,
-+		},
-+	},
-+	{
-+		.seed = {
-+			0xef, 0x58, 0x53, 0x8b, 0x8d, 0x23, 0xf8, 0x77,
-+			0x32, 0xea, 0x63, 0xb0, 0x2b, 0x4f, 0xa0, 0xf4,
-+			0x87, 0x33, 0x60, 0xe2, 0x84, 0x19, 0x28, 0xcd,
-+			0x60, 0xdd, 0x4c, 0xee, 0x8c, 0xc0, 0xd4, 0xc9,
-+		},
-+		.pk_hash = {
-+			0x1e, 0xf0, 0xc9, 0x9a, 0x06, 0x02, 0x64, 0x50,
-+			0x56, 0x49, 0x57, 0xa5, 0x40, 0x2a, 0x78, 0x8f,
-+			0xef, 0xfb, 0xbe, 0xfd, 0xcc, 0xe5, 0x5d, 0x25,
-+			0xde, 0x25, 0x4d, 0x0a, 0x49, 0xeb, 0x09, 0x5a,
-+		},
-+		.sk_hash = {
-+			0x75, 0x1b, 0x92, 0x96, 0x9e, 0xc1, 0x7a, 0x6a,
-+			0x5b, 0x4f, 0x95, 0xc0, 0xd2, 0xd9, 0x7d, 0xbc,
-+			0x0d, 0xa7, 0xb0, 0x98, 0x96, 0xaf, 0x69, 0xbd,
-+			0x69, 0xac, 0x7a, 0xb6, 0x19, 0x9e, 0x40, 0x3d,
-+		},
-+		.eseed = {
-+			0x22, 0xa9, 0x61, 0x88, 0xd0, 0x32, 0x67, 0x5c,
-+			0x8a, 0xc8, 0x50, 0x93, 0x3c, 0x7a, 0xff, 0x15,
-+			0x33, 0xb9, 0x4c, 0x83, 0x4a, 0xdb, 0xb6, 0x9c,
-+			0x61, 0x15, 0xba, 0xd4, 0x69, 0x2d, 0x86, 0x19,
-+			0xf9, 0x0b, 0x0c, 0xdf, 0x8a, 0x7b, 0x9c, 0x26,
-+			0x40, 0x29, 0xac, 0x18, 0x5b, 0x70, 0xb8, 0x3f,
-+			0x28, 0x01, 0xf2, 0xf4, 0xb3, 0xf7, 0x0c, 0x59,
-+			0x3e, 0xa3, 0xae, 0xeb, 0x61, 0x3a, 0x7f, 0x1b,
-+		},
-+		.ct_hash = {
-+			0x30, 0x88, 0x68, 0x8d, 0x63, 0x20, 0x1d, 0x5d,
-+			0x84, 0x41, 0x70, 0xb7, 0x9f, 0x14, 0x8b, 0x27,
-+			0x91, 0xc1, 0x5f, 0x34, 0x6f, 0xf6, 0xf8, 0xbd,
-+			0x55, 0x98, 0x07, 0xfb, 0xd4, 0x42, 0xf9, 0x1f,
-+		},
-+		.ss = {
-+			0x95, 0x3f, 0x7f, 0x4e, 0x8c, 0x5b, 0x50, 0x49,
-+			0xbd, 0xc7, 0x71, 0xd1, 0xdf, 0xfa, 0xda, 0x0d,
-+			0xd9, 0x61, 0x47, 0x7d, 0x1a, 0x2a, 0xe0, 0x98,
-+			0x8b, 0xaa, 0x7e, 0xa6, 0x89, 0x8d, 0x89, 0x3f,
-+		},
-+	},
-+};
-diff --git a/lib/crypto/tests/xwing_kunit.c b/lib/crypto/tests/xwing_kunit.c
-new file mode 100644
-index 000000000000..81c4f41e9cab
---- /dev/null
-+++ b/lib/crypto/tests/xwing_kunit.c
-@@ -0,0 +1,129 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * KUnit tests for X-Wing
-+ *
-+ * This should be run together with the mlkem and curve25519 KUnit tests.
-+ *
-+ * Copyright 2026 Google LLC
-+ */
-+#include <crypto/sha3.h>
-+#include <crypto/xwing.h>
-+#include <kunit/test.h>
-+
-+#include "xwing-testvecs.h"
-+
-+struct xwing_bufs {
-+	u8 pk[XWING_PUBLIC_KEY_BYTES];
-+	u8 sk[XWING_SECRET_KEY_BYTES];
-+	u8 ct[XWING_CIPHERTEXT_BYTES];
-+	u8 ss[XWING_SHARED_SECRET_BYTES];
-+	u8 pk_hash[SHA3_256_DIGEST_SIZE];
-+	u8 sk_hash[SHA3_256_DIGEST_SIZE];
-+	u8 ct_hash[SHA3_256_DIGEST_SIZE];
-+};
-+
-+static struct xwing_bufs *alloc_bufs(struct kunit *test)
-+{
-+	struct xwing_bufs *bufs =
-+		kunit_kmalloc(test, sizeof(*bufs), GFP_KERNEL);
-+
-+	KUNIT_ASSERT_NOT_NULL(test, bufs);
-+	return bufs;
-+}
-+
-+static void test_xwing_rfc_testvecs(struct kunit *test)
-+{
-+	struct xwing_bufs *bufs = alloc_bufs(test);
-+
-+	for (size_t i = 0; i < ARRAY_SIZE(xwing_testvecs); i++) {
-+		const struct xwing_testvec *tv = &xwing_testvecs[i];
-+
-+		KUNIT_ASSERT_EQ(test, 0,
-+				xwing_keygen_internal(bufs->pk, bufs->sk,
-+						      tv->seed));
-+		sha3_256(bufs->pk, sizeof(bufs->pk), bufs->pk_hash);
-+		sha3_256(bufs->sk, sizeof(bufs->sk), bufs->sk_hash);
-+		KUNIT_ASSERT_MEMEQ(test, tv->pk_hash, bufs->pk_hash,
-+				   sizeof(tv->pk_hash));
-+		KUNIT_ASSERT_MEMEQ(test, tv->sk_hash, bufs->sk_hash,
-+				   sizeof(tv->sk_hash));
-+
-+		KUNIT_ASSERT_EQ(test, 0,
-+				xwing_encaps_internal(bufs->ct, bufs->ss,
-+						      bufs->pk, tv->eseed));
-+		sha3_256(bufs->ct, sizeof(bufs->ct), bufs->ct_hash);
-+		KUNIT_ASSERT_MEMEQ(test, tv->ct_hash, bufs->ct_hash,
-+				   sizeof(tv->ct_hash));
-+		KUNIT_ASSERT_MEMEQ(test, tv->ss, bufs->ss, sizeof(bufs->ss));
-+
-+		memset(bufs->ss, 0xff, sizeof(bufs->ss));
-+		KUNIT_ASSERT_EQ(test, 0,
-+				xwing_decaps(bufs->ss, bufs->ct, bufs->sk));
-+		KUNIT_ASSERT_MEMEQ(test, tv->ss, bufs->ss, sizeof(bufs->ss));
-+	}
-+}
-+
-+static void test_xwing_round_trip(struct kunit *test)
-+{
-+	struct xwing_bufs *bufs = alloc_bufs(test);
-+	u8 ss2[XWING_SHARED_SECRET_BYTES];
-+
-+	for (int i = 0; i < 20; i++) {
-+		KUNIT_ASSERT_EQ(test, 0, xwing_keygen(bufs->pk, bufs->sk));
-+		KUNIT_ASSERT_EQ(test, 0,
-+				xwing_encaps(bufs->ct, bufs->ss, bufs->pk));
-+		KUNIT_ASSERT_EQ(test, 0, xwing_decaps(ss2, bufs->ct, bufs->sk));
-+		KUNIT_ASSERT_MEMEQ(test, bufs->ss, ss2, sizeof(bufs->ss));
-+	}
-+}
-+
-+/* Benchmark X-Wing performance. */
-+static void benchmark_xwing(struct kunit *test)
-+{
-+	struct xwing_bufs *bufs = alloc_bufs(test);
-+	const int iterations = 100;
-+	ktime_t start, end;
-+
-+	if (!IS_ENABLED(CONFIG_CRYPTO_LIB_BENCHMARK))
-+		kunit_skip(test, "not enabled");
-+
-+	start = ktime_get();
-+	for (int i = 0; i < iterations; i++)
-+		KUNIT_ASSERT_EQ(test, 0, xwing_keygen(bufs->pk, bufs->sk));
-+	end = ktime_get();
-+	kunit_info(test, "XWing_KeyGen: %llu ns/op\n",
-+		   div64_u64(ktime_to_ns(ktime_sub(end, start)), iterations));
-+
-+	start = ktime_get();
-+	for (int i = 0; i < iterations; i++)
-+		KUNIT_ASSERT_EQ(test, 0,
-+				xwing_encaps(bufs->ct, bufs->ss, bufs->pk));
-+	end = ktime_get();
-+	kunit_info(test, "XWing_Encaps: %llu ns/op\n",
-+		   div64_u64(ktime_to_ns(ktime_sub(end, start)), iterations));
-+
-+	start = ktime_get();
-+	for (int i = 0; i < iterations; i++)
-+		KUNIT_ASSERT_EQ(test, 0,
-+				xwing_decaps(bufs->ss, bufs->ct, bufs->sk));
-+	end = ktime_get();
-+	kunit_info(test, "XWing_Decaps: %llu ns/op\n",
-+		   div64_u64(ktime_to_ns(ktime_sub(end, start)), iterations));
-+}
-+
-+static struct kunit_case xwing_test_cases[] = {
-+	KUNIT_CASE(test_xwing_rfc_testvecs),
-+	KUNIT_CASE(test_xwing_round_trip),
-+	KUNIT_CASE(benchmark_xwing),
-+	{}
-+};
-+
-+static struct kunit_suite xwing_test_suite = {
-+	.name = "xwing",
-+	.test_cases = xwing_test_cases,
-+};
-+kunit_test_suite(xwing_test_suite);
-+
-+MODULE_DESCRIPTION("KUnit tests for X-Wing");
-+MODULE_IMPORT_NS("EXPORTED_FOR_KUNIT_TESTING");
-+MODULE_LICENSE("GPL");
-diff --git a/scripts/crypto/import-xwing-testvecs.py b/scripts/crypto/import-xwing-testvecs.py
-new file mode 100755
-index 000000000000..380685212838
---- /dev/null
-+++ b/scripts/crypto/import-xwing-testvecs.py
-@@ -0,0 +1,111 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+#
-+# This script imports test vectors from the X-Wing draft.  To use:
-+#
-+#    wget https://www.ietf.org/archive/id/draft-connolly-cfrg-xwing-kem-10.txt
-+#    $PATH_TO_THIS_SCRIPT draft-connolly-cfrg-xwing-kem-10.txt > lib/crypto/tests/xwing-testvecs.h
-+
-+import hashlib
-+import os
-+import sys
-+
-+SCRIPT_NAME = os.path.basename(__file__)
-+FIELD_NAMES = set(["seed", "sk", "pk", "eseed", "ct", "ss"])
-+FIRST_FIELD = "seed"
-+
-+XWING_SEED_BYTES = 32
-+XWING_PUBLIC_KEY_BYTES = 1216
-+XWING_SECRET_KEY_BYTES = 32
-+XWING_ESEED_BYTES = 64
-+XWING_CIPHERTEXT_BYTES = 1120
-+XWING_SHARED_SECRET_BYTES = 32
-+
-+
-+def check_length(val, expected_len):
-+    assert len(val) == expected_len
-+    return val
-+
-+
-+class Testvec:
-+    def __init__(self, tv):
-+        self.seed = check_length(tv["seed"], XWING_SEED_BYTES)
-+        self.pk = check_length(tv["pk"], XWING_PUBLIC_KEY_BYTES)
-+        self.sk = check_length(tv["sk"], XWING_SECRET_KEY_BYTES)
-+        self.eseed = check_length(tv["eseed"], XWING_ESEED_BYTES)
-+        self.ct = check_length(tv["ct"], XWING_CIPHERTEXT_BYTES)
-+        self.ss = check_length(tv["ss"], XWING_SHARED_SECRET_BYTES)
-+
-+
-+def load_testvecs(file):
-+    testvecs = []
-+    with open(file) as file:
-+        in_appendix = False
-+        tv = None
-+        cur_field = None
-+        for line in file:
-+            if line.startswith("Appendix C."):
-+                in_appendix = True
-+            elif line.startswith("Appendix D."):
-+                break
-+            fields = line.split()
-+            if len(fields) == 0 or not in_appendix:
-+                continue
-+            if fields[0].strip() in FIELD_NAMES:
-+                cur_field = fields[0].strip()
-+                if cur_field == FIRST_FIELD:
-+                    if tv:
-+                        testvecs.append(Testvec(tv))
-+                    tv = {}
-+                tv[cur_field] = b""
-+                if len(fields) == 1:
-+                    continue
-+                possible_data = fields[1].strip()
-+            elif not cur_field:
-+                continue
-+            else:
-+                possible_data = fields[0].strip()
-+            try:
-+                data = bytes.fromhex(possible_data)
-+                tv[cur_field] += data
-+            except ValueError:
-+                pass
-+        testvecs.append(Testvec(tv))
-+    return testvecs
-+
-+
-+def print_bytes(prefix, value, bytes_per_line):
-+    for i in range(0, len(value), bytes_per_line):
-+        line = prefix + "".join(f"0x{b:02x}, " for b in value[i : i + bytes_per_line])
-+        print(f"{line.rstrip()}")
-+
-+
-+def print_c_struct_u8_array_field(name, value):
-+    print(f"\t\t.{name} = {{")
-+    print_bytes("\t\t\t", value, 8)
-+    print("\t\t},")
-+
-+
-+testvecs = load_testvecs(sys.argv[1])
-+
-+print(f"""/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/* This file was generated by {SCRIPT_NAME} */
-+
-+static const struct xwing_testvec {{
-+\tu8 seed[XWING_SEED_BYTES];
-+\tu8 pk_hash[SHA3_256_DIGEST_SIZE];
-+\tu8 sk_hash[SHA3_256_DIGEST_SIZE];
-+\tu8 eseed[XWING_ESEED_BYTES];
-+\tu8 ct_hash[SHA3_256_DIGEST_SIZE];
-+\tu8 ss[XWING_SHARED_SECRET_BYTES];
-+}} xwing_testvecs[] = {{""")
-+for tv in testvecs:
-+    print("\t{")
-+    print_c_struct_u8_array_field("seed", tv.seed)
-+    print_c_struct_u8_array_field("pk_hash", hashlib.sha3_256(tv.pk).digest())
-+    print_c_struct_u8_array_field("sk_hash", hashlib.sha3_256(tv.sk).digest())
-+    print_c_struct_u8_array_field("eseed", tv.eseed)
-+    print_c_struct_u8_array_field("ct_hash", hashlib.sha3_256(tv.ct).digest())
-+    print_c_struct_u8_array_field("ss", tv.ss)
-+    print("\t},")
-+print("};")
--- 
-2.54.0
+Maddy
 
 
