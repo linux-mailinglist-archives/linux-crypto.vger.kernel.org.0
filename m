@@ -1,141 +1,157 @@
-Return-Path: <linux-crypto+bounces-24686-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24687-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0F0gG2/NGGpjnggAu9opvQ
-	(envelope-from <linux-crypto+bounces-24686-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 01:19:11 +0200
+	id 6GjfGkrPGGqunggAu9opvQ
+	(envelope-from <linux-crypto+bounces-24687-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 01:27:06 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C292C5FB563
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 01:19:10 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB2745FB699
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 01:27:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 32F5031C8264
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 23:12:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8ED9030DD603
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 23:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB6836A362;
-	Thu, 28 May 2026 23:12:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED56B36DA1D;
+	Thu, 28 May 2026 23:24:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fhbku1QA"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="HMvn/BAD"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D340C35CBCB
-	for <linux-crypto@vger.kernel.org>; Thu, 28 May 2026 23:12:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8475736C0BD;
+	Thu, 28 May 2026 23:24:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780009942; cv=none; b=r5inHpUuNrQAim65YFIPmRY6JMN9oU52lS01Rmi8iRm9CWWZWT3SVDzn8+XtCNC/5s4I64+0Wsi04WT03w2J1I41Y3sr/kuidGpfBwVmLppBizl6v1oUh+KkuXcyWQdQmO0bkHGOdrGd6QITIEXc53Sii25oIyU4aonWbjZNC9U=
+	t=1780010652; cv=none; b=mxWGv9DEEQ07/vyurJaT2fhDxkZbpZ4Wp3onzWBBbQVWJRvp1U1kDXrSG30bGv7Pd8h+X1VlroKP7QgJyreXdr2SJa5PQ2LINIOFStGuArxYr2uOji2fFw0iHYjWBcEdLsuf4V+VSfj90cf1+kSYDkHPhDxyEFNMy3Tq1l9RCEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780009942; c=relaxed/simple;
-	bh=bVPsmHC32xMRnbCUQzo2sQikrGCF693UprcC5PbkroU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=c2H0l4qj4rpXRZcLNTjQve8r0dcLnvKzRs4xjNecpDwqAlO3hVQZA60Aq03rRaZeREAqTji5iuJCHfJTUZMLFwhEpTumv4Z7YLJ71UCqyGES3rCZsbdygPW5HqBefdg0Fz9JUkTs6IPnZuwoTwftLTL/Cv5kNYHtzF/646dxCFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fhbku1QA; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780009928;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ee5LGH1mkBrJOdssFnEtVdpG6R6AtAmt3hnR2uiZ+kU=;
-	b=fhbku1QAuBnhIqfvm5s0FPPQK3B6XIFAoLV/zwOcoCLIgFb0DZjJoPBF/PNCIsj5HU3unC
-	LoRMInPlcITIuutgWFavAu+v1eNnFS+JcGcNjV76d7bBtGwbTvI7USqkJZWsN9keo+LhEo
-	j8XEs+xq13SPdSHCbmm6xAggUzbJyKk=
-From: Atish Patra <atish.patra@linux.dev>
-Date: Thu, 28 May 2026 16:11:39 -0700
-Subject: [PATCH 2/2] crypto: ccp: Fix possible deadlock in SEV init failure
- path
+	s=arc-20240116; t=1780010652; c=relaxed/simple;
+	bh=hXRI8pfr26o6q/3esmAA2MiquFHTg5G5hTsEehgBKrY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kaaOYgAfYtqzKnaEcLAszE/Hl1C6vzbVWpMVw7EJpVOy2FuFIGgXOO1emAfY/Jc+9oebWjAtaFb+OMBOC/pzf30z5p+ry/DH5flg4LCWZ687QXL2LRJ/DddT++ArbtHPYLvf1QqbExcg+9KaNqFzWt6E0VUS+6RCRoVJRBh4L1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=HMvn/BAD; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=aD/+6gFCYQh5HNcAXs9wYEDF3vBE3AuA9RB/SyyLfAA=; 
+	b=HMvn/BADPsIDm9luuhFAVwZrm92JE01uHvyPY5ACtFqSGons4TDEckc19TkOKc6IYu4uol/MmrL
+	yzzvCYeg273B1VTorRlWV8JZf9xCb5M/iqskusC4Kg6lL7JnjKSnxnVwaySVGMsTys4KLKhJ/o+nw
+	vutgbd9IED0pCpXc5hLhsdCWfr9Ec2o7FpO/CPvL9N/P52QjadqpBZHBY1c3jWQ0UY8Tam+hPG5xC
+	MLSBAtU7ft4fpNtxmxYECeZdN12k4f8SsyocU+RT9zS8VPQRNSSotIgCKEWcsGUf629/IzsnXaSwY
+	iHTjIlnvCgoyN0wus8yQdlRo0wjCHzLgP7Cw==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1wSk4w-000Z2S-2v;
+	Fri, 29 May 2026 07:23:55 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 May 2026 07:23:54 +0800
+Date: Fri, 29 May 2026 07:23:54 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+	Neal Cardwell <ncardwell@google.com>,
+	Kuniyuki Iwashima <kuniyu@google.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>,
+	Dmitry Safonov <0x7f454c46@gmail.com>
+Subject: Re: [PATCH net-next 0/6] Remove unused support for crypto tfm cloning
+Message-ID: <ahjOivAIjKclB783@gondor.apana.org.au>
+References: <20260522053028.91165-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260528-sev_snp_fixes-v1-2-d67a08151779@meta.com>
-References: <20260528-sev_snp_fixes-v1-0-d67a08151779@meta.com>
-In-Reply-To: <20260528-sev_snp_fixes-v1-0-d67a08151779@meta.com>
-To: Sean Christopherson <seanjc@google.com>, 
- Paolo Bonzini <pbonzini@redhat.com>, Borislav Petkov <bp@alien8.de>, 
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
- "H. Peter Anvin" <hpa@zytor.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
- Marc Orr <marcorr@google.com>, Peter Gonda <pgonda@google.com>, 
- Brijesh Singh <brijesh.singh@amd.com>, Youngjae Lee <youngjaelee@meta.com>, 
- Ashish Kalra <ashish.kalra@amd.com>, Michael Roth <michael.roth@amd.com>, 
- John Allen <john.allen@amd.com>, Herbert Xu <herbert@gondor.apana.org.au>
-Cc: clm@meta.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-crypto@vger.kernel.org, stable@vger.kernel.org, 
- Atish Patra <atishp@meta.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260522053028.91165-1-ebiggers@kernel.org>
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-24686-lists,linux-crypto=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[vger.kernel.org,google.com,davemloft.net,kernel.org,redhat.com,zx2c4.com,gmail.com];
+	TAGGED_FROM(0.00)[bounces-24687-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[atish.patra@linux.dev,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:dkim,meta.com:mid,meta.com:email]
-X-Rspamd-Queue-Id: C292C5FB563
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,apana.org.au:url,apana.org.au:email]
+X-Rspamd-Queue-Id: BB2745FB699
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Atish Patra <atishp@meta.com>
+On Fri, May 22, 2026 at 12:30:22AM -0500, Eric Biggers wrote:
+> This series is targeting net-next because it depends on
+> "net/tcp: Remove tcp_sigpool".  So far no commits in cryptodev conflict
+> with this, so I suggest that this be taken through net-next for 7.2.
+> 
+> This series removes support for transformation cloning from the crypto
+> API.  Now that the TCP-AO and TCP-MD5 code no longer uses it, it no
+> longer has a user.  And it's unlikely that a new one will appear, as the
+> library API solves the problem in a much simpler and more efficient way.
+> 
+> This feature also regressed performance for all crypto API users, since
+> it changed crypto transformation objects into reference-counted objects.
+> That added expensive atomic operations.  The refcount is reverted by
+> this series, thus fixing the performance regression.
+> 
+> A subset of this was previously sent in
+> https://lore.kernel.org/r/20260307224341.5644-1-ebiggers@kernel.org
+> Compared to that version, this version is a bit more comprehensive.
+> 
+> Eric Biggers (6):
+>   crypto: hash - Remove support for cloning hash tfms
+>   crypto: cipher - Remove crypto_clone_cipher()
+>   crypto: api - Remove crypto_clone_tfm()
+>   crypto: api - Remove per-tfm refcount
+>   crypto: api - Fold __crypto_alloc_tfmgfp() into __crypto_alloc_tfm()
+>   crypto: api - Fold crypto_alloc_tfmmem() into crypto_create_tfm_node()
+> 
+>  crypto/ahash.c                   | 70 -----------------------------
+>  crypto/api.c                     | 76 +++++---------------------------
+>  crypto/cipher.c                  | 28 ------------
+>  crypto/cmac.c                    | 16 -------
+>  crypto/cryptd.c                  | 16 -------
+>  crypto/hmac.c                    | 31 -------------
+>  crypto/internal.h                | 10 -----
+>  crypto/shash.c                   | 37 ----------------
+>  include/crypto/hash.h            |  8 ----
+>  include/crypto/internal/cipher.h |  2 -
+>  include/linux/crypto.h           |  1 -
+>  11 files changed, 10 insertions(+), 285 deletions(-)
+> 
+> 
+> base-commit: 1a1f055318d82e64485a6ff8420e5f70b4267998
+> -- 
+> 2.54.0
 
-__sev_platform_init_handle_init_ex_path() called
-rmp_mark_pages_firmware() with locked=false but while the parent
-function of init_ex_path already acquired the sev_cmd_mutex.
-In case of a rmpupdate failure for any page after the first, the cleanup
-path would invoke reclaim pages which would result in a deadlock in
-sev_do_cmd.
-
-Pass locked=true to honor the lock status of the parent function.
-
-Fixes: 7364a6fbca45 ("crypto: ccp: Handle non-volatile INIT_EX data when SNP is enabled")
-
-Reported-by: Chris Mason <clm@meta.com>
-Assisted-by: Claude:claude-opus-4-6
-Signed-off-by: Atish Patra <atishp@meta.com>
----
- drivers/crypto/ccp/sev-dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index d1e9e0ac63b6..3d4793e8e34b 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -1557,7 +1557,7 @@ static int __sev_platform_init_handle_init_ex_path(struct sev_device *sev)
- 		unsigned long npages;
- 
- 		npages = 1UL << get_order(NV_LENGTH);
--		if (rmp_mark_pages_firmware(__pa(sev_init_ex_buffer), npages, false)) {
-+		if (rmp_mark_pages_firmware(__pa(sev_init_ex_buffer), npages, true)) {
- 			dev_err(sev->dev, "SEV: INIT_EX NV memory page state change failed.\n");
- 			return -ENOMEM;
- 		}
-
+Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
 -- 
-2.53.0-Meta
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
