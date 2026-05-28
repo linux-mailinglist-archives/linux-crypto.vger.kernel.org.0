@@ -1,60 +1,59 @@
-Return-Path: <linux-crypto+bounces-24657-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24659-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0OF1HsUHGGrGaQgAu9opvQ
-	(envelope-from <linux-crypto+bounces-24657-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 11:15:49 +0200
+	id cBYTKm0JGGoaawgAu9opvQ
+	(envelope-from <linux-crypto+bounces-24659-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 11:22:53 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FCFF5EF613
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 11:15:49 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AFA95EF834
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 11:22:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id B079130A2979
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 09:12:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E2BFD32383CD
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 09:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D4DE3B531D;
-	Thu, 28 May 2026 09:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4773B6BFF;
+	Thu, 28 May 2026 09:10:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="00SAzke+"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="pvjUywwb"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846973B443F
-	for <linux-crypto@vger.kernel.org>; Thu, 28 May 2026 09:09:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D20463B47FD;
+	Thu, 28 May 2026 09:09:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.84.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779959399; cv=none; b=sUVvtVtF/kR8TRnZEPiG5eoD6oOTmPoy7bGcVyHDZG8UbNXz8NSAjMHVRb84y2QLCsXgkTgAj///L6xqIAsTLAI7U2QWvlI7LHXxbjYUGByP1g7v92tY8pZY6QGB1otHQK4D5av7lJNoZAmKLMRu5QRsnM/CUdCGTyxkWVTvfxw=
+	t=1779959401; cv=none; b=kk3kWSP0GbIAoDbU7OTGXIHmwDSQCVYVCOCdRcYxVREa3BE9Y7xeyUzFjlKNMZkFybPwTUubOnJJKKZkPjg/XVRE9IeaEoxupVu4tDCeZ6jKUEhx1aOKTaqxRHZyVRNstet0sImU0zxE9tbtanZkE3N5n9tc+ad//08JUOcSfHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779959399; c=relaxed/simple;
-	bh=RTLGPCn4Yl9FCwEWU+ZjV1xR6Pj/feI8xfccScr+XeM=;
+	s=arc-20240116; t=1779959401; c=relaxed/simple;
+	bh=HnzYZ5JzFHt+vA2kwbJgkI6CDjM3BNM9ZmBbgxAHFls=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=ocsFWmnoKg5ylUQv9LNa2gIm+zhGr9BdFWdAQX9KDxrAIz5/gRPs5dC9PRr5iHF+hrmmH7QoGly0Fe3CEA8B4CL/hIp7p/7EMUN8UjXBf3twAnGJc+5F7cNjnlkSAU78U1P9jy+O3zNAwygfMQYokKthyWqDyM6n8z87oQ7DFIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=00SAzke+; arc=none smtp.client-ip=185.171.202.116
+	 In-Reply-To:To:Cc; b=UeHA9h7Tth1HqPBQEU4k6QeDgf5IhS7YaDqRHcARqBwH9kHJ+sQOTiaRB5yM59ficz4de2dYtcopWwWM+flhwpPFaE5jiqocpPsa9Xp1zKudUwNsAiz6czfzN+hg2lBOOr6bvtp3eGnHLh7vfFQwPrf2IqG/8+FSgKedd0Sgmr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=pvjUywwb; arc=none smtp.client-ip=185.246.84.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 3A699C62447;
-	Thu, 28 May 2026 09:09:56 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id 5C3791A3701;
+	Thu, 28 May 2026 09:09:57 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 12C0B60495;
-	Thu, 28 May 2026 09:09:56 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B966210888CA7;
-	Thu, 28 May 2026 11:09:54 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 31F9D60495;
+	Thu, 28 May 2026 09:09:57 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E495710888CAF;
+	Thu, 28 May 2026 11:09:55 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1779959395; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1779959396; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=GmBOagk7heMxPnu+nJQo7jUrc6JXEHxO6S90oTM45jQ=;
-	b=00SAzke+uMOHasOjTywdtTWFtcx0NB6Qnax+I2jh210x+TkkufQMZZn+7yOVPUhaaG0bkQ
-	onFjRRfxCacOYv8ncQs/uRtPv7n+KWn7XFNUbHdbsmkjfUUzmAXCoSD8ea9F4qQGqtZhRT
-	+ytkZDCf48LmU/wlkNtaV0AgRyJd5NK2++bc+MllqTg+wAp9kqstPAq/YktGbMRVM1rs+o
-	qOtILZ8dfLxvy4W649Vj0wWumCHopONViGq36MJZeXcwu4LP0/d1B3q5l/eI+V67xz9lRV
-	jbIICJKNuhlTDS/D7yw/AVCguewe631iJKYWUbsE7TpJL1lgKGh2rLNtf+7O1g==
+	bh=6sg0tvaanYkdhi2xR1TE4kvycHowtU8MfgTRjfSHJoQ=;
+	b=pvjUywwb+qnLVpi9mqY2rsa0iAIlyjMRU37EiFdTNJQ002Msl60OqRgHyB2O+QVOepckn6
+	PyUgNe1lA05NOtUyCICh0ryavU3ocVDIpYVG51KG5uRdsYsvqT7/hg7gVrFqLW9kiuXkmE
+	vfwn2i48ftoPqw6OYByIr8VX7P6qYxFXMDDXYTxR/D1yDDKJh8IcTyluTUfOVYjZlt4m39
+	2tx0JG1a9X156J5FNOaU8YYt0f53x0z2Dazagp/spOXbVuw+sWqVKJIKDIqxFKMIwz1/g5
+	MYp6/MDs89NFh50Yzju9DwuEOXQ0PWIJ7YQoRy3+ARB5aT7vYXK6m7/J29rBMg==
 From: Paul Louvel <paul.louvel@bootlin.com>
-Date: Thu, 28 May 2026 11:08:41 +0200
-Subject: [PATCH 28/29] crypto: talitos - Clean up includes in core driver
- file
+Date: Thu, 28 May 2026 11:08:42 +0200
+Subject: [PATCH 29/29] crypto: talitos - Remove TALITOS_DESC_SIZE macro
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -63,7 +62,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260528-7-1-rc1_talitos_cleanup-v1-28-cb1ad6cdea49@bootlin.com>
+Message-Id: <20260528-7-1-rc1_talitos_cleanup-v1-29-cb1ad6cdea49@bootlin.com>
 References: <20260528-7-1-rc1_talitos_cleanup-v1-0-cb1ad6cdea49@bootlin.com>
 In-Reply-To: <20260528-7-1-rc1_talitos_cleanup-v1-0-cb1ad6cdea49@bootlin.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>, 
@@ -73,11 +72,11 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Christophe Leroy <chleroy@kernel.org>, linux-crypto@vger.kernel.org, 
  linux-kernel@vger.kernel.org, Paul Louvel <paul.louvel@bootlin.com>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1779959350; l=1573;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1779959350; l=3521;
  i=paul.louvel@bootlin.com; s=20260313; h=from:subject:message-id;
- bh=RTLGPCn4Yl9FCwEWU+ZjV1xR6Pj/feI8xfccScr+XeM=;
- b=5n1IveK/PBtxDvB6d0imj2yMjdZG+DV9Fs2TWSu9i+oLDcipN1unm9/CmcuMlxmNy8VeOCdUg
- r/I5RubDLZ5Ch0BiIgtZ3bCjRsSWPI+pEehnf0gTXnnAkhW+1ABlSZ1
+ bh=HnzYZ5JzFHt+vA2kwbJgkI6CDjM3BNM9ZmBbgxAHFls=;
+ b=d9oBIpbemFkWufKqKa7gDQQJZnpQ7IZr2Cho9TMZc2E956rF4OpxrCmfAclJRQrOfLIA6oBsA
+ AvhOfaTWWfRANckRcFaO3+Tmqe0NV3+tB7WIEpUCWZtxdpgVsj8jzWh
 X-Developer-Key: i=paul.louvel@bootlin.com; a=ed25519;
  pk=eLW50NT18UAvUT5cAcYf88zNbBCZDLFXuptpyLVhVIU=
 X-Last-TLS-Session-Version: TLSv1.3
@@ -85,7 +84,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
 	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -94,9 +93,9 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-24657-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-24659-lists,linux-crypto=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	PRECEDENCE_BULK(0.00)[];
@@ -107,60 +106,97 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 3FCFF5EF613
+X-Rspamd-Queue-Id: 1AFA95EF834
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Now that the crypto implementations have been moved into their own
-translation units, the talitos core driver file no longer needs the
-includes that were only required by the hash, skcipher, aead, and hwrng
-code. Remove them, and drop duplicates already provided by talitos.h.
+Now that struct talitos_desc no longer has the SEC1-only next_desc field
+(it was moved into sec1_talitos_desc), TALITOS_DESC_SIZE is identical to
+sizeof(struct talitos_desc) and no longer serves any purpose. Remove it
+and use sizeof directly at each macro invocation.
 
-Also sort the remaining includes alphabetically.
+Signed-off-by: Paul Louvel <paul.louvel@bootlin.com>
 ---
- drivers/crypto/talitos/talitos.c | 23 +++--------------------
- 1 file changed, 3 insertions(+), 20 deletions(-)
+ drivers/crypto/talitos/talitos-sec1.c | 10 +++++-----
+ drivers/crypto/talitos/talitos-sec2.c |  6 +++---
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/crypto/talitos/talitos.c b/drivers/crypto/talitos/talitos.c
-index a032907e900f..43939a9cd9ce 100644
---- a/drivers/crypto/talitos/talitos.c
-+++ b/drivers/crypto/talitos/talitos.c
-@@ -12,32 +12,15 @@
-  * All rights reserved.
-  */
+diff --git a/drivers/crypto/talitos/talitos-sec1.c b/drivers/crypto/talitos/talitos-sec1.c
+index e4f482520372..504ce9e23e59 100644
+--- a/drivers/crypto/talitos/talitos-sec1.c
++++ b/drivers/crypto/talitos/talitos-sec1.c
+@@ -190,7 +190,7 @@ static void sec1_dma_map_request(struct device *dev,
+ 	while (edesc) {
  
-+#include <linux/crypto.h>
-+#include <linux/io.h>
- #include <linux/kernel.h>
--#include <linux/module.h>
- #include <linux/mod_devicetable.h>
--#include <linux/crypto.h>
-+#include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_irq.h>
--#include <linux/platform_device.h>
--#include <linux/dma-mapping.h>
--#include <linux/io.h>
--#include <linux/spinlock.h>
--#include <linux/rtnetlink.h>
- #include <linux/slab.h>
+ 		dma_desc = dma_map_single(dev, &edesc->desc.sec1.hdr,
+-					  TALITOS_DESC_SIZE, DMA_BIDIRECTIONAL);
++					  sizeof(struct talitos_desc), DMA_BIDIRECTIONAL);
  
--#include <crypto/algapi.h>
--#include <crypto/aes.h>
--#include <crypto/internal/des.h>
--#include <crypto/sha1.h>
--#include <crypto/sha2.h>
--#include <crypto/md5.h>
--#include <crypto/internal/aead.h>
--#include <crypto/authenc.h>
--#include <crypto/internal/skcipher.h>
--#include <crypto/hash.h>
--#include <crypto/internal/hash.h>
--#include <crypto/scatterwalk.h>
--
- #include "talitos.h"
+ 		if (!prev_edesc) {
+ 			request->dma_desc = dma_desc;
+@@ -202,7 +202,7 @@ static void sec1_dma_map_request(struct device *dev,
+ 		prev_edesc->desc.sec1.next_desc = cpu_to_be32(dma_desc);
  
- /*
+ 		dma_sync_single_for_device(dev, prev_dma_desc,
+-					   TALITOS_DESC_SIZE, DMA_TO_DEVICE);
++					   sizeof(struct talitos_desc), DMA_TO_DEVICE);
+ 
+ next:
+ 		prev_edesc = edesc;
+@@ -216,12 +216,12 @@ static void sec1_dma_unmap_request(struct device *dev,
+ {
+ 	struct talitos_edesc *edesc;
+ 
+-	dma_unmap_single(dev, request->dma_desc, TALITOS_DESC_SIZE,
++	dma_unmap_single(dev, request->dma_desc, sizeof(struct talitos_desc),
+ 			 DMA_BIDIRECTIONAL);
+ 	edesc = container_of(request->desc, struct talitos_edesc, desc);
+ 	while (edesc->next_desc) {
+ 		dma_unmap_single(dev, be32_to_cpu(edesc->desc.sec1.next_desc),
+-				 TALITOS_DESC_SIZE, DMA_BIDIRECTIONAL);
++				 sizeof(struct talitos_desc), DMA_BIDIRECTIONAL);
+ 		edesc = edesc->next_desc;
+ 	}
+ }
+@@ -239,7 +239,7 @@ static __be32 sec1_get_request_hdr(struct device *dev,
+ 		edesc = edesc->next_desc;
+ 	}
+ 
+-	dma_sync_single_for_cpu(dev, dma_desc, TALITOS_DESC_SIZE,
++	dma_sync_single_for_cpu(dev, dma_desc, sizeof(struct talitos_desc),
+ 				DMA_BIDIRECTIONAL);
+ 
+ 	return edesc->desc.sec1.hdr;
+diff --git a/drivers/crypto/talitos/talitos-sec2.c b/drivers/crypto/talitos/talitos-sec2.c
+index 52f783ddc8b6..0df3b22510c7 100644
+--- a/drivers/crypto/talitos/talitos-sec2.c
++++ b/drivers/crypto/talitos/talitos-sec2.c
+@@ -205,7 +205,7 @@ static void sec2_dma_map_request(struct device *dev,
+ 				 struct talitos_desc *desc)
+ {
+ 	request->dma_desc =
+-		dma_map_single(dev, desc, TALITOS_DESC_SIZE, DMA_BIDIRECTIONAL);
++		dma_map_single(dev, desc, sizeof(struct talitos_desc), DMA_BIDIRECTIONAL);
+ }
+ 
+ static int sec2_talitos_handle_error(struct device *dev, u32 isr, u32 isr_lo)
+@@ -346,14 +346,14 @@ static void sec2_init_task(struct device *dev)
+ static void sec2_dma_unmap_request(struct device *dev,
+ 				   struct talitos_request *request)
+ {
+-	dma_unmap_single(dev, request->dma_desc, TALITOS_DESC_SIZE,
++	dma_unmap_single(dev, request->dma_desc, sizeof(struct talitos_desc),
+ 			 DMA_BIDIRECTIONAL);
+ }
+ 
+ static __be32 sec2_get_request_hdr(struct device *dev,
+ 				   struct talitos_request *request)
+ {
+-	dma_sync_single_for_cpu(dev, request->dma_desc, TALITOS_DESC_SIZE,
++	dma_sync_single_for_cpu(dev, request->dma_desc, sizeof(struct talitos_desc),
+ 				DMA_BIDIRECTIONAL);
+ 
+ 	return request->desc->sec2.hdr;
 
 -- 
 2.54.0
