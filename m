@@ -1,60 +1,60 @@
-Return-Path: <linux-crypto+bounces-24653-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24655-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mKNhIYsHGGrGaQgAu9opvQ
-	(envelope-from <linux-crypto+bounces-24653-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 11:14:51 +0200
+	id sMaTIqkHGGrGaQgAu9opvQ
+	(envelope-from <linux-crypto+bounces-24655-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 11:15:21 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31AA25EF5B4
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 11:14:51 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 290225EF5D7
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 11:15:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 67B353076150
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 09:12:15 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id AB2993099ACB
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 09:12:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA52D3B38A3;
-	Thu, 28 May 2026 09:09:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D28673B47DD;
+	Thu, 28 May 2026 09:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ARGNcOqd"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="sEz/oV/i"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D12B53B0AED;
-	Thu, 28 May 2026 09:09:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.171.202.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 695C93A9628;
+	Thu, 28 May 2026 09:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.246.85.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779959395; cv=none; b=lrf5QCtdZicaSnR2g34wYClLNVSnsaCAwknWMChJMwq6E9rRcuRz/7EsrVK3W4mkzsmWS7UAhKXqnsS+BRpheagjjdlHPKpR+vAryBfk6yD0UY9u6Cnr1Uahfwqbsk8Ob+VI04evE/kSpTsjdxa2Kd4d0SxRldWwgSZV4rGpVB8=
+	t=1779959397; cv=none; b=U080FlWZlHeIr4+K7kM3SBBdAL68Ii0YDNR3dtpMDH8XZkWA5ZwxcOTEN81/yQLVVaPHKzgt7ZuG0REBQY8oLOCRzHTdvXt+uwP+PolGhKZi+kyXngMjLZuWZ7vQOpUnDO6aHQe1ccVZae9jDcGmYqbnoAprYL4lTPjS0WIjjuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779959395; c=relaxed/simple;
-	bh=iq70Z8rbnGJlAOc3vpwLwwU40krFOpjeZrtcjWh8hY8=;
+	s=arc-20240116; t=1779959397; c=relaxed/simple;
+	bh=O3nMGprxow/W8RPiJMzlZBmxcC5VWI3bexCBwQBeiSo=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=g17R5lJoJ0BOU3qHdxfjAfJAJloJQXonrhuOJo+UosCq/68dtoG9IZ9QAQ0ZYNgD5MCgVm1okOYu/iOt1Tae7EwTFaHPeqkictF3Yp19vTar6Hl8zKSi84mDgnk5F833ADRk5cu3sy5tG5TKOBilv8prHrhmsB04CoArM8j/A64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ARGNcOqd; arc=none smtp.client-ip=185.171.202.116
+	 In-Reply-To:To:Cc; b=tM/LIPcgaoVr+8XtdXH/sq5LBI7L2h3B3SBB4H60rdxJ81RlZSLfuGRLv7hDW2yzM+ayljWGjxrMmYYVq49PGrL16kUBNjiMitOfBMNZpQnaDOLiykGVUefTR2PeMKrdBAJMqedJepANCpSajuWfKyBG+M3nwGhMpnhzQVzN9zA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=sEz/oV/i; arc=none smtp.client-ip=185.246.85.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id BE280C62447;
-	Thu, 28 May 2026 09:09:51 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id E39784E42D79;
+	Thu, 28 May 2026 09:09:52 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 9791C60495;
-	Thu, 28 May 2026 09:09:51 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 3CFBD10888C9D;
-	Thu, 28 May 2026 11:09:50 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id B8A9160495;
+	Thu, 28 May 2026 09:09:52 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 6BB2F1088877F;
+	Thu, 28 May 2026 11:09:51 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1779959391; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1779959392; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=rOqCDyfSNrhyPoftsOduoHVV0/bL+E9q6q6nwQdNV2w=;
-	b=ARGNcOqdgGhpfXmxki2ftNFaOmKvrQ27lVln/sJzW+l+Oar4pVy/Y3gZd84fC9aasm/LAh
-	kHBdM9/Vy6IqmlXScJ/+N2Z5iRTXpwDLassaUeLkfwo4cXaoLEL6zeepo3PxzgtKhUxvEx
-	2jMwZAdi0qTMj18tPsKoeezsb1Gk0BAcxs7scF7UUOGh+Cak5lYHDb+jHVjYZTgKvsAjt8
-	bkG8krCFqP8F6dYRNj2ILeAZER55QOPy7aLutX6W2rSTn8m5CxKWaDcQrpHWUnHDiiXR89
-	99gj6uFvakIHBjDfDsDTUiKNZ+o4LEn2oUhqRQk4SGQ7DCn6M07mSiUzDLttYw==
+	bh=ogAfMImEqTNegJvs4Lseq3VUA+KFZdj5xvSobayj+CA=;
+	b=sEz/oV/iSlRflS5ChvyuDfQmqoLa8UalkFxXTcmEqS4Oi0cXU04lXQ/eo/wRubF9oAi4aQ
+	PWfQw17GTIC7DxNvTigGuWDfdjQpcQVfHH2VfJJ0uY6lzkBgR4unAU6r5PGKTA+rQZVisE
+	w5uU+ZzLrjADpb92Q7+Mfr7s98T/o5I2M5mI6rPlq+lt1pMWWGd71zjWEQmmITV2w5wTx4
+	2Mk0zsbpeft3N5iy3bIK4vaQ/fG+Sl/ry1WzaZENlEqeBnfQAt3KWR+lGwygBdKbL1wQHm
+	+pbLBdY8C0+YaZ+xIb0e2A4kN7vjVSc4tNRKYdjNm7qtfJ9GZsNz1LqM/2J5VQ==
 From: Paul Louvel <paul.louvel@bootlin.com>
-Date: Thu, 28 May 2026 11:08:37 +0200
-Subject: [PATCH 24/29] crypto: talitos - Introduce per-SEC-version pointer
- helper ops
+Date: Thu, 28 May 2026 11:08:38 +0200
+Subject: [PATCH 25/29] crypto: talitos - Dispatch pointer helpers through
+ ptr_ops
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -63,7 +63,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260528-7-1-rc1_talitos_cleanup-v1-24-cb1ad6cdea49@bootlin.com>
+Message-Id: <20260528-7-1-rc1_talitos_cleanup-v1-25-cb1ad6cdea49@bootlin.com>
 References: <20260528-7-1-rc1_talitos_cleanup-v1-0-cb1ad6cdea49@bootlin.com>
 In-Reply-To: <20260528-7-1-rc1_talitos_cleanup-v1-0-cb1ad6cdea49@bootlin.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>, 
@@ -73,11 +73,11 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Christophe Leroy <chleroy@kernel.org>, linux-crypto@vger.kernel.org, 
  linux-kernel@vger.kernel.org, Paul Louvel <paul.louvel@bootlin.com>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1779959350; l=6271;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1779959350; l=11035;
  i=paul.louvel@bootlin.com; s=20260313; h=from:subject:message-id;
- bh=iq70Z8rbnGJlAOc3vpwLwwU40krFOpjeZrtcjWh8hY8=;
- b=sLeUZtfrQBV4rqisNOhhukRpkMacJo6Q8jho3Mfflwems6Ogq81UDLNird/egl3q/I6vNZKja
- EwoYoQE8YTpBqG6wDNq3IX401mhv5okv6VxOTyCuiikq5yXspxrTIB2
+ bh=O3nMGprxow/W8RPiJMzlZBmxcC5VWI3bexCBwQBeiSo=;
+ b=DT0485l7oJgs4nSGqCnmIWIgypOmPGkHt9yEkQFmR4e6TMKbQpH1mt9iKY/8xGaGa7V1pr8zm
+ 5W3EzUVf756CfUaa2LRjPBwY1nO/SeZvLlg0gAeA+3F2I2cCxmqupXl
 X-Developer-Key: i=paul.louvel@bootlin.com; a=ed25519;
  pk=eLW50NT18UAvUT5cAcYf88zNbBCZDLFXuptpyLVhVIU=
 X-Last-TLS-Session-Version: TLSv1.3
@@ -85,7 +85,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
 	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -94,9 +94,9 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-24653-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-24655-lists,linux-crypto=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	PRECEDENCE_BULK(0.00)[];
@@ -107,195 +107,286 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 31AA25EF5B4
+X-Rspamd-Queue-Id: 290225EF5D7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Introduce struct talitos_ptr_ops to abstract SEC1/SEC2 differences
-in pointer handling behind per-SEC-version ops.  Add ptr_ops to
-struct talitos_private and struct talitos_ctx, and register the
-appropriate SEC1 or SEC2 implementation at probe time.
+Replace all direct calls to to_talitos_ptr(), copy_talitos_ptr(),
+from_talitos_ptr_len(), to_talitos_ptr_ext_set() and
+to_talitos_ptr_ext_or() with indirect calls through ctx->ptr_ops
+or priv->ptr_ops.
 
 Signed-off-by: Paul Louvel <paul.louvel@bootlin.com>
 ---
- drivers/crypto/talitos/talitos-sec1.c | 36 +++++++++++++++++++++++++++++++
- drivers/crypto/talitos/talitos-sec2.c | 40 +++++++++++++++++++++++++++++++++++
- drivers/crypto/talitos/talitos.c      |  2 ++
- drivers/crypto/talitos/talitos.h      | 12 +++++++++++
- 4 files changed, 90 insertions(+)
+ drivers/crypto/talitos/talitos-aead.c     | 18 ++++++------
+ drivers/crypto/talitos/talitos-hash.c     | 24 ++++++++--------
+ drivers/crypto/talitos/talitos-skcipher.c |  4 +--
+ drivers/crypto/talitos/talitos.c          | 47 ++++++++++++++++---------------
+ 4 files changed, 46 insertions(+), 47 deletions(-)
 
-diff --git a/drivers/crypto/talitos/talitos-sec1.c b/drivers/crypto/talitos/talitos-sec1.c
-index 695d531aa7f4..ef1bd19b6772 100644
---- a/drivers/crypto/talitos/talitos-sec1.c
-+++ b/drivers/crypto/talitos/talitos-sec1.c
-@@ -73,6 +73,33 @@ static irqreturn_t talitos1_interrupt_##name(int irq, void *data)	       \
+diff --git a/drivers/crypto/talitos/talitos-aead.c b/drivers/crypto/talitos/talitos-aead.c
+index cd1b8e6d371b..b585abdd2275 100644
+--- a/drivers/crypto/talitos/talitos-aead.c
++++ b/drivers/crypto/talitos/talitos-aead.c
+@@ -216,7 +216,7 @@ static int ipsec_esp(struct talitos_edesc *edesc, struct aead_request *areq,
+ 	dma_addr_t dma_icv = edesc->dma_link_tbl + edesc->dma_len - authsize;
  
- DEF_TALITOS1_INTERRUPT(4ch, TALITOS1_ISR_4CHDONE, TALITOS1_ISR_4CHERR, 0)
+ 	/* hmac key */
+-	to_talitos_ptr(&desc->ptr[0], ctx->dma_key, ctx->authkeylen, is_sec1);
++	ctx->ptr_ops->to_talitos_ptr(&desc->ptr[0], ctx->dma_key, ctx->authkeylen);
  
-+static void sec1_to_talitos_ptr(struct talitos_ptr *ptr, dma_addr_t dma_addr,
-+				unsigned int len)
-+{
-+	ptr->ptr = cpu_to_be32(lower_32_bits(dma_addr));
-+	ptr->len1 = cpu_to_be16(len);
-+}
-+
-+static void sec1_copy_talitos_ptr(struct talitos_ptr *dst_ptr,
-+				  struct talitos_ptr *src_ptr)
-+{
-+	dst_ptr->ptr = src_ptr->ptr;
-+	dst_ptr->len1 = src_ptr->len1;
-+}
-+
-+static unsigned short sec1_from_talitos_ptr_len(struct talitos_ptr *ptr)
-+{
-+	return be16_to_cpu(ptr->len1);
-+}
-+
-+static void sec1_to_talitos_ptr_ext_set(struct talitos_ptr *ptr, u8 val)
-+{
-+}
-+
-+static void sec1_to_talitos_ptr_ext_or(struct talitos_ptr *ptr, u8 val)
-+{
-+}
-+
- static int sec1_reset_device(struct device *dev)
- {
- 	struct talitos_private *priv = dev_get_drvdata(dev);
-@@ -286,6 +313,14 @@ static void sec1_init_task(struct device *dev)
- 			     (unsigned long)dev);
- }
+ 	sg_count = edesc->src_nents ?: 1;
+ 	if (is_sec1 && sg_count > 1)
+@@ -237,11 +237,11 @@ static int ipsec_esp(struct talitos_edesc *edesc, struct aead_request *areq,
+ 	}
  
-+static const struct talitos_ptr_ops sec1_ptr_ops = {
-+	.to_talitos_ptr = sec1_to_talitos_ptr,
-+	.copy_talitos_ptr = sec1_copy_talitos_ptr,
-+	.from_talitos_ptr_len = sec1_from_talitos_ptr_len,
-+	.to_talitos_ptr_ext_set = sec1_to_talitos_ptr_ext_set,
-+	.to_talitos_ptr_ext_or = sec1_to_talitos_ptr_ext_or,
-+};
-+
- static const struct talitos_ops sec1_ops = {
- 	.probe_irq = sec1_talitos_probe_irq,
- 	.init_task = sec1_init_task,
-@@ -302,4 +337,5 @@ static const struct talitos_ops sec1_ops = {
- void talitos_register_sec1(struct talitos_private *priv)
- {
- 	priv->ops = &sec1_ops;
-+	priv->ptr_ops = &sec1_ptr_ops;
- }
-diff --git a/drivers/crypto/talitos/talitos-sec2.c b/drivers/crypto/talitos/talitos-sec2.c
-index 962e7cd43631..14f0ca13e6e5 100644
---- a/drivers/crypto/talitos/talitos-sec2.c
-+++ b/drivers/crypto/talitos/talitos-sec2.c
-@@ -79,6 +79,37 @@ DEF_TALITOS2_DONE(ch0, TALITOS2_ISR_CH_0_DONE)
- DEF_TALITOS2_DONE(ch0_2, TALITOS2_ISR_CH_0_2_DONE)
- DEF_TALITOS2_DONE(ch1_3, TALITOS2_ISR_CH_1_3_DONE)
+ 	/* cipher iv */
+-	to_talitos_ptr(civ_ptr, edesc->iv_dma, ivsize, is_sec1);
++	ctx->ptr_ops->to_talitos_ptr(civ_ptr, edesc->iv_dma, ivsize);
  
-+static void sec2_to_talitos_ptr(struct talitos_ptr *ptr, dma_addr_t dma_addr,
-+				unsigned int len)
-+{
-+	ptr->ptr = cpu_to_be32(lower_32_bits(dma_addr));
-+	ptr->len = cpu_to_be16(len);
-+	ptr->eptr = upper_32_bits(dma_addr);
-+}
-+
-+static void sec2_copy_talitos_ptr(struct talitos_ptr *dst_ptr,
-+				  struct talitos_ptr *src_ptr)
-+{
-+	dst_ptr->ptr = src_ptr->ptr;
-+	dst_ptr->len = src_ptr->len;
-+	dst_ptr->eptr = src_ptr->eptr;
-+}
-+
-+static unsigned short sec2_from_talitos_ptr_len(struct talitos_ptr *ptr)
-+{
-+	return be16_to_cpu(ptr->len);
-+}
-+
-+static void sec2_to_talitos_ptr_ext_set(struct talitos_ptr *ptr, u8 val)
-+{
-+	ptr->j_extent = val;
-+}
-+
-+static void sec2_to_talitos_ptr_ext_or(struct talitos_ptr *ptr, u8 val)
-+{
-+	ptr->j_extent |= val;
-+}
-+
- static int sec2_reset_channel(struct device *dev, int ch)
- {
- 	struct talitos_private *priv = dev_get_drvdata(dev);
-@@ -311,6 +342,14 @@ static __be32 sec2_search_desc_hdr_in_request(struct talitos_request *request,
- 	return 0;
- }
+ 	/* cipher key */
+-	to_talitos_ptr(ckey_ptr, ctx->dma_key  + ctx->authkeylen,
+-		       ctx->enckeylen, is_sec1);
++	ctx->ptr_ops->to_talitos_ptr(ckey_ptr, ctx->dma_key  + ctx->authkeylen,
++		       ctx->enckeylen);
  
-+static const struct talitos_ptr_ops sec2_ptr_ops = {
-+	.to_talitos_ptr = sec2_to_talitos_ptr,
-+	.copy_talitos_ptr = sec2_copy_talitos_ptr,
-+	.from_talitos_ptr_len = sec2_from_talitos_ptr_len,
-+	.to_talitos_ptr_ext_set = sec2_to_talitos_ptr_ext_set,
-+	.to_talitos_ptr_ext_or = sec2_to_talitos_ptr_ext_or,
-+};
-+
- static const struct talitos_ops sec2_ops = {
- 	.probe_irq = sec2_talitos_probe_irq,
- 	.init_task = sec2_init_task,
-@@ -327,4 +366,5 @@ static const struct talitos_ops sec2_ops = {
- void talitos_register_sec2(struct talitos_private *priv)
- {
- 	priv->ops = &sec2_ops;
-+	priv->ptr_ops = &sec2_ptr_ops;
- }
-diff --git a/drivers/crypto/talitos/talitos.c b/drivers/crypto/talitos/talitos.c
-index 152618998819..0e4bd130ac6d 100644
---- a/drivers/crypto/talitos/talitos.c
-+++ b/drivers/crypto/talitos/talitos.c
-@@ -668,6 +668,8 @@ int talitos_init_common(struct talitos_ctx *ctx,
- 	/* select done notification */
- 	ctx->desc_hdr_template |= DESC_HDR_DONE_NOTIFY;
+ 	/*
+ 	 * cipher in
+@@ -281,15 +281,15 @@ static int ipsec_esp(struct talitos_edesc *edesc, struct aead_request *areq,
+ 		struct talitos_ptr *tbl_ptr = &edesc->link_tbl[tbl_off];
  
-+	ctx->ptr_ops = priv->ptr_ops;
-+
- 	return 0;
- }
+ 		/* Add an entry to the link table for ICV data */
+-		to_talitos_ptr_ext_set(tbl_ptr - 1, 0, is_sec1);
+-		to_talitos_ptr_ext_set(tbl_ptr, DESC_PTR_LNKTBL_RET, is_sec1);
++		ctx->ptr_ops->to_talitos_ptr_ext_set(tbl_ptr - 1, 0);
++		ctx->ptr_ops->to_talitos_ptr_ext_set(tbl_ptr, DESC_PTR_LNKTBL_RET);
  
-diff --git a/drivers/crypto/talitos/talitos.h b/drivers/crypto/talitos/talitos.h
-index ae0bdb2ea78e..09d4e8fb0e62 100644
---- a/drivers/crypto/talitos/talitos.h
-+++ b/drivers/crypto/talitos/talitos.h
-@@ -140,6 +140,16 @@ struct talitos_channel {
- 	int tail;
+ 		/* icv data follows link tables */
+-		to_talitos_ptr(tbl_ptr, dma_icv, authsize, is_sec1);
+-		to_talitos_ptr_ext_or(&desc->ptr[5], authsize, is_sec1);
++		ctx->ptr_ops->to_talitos_ptr(tbl_ptr, dma_icv, authsize);
++		ctx->ptr_ops->to_talitos_ptr_ext_or(&desc->ptr[5], authsize);
+ 		sync_needed = true;
+ 	} else if (!encrypt) {
+-		to_talitos_ptr(&desc->ptr[6], dma_icv, authsize, is_sec1);
++		ctx->ptr_ops->to_talitos_ptr(&desc->ptr[6], dma_icv, authsize);
+ 		sync_needed = true;
+ 	} else if (!is_ipsec_esp) {
+ 		talitos_sg_map(dev, areq->dst, authsize, edesc, &desc->ptr[6],
+diff --git a/drivers/crypto/talitos/talitos-hash.c b/drivers/crypto/talitos/talitos-hash.c
+index 9e6d849c3123..026eebf037f5 100644
+--- a/drivers/crypto/talitos/talitos-hash.c
++++ b/drivers/crypto/talitos/talitos-hash.c
+@@ -36,32 +36,30 @@ struct talitos_export_state {
+ 	unsigned int to_hash_later;
  };
  
-+struct talitos_ptr_ops {
-+	void (*to_talitos_ptr)(struct talitos_ptr *ptr, dma_addr_t addr,
-+			       unsigned int len);
-+	void (*copy_talitos_ptr)(struct talitos_ptr *dst_ptr,
-+				 struct talitos_ptr *src_ptr);
-+	unsigned short (*from_talitos_ptr_len)(struct talitos_ptr *ptr);
-+	void (*to_talitos_ptr_ext_set)(struct talitos_ptr *ptr, u8 val);
-+	void (*to_talitos_ptr_ext_or)(struct talitos_ptr *ptr, u8 val);
-+};
-+
- struct talitos_ops {
- 	int (*probe_irq)(struct platform_device *ofdev);
- 	void (*init_task)(struct device *dev);
-@@ -183,6 +193,7 @@ struct talitos_private {
- 	unsigned int desc_types;
+-static void common_nonsnoop_hash_unmap(struct device *dev,
++static void common_nonsnoop_hash_unmap(struct talitos_ctx *ctx,
+ 				       struct talitos_edesc *edesc,
+ 				       struct ahash_request *areq)
+ {
+ 	struct talitos_ahash_req_ctx *req_ctx = ahash_request_ctx(areq);
+ 	struct crypto_ahash *tfm = crypto_ahash_reqtfm(areq);
+-	struct talitos_private *priv = dev_get_drvdata(dev);
+-	bool is_sec1 = has_ftr_sec1(priv);
+ 	struct talitos_desc *desc = &edesc->desc;
  
- 	const struct talitos_ops *ops;
-+	const struct talitos_ptr_ops *ptr_ops;
+-	unmap_single_talitos_ptr(dev, &desc->ptr[5], DMA_FROM_DEVICE);
++	unmap_single_talitos_ptr(ctx->dev, &desc->ptr[5], DMA_FROM_DEVICE);
  
- 	/* SEC Compatibility info */
- 	unsigned long features;
-@@ -213,6 +224,7 @@ struct talitos_private {
+ 	if (edesc->last && req_ctx->last_request)
+ 		memcpy(areq->result, req_ctx->hw_context,
+ 		       crypto_ahash_digestsize(tfm));
  
- struct talitos_ctx {
- 	struct device *dev;
-+	const struct talitos_ptr_ops *ptr_ops;
- 	int ch;
- 	__be32 desc_hdr_template;
- 	u8 key[TALITOS_MAX_KEY_SIZE];
+ 	if (edesc->src)
+-		talitos_sg_unmap(dev, edesc, edesc->src, NULL, 0, 0);
++		talitos_sg_unmap(ctx->dev, edesc, edesc->src, NULL, 0, 0);
+ 
+ 	/* When using hashctx-in, must unmap it. */
+-	if (from_talitos_ptr_len(&desc->ptr[1], is_sec1))
+-		unmap_single_talitos_ptr(dev, &desc->ptr[1],
++	if (ctx->ptr_ops->from_talitos_ptr_len(&desc->ptr[1]))
++		unmap_single_talitos_ptr(ctx->dev, &desc->ptr[1],
+ 					 DMA_TO_DEVICE);
+ 
+ 	if (edesc->dma_len)
+-		dma_unmap_single(dev, edesc->dma_link_tbl, edesc->dma_len,
++		dma_unmap_single(ctx->dev, edesc->dma_link_tbl, edesc->dma_len,
+ 				 DMA_BIDIRECTIONAL);
+ }
+ 
+@@ -72,7 +70,7 @@ static void free_edesc_list_from(struct ahash_request *areq, struct talitos_edes
+ 
+ 	while (edesc) {
+ 		next = edesc->next_desc;
+-		common_nonsnoop_hash_unmap(ctx->dev, edesc, areq);
++		common_nonsnoop_hash_unmap(ctx, edesc, areq);
+ 		kfree(edesc);
+ 		edesc = next;
+ 	}
+@@ -97,7 +95,7 @@ static void ahash_done(struct device *dev,
+ 	} else {
+ 		next = edesc->next_desc;
+ 
+-		common_nonsnoop_hash_unmap(dev, edesc, areq);
++		common_nonsnoop_hash_unmap(ctx, edesc, areq);
+ 		kfree(edesc);
+ 
+ 		if (err)
+@@ -167,8 +165,8 @@ static void common_nonsnoop_hash(struct talitos_edesc *edesc,
+ 
+ 	/* HMAC key */
+ 	if (ctx->keylen)
+-		to_talitos_ptr(&desc->ptr[2], ctx->dma_key, ctx->keylen,
+-			       is_sec1);
++		ctx->ptr_ops->to_talitos_ptr(&desc->ptr[2], ctx->dma_key,
++					     ctx->keylen);
+ 
+ 	sg_count = edesc->src_nents ?: 1;
+ 	if (is_sec1 && sg_count > 1)
+@@ -199,7 +197,7 @@ static void common_nonsnoop_hash(struct talitos_edesc *edesc,
+ 
+ 	/* last DWORD empty */
+ 
+-	if (is_sec1 && from_talitos_ptr_len(&desc->ptr[3], true) == 0)
++	if (is_sec1 && ctx->ptr_ops->from_talitos_ptr_len(&desc->ptr[3]) == 0)
+ 		talitos_handle_buggy_hash(ctx, edesc, &desc->ptr[3]);
+ 
+ 	if (sync_needed)
+diff --git a/drivers/crypto/talitos/talitos-skcipher.c b/drivers/crypto/talitos/talitos-skcipher.c
+index b12191243aae..a96f827c7b93 100644
+--- a/drivers/crypto/talitos/talitos-skcipher.c
++++ b/drivers/crypto/talitos/talitos-skcipher.c
+@@ -67,10 +67,10 @@ static int common_nonsnoop(struct talitos_edesc *edesc,
+ 	/* first DWORD empty */
+ 
+ 	/* cipher iv */
+-	to_talitos_ptr(&desc->ptr[1], edesc->iv_dma, ivsize, is_sec1);
++	ctx->ptr_ops->to_talitos_ptr(&desc->ptr[1], edesc->iv_dma, ivsize);
+ 
+ 	/* cipher key */
+-	to_talitos_ptr(&desc->ptr[2], ctx->dma_key, ctx->keylen, is_sec1);
++	ctx->ptr_ops->to_talitos_ptr(&desc->ptr[2], ctx->dma_key, ctx->keylen);
+ 
+ 	sg_count = edesc->src_nents ?: 1;
+ 	if (is_sec1 && sg_count > 1)
+diff --git a/drivers/crypto/talitos/talitos.c b/drivers/crypto/talitos/talitos.c
+index 0e4bd130ac6d..ff88f3dc3869 100644
+--- a/drivers/crypto/talitos/talitos.c
++++ b/drivers/crypto/talitos/talitos.c
+@@ -97,9 +97,8 @@ static void __map_single_talitos_ptr(struct device *dev,
+ {
+ 	dma_addr_t dma_addr = dma_map_single_attrs(dev, data, len, dir, attrs);
+ 	struct talitos_private *priv = dev_get_drvdata(dev);
+-	bool is_sec1 = has_ftr_sec1(priv);
+ 
+-	to_talitos_ptr(ptr, dma_addr, len, is_sec1);
++	priv->ptr_ops->to_talitos_ptr(ptr, dma_addr, len);
+ }
+ 
+ void map_single_talitos_ptr(struct device *dev,
+@@ -127,10 +126,9 @@ void unmap_single_talitos_ptr(struct device *dev,
+ 			      enum dma_data_direction dir)
+ {
+ 	struct talitos_private *priv = dev_get_drvdata(dev);
+-	bool is_sec1 = has_ftr_sec1(priv);
+ 
+ 	dma_unmap_single(dev, be32_to_cpu(ptr->ptr),
+-			 from_talitos_ptr_len(ptr, is_sec1), dir);
++			 priv->ptr_ops->from_talitos_ptr_len(ptr), dir);
+ }
+ 
+ /*
+@@ -455,7 +453,8 @@ void talitos_sg_unmap(struct device *dev,
+  * convert scatterlist to SEC h/w link table format
+  * stop at cryptlen bytes
+  */
+-static int sg_to_link_tbl_offset(struct scatterlist *sg, int sg_count,
++static int sg_to_link_tbl_offset(const struct talitos_ptr_ops *ptr_ops,
++				 struct scatterlist *sg, int sg_count,
+ 				 unsigned int offset, int datalen, int elen,
+ 				 struct talitos_ptr *link_tbl_ptr, int align)
+ {
+@@ -478,16 +477,16 @@ static int sg_to_link_tbl_offset(struct scatterlist *sg, int sg_count,
+ 			len = cryptlen;
+ 
+ 		if (datalen > 0 && len > datalen) {
+-			to_talitos_ptr(link_tbl_ptr + count,
+-				       sg_dma_address(sg) + offset, datalen, 0);
+-			to_talitos_ptr_ext_set(link_tbl_ptr + count, 0, 0);
++			ptr_ops->to_talitos_ptr(link_tbl_ptr + count,
++				       sg_dma_address(sg) + offset, datalen);
++			ptr_ops->to_talitos_ptr_ext_set(link_tbl_ptr + count, 0);
+ 			count++;
+ 			len -= datalen;
+ 			offset += datalen;
+ 		}
+-		to_talitos_ptr(link_tbl_ptr + count,
+-			       sg_dma_address(sg) + offset, sg_next(sg) ? len : len + padding, 0);
+-		to_talitos_ptr_ext_set(link_tbl_ptr + count, 0, 0);
++		ptr_ops->to_talitos_ptr(link_tbl_ptr + count,
++			       sg_dma_address(sg) + offset, sg_next(sg) ? len : len + padding);
++		ptr_ops->to_talitos_ptr_ext_set(link_tbl_ptr + count, 0);
+ 		count++;
+ 		cryptlen -= len;
+ 		datalen -= len;
+@@ -499,8 +498,8 @@ static int sg_to_link_tbl_offset(struct scatterlist *sg, int sg_count,
+ 
+ 	/* tag end of link table */
+ 	if (count > 0)
+-		to_talitos_ptr_ext_set(link_tbl_ptr + count - 1,
+-				       DESC_PTR_LNKTBL_RET, 0);
++		ptr_ops->to_talitos_ptr_ext_set(link_tbl_ptr + count - 1,
++				       DESC_PTR_LNKTBL_RET);
+ 
+ 	return count;
+ }
+@@ -512,32 +511,34 @@ int talitos_sg_map_ext(struct device *dev, struct scatterlist *src,
+ 			      bool force, int align)
+ {
+ 	struct talitos_private *priv = dev_get_drvdata(dev);
++	const struct talitos_ptr_ops *ptr_ops = priv->ptr_ops;
+ 	bool is_sec1 = has_ftr_sec1(priv);
+ 	int aligned_len = ALIGN(len, align);
+ 
+ 	if (!src) {
+-		to_talitos_ptr(ptr, 0, 0, is_sec1);
++		ptr_ops->to_talitos_ptr(ptr, 0, 0);
+ 		return 1;
+ 	}
+-	to_talitos_ptr_ext_set(ptr, elen, is_sec1);
++	ptr_ops->to_talitos_ptr_ext_set(ptr, elen);
+ 	if (sg_count == 1 && !force) {
+-		to_talitos_ptr(ptr, sg_dma_address(src) + offset, aligned_len, is_sec1);
++		ptr_ops->to_talitos_ptr(ptr, sg_dma_address(src) + offset, aligned_len);
+ 		return sg_count;
+ 	}
+ 	if (is_sec1) {
+-		to_talitos_ptr(ptr, edesc->dma_link_tbl + offset, aligned_len, is_sec1);
++		ptr_ops->to_talitos_ptr(ptr, edesc->dma_link_tbl + offset, aligned_len);
+ 		return sg_count;
+ 	}
+-	sg_count = sg_to_link_tbl_offset(src, sg_count, offset, len, elen,
+-					 &edesc->link_tbl[tbl_off], align);
++	sg_count = sg_to_link_tbl_offset(ptr_ops, src, sg_count, offset,
++					 len, elen, &edesc->link_tbl[tbl_off],
++					 align);
+ 	if (sg_count == 1 && !force) {
+ 		/* Only one segment now, so no link tbl needed*/
+-		copy_talitos_ptr(ptr, &edesc->link_tbl[tbl_off], is_sec1);
++		ptr_ops->copy_talitos_ptr(ptr, &edesc->link_tbl[tbl_off]);
+ 		return sg_count;
+ 	}
+-	to_talitos_ptr(ptr, edesc->dma_link_tbl +
+-			    tbl_off * sizeof(struct talitos_ptr), aligned_len, is_sec1);
+-	to_talitos_ptr_ext_or(ptr, DESC_PTR_LNKTBL_JUMP, is_sec1);
++	ptr_ops->to_talitos_ptr(ptr, edesc->dma_link_tbl +
++			    tbl_off * sizeof(struct talitos_ptr), aligned_len);
++	ptr_ops->to_talitos_ptr_ext_or(ptr, DESC_PTR_LNKTBL_JUMP);
+ 
+ 	return sg_count;
+ }
 
 -- 
 2.54.0
