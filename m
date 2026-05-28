@@ -1,65 +1,65 @@
-Return-Path: <linux-crypto+bounces-24662-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24666-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wAvGBKItGGqyfQgAu9opvQ
-	(envelope-from <linux-crypto+bounces-24662-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 13:57:22 +0200
+	id QFXXLgEvGGrUfggAu9opvQ
+	(envelope-from <linux-crypto+bounces-24666-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 14:03:13 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C63F35F1ADD
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 13:57:21 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35F475F1CB0
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 14:03:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 2BDB730264B3
-	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 11:57:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5F6CD312B882
+	for <lists+linux-crypto@lfdr.de>; Thu, 28 May 2026 11:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 658953E638D;
-	Thu, 28 May 2026 11:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 748E93E834E;
+	Thu, 28 May 2026 11:57:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="Be0mZgAR"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="jy0UPAro"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from canpmsgout03.his.huawei.com (canpmsgout03.his.huawei.com [113.46.200.218])
+Received: from canpmsgout11.his.huawei.com (canpmsgout11.his.huawei.com [113.46.200.226])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E733E63B0;
-	Thu, 28 May 2026 11:57:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E81253E63B9;
+	Thu, 28 May 2026 11:57:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.226
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779969429; cv=none; b=q+hq+JM43TGZ8MJASFGXq7aLbOlgJ6GXKpx3dXgw0vpP042Wv6P0dlBzKBtXp/00uNErudNt11pBjPi5t9YSR16Yxi04daWzXAU/9ZHwxROPPRSPgubfgtWd/wX5mta/bNDTba2hSAsxoNTVgZ6AwUw1HUkAAeIckemC+nNY3+0=
+	t=1779969435; cv=none; b=a7gbJANzibqqQD5+652cU+tLtpq5ucGZnP5k55+AFO0zFFo6XrabiXCfvY0gx0Fwy2KhoyNFUGvZDEIe4xG0t1gsa0m9qPKLZKFib8DTeViiXYXkLeLNYGOslzoz0R68k+Hbc/LPfwreB63nWWYjr288Ocs2ZDmzUZUlrxI0VhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779969429; c=relaxed/simple;
-	bh=CTKsOYBm+dZ0jgubaGAgEnesc/r6pPBNE0/yQFcxD04=;
+	s=arc-20240116; t=1779969435; c=relaxed/simple;
+	bh=hX1WpG0y8qkBmdTtG9BOn5LUOQEiL1v9TfaL0Cy03Oc=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XYyEkOBLxVQaf4vaMKaI1mkPmrIZpv9SJVXZEfTo2MoH4JTTgeei2Si4OiUdt5SJ7OCw09h6lEyrGGuuIxJdhpkwwumsc0jp+FBQN+nV572lVOZJPQaX+v4Rso5cT3b989vyVb5MgDvawbpOr2UOoCfglvmdeU3avo8lB9uhI/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=Be0mZgAR; arc=none smtp.client-ip=113.46.200.218
+	 MIME-Version:Content-Type; b=V6NZCVFOpfgg2JlqHQDV0Bg84mXywzD4n93p36CDBeXTIgzwtIc/4kbXdWxzJi6kNDJ75HkeDuLTM1GEM/gHHp4bWVnwJKlQ1M6+TAyIRFxbQl2chCgBaYkksM1w2UX4Gv4wdW7/Ts5Lbjg26YIkr16sNAWgcJydOLTH9azTrhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=jy0UPAro; arc=none smtp.client-ip=113.46.200.226
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
 	c=relaxed/relaxed; q=dns/txt;
 	h=From;
-	bh=Z9lmzN2hR+Ho9oAHe7qgbHF3jtKXRWlqmP/JtNwt4vQ=;
-	b=Be0mZgAR5foNKeK3M4vEInX2On4t+Y6Fs33YhOuqJJXIj1Ujk894xSoZ/htxI11wf3DNHlpxj
-	ociIbZC5SsEpTWaAYW7KtVADseqYSrMJrvGaYgzYJLs3mFpxKLNQ+/0TYJrnqTnYREQBuaSI1PE
-	kSFJyrBs+laIjWO8Fq1MG4o=
-Received: from mail.maildlp.com (unknown [172.19.163.104])
-	by canpmsgout03.his.huawei.com (SkyGuard) with ESMTPS id 4gR4XY2BDPzpSw0;
-	Thu, 28 May 2026 19:49:33 +0800 (CST)
+	bh=WY/b8mrnY3M4GaZDZc7/fEQZnRdvXe/m58scRCY69AU=;
+	b=jy0UPAroYzuoB9WE6aZsJ7fpmyz7fqyb0/2qz8AynKm2/EegpZLEY25dUUb8Yv71AheUgBBDm
+	C0yym0UGe1GbpgN0psyXf7Qh+XVRNob3pJTVNlF2jNE6BmEnmhg8suZ5ZCl67OM9z2sjivW2MAI
+	O8xyG2PcSbbWbjKwBB1gbMg=
+Received: from mail.maildlp.com (unknown [172.19.163.127])
+	by canpmsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4gR4X86WYnzKmW7;
+	Thu, 28 May 2026 19:49:12 +0800 (CST)
 Received: from kwepemr100008.china.huawei.com (unknown [7.202.195.119])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5761C4048F;
+	by mail.maildlp.com (Postfix) with ESMTPS id B082C40572;
 	Thu, 28 May 2026 19:57:01 +0800 (CST)
 Received: from localhost.localdomain (10.50.163.32) by
  kwepemr100008.china.huawei.com (7.202.195.119) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.36; Thu, 28 May 2026 19:57:00 +0800
+ 15.2.1544.36; Thu, 28 May 2026 19:57:01 +0800
 From: ZongYu Wu <wuzongyu1@huawei.com>
 To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>
 CC: <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
 	<fanghao11@huawei.com>, <liulongfang@huawei.com>, <qianweili@huawei.com>,
 	<wangzhou1@hisilicon.com>, <huangchenghai2@huawei.com>,
 	<linwenkai6@hisilicon.com>
-Subject: [PATCH v2 4/5] crypto: hisilicon/sec2 - fix resource leakage issues in non-backlog mode
-Date: Thu, 28 May 2026 19:55:30 +0800
-Message-ID: <20260528115531.174593-5-wuzongyu1@huawei.com>
+Subject: [PATCH v2 5/5] crypto: hisilicon/sec2 - restore iv for ctr mode
+Date: Thu, 28 May 2026 19:55:31 +0800
+Message-ID: <20260528115531.174593-6-wuzongyu1@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20260528115531.174593-1-wuzongyu1@huawei.com>
 References: <20260528115531.174593-1-wuzongyu1@huawei.com>
@@ -79,95 +79,75 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FROM_NEQ_ENVFROM(0.00)[wuzongyu1@huawei.com,linux-crypto@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-24662-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-24666-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	DKIM_TRACE(0.00)[huawei.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCPT_COUNT_SEVEN(0.00)[10];
 	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCVD_COUNT_FIVE(0.00)[6];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,huawei.com:email,huawei.com:mid,huawei.com:dkim,hisilicon.com:email]
-X-Rspamd-Queue-Id: C63F35F1ADD
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,huawei.com:mid,huawei.com:dkim,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,hisilicon.com:email]
+X-Rspamd-Queue-Id: 35F475F1CB0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Wenkai Lin <linwenkai6@hisilicon.com>
 
-The problem that resources are not released in non-backlog mode is fixed.
-There are three cases:
-1. If the device is abnormal, the send function returns EAGAIN and
-prints an error log.
-2. If the device queue is full, the send function returns ENOSPC and
-does not print anything.
-3. The task is sent normally, and EINPROGRESS is returned.
+Upon termination of the CTR task, the initial vector (IV) is
+restored to guarantee valid IV availability for subsequent tasks.
 
-In addition, the step of switching to software computing is deleted so that
-the caller can correctly handle the actual situation.
-
-Fixes: f0ae287c5045 ("crypto: hisilicon/sec2 - implement full backlog mode for sec")
+Fixes: 7b44c0eecd6a ("crypto: hisilicon/sec - add new skcipher mode for SEC")
 Signed-off-by: Wenkai Lin <linwenkai6@hisilicon.com>
 Signed-off-by: Zongyu Wu <wuzongyu1@huawei.com>
 ---
- drivers/crypto/hisilicon/sec2/sec_crypto.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ drivers/crypto/hisilicon/sec2/sec_crypto.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-index 62125cf1f849..901abe8761e5 100644
+index 901abe8761e5..03f873f68828 100644
 --- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
 +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
-@@ -345,6 +345,9 @@ static int sec_alg_send_message_retry(struct sec_req *req)
- 		ret = qp_send_message(req);
- 	} while (ret == -EBUSY && ctr++ < SEC_RETRY_MAX_CNT);
+@@ -1970,6 +1970,7 @@ static int sec_request_init(struct sec_ctx *ctx, struct sec_req *req)
  
-+	if (ret == -EBUSY)
-+		return -ENOSPC;
-+
- 	return ret;
- }
+ static int sec_process(struct sec_ctx *ctx, struct sec_req *req)
+ {
++	bool need_copy_iv = false;
+ 	int ret;
  
-@@ -1983,14 +1986,11 @@ static int sec_process(struct sec_ctx *ctx, struct sec_req *req)
+ 	ret = sec_request_init(ctx, req);
+@@ -1982,8 +1983,10 @@ static int sec_process(struct sec_ctx *ctx, struct sec_req *req)
+ 
+ 	/* Output IV as decrypto */
+ 	if (!req->c_req.encrypt && (ctx->c_ctx.c_mode == SEC_CMODE_CBC ||
+-	    ctx->c_ctx.c_mode == SEC_CMODE_CTR))
++	    ctx->c_ctx.c_mode == SEC_CMODE_CTR)) {
++		need_copy_iv = true;
  		sec_update_iv(req, ctx->alg_type);
++	}
  
  	ret = ctx->req_op->bd_send(ctx, req);
--	if (unlikely((ret != -EBUSY && ret != -EINPROGRESS))) {
-+	if (likely(ret == -EINPROGRESS || ret == -EBUSY))
-+		return ret;
-+	else if (ret != -ENOSPC)
+ 	if (likely(ret == -EINPROGRESS || ret == -EBUSY))
+@@ -1992,7 +1995,7 @@ static int sec_process(struct sec_ctx *ctx, struct sec_req *req)
  		dev_err_ratelimited(ctx->dev, "send sec request failed!\n");
--		goto err_send_req;
--	}
  
--	return ret;
--
--err_send_req:
  	/* As failing, restore the IV from user */
- 	if (ctx->c_ctx.c_mode == SEC_CMODE_CBC && !req->c_req.encrypt) {
+-	if (ctx->c_ctx.c_mode == SEC_CMODE_CBC && !req->c_req.encrypt) {
++	if (need_copy_iv) {
  		if (ctx->alg_type == SEC_SKCIPHER)
-@@ -2005,12 +2005,6 @@ static int sec_process(struct sec_ctx *ctx, struct sec_req *req)
- 
- err_uninit_req:
- 	sec_request_uninit(req);
--	if (ctx->alg_type == SEC_AEAD)
--		ret = sec_aead_soft_crypto(ctx, req->aead_req.aead_req,
--					   req->c_req.encrypt);
--	else
--		ret = sec_skcipher_soft_crypto(ctx, req->c_req.sk_req,
--					       req->c_req.encrypt);
- 	return ret;
- }
- 
+ 			memcpy(req->c_req.sk_req->iv, req->c_req.c_ivin,
+ 			       ctx->c_ctx.ivsize);
 -- 
 2.33.0
 
