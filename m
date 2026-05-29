@@ -1,140 +1,137 @@
-Return-Path: <linux-crypto+bounces-24691-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24692-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8JBRHsjiGGo0oggAu9opvQ
-	(envelope-from <linux-crypto+bounces-24691-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 02:50:16 +0200
+	id 0PSBGKUgGWqnqggAu9opvQ
+	(envelope-from <linux-crypto+bounces-24692-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 07:14:13 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFA5D5FBC3D
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 02:50:15 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE7805FD45B
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 07:14:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id AE187301DD93
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 00:50:12 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E9BEB3031C8A
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 05:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E0B1C5D72;
-	Fri, 29 May 2026 00:50:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 157FD39EF2E;
+	Fri, 29 May 2026 05:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eQS7G9qG"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="l+SXrurF"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C7EC2EA;
-	Fri, 29 May 2026 00:50:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C45330BF6B;
+	Fri, 29 May 2026 05:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780015808; cv=none; b=K8AvdPPzfFd3BRL5MZ8/UcGdWnJALHw2cNcOFhKLIaEfJqUfbRlsY/3M5oZN3loscd8ic0GKyFnXqNKX3QZyeym/wWB47nV5SPFAbDtEPQ3Fkghv45Lwm1eSEtTVUUcF9v+AdGgeHIlOVIbgEULmlOTR1e8X3wD2GrIT7dhoGxo=
+	t=1780031646; cv=none; b=C/Kg87Q5aMYq8dcaqtkZfwZFYwD4IaWTlbJ7hK1NW4xXjRnGG5hYTQ0LH+SmLimMiv4ILjkkayjmX1qrAYQRxKBfwAB4U6wJWyi9ymp97ReJcNkzkUQzFri6E1o2n3yAkDwha4pyb9F680q/wFQDMAS+qyYOEdg3v9iKwQrs32Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780015808; c=relaxed/simple;
-	bh=hIWLlnzV0lM+MVRFowSZ2kp+dkzlKkdfgrjXOerTqYM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=NsrRbKHlM8vTPZ/7i13PYA0WtYNsE2+O/YQpobPwxxKCFCz7ezPwnbEYZh3P2XouysRe9Lp+H32wGwHf04Ed8OosnrIhwU8BVpi5BO82QIF8UBHDQXpLlFvi32R3WambTnfNyVtk1/b1W0VvdPa64Xy/SxXrF2z6ENQP8HQEaDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eQS7G9qG; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 829F71F000E9;
-	Fri, 29 May 2026 00:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1780015807;
-	bh=9c1Jg7Sy66lUkriJqX6233T9AcnGFds8CGU3Ig0aH/4=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc;
-	b=eQS7G9qGUxFCVWWZ05cA6kxadrGe3bSyKQ5tUF9jbePbx4peSYEJ19Unpsb+3XhNt
-	 J47i5O0BYlGU/6EdTLsFRLbcIU5urB9U1CY5ME9sEhbAt5WsYGc6WPHqagLbqfnERE
-	 6lWcbMpuGk9YA/TnZkmR0moBzyYc5Ib9J0WoZTqFqyn9XVgYmolovkzqmjuqjT7ZY4
-	 /PkyzG1ArCwzT3lxD04uL2lZ54ra1IjQNQ6FtBvsmbjjTxzgu3c3p05Y+K7vOrPqx/
-	 2XD7CgXdEjijPhbBfxSj4PfKztlCGYMc/vyEo2/yG+p5907Z1/rxRHSJj1ah/64fNJ
-	 cuOu0xfy6PEjA==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id D0C3A381197C;
-	Fri, 29 May 2026 00:50:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1780031646; c=relaxed/simple;
+	bh=UFMo0NT5u3oV2nbxOjppJE/m5+ueDKvsHcxxhjnJNUY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LEHt+t+RcUjJ45puVUMhLGkl5OtG/TsdSL0LBKg2APXCTH5+6f32vguVHOh2iC5kGW+gMEYiPcY4q1G99OU8UtvfVRG5zX8px2Zd84I007Ez4/RQl5d14N1NRbCfomxwtfSwU/8LZNu//uFZ3vV0W0guhm0t4ORbubf9A5vuBDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=l+SXrurF; arc=none smtp.client-ip=180.181.231.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=ejnJEa04ufm0qiqr5vvfERz7zFDVeMyDyKBO45XGNNs=; 
+	b=l+SXrurFZNSFfxzRWOXn1qGbzeUWZljEz2fLjUpNZqj9SjJyra8M/EAIsFpi7661ilaZWXl4gDr
+	Kqqes0e+CPv5m+iHr+zxp3ZLOUuLRlwRucUYaNTA70MDr5Ynw7pHY/AL8uvICD5BY4hddqa4mvJRg
+	OhryXwlG3UW5XsvBhR+7MpebE3frmZReIPkt1eV4KPuHwKBCLSyVzw5D8o+0nSsf7YohGBmA2J0wq
+	nL9THBgZaj9OnEC1zzCoTl7UwmTjcecmNIIF3aVmftb6qmqfJQ3bC0tC0q9nGX76x6Sm1EH0gyRq+
+	TpljVntyUv7Lh0ooOfv7WF3ZUfI6HujO4+dg==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
+	id 1wSpXi-000cbW-2N;
+	Fri, 29 May 2026 13:13:59 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 May 2026 13:13:58 +0800
+Date: Fri, 29 May 2026 13:13:58 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Max Clinton <maxtclinton@gmail.com>
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	gregkh@linuxfoundation.org, davem@davemloft.net,
+	security@kernel.org, stable@kernel.org
+Subject: Re: [PATCH] crypto: algif_skcipher - snapshot IV for async skcipher
+ requests
+Message-ID: <ahkglg0M4sCt3Et4@gondor.apana.org.au>
+References: <agp9Hc71Z3lGF_zu@gondor.apana.org.au>
+ <20260518233538.705966-2-maxtclinton@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/6] Remove unused support for crypto tfm cloning
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <178001581139.1574269.16262378108123076484.git-patchwork-notify@kernel.org>
-Date: Fri, 29 May 2026 00:50:11 +0000
-References: <20260522053028.91165-1-ebiggers@kernel.org>
-In-Reply-To: <20260522053028.91165-1-ebiggers@kernel.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-kernel@vger.kernel.org, edumazet@google.com, ncardwell@google.com,
- kuniyu@google.com, davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
- pabeni@redhat.com, horms@kernel.org, ardb@kernel.org, Jason@zx2c4.com,
- herbert@gondor.apana.org.au, 0x7f454c46@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260518233538.705966-2-maxtclinton@gmail.com>
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,google.com,davemloft.net,kernel.org,redhat.com,zx2c4.com,gondor.apana.org.au,gmail.com];
-	TAGGED_FROM(0.00)[bounces-24691-lists,linux-crypto=lfdr.de,netdevbpf];
-	FROM_NEQ_ENVFROM(0.00)[patchwork-bot@kernel.org,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-24692-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NO_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
-X-Rspamd-Queue-Id: DFA5D5FBC3D
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,apana.org.au:url,apana.org.au:email,gondor.apana.org.au:mid,gondor.apana.org.au:dkim]
+X-Rspamd-Queue-Id: BE7805FD45B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello:
+On Mon, May 18, 2026 at 07:35:39PM -0400, Max Clinton wrote:
+>
+> diff --git a/crypto/algif_skcipher.c b/crypto/algif_skcipher.c
+> index ba0a17fd9..519ff8d17 100644
+> --- a/crypto/algif_skcipher.c
+> +++ b/crypto/algif_skcipher.c
+> @@ -23,6 +23,7 @@
+>   * the RX SGL release.
+>   */
+>  
+> +#include <crypto/internal/skcipher.h>
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+There is no need for the internal header.
 
-On Fri, 22 May 2026 00:30:22 -0500 you wrote:
-> This series is targeting net-next because it depends on
-> "net/tcp: Remove tcp_sigpool".  So far no commits in cryptodev conflict
-> with this, so I suggest that this be taken through net-next for 7.2.
-> 
-> This series removes support for transformation cloning from the crypto
-> API.  Now that the TCP-AO and TCP-MD5 code no longer uses it, it no
-> longer has a user.  And it's unlikely that a new one will appear, as the
-> library API solves the problem in a much simpler and more efficient way.
-> 
-> [...]
+> @@ -116,10 +119,14 @@ static int _skcipher_recvmsg(struct socket *sock, struct msghdr *msg,
+>  
+>  	/* Allocate cipher request for current operation. */
+>  	areq = af_alg_alloc_areq(sk, sizeof(struct af_alg_async_req) +
+> -				     crypto_skcipher_reqsize(tfm));
+> +				     crypto_skcipher_reqsize(tfm) + ivsize);
+>  	if (IS_ERR(areq))
+>  		return PTR_ERR(areq);
+>  
+> +	iv = (u8 *)skcipher_request_ctx(&areq->cra_u.skcipher_req) +
+> +	     crypto_skcipher_reqsize(tfm);
 
-Here is the summary with links:
-  - [net-next,1/6] crypto: hash - Remove support for cloning hash tfms
-    https://git.kernel.org/netdev/net-next/c/f331c7be97ce
-  - [net-next,2/6] crypto: cipher - Remove crypto_clone_cipher()
-    https://git.kernel.org/netdev/net-next/c/cb2e6e86ceb5
-  - [net-next,3/6] crypto: api - Remove crypto_clone_tfm()
-    https://git.kernel.org/netdev/net-next/c/590a46c68a7b
-  - [net-next,4/6] crypto: api - Remove per-tfm refcount
-    https://git.kernel.org/netdev/net-next/c/3065170bfc7f
-  - [net-next,5/6] crypto: api - Fold __crypto_alloc_tfmgfp() into __crypto_alloc_tfm()
-    https://git.kernel.org/netdev/net-next/c/9d58d14e3a18
-  - [net-next,6/6] crypto: api - Fold crypto_alloc_tfmmem() into crypto_create_tfm_node()
-    https://git.kernel.org/netdev/net-next/c/0200de9d75b1
+You can rewrite this as
 
-You are awesome, thank you!
+	iv = (u8 *)(areq + 1) + crypto_skcipher_reqsize(tfm);
+
+Thanks,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
