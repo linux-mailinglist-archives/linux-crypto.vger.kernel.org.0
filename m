@@ -1,81 +1,64 @@
-Return-Path: <linux-crypto+bounces-24705-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24706-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sPsbOM8uGWrmsAgAu9opvQ
-	(envelope-from <linux-crypto+bounces-24705-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 08:14:39 +0200
+	id UNAFJT4uGWrmsAgAu9opvQ
+	(envelope-from <linux-crypto+bounces-24706-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 08:12:14 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 660525FDCD5
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 08:14:39 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AC0A5FDC9A
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 08:12:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1E3A7310F308
-	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 06:10:21 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 5797B3004D00
+	for <lists+linux-crypto@lfdr.de>; Fri, 29 May 2026 06:12:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 135DD38B7AA;
-	Fri, 29 May 2026 06:10:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B63863A16B2;
+	Fri, 29 May 2026 06:12:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="hVguPhg4"
+	dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b="cC0+4cRY"
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D63E2E7389;
-	Fri, 29 May 2026 06:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4988E1DF72C;
+	Fri, 29 May 2026 06:12:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.181.231.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780035019; cv=none; b=TbFQ9fLJ1qmKdaQpDDxbdbnt7JbbWcKrIvLE5Dh9C7LX3Os6zAEMaKDFGIeRtnofAA0SOLAbGL9CsVyFbN3C9N0LZ+TGKucN1wGdWc2ZlDvBCzASaOg3jg3fZSzKDHx0+D9RHYq7Oc406xzNedPa+uUxUcykygrmSzAGz/NkVSU=
+	t=1780035127; cv=none; b=kJSbTy51IsxTjPzofK150JnaVmKmK/Ccwz6GvOZ2rz0T1Bwm2WKc8HXJIqiGKwPMwTsnlbnzxCERUbmtcm81SDoC4Nx1DNwaaRbrwSHOVWLqGv8HwXD7e7cWlWTQSjeerzIHf4r3e6zYE+rmRVhrszSVaJIAw6ThAJabmBLJzMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780035019; c=relaxed/simple;
-	bh=osaKBTLJ0lV7a7mqYpO/cFFhkXh0WHooJI0CnQ+IbKM=;
+	s=arc-20240116; t=1780035127; c=relaxed/simple;
+	bh=5cq51ZvUmXttPL64hpXmKVU7eFwJlq9i7rnAZ58QdbQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y1hCrQSYeF3kuxTVSApT1mKQMJvFJ/Fu52Vb3jq8ffPf8NVEhbmsXt+yRwnWP7OGKpf11ooeX2dWIKOvzOIwrkRwdC7mVRvOdLFiq6XXpMlbQvFH0gG24X8lEOBNoXlrzfaa/IdIgXHWvp+PevNl92SNhv8shkhsLhOOlPrq/w4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=hVguPhg4; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=G3QAu0gN3A1B+8t292FgdEZ4t3JiqkjuIvP1hwrUWerMbOS9/gxF+IKpVImPAbPUo1T2hnXfVYC8nRwInrQmvRO/OGPXUcYPC5Tl0oJaVG5RgTfpY/Lcq4YXiW6cSs84ioTQAzDTNSODqv5W3mmv7wlpuGMm70UQR37klyxHjHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=cC0+4cRY; arc=none smtp.client-ip=180.181.231.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=J3EhnnX3hHQdWB4TNUAD/20YRD6cojsn1uHBbo0VX2k=; 
-	b=hVguPhg4DROuLmAKUFs1ljpnkC82MqXEZ8MsQtl0U7pKDDS7hG6Bfizq8yHMAWvHkJTDgmyGvP7
-	PIL1z1cWNlR4a8BRTLrG40bbS/hQ+CcrHJjgEDWZMzOiU7Eepu4OnJdg3+MAAlQXkyCCWiBhdH4Gq
-	j1tcryJQQPS9WhE6qhTOdwVV1eX1DG8XHQY7Wldu7umXiGouAzuqjdaWCZA/ZjoXqt4FAyChx4mDM
-	lXQRShs4OuWYbtsvjYL2Rh54V/gvqRxZ1ER9RbB4bYYHqzGTizkNUj5Z69bNlCON3ENcu4T2ngKId
-	dDgIeNQaNfq418mRPMZ9k7CLbAtRyF65Yvew==;
+	from:content-type:reply-to; bh=PoVKhzzmIrNFG1UZP8NlLw5m4P+ZkY+UrKc384/A01c=; 
+	b=cC0+4cRYSBdg1Ia1D5a53vjxX/DCxbbNTWHu/uwdEPa+CZQB0l0vfFG8wgnJt6TaP5wdklXnfDM
+	3/uJPvxERoWwaueKdVheUVyCYWGJ7GqaswEGFr9Kdw47hCd8GaXRYeXHsOiYnA+OSV8ozV5FAM0TN
+	BYHTf9Le4XBPqEuJ9E/hu5oe+84evLWwkrncIxq+lc5J7ws7BLfb0b4Zr0CHwcdWppcj8XVo6y3Wt
+	vhe5jJ0V5xPGZfITJB7W9KmzdAU2/NQuZ1UUFfcpf8x/7TBcW5QgZPLdQJyyWz79qeGXx7vKyfOYA
+	O3fz/b1wY1ponZNHylgVvI4zbAGEpj/xpPKg==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1wSqPc-000dKa-2D;
-	Fri, 29 May 2026 14:09:41 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 May 2026 14:09:40 +0800
-Date: Fri, 29 May 2026 14:09:40 +0800
+	id 1wSqRf-000dL1-1P;
+	Fri, 29 May 2026 14:11:48 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 29 May 2026 14:11:47 +0800
+Date: Fri, 29 May 2026 14:11:47 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: demiobenour@gmail.com
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Kuniyuki Iwashima <kuniyu@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Willem de Bruijn <willemb@google.com>, Jens Axboe <axboe@kernel.dk>,
-	Jakub Kicinski <kuba@kernel.org>, Simon Horman <horms@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	James Clark <james.clark@linaro.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Eric Biggers <ebiggers@google.com>,
-	Ard Biesheuvel <ardb@kernel.org>, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-	netdev@vger.kernel.org, linux-perf-users@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: Re: [PATCH 0/3] AF_ALG: Remove support for AIO and old-style drivers
-Message-ID: <ahktpDYvPV9sb9zf@gondor.apana.org.au>
-References: <20260523-af-alg-harden-v1-0-c76755c3a5c5@gmail.com>
+To: Tianchu Chen <tianchu.chen@linux.dev>
+Cc: clabbe.montjoie@gmail.com, davem@davemloft.net, wens@kernel.org,
+	jernej.skrabec@gmail.com, samuel@sholland.org,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: sun4i-ss: restrict PRNG seed length to prevent
+ heap overflow
+Message-ID: <ahkuI-Z2w0sea_ba@gondor.apana.org.au>
+References: <af749a8447bd7f0e9dd26ca6c87e9c6afecb09d9@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -84,73 +67,55 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260523-af-alg-harden-v1-0-c76755c3a5c5@gmail.com>
-X-Spamd-Result: default: False [-2.16 / 15.00];
+In-Reply-To: <af749a8447bd7f0e9dd26ca6c87e9c6afecb09d9@linux.dev>
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[gmail.com,davemloft.net,kernel.org,sholland.org,vger.kernel.org,lists.infradead.org,lists.linux.dev];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-24705-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	TAGGED_FROM(0.00)[bounces-24706-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[29];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:mid,gondor.apana.org.au:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,apana.org.au:url,apana.org.au:email]
-X-Rspamd-Queue-Id: 660525FDCD5
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:mid,gondor.apana.org.au:dkim,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,apana.org.au:url,apana.org.au:email]
+X-Rspamd-Queue-Id: 4AC0A5FDC9A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sat, May 23, 2026 at 03:43:01PM -0400, Demi Marie Obenour via B4 Relay wrote:
-> AF_ALG is a deprecated API only useful for compatibility with existing
-> userspace.  It has had a lot of vulnerabilities, including the infamous
-> CopyFail.
-> 
-> Rip out support for offload drivers, which tend to be buggy.  Also rip
-> out support for AIO, which actually bloats the entire socket subsystem.
-> 
-> Only compile-tested.
-> 
-> Signed-off-by: Demi Marie Obenour <demiobenour@gmail.com>
-> ---
-> Demi Marie Obenour (3):
->       net: Remove support for AIO on sockets
->       AF_ALG: Drop support for off-CPU cryptography
->       AF_ALG: Document that it is *always* slower
-> 
->  Documentation/crypto/userspace-if.rst          | 26 ++++++++--
->  crypto/af_alg.c                                | 35 ++------------
->  crypto/algif_aead.c                            | 43 ++++-------------
->  crypto/algif_hash.c                            |  4 +-
->  crypto/algif_rng.c                             |  4 +-
->  crypto/algif_skcipher.c                        | 66 ++++++--------------------
->  include/crypto/if_alg.h                        | 19 ++++++--
->  include/linux/socket.h                         |  1 -
->  io_uring/net.c                                 |  1 -
->  net/compat.c                                   |  1 -
->  net/socket.c                                   |  7 +--
->  tools/perf/trace/beauty/include/linux/socket.h |  1 -
->  12 files changed, 70 insertions(+), 138 deletions(-)
-> ---
-> base-commit: 49e05bb00f2e8168695f7af4d694c39e1423e8a2
-> change-id: 20260502-af-alg-harden-900849451653
+On Thu, May 28, 2026 at 02:53:17PM +0000, Tianchu Chen wrote:
+>
+> diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c
+> index 491fcb7b8..010fa891c 100644
+> --- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c
+> +++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-prng.c
+> @@ -8,6 +8,8 @@ int sun4i_ss_prng_seed(struct crypto_rng *tfm, const u8 *seed,
+>  	struct rng_alg *alg = crypto_rng_alg(tfm);
+>  
+>  	algt = container_of(alg, struct sun4i_ss_alg_template, alg.rng);
+> +	if (slen > sizeof(algt->ss->seed))
+> +		return -EINVAL;
 
-All applied.  Thanks.
+This should simply ignore the extra data instead of failing.
+
+Thanks,
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
