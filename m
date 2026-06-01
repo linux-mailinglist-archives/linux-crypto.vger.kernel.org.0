@@ -1,70 +1,70 @@
-Return-Path: <linux-crypto+bounces-24780-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24782-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gENlMeVKHWphYgkAu9opvQ
-	(envelope-from <linux-crypto+bounces-24780-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 01 Jun 2026 11:03:33 +0200
+	id yA6HKTRLHWphYgkAu9opvQ
+	(envelope-from <linux-crypto+bounces-24782-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 01 Jun 2026 11:04:52 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4562C61C0F0
-	for <lists+linux-crypto@lfdr.de>; Mon, 01 Jun 2026 11:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 243C861C15F
+	for <lists+linux-crypto@lfdr.de>; Mon, 01 Jun 2026 11:04:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 22F1B30AA11B
-	for <lists+linux-crypto@lfdr.de>; Mon,  1 Jun 2026 08:57:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E19F030B01AC
+	for <lists+linux-crypto@lfdr.de>; Mon,  1 Jun 2026 08:57:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5884385D60;
-	Mon,  1 Jun 2026 08:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9143346E56;
+	Mon,  1 Jun 2026 08:57:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="rHAdCxHs"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="rUp9yawN"
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com [35.155.198.111])
+Received: from pdx-out-015.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-015.esa.us-west-2.outbound.mail-perimeter.amazon.com [50.112.246.219])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E4D32B108;
-	Mon,  1 Jun 2026 08:56:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.155.198.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652913644BC;
+	Mon,  1 Jun 2026 08:57:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.112.246.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780304218; cv=none; b=FN2/uAdvTAgKxUyFaEv3Gj3NoFVWVumMnMcvwdfxUcJFMxN3yfx55085VrE6jbXeT1SvziuIuThBlwbESf/K44WxAmEFD3kparVJsm+CL4hc9RG3I3sHFRU4E+BvQJi0hwIhnSzOwF846bd+Dap9fukhrTjI3nsE9NPAbNplFac=
+	t=1780304223; cv=none; b=DGPMVriPwj/ZF6n8xhhw5XNwWzUi3IeNXyIfFEsNcVbb3oqNwLMZHFQ32hCTrGs/Sl3eLwaOx1CmqLqbe9/WjKv5hJghjlXTHLYp0nNv48XagOlAGTGClaezQaJgUOy13MIwe95VDzGqG8L2rTRlZvP2KfvpiJo0XieUAPLDd4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780304218; c=relaxed/simple;
-	bh=UELCM2h04zdJYWmKKSJlAM9eZYQBgK9+WwrE1+sp08c=;
+	s=arc-20240116; t=1780304223; c=relaxed/simple;
+	bh=6jigbqFIVkHaSIPggd1rbggXPOMUnaRBGgM0QovpREc=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Uouf6TtWTYOWJeioTVdyucfriZoCXQoSSaYQ12rwRfH1gtX84t+6QymYVg3Pu2IKvX1wv3AnYrxW/SpWfcbVqprlS5wUL7HGRFjm5DvqTVUH0W2Nb7q9rqSitAPk7I+FDzNSwOU+qXG/vi4PL8M542rE4l7E1l6VSgc8QEnXOKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=rHAdCxHs; arc=none smtp.client-ip=35.155.198.111
+	 MIME-Version:Content-Type; b=WyliWsx4tP72QlDy7fCEAPWW4eTIbLgmVyNnKib0rXXH1VYvjdA5JueeAIAhRrtnYdc1Qt4EWA0VOqsnq8uQzTSXr6j3RqbWtPqK4oUk6SVIHE5gcTOQ4sbB/XEixC94OT+uykqouMEMMQ5ADyDRRObaF8CVpzjUiyCQzZ2aA/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=rUp9yawN; arc=none smtp.client-ip=50.112.246.219
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1780304217; x=1811840217;
+  t=1780304222; x=1811840222;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=avUDsFcJLGOTHoHOJ0Z0BmzumyUYOy0sTCh3tq0rYpM=;
-  b=rHAdCxHsIQWYo3qQVI3t4lvoBWW7wJinTiHUPbHb9Gte9ut7kqAaXY14
-   bdbiLZb++bhhRfbKHxf5YhUNpkhuGIu7rRLU4gKyCK2hCeLpKu8IGfbqI
-   OMfPXiasA2/xjDHoQ3mOYv31CuVoitu+6NAT+5zKsEwHxukagKfOsgRM5
-   qQrRRd47e+3NR+K8DcgkX79sF1a1lAIqRTL2evPlp8EuaSQjm3yQF3IoN
-   L1P1zph6qgjP5H8k5usIQJ50MWnPIiSoXzLiXFBxDDirIJy+L3cY9VAsv
-   pLAf3Oi3NSMKDxI3lnXaRyVCSm+xjAk+8GSWeOy9S9rtuCJzxXoc7J6Zo
-   w==;
-X-CSE-ConnectionGUID: jgAcCNV6RTujXCHrR9euEQ==
-X-CSE-MsgGUID: j9i22Bx8TOW2v8nHVj9GGw==
+  bh=4mWB/J/i2cCgXu1keGyZ9CrkSLaEjSqWOjWRM5v/zg4=;
+  b=rUp9yawN5eLkfZjn7thWLqpDI+8h3FUSuviwycU6UQLg7LeCnyTTMvAE
+   f1bQCUm/OYFLZJbmvWpHROBXAdZYurkMG0s8IBiC9cQev3li5n4ZSeR1L
+   grgAaJG3jx4CtD/jd/dmbovwlgiorN0lgQaS7tphnlho1AE8PEhnPjl5b
+   Dhxue4mLbsL0mG+XnvGLwYRA9ioJ07k4NhgFfyFulA1d+lh+d9tWYhDsm
+   qYvak0dpg8UFIfapT6aPj53nqq5QQCY5qqznb+Ea9v65x7/VTaIOSbKqi
+   m5mDoUrr4STewAovQ+02mMbet5EHmJdo/nW5O7INuuCZlJ0qfYC5r0AFG
+   A==;
+X-CSE-ConnectionGUID: 5B6r7oO8QaupzivRgYho6g==
+X-CSE-MsgGUID: HGuiVuAoTeOpF7kO2ul2BA==
 X-IronPort-AV: E=Sophos;i="6.24,180,1774310400"; 
-   d="scan'208";a="20718758"
-Received: from ip-10-5-6-203.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.6.203])
-  by internal-pdx-out-009.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2026 08:56:54 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [205.251.233.111:16226]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.19.154:2525] with esmtp (Farcaster)
- id 89c050f9-5780-47d6-85ef-e3180503e1f5; Mon, 1 Jun 2026 08:56:54 +0000 (UTC)
-X-Farcaster-Flow-ID: 89c050f9-5780-47d6-85ef-e3180503e1f5
+   d="scan'208";a="20642872"
+Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
+  by internal-pdx-out-015.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Jun 2026 08:56:56 +0000
+Received: from EX19MTAUWA001.ant.amazon.com [205.251.233.236:3283]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.51.252:2525] with esmtp (Farcaster)
+ id e2924209-61ef-4084-a008-83e7cc262083; Mon, 1 Jun 2026 08:56:56 +0000 (UTC)
+X-Farcaster-Flow-ID: e2924209-61ef-4084-a008-83e7cc262083
 Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ EX19MTAUWA001.ant.amazon.com (10.250.64.217) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
- Mon, 1 Jun 2026 08:56:54 +0000
+ Mon, 1 Jun 2026 08:56:56 +0000
 Received: from dev-dsk-lravich-1b-7405803b.eu-west-1.amazon.com (10.13.225.95)
  by EX19D001UWA001.ant.amazon.com (10.13.138.214) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
- Mon, 1 Jun 2026 08:56:52 +0000
+ Mon, 1 Jun 2026 08:56:54 +0000
 From: Leonid Ravich <lravich@amazon.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>
 CC: Alasdair Kergon <agk@redhat.com>, Ard Biesheuvel <ardb@kernel.org>, "Eric
@@ -72,9 +72,9 @@ CC: Alasdair Kergon <agk@redhat.com>, Ard Biesheuvel <ardb@kernel.org>, "Eric
 	<horia.geanta@nxp.com>, Gilad Ben-Yossef <gilad@benyossef.com>,
 	<linux-crypto@vger.kernel.org>, <dm-devel@lists.linux.dev>,
 	<linux-block@vger.kernel.org>
-Subject: [PATCH v3 2/4] crypto: xts - support multiple data units per request in template
-Date: Mon, 1 Jun 2026 08:56:42 +0000
-Message-ID: <20260601085644.13026-3-lravich@amazon.com>
+Subject: [PATCH v3 3/4] crypto: testmgr - exercise multi-data-unit path for skcipher
+Date: Mon, 1 Jun 2026 08:56:43 +0000
+Message-ID: <20260601085644.13026-4-lravich@amazon.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260601085644.13026-1-lravich@amazon.com>
 References: <20260601085644.13026-1-lravich@amazon.com>
@@ -99,7 +99,7 @@ X-Spamd-Result: default: False [-7.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-24780-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-24782-lists,linux-crypto=lfdr.de];
 	FROM_NEQ_ENVFROM(0.00)[lravich@amazon.com,linux-crypto@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
@@ -115,91 +115,181 @@ X-Spamd-Result: default: False [-7.66 / 15.00];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 4562C61C0F0
+X-Rspamd-Queue-Id: 243C861C15F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Teach the generic xts() template to consume cryptlen larger than one
-data unit when the caller has configured a non-zero data_unit_size on
-the tfm.  Each data unit is processed with its own IV, derived from
-the caller-supplied IV by treating it as a 128-bit little-endian
-counter and adding the data-unit index.  This matches the
-sector-indexed XTS used by dm-crypt's plain64 IV mode and by typical
-inline-encryption hardware.
+Add a self-comparison test that runs whenever an skcipher algorithm
+advertises CRYPTO_ALG_SKCIPHER_MULTI_DATA_UNIT in cra_flags.  The test
+encrypts the same random plaintext two ways:
 
-The single-data-unit body is unchanged and is now reached via a thin
-xts_crypt_multi() dispatcher that skips straight to the body when
-data_unit_size is zero (the legacy default), so existing users see
-no extra cost.
+  1. as one batched request with data_unit_size set, and
+  2. as N back-to-back single-data-unit requests with IVs derived from
+     the original IV by adding the data-unit index (treated as a
+     128-bit little-endian counter, matching the convention documented
+     in crypto_skcipher_set_data_unit_size()).
 
-Advertise CRYPTO_ALG_SKCIPHER_MULTI_DATA_UNIT in cra_flags only when
-the inner cipher is synchronous.  An async inner cipher would require
-a per-DU completion chain which is out of scope for the slow software
-template; consumers that need multi-DU on async hardware will use one
-of the arch-specific drivers added later in this series.
+Both encrypts must produce byte-identical ciphertext, otherwise the
+algorithm's multi-DU implementation is inconsistent with its single-DU
+behaviour.  Iterates over a fixed set of typical data unit sizes
+(512, 1024, 2048, 4096) which cover the dm-crypt sector-size range.
+
+The test is gated on ivsize == 16 (XTS, the only multi-DU consumer in
+the kernel today) and on the algorithm advertising the capability,
+so it costs nothing for the existing fleet of skcipher drivers.
 
 Signed-off-by: Leonid Ravich <lravich@amazon.com>
 ---
- crypto/xts.c | 25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
+ crypto/testmgr.c | 129 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 129 insertions(+)
 
-diff --git a/crypto/xts.c b/crypto/xts.c
-index ad97c8091582..f0585ea9d6d5 100644
---- a/crypto/xts.c
-+++ b/crypto/xts.c
-@@ -258,7 +258,7 @@ static int xts_init_crypt(struct skcipher_request *req,
+diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+index 4d86efae65b2..8ca92ee6b37c 100644
+--- a/crypto/testmgr.c
++++ b/crypto/testmgr.c
+@@ -3211,6 +3211,123 @@ static int test_skcipher(int enc, const struct cipher_test_suite *suite,
  	return 0;
  }
  
--static int xts_encrypt(struct skcipher_request *req)
-+static int xts_encrypt_one(struct skcipher_request *req)
- {
- 	struct xts_request_ctx *rctx = skcipher_request_ctx(req);
- 	struct skcipher_request *subreq = &rctx->subreq;
-@@ -275,7 +275,7 @@ static int xts_encrypt(struct skcipher_request *req)
- 	return xts_cts_final(req, crypto_skcipher_encrypt);
- }
- 
--static int xts_decrypt(struct skcipher_request *req)
-+static int xts_decrypt_one(struct skcipher_request *req)
- {
- 	struct xts_request_ctx *rctx = skcipher_request_ctx(req);
- 	struct skcipher_request *subreq = &rctx->subreq;
-@@ -292,6 +292,16 @@ static int xts_decrypt(struct skcipher_request *req)
- 	return xts_cts_final(req, crypto_skcipher_decrypt);
- }
- 
-+static int xts_encrypt(struct skcipher_request *req)
++/*
++ * For algorithms that advertise CRYPTO_ALG_SKCIPHER_MULTI_DATA_UNIT,
++ * verify that one request batching N data units produces the same
++ * ciphertext as N back-to-back single-data-unit requests with IVs
++ * derived from the original IV by adding the data-unit index (treated
++ * as a 128-bit little-endian counter).
++ *
++ * This is a self-comparison: it does not depend on test-vector
++ * authoritativeness, only on the algorithm being internally consistent
++ * between its single-DU and multi-DU paths.
++ */
++#define TEST_MDU_NR_UNITS	4
++static int test_skcipher_multi_du(struct crypto_skcipher *tfm,
++				  unsigned int du_size)
 +{
-+	return skcipher_walk_data_units(req, xts_encrypt_one);
++	const char *driver = crypto_skcipher_driver_name(tfm);
++	const unsigned int ivsize = crypto_skcipher_ivsize(tfm);
++	const unsigned int total = du_size * TEST_MDU_NR_UNITS;
++	struct skcipher_request *req = NULL;
++	struct scatterlist sg_in, sg_out;
++	DECLARE_CRYPTO_WAIT(wait);
++	u8 iv_orig[16] = {0};
++	u8 iv_work[16];
++	u8 *plain = NULL, *batched = NULL, *unit = NULL;
++	unsigned int i;
++	int err;
++
++	if (ivsize != 16)
++		return 0;
++
++	plain = kmalloc(total, GFP_KERNEL);
++	batched = kmalloc(total, GFP_KERNEL);
++	unit = kmalloc(total, GFP_KERNEL);
++	req = skcipher_request_alloc(tfm, GFP_KERNEL);
++	if (!plain || !batched || !unit || !req) {
++		err = -ENOMEM;
++		goto out;
++	}
++
++	get_random_bytes(plain, total);
++	get_random_bytes(iv_orig, ivsize);
++
++	/* Pass 1: one batched encrypt with data_unit_size set. */
++	err = crypto_skcipher_set_data_unit_size(tfm, du_size);
++	if (err) {
++		pr_err("alg: skcipher: %s set_data_unit_size(%u) failed: %d\n",
++		       driver, du_size, err);
++		goto out;
++	}
++	memcpy(batched, plain, total);
++	memcpy(iv_work, iv_orig, ivsize);
++	sg_init_one(&sg_in, batched, total);
++	sg_out = sg_in;
++	skcipher_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG |
++				      CRYPTO_TFM_REQ_MAY_SLEEP,
++				      crypto_req_done, &wait);
++	skcipher_request_set_crypt(req, &sg_in, &sg_out, total, iv_work);
++	err = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
++	if (err) {
++		pr_err("alg: skcipher: %s multi-DU batched encrypt failed: %d\n",
++		       driver, err);
++		goto out_clear_du;
++	}
++
++	/* Pass 2: TEST_MDU_NR_UNITS single-DU encrypts with derived IVs. */
++	err = crypto_skcipher_set_data_unit_size(tfm, 0);
++	if (err)
++		goto out;
++	memcpy(unit, plain, total);
++	memcpy(iv_work, iv_orig, ivsize);
++	for (i = 0; i < TEST_MDU_NR_UNITS; i++) {
++		sg_init_one(&sg_in, unit + i * du_size, du_size);
++		sg_out = sg_in;
++		skcipher_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG |
++					      CRYPTO_TFM_REQ_MAY_SLEEP,
++					      crypto_req_done, &wait);
++		skcipher_request_set_crypt(req, &sg_in, &sg_out, du_size,
++					   iv_work);
++		err = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
++		if (err) {
++			pr_err("alg: skcipher: %s single-DU[%u] encrypt failed: %d\n",
++			       driver, i, err);
++			goto out;
++		}
++		/* Increment iv_work as a 128-bit little-endian counter. */
++		{
++			__le64 lo_le, hi_le;
++			u64 lo;
++
++			memcpy(&lo_le, iv_work, 8);
++			memcpy(&hi_le, iv_work + 8, 8);
++			lo = le64_to_cpu(lo_le) + 1;
++			lo_le = cpu_to_le64(lo);
++			memcpy(iv_work, &lo_le, 8);
++			if (lo == 0) {
++				hi_le = cpu_to_le64(le64_to_cpu(hi_le) + 1);
++				memcpy(iv_work + 8, &hi_le, 8);
++			}
++		}
++	}
++
++	if (memcmp(batched, unit, total) != 0) {
++		pr_err("alg: skcipher: %s multi-DU mismatch (du=%u, n=%u)\n",
++		       driver, du_size, TEST_MDU_NR_UNITS);
++		err = -EINVAL;
++	}
++
++out_clear_du:
++	(void)crypto_skcipher_set_data_unit_size(tfm, 0);
++out:
++	skcipher_request_free(req);
++	kfree(unit);
++	kfree(batched);
++	kfree(plain);
++	return err;
 +}
 +
-+static int xts_decrypt(struct skcipher_request *req)
-+{
-+	return skcipher_walk_data_units(req, xts_decrypt_one);
-+}
-+
- static int xts_init_tfm(struct crypto_skcipher *tfm)
+ static int alg_test_skcipher(const struct alg_test_desc *desc,
+ 			     const char *driver, u32 type, u32 mask)
  {
- 	struct skcipher_instance *inst = skcipher_alg_instance(tfm);
-@@ -427,6 +437,17 @@ static int xts_create(struct crypto_template *tmpl, struct rtattr **tb)
- 	inst->alg.base.cra_alignmask = alg->base.cra_alignmask |
- 				       (__alignof__(u64) - 1);
+@@ -3259,6 +3376,18 @@ static int alg_test_skcipher(const struct alg_test_desc *desc,
+ 	if (err)
+ 		goto out;
  
-+	/*
-+	 * Advertise multi-data-unit support only when the inner cipher is
-+	 * synchronous.  The dispatcher in skcipher_walk_data_units() calls
-+	 * the single-DU body in a loop and assumes synchronous completion;
-+	 * supporting async would require a per-DU callback chain, which
-+	 * the slow software template does not need.
-+	 */
-+	if (!(alg->base.cra_flags & CRYPTO_ALG_ASYNC))
-+		inst->alg.base.cra_flags |=
-+			CRYPTO_ALG_SKCIPHER_MULTI_DATA_UNIT;
++	if (crypto_skcipher_supports_multi_data_unit(tfm)) {
++		static const unsigned int du_sizes[] = { 512, 1024, 2048, 4096 };
++		unsigned int j;
 +
- 	inst->alg.ivsize = XTS_BLOCK_SIZE;
- 	inst->alg.min_keysize = alg->min_keysize * 2;
- 	inst->alg.max_keysize = alg->max_keysize * 2;
++		for (j = 0; j < ARRAY_SIZE(du_sizes); j++) {
++			err = test_skcipher_multi_du(tfm, du_sizes[j]);
++			if (err)
++				goto out;
++			cond_resched();
++		}
++	}
++
+ 	err = test_skcipher_vs_generic_impl(desc->generic_driver, req, tsgls);
+ out:
+ 	free_cipher_test_sglists(tsgls);
 -- 
 2.47.3
 
