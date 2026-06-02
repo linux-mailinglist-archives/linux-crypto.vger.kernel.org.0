@@ -1,137 +1,147 @@
-Return-Path: <linux-crypto+bounces-24832-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24833-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id BMGYFVAMH2rGeQAAu9opvQ
-	(envelope-from <linux-crypto+bounces-24832-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 02 Jun 2026 19:01:04 +0200
+	id WD3jOXIOH2otewAAu9opvQ
+	(envelope-from <linux-crypto+bounces-24833-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 02 Jun 2026 19:10:10 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A9B0630759
-	for <lists+linux-crypto@lfdr.de>; Tue, 02 Jun 2026 19:01:02 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id D120A6308B0
+	for <lists+linux-crypto@lfdr.de>; Tue, 02 Jun 2026 19:10:09 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linux.dev header.s=key1 header.b=onr5R3S6;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24832-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24832-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=linux.dev;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=h25FyAdp;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24833-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24833-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6D53C305F712
-	for <lists+linux-crypto@lfdr.de>; Tue,  2 Jun 2026 16:54:27 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 05FBB30069A5
+	for <lists+linux-crypto@lfdr.de>; Tue,  2 Jun 2026 16:59:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ECEF373C00;
-	Tue,  2 Jun 2026 16:54:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 290CD38C427;
+	Tue,  2 Jun 2026 16:59:18 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942FD381AFE
-	for <linux-crypto@vger.kernel.org>; Tue,  2 Jun 2026 16:54:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 121D7357D07;
+	Tue,  2 Jun 2026 16:59:16 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780419265; cv=none; b=W2W+nCeMEASrXRB6nKQ/rApUosg2c+Ug1jBoOttD75X5OiI0xLpv0igB0wr7UZp9Zv933NZyijQSEnY/zLKd8QvSwjCoO89f7wh0flMwDDMm1ym4dOb/Zo/NeRtglROiNwXxfSiwNXt9P3qrnDmQJ9e21u9aPpuRgo3tX11dzwA=
+	t=1780419557; cv=none; b=FW12jOBw+ntiE0LPsVmGM4sNRTVpn/6MW5OtxHvVlv1w8cSpv+KuWMX/LcsXQiSdPE8vuPEd2mmBMaP1jS/uVyNq0yBz18UqzE2tckZSrTRc5MNWnoVCeYnJB35MjxWcJemFMiGEMaF5s51uiNX6j8lBZ342sIzBpp0/Y94OGrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780419265; c=relaxed/simple;
-	bh=kZbngbyc9gF7nErlK2uWFwjBZCYgFqsy/5bwFGeh140=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=PZ6cmRdg/z3WS9W484eqqxXvqHNtkcvCE7E66j22XVCBKSUwblm7hmcSlmhJT+RhtsCk4MXrTYpqStWb+k6czYA3CzyKZjTZ8tcY8ZMtLNdyCIhFlASO+55miy/5uyURGqORcSQ9r2sGxP7Ix+/UvhTKCVC6c+s4xHif7qoKuaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=onr5R3S6; arc=none smtp.client-ip=91.218.175.181
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1780419252;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=dDHf5/aY9RxOz5FV7uq8q69gY1cP6K45tQ3VpSCmP9o=;
-	b=onr5R3S6IV0FVEyP7jQYiW3GLLFdOIKt92yjOqNdejNhuM0lcQTseIKhFM6xDa/X05efY8
-	Q3zHyultqO+hb7PRKxp0Iz6C0xvUrtb9gaSZuNjfeAs16tJ28Wq0qOzjdiZYMztwpcBl2n
-	Jy7ywEoMvNLIazsvsElLMqucpZAysTE=
-From: Thorsten Blum <thorsten.blum@linux.dev>
-To: Thorsten Blum <thorsten.blum@linux.dev>,
+	s=arc-20240116; t=1780419557; c=relaxed/simple;
+	bh=P8hsqb49G0SN50czZNQWl8HIQ19BJZjUwz9RXuVw6ng=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=raw0nHQd6mvqwz5T2PpKvH6s1fEDK2W4Awtabn8BYbSl9NsEq15PAUBnYwXTqHzIwfSJOQkZWoAXJhr7twXtOnuwI6GJvPT/Sd/YiH/xQ5XWcWEPBqTFVvksuK3NV2o0ITYKufbEMjBspFWy8qMFF8nhBE2jqr5ZFNDQxSDMPhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h25FyAdp; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFFA31F00893;
+	Tue,  2 Jun 2026 16:59:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1780419556;
+	bh=ihjvTG8bUTk74TyBzjsPKCeSdhfuewiWVtTZyub5lgs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=h25FyAdpjOyBvIhtUfhmSSFlSrFgDlY2smeHP10ztP3mMHzWcrGKEmTWvVYwI8ZMs
+	 UpGh/GyGGAHzx1kDczQUKqBv+imRWL2zApjpjuwhQvudIEA8UwO68OWRwE1C1fK9mq
+	 Uj3uI7opHVS+XlOE+IQoFDAPO8BtjmF8P49nYjXnKBffyc/GIL0ysw/H96gfrodtGt
+	 KMqCOVHjvFrlrBSWaC5VkpnWIqMYoSvy9DbHI7CHNC1VkxsjUyvkNMWmwVyuDq/her
+	 rtRzQO6gT1ZjNQ7p34mgVytoH77lgda3dGdSffBIsA5qTuaRjcyzpQn8tWy7lR/0Iz
+	 GiBPEmzHl0Yyw==
+Date: Tue, 2 Jun 2026 17:59:12 +0100
+From: Conor Dooley <conor@kernel.org>
+To: "lianfeng.ouyang" <lianfeng.ouyang@starfivetech.com>
+Cc: Olivia Mackall <olivia@selenic.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>
-Cc: linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: atmel-ecc - remove stale comments in atmel_ecc_remove
-Date: Tue,  2 Jun 2026 18:52:49 +0200
-Message-ID: <20260602165247.977197-3-thorsten.blum@linux.dev>
+Subject: Re: [PATCH v3 1/2] dt-bindings: rng: starfive,jh7110-trng: add
+ jhb100, drop jh8100
+Message-ID: <20260602-staple-rehire-00045d4cb667@spud>
+References: <20260601093744.84210-1-lianfeng.ouyang@starfivetech.com>
+ <20260601093744.84210-2-lianfeng.ouyang@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1341; i=thorsten.blum@linux.dev; h=from:subject; bh=kZbngbyc9gF7nErlK2uWFwjBZCYgFqsy/5bwFGeh140=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDFnyXPESsTzBHPwaAu++MbOZJqR67tkSedXOLr3m2wLTA p/ORK6OUhYGMS4GWTFFlgezfszwLa2p3GQSsRNmDisTyBAGLk4BmMg8cUaG3jWbHD0l0jRst8r/ vFXGWx/3O9x/4ql6Jm3lucUVTB1nGP6XBawtip997eIfWyG2G7zS38rZ4r4Kbt+tVD/7faTLgeN cAA==
-X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="TcxcuW3GM/PibzPD"
+Content-Disposition: inline
+In-Reply-To: <20260601093744.84210-2-lianfeng.ouyang@starfivetech.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-2.26 / 15.00];
+	SIGNED_PGP(-2.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-24832-lists,linux-crypto=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:thorsten.blum@linux.dev,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:nicolas.ferre@microchip.com,m:alexandre.belloni@bootlin.com,m:claudiu.beznea@tuxon.dev,m:linux-crypto@vger.kernel.org,m:linux-arm-kernel@lists.infradead.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-24833-lists,linux-crypto=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:lianfeng.ouyang@starfivetech.com,m:olivia@selenic.com,m:herbert@gondor.apana.org.au,m:robh@kernel.org,m:krzk+dt@kernel.org,m:conor+dt@kernel.org,m:p.zabel@pengutronix.de,m:linux-crypto@vger.kernel.org,m:devicetree@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:krzk@kernel.org,m:conor@kernel.org,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[conor@kernel.org,linux-crypto@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[conor@kernel.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	TAGGED_RCPT(0.00)[linux-crypto,dt];
+	TO_DN_SOME(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim,linux.dev:from_mime,linux.dev:email]
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[microchip.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp,spud:mid,starfivetech.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5A9B0630759
+X-Rspamd-Queue-Id: D120A6308B0
 
-atmel_ecc_remove() no longer returns -EBUSY since commit 7df7563b16aa
-("crypto: atmel-ecc - Remove duplicated error reporting in .remove()")
-and is a void function since commit ed5c2f5fd10d ("i2c: Make remove
-callback return void").
 
-Remove and update the outdated comments.
+--TcxcuW3GM/PibzPD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
----
- drivers/crypto/atmel-ecc.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+On Mon, Jun 01, 2026 at 05:37:43PM +0800, lianfeng.ouyang wrote:
+> From: Lianfeng Ouyang <lianfeng.ouyang@starfivetech.com>
+>=20
+> - Drop "starfive,jh8100-trng" since JH8100 SoC is no longer
+>   supported
+> - Add "starfive,jhb100-trng" for the JHB100 SoC TRNG.
+> - Update maintainer to current owner
+>=20
+> Signed-off-by: Lianfeng Ouyang <lianfeng.ouyang@starfivetech.com>
 
-diff --git a/drivers/crypto/atmel-ecc.c b/drivers/crypto/atmel-ecc.c
-index 9c380351d2f9..e6068dc0a0c1 100644
---- a/drivers/crypto/atmel-ecc.c
-+++ b/drivers/crypto/atmel-ecc.c
-@@ -347,13 +347,11 @@ static void atmel_ecc_remove(struct i2c_client *client)
- {
- 	struct atmel_i2c_client_priv *i2c_priv = i2c_get_clientdata(client);
- 
--	/* Return EBUSY if i2c client already allocated. */
- 	if (atomic_read(&i2c_priv->tfm_count)) {
- 		/*
- 		 * After we return here, the memory backing the device is freed.
--		 * That happens no matter what the return value of this function
--		 * is because in the Linux device model there is no error
--		 * handling for unbinding a driver.
-+		 * That happens because in the Linux device model there is no
-+		 * error handling for unbinding a driver.
- 		 * If there is still some action pending, it probably involves
- 		 * accessing the freed memory.
- 		 */
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+pw-bot: not-applicable
+
+Although, commit messages really should not be bullet point lists,
+please keep that in mind for the future.
+
+--TcxcuW3GM/PibzPD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCah8L4AAKCRB4tDGHoIJi
+0pvPAP48c69zeUJZcxblJ2W9Dl/b5QIv7K3GBR22LJXNAsuvnwD+J3e4mzRolRhB
+8oCZVxOOzoXm17S6Rrlr+ocxLq++pA4=
+=EXL0
+-----END PGP SIGNATURE-----
+
+--TcxcuW3GM/PibzPD--
 
