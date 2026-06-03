@@ -1,52 +1,50 @@
-Return-Path: <linux-crypto+bounces-24861-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24863-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id VDr5F8/kH2q2rwAAu9opvQ
-	(envelope-from <linux-crypto+bounces-24861-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 03 Jun 2026 10:24:47 +0200
+	id cXPDN0/7H2pOtgAAu9opvQ
+	(envelope-from <linux-crypto+bounces-24863-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 03 Jun 2026 12:00:47 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF03C635A98
-	for <lists+linux-crypto@lfdr.de>; Wed, 03 Jun 2026 10:24:46 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CFEC63660B
+	for <lists+linux-crypto@lfdr.de>; Wed, 03 Jun 2026 12:00:46 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24861-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24861-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24863-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24863-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	dmarc=none;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 09BD83076FD3
-	for <lists+linux-crypto@lfdr.de>; Wed,  3 Jun 2026 08:22:27 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F25C1306102E
+	for <lists+linux-crypto@lfdr.de>; Wed,  3 Jun 2026 09:57:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7CF425CFC;
-	Wed,  3 Jun 2026 08:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3602380FF9;
+	Wed,  3 Jun 2026 09:57:45 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12CE0423164;
-	Wed,  3 Jun 2026 08:21:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E830840759D
+	for <linux-crypto@vger.kernel.org>; Wed,  3 Jun 2026 09:57:38 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780474916; cv=none; b=bhZloUpMf2e00QryBQseQffeFvC237MW084kDKNQvvag3NIm9Y9eSLBppEhxr/8p4kcBrkcYg4CoqY/KMBfUkUfzQv3sultP98rTVaeGuKMuYoN4FTqBw2wPnhiV+dB0QEFg8d+RjeyPuxE1VHPA9HU+HmE4rKET1lxcA7nnpII=
+	t=1780480665; cv=none; b=m8FSd4e0E8LY8VROyY0YTryVrZTiOTp6zLiJv2Xt3qDP2WnnV72PLcLW8Vg8dsjzoyJ5/w19atF2eiVbq4hGgxoYaLHRWTvGjMdcNSJqAjMw+oowCuC7gzHcFdijCuZuXHq0DVBUPhNpsolUbnobrMkCealueVAQ+3odOUjI0DU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780474916; c=relaxed/simple;
-	bh=pYhGnlXp7CqTivc0W0TtUSsSjnWnMGQykmALPzcWqyI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=C8pgExUyYe5O0d8XUYEFkL1aV3QutkXYick5AgiaqRxZ87R44bDCCC7D/w+AVYrea94ocBBirRv1ENw40ZeEK6PSc7SlaOeQS6UhCvE6JtS+Ok+XQvMWLlwoU/EqMRtNl+1zqbslp9j6Or7n0ojjeLdWoy+UOCoOhMWswhsOoW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
-Received: from dfae2b116770.home.arpa (unknown [36.110.52.2])
-	by APP-03 (Coremail) with SMTP id rQCowAB3W+Ie5B9qbix7Ew--.18997S2;
-	Wed, 03 Jun 2026 16:21:50 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: herbert@gondor.apana.org.au,
-	davem@davemloft.net
-Cc: linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Wentao Liang <vulab@iscas.ac.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH v3] crypto/algapi: fix refcount leak in crypto_register_alg()
-Date: Wed,  3 Jun 2026 08:21:40 +0000
-Message-Id: <20260603082140.3719314-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1780480665; c=relaxed/simple;
+	bh=xIIBW/e5Uw+kqVuYYTR9ZJKD9rzp/togBuR4h0ltqj0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iiAlCzq7ss6DoNTkaeXiIbkJAgnHU4sczMnkp/iMc+CWUpO/DZOSBTRydp1tcJcZ8eKvuYliQKMe8fUGaFc/dhIDshl+GxbQaoTW24KbUhjYBbID/kKFB/ogNFGVNS1m7tGH9PKYo39vUhzAyGMeKaL9HqUKy32KsVAIEpubRuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Received: from vpn2.omp.ru (31.133.126.217) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Wed, 3 Jun
+ 2026 12:42:19 +0300
+From: Viktoriya Danchenko <v.danchenko@omp.ru>
+To: <lvc-project@linuxtesting.org>, "David S. Miller" <davem@davemloft.net>,
+	David Sterba <dsterba@suse.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+	<linux-crypto@vger.kernel.org>
+Subject: [PATCH 5.10] crypto: lzo - Fix compression buffer overrun
+Date: Wed, 3 Jun 2026 12:42:07 +0300
+Message-ID: <20260603094207.50626-1-v.danchenko@omp.ru>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -54,96 +52,454 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:rQCowAB3W+Ie5B9qbix7Ew--.18997S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Jr1rur18Zr1kAFy8Kw4UArb_yoW8JryDpw
-	1Fk3yYkFW5GryxKFW8K3Z3Ja4UWrW2kr15CrsYkF4Yy3ZxJwsYqrZFy34jqFy2krZ3JFy2
-	qrWvkF1YvF1DAFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkK14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7v_Jr
-	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS14v2
-	6r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCI
-	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
-	AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_
-	Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbYFAJ
-	UUUUU==
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBg0HA2ofvLubrwAAsJ
+Content-Type: text/plain
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.1, Database issued on: 06/03/2026 09:34:08
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 19
+X-KSE-AntiSpam-Info: Lua profiles 203621 [Jun 03 2026]
+X-KSE-AntiSpam-Info: Version: 6.1.1.22
+X-KSE-AntiSpam-Info: Envelope from: v.danchenko@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 107 0.3.107
+ 575e75fe8e3b9d45c142d144823c5de38605099e
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {date_rfc_vio_soft_silent}
+X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.133.126.217 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;www.oberhumer.com:7.1.1;vpn2.omp.ru:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: {Tracking_ip_hunter}
+X-KSE-AntiSpam-Info: FromAlignment: s
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.133.126.217
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 19
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/03/2026 09:36:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 6/3/2026 5:40:00 AM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [0.04 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DMARC_NA(0.00)[iscas.ac.cn];
-	FORGED_RECIPIENTS(0.00)[m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:vulab@iscas.ac.cn,m:stable@vger.kernel.org,s:lists@lfdr.de];
+	DMARC_NA(0.00)[omp.ru];
+	FORGED_RECIPIENTS(0.00)[m:lvc-project@linuxtesting.org,m:davem@davemloft.net,m:dsterba@suse.com,m:herbert@gondor.apana.org.au,m:linux-crypto@vger.kernel.org,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-24861-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-24863-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[vulab@iscas.ac.cn,linux-crypto@vger.kernel.org];
+	FORGED_SENDER(0.00)[v.danchenko@omp.ru,linux-crypto@vger.kernel.org];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vulab@iscas.ac.cn,linux-crypto@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[v.danchenko@omp.ru,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	R_DKIM_NA(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[iscas.ac.cn:mid,iscas.ac.cn:from_mime,iscas.ac.cn:email,vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,oberhumer.com:url,oberhumer.com:email,openedhand.com:email,omp.ru:mid,omp.ru:from_mime,omp.ru:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: DF03C635A98
+X-Rspamd-Queue-Id: 0CFEC63660B
 
-When crypto_register_alg() calls crypto_check_alg() successfully,
-the algorithm's refcount is set to one.  If the subsequent handling
-for CRYPTO_ALG_DUP_FIRST fails with ENOMEM due to a kmemdup()
-error, the function returns without decrementing the refcount.
-This leaves the algorithm forever pinned with a leaked reference.
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-Fix it by calling crypto_alg_put() on the kmemdup() failure path,
-matching the error handling used elsewhere in the function.
+[ Upstream commit cc47f07234f72cbd8e2c973cdbf2a6730660a463 ]
 
-Cc: stable@vger.kernel.org
-Fixes: f1440a90465b ("crypto: api - Add support for duplicating algorithms before registration")
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+Unlike the decompression code, the compression code in LZO never
+checked for output overruns.  It instead assumes that the caller
+always provides enough buffer space, disregarding the buffer length
+provided by the caller.
 
+Add a safe compression interface that checks for the end of buffer
+before each write.  Use the safe interface in crypto/lzo.
+
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
+Fixes: 64c70b1cf43d ("Add LZO1X algorithm to the kernel")
+Signed-off-by: Viktoriya Danchenko <v.danchenko@omp.ru>
 ---
-Changes in v2:
-- Clarify the refcount lifecycle.
-- Fix code error.
+Backport fix for CVE-2025-38068
 ---
- crypto/algapi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ crypto/lzo-rle.c              |   2 +-
+ crypto/lzo.c                  |   2 +-
+ include/linux/lzo.h           |   8 +++
+ lib/lzo/Makefile              |   2 +-
+ lib/lzo/lzo1x_compress.c      | 101 +++++++++++++++++++++++++---------
+ lib/lzo/lzo1x_compress_safe.c |  18 ++++++
+ 6 files changed, 105 insertions(+), 28 deletions(-)
+ create mode 100644 lib/lzo/lzo1x_compress_safe.c
 
-diff --git a/crypto/algapi.c b/crypto/algapi.c
-index 37de377719ae..260d03b328ec 100644
---- a/crypto/algapi.c
-+++ b/crypto/algapi.c
-@@ -446,8 +446,10 @@ int crypto_register_alg(struct crypto_alg *alg)
- 		u8 *p = (u8 *)alg - algsize;
+diff --git a/crypto/lzo-rle.c b/crypto/lzo-rle.c
+index 0631d975bfac..0abc2d87f042 100644
+--- a/crypto/lzo-rle.c
++++ b/crypto/lzo-rle.c
+@@ -55,7 +55,7 @@ static int __lzorle_compress(const u8 *src, unsigned int slen,
+ 	size_t tmp_len = *dlen; /* size_t(ulong) <-> uint on 64 bit */
+ 	int err;
  
- 		p = kmemdup(p, algsize + sizeof(*alg), GFP_KERNEL);
--		if (!p)
-+		if (!p) {
-+			crypto_alg_put(alg);
- 			return -ENOMEM;
-+		}
+-	err = lzorle1x_1_compress(src, slen, dst, &tmp_len, ctx);
++	err = lzorle1x_1_compress_safe(src, slen, dst, &tmp_len, ctx);
  
- 		alg = (void *)(p + algsize);
- 		alg->cra_destroy = crypto_free_alg;
+ 	if (err != LZO_E_OK)
+ 		return -EINVAL;
+diff --git a/crypto/lzo.c b/crypto/lzo.c
+index ebda132dd22b..8338851c7406 100644
+--- a/crypto/lzo.c
++++ b/crypto/lzo.c
+@@ -55,7 +55,7 @@ static int __lzo_compress(const u8 *src, unsigned int slen,
+ 	size_t tmp_len = *dlen; /* size_t(ulong) <-> uint on 64 bit */
+ 	int err;
+ 
+-	err = lzo1x_1_compress(src, slen, dst, &tmp_len, ctx);
++	err = lzo1x_1_compress_safe(src, slen, dst, &tmp_len, ctx);
+ 
+ 	if (err != LZO_E_OK)
+ 		return -EINVAL;
+diff --git a/include/linux/lzo.h b/include/linux/lzo.h
+index e95c7d1092b2..4d30e3624acd 100644
+--- a/include/linux/lzo.h
++++ b/include/linux/lzo.h
+@@ -24,10 +24,18 @@
+ int lzo1x_1_compress(const unsigned char *src, size_t src_len,
+ 		     unsigned char *dst, size_t *dst_len, void *wrkmem);
+ 
++/* Same as above but does not write more than dst_len to dst. */
++int lzo1x_1_compress_safe(const unsigned char *src, size_t src_len,
++			  unsigned char *dst, size_t *dst_len, void *wrkmem);
++
+ /* This requires 'wrkmem' of size LZO1X_1_MEM_COMPRESS */
+ int lzorle1x_1_compress(const unsigned char *src, size_t src_len,
+ 		     unsigned char *dst, size_t *dst_len, void *wrkmem);
+ 
++/* Same as above but does not write more than dst_len to dst. */
++int lzorle1x_1_compress_safe(const unsigned char *src, size_t src_len,
++			     unsigned char *dst, size_t *dst_len, void *wrkmem);
++
+ /* safe decompression with overrun testing */
+ int lzo1x_decompress_safe(const unsigned char *src, size_t src_len,
+ 			  unsigned char *dst, size_t *dst_len);
+diff --git a/lib/lzo/Makefile b/lib/lzo/Makefile
+index 2f58fafbbddd..fc7b2b7ef4b2 100644
+--- a/lib/lzo/Makefile
++++ b/lib/lzo/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-lzo_compress-objs := lzo1x_compress.o
++lzo_compress-objs := lzo1x_compress.o lzo1x_compress_safe.o
+ lzo_decompress-objs := lzo1x_decompress_safe.o
+ 
+ obj-$(CONFIG_LZO_COMPRESS) += lzo_compress.o
+diff --git a/lib/lzo/lzo1x_compress.c b/lib/lzo/lzo1x_compress.c
+index 8ad5ba2b86e2..941d7337f273 100644
+--- a/lib/lzo/lzo1x_compress.c
++++ b/lib/lzo/lzo1x_compress.c
+@@ -18,11 +18,22 @@
+ #include <linux/lzo.h>
+ #include "lzodefs.h"
+ 
+-static noinline size_t
+-lzo1x_1_do_compress(const unsigned char *in, size_t in_len,
+-		    unsigned char *out, size_t *out_len,
+-		    size_t ti, void *wrkmem, signed char *state_offset,
+-		    const unsigned char bitstream_version)
++#undef LZO_UNSAFE
++
++#ifndef LZO_SAFE
++#define LZO_UNSAFE 1
++#define LZO_SAFE(name) name
++#define HAVE_OP(x) 1
++#endif
++
++#define NEED_OP(x) if (!HAVE_OP(x)) goto output_overrun
++
++static noinline int
++LZO_SAFE(lzo1x_1_do_compress)(const unsigned char *in, size_t in_len,
++			      unsigned char **out, unsigned char *op_end,
++			      size_t *tp, void *wrkmem,
++			      signed char *state_offset,
++			      const unsigned char bitstream_version)
+ {
+ 	const unsigned char *ip;
+ 	unsigned char *op;
+@@ -30,8 +41,9 @@ lzo1x_1_do_compress(const unsigned char *in, size_t in_len,
+ 	const unsigned char * const ip_end = in + in_len - 20;
+ 	const unsigned char *ii;
+ 	lzo_dict_t * const dict = (lzo_dict_t *) wrkmem;
++	size_t ti = *tp;
+ 
+-	op = out;
++	op = *out;
+ 	ip = in;
+ 	ii = ip;
+ 	ip += ti < 4 ? 4 - ti : 0;
+@@ -118,25 +130,32 @@ lzo1x_1_do_compress(const unsigned char *in, size_t in_len,
+ 		if (t != 0) {
+ 			if (t <= 3) {
+ 				op[*state_offset] |= t;
++				NEED_OP(4);
+ 				COPY4(op, ii);
+ 				op += t;
+ 			} else if (t <= 16) {
++				NEED_OP(17);
+ 				*op++ = (t - 3);
+ 				COPY8(op, ii);
+ 				COPY8(op + 8, ii + 8);
+ 				op += t;
+ 			} else {
+ 				if (t <= 18) {
++					NEED_OP(1);
+ 					*op++ = (t - 3);
+ 				} else {
+ 					size_t tt = t - 18;
++					NEED_OP(1);
+ 					*op++ = 0;
+ 					while (unlikely(tt > 255)) {
+ 						tt -= 255;
++						NEED_OP(1);
+ 						*op++ = 0;
+ 					}
++					NEED_OP(1);
+ 					*op++ = tt;
+ 				}
++				NEED_OP(t);
+ 				do {
+ 					COPY8(op, ii);
+ 					COPY8(op + 8, ii + 8);
+@@ -153,6 +172,7 @@ lzo1x_1_do_compress(const unsigned char *in, size_t in_len,
+ 		if (unlikely(run_length)) {
+ 			ip += run_length;
+ 			run_length -= MIN_ZERO_RUN_LENGTH;
++			NEED_OP(4);
+ 			put_unaligned_le32((run_length << 21) | 0xfffc18
+ 					   | (run_length & 0x7), op);
+ 			op += 4;
+@@ -245,10 +265,12 @@ lzo1x_1_do_compress(const unsigned char *in, size_t in_len,
+ 		ip += m_len;
+ 		if (m_len <= M2_MAX_LEN && m_off <= M2_MAX_OFFSET) {
+ 			m_off -= 1;
++			NEED_OP(2);
+ 			*op++ = (((m_len - 1) << 5) | ((m_off & 7) << 2));
+ 			*op++ = (m_off >> 3);
+ 		} else if (m_off <= M3_MAX_OFFSET) {
+ 			m_off -= 1;
++			NEED_OP(1);
+ 			if (m_len <= M3_MAX_LEN)
+ 				*op++ = (M3_MARKER | (m_len - 2));
+ 			else {
+@@ -256,14 +278,18 @@ lzo1x_1_do_compress(const unsigned char *in, size_t in_len,
+ 				*op++ = M3_MARKER | 0;
+ 				while (unlikely(m_len > 255)) {
+ 					m_len -= 255;
++					NEED_OP(1);
+ 					*op++ = 0;
+ 				}
++				NEED_OP(1);
+ 				*op++ = (m_len);
+ 			}
++			NEED_OP(2);
+ 			*op++ = (m_off << 2);
+ 			*op++ = (m_off >> 6);
+ 		} else {
+ 			m_off -= 0x4000;
++			NEED_OP(1);
+ 			if (m_len <= M4_MAX_LEN)
+ 				*op++ = (M4_MARKER | ((m_off >> 11) & 8)
+ 						| (m_len - 2));
+@@ -284,11 +310,14 @@ lzo1x_1_do_compress(const unsigned char *in, size_t in_len,
+ 				m_len -= M4_MAX_LEN;
+ 				*op++ = (M4_MARKER | ((m_off >> 11) & 8));
+ 				while (unlikely(m_len > 255)) {
++					NEED_OP(1);
+ 					m_len -= 255;
+ 					*op++ = 0;
+ 				}
++				NEED_OP(1);
+ 				*op++ = (m_len);
+ 			}
++			NEED_OP(2);
+ 			*op++ = (m_off << 2);
+ 			*op++ = (m_off >> 6);
+ 		}
+@@ -297,14 +326,20 @@ lzo1x_1_do_compress(const unsigned char *in, size_t in_len,
+ 		ii = ip;
+ 		goto next;
+ 	}
+-	*out_len = op - out;
+-	return in_end - (ii - ti);
++	*out = op;
++	*tp = in_end - (ii - ti);
++	return LZO_E_OK;
++
++output_overrun:
++	return LZO_E_OUTPUT_OVERRUN;
+ }
+ 
+-int lzogeneric1x_1_compress(const unsigned char *in, size_t in_len,
+-		     unsigned char *out, size_t *out_len,
+-		     void *wrkmem, const unsigned char bitstream_version)
++static int LZO_SAFE(lzogeneric1x_1_compress)(
++	const unsigned char *in, size_t in_len,
++	unsigned char *out, size_t *out_len,
++	void *wrkmem, const unsigned char bitstream_version)
+ {
++	unsigned char * const op_end = out + *out_len;
+ 	const unsigned char *ip = in;
+ 	unsigned char *op = out;
+ 	unsigned char *data_start;
+@@ -312,6 +347,7 @@ int lzogeneric1x_1_compress(const unsigned char *in, size_t in_len,
+ 	size_t t = 0;
+ 	signed char state_offset = -2;
+ 	unsigned int m4_max_offset;
++	int err;
+ 
+ 	// LZO v0 will never write 17 as first byte (except for zero-length
+ 	// input), so this is used to version the bitstream
+@@ -332,10 +368,12 @@ int lzogeneric1x_1_compress(const unsigned char *in, size_t in_len,
+ 			break;
+ 		BUILD_BUG_ON(D_SIZE * sizeof(lzo_dict_t) > LZO1X_1_MEM_COMPRESS);
+ 		memset(wrkmem, 0, D_SIZE * sizeof(lzo_dict_t));
+-		t = lzo1x_1_do_compress(ip, ll, op, out_len, t, wrkmem,
+-					&state_offset, bitstream_version);
++		err = LZO_SAFE(lzo1x_1_do_compress)(
++			ip, ll, &op, op_end, &t, wrkmem,
++			&state_offset, bitstream_version);
++		if (err != LZO_E_OK)
++			return err;
+ 		ip += ll;
+-		op += *out_len;
+ 		l  -= ll;
+ 	}
+ 	t += l;
+@@ -344,20 +382,26 @@ int lzogeneric1x_1_compress(const unsigned char *in, size_t in_len,
+ 		const unsigned char *ii = in + in_len - t;
+ 
+ 		if (op == data_start && t <= 238) {
++			NEED_OP(1);
+ 			*op++ = (17 + t);
+ 		} else if (t <= 3) {
+ 			op[state_offset] |= t;
+ 		} else if (t <= 18) {
++			NEED_OP(1);
+ 			*op++ = (t - 3);
+ 		} else {
+ 			size_t tt = t - 18;
++			NEED_OP(1);
+ 			*op++ = 0;
+ 			while (tt > 255) {
+ 				tt -= 255;
++				NEED_OP(1);
+ 				*op++ = 0;
+ 			}
++			NEED_OP(1);
+ 			*op++ = tt;
+ 		}
++		NEED_OP(t);
+ 		if (t >= 16) do {
+ 			COPY8(op, ii);
+ 			COPY8(op + 8, ii + 8);
+@@ -370,31 +414,38 @@ int lzogeneric1x_1_compress(const unsigned char *in, size_t in_len,
+ 		} while (--t > 0);
+ 	}
+ 
++	NEED_OP(3);
+ 	*op++ = M4_MARKER | 1;
+ 	*op++ = 0;
+ 	*op++ = 0;
+ 
+ 	*out_len = op - out;
+ 	return LZO_E_OK;
++
++output_overrun:
++	return LZO_E_OUTPUT_OVERRUN;
+ }
+ 
+-int lzo1x_1_compress(const unsigned char *in, size_t in_len,
+-		     unsigned char *out, size_t *out_len,
+-		     void *wrkmem)
++int LZO_SAFE(lzo1x_1_compress)(const unsigned char *in, size_t in_len,
++			       unsigned char *out, size_t *out_len,
++			       void *wrkmem)
+ {
+-	return lzogeneric1x_1_compress(in, in_len, out, out_len, wrkmem, 0);
++	return LZO_SAFE(lzogeneric1x_1_compress)(
++		in, in_len, out, out_len, wrkmem, 0);
+ }
+ 
+-int lzorle1x_1_compress(const unsigned char *in, size_t in_len,
+-		     unsigned char *out, size_t *out_len,
+-		     void *wrkmem)
++int LZO_SAFE(lzorle1x_1_compress)(const unsigned char *in, size_t in_len,
++				  unsigned char *out, size_t *out_len,
++				  void *wrkmem)
+ {
+-	return lzogeneric1x_1_compress(in, in_len, out, out_len,
+-				       wrkmem, LZO_VERSION);
++	return LZO_SAFE(lzogeneric1x_1_compress)(
++		in, in_len, out, out_len, wrkmem, LZO_VERSION);
+ }
+ 
+-EXPORT_SYMBOL_GPL(lzo1x_1_compress);
+-EXPORT_SYMBOL_GPL(lzorle1x_1_compress);
++EXPORT_SYMBOL_GPL(LZO_SAFE(lzo1x_1_compress));
++EXPORT_SYMBOL_GPL(LZO_SAFE(lzorle1x_1_compress));
+ 
++#ifndef LZO_UNSAFE
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("LZO1X-1 Compressor");
++#endif
+diff --git a/lib/lzo/lzo1x_compress_safe.c b/lib/lzo/lzo1x_compress_safe.c
+new file mode 100644
+index 000000000000..371c9f849492
+--- /dev/null
++++ b/lib/lzo/lzo1x_compress_safe.c
+@@ -0,0 +1,18 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ *  LZO1X Compressor from LZO
++ *
++ *  Copyright (C) 1996-2012 Markus F.X.J. Oberhumer <markus@oberhumer.com>
++ *
++ *  The full LZO package can be found at:
++ *  http://www.oberhumer.com/opensource/lzo/
++ *
++ *  Changed for Linux kernel use by:
++ *  Nitin Gupta <nitingupta910@gmail.com>
++ *  Richard Purdie <rpurdie@openedhand.com>
++ */
++
++#define LZO_SAFE(name) name##_safe
++#define HAVE_OP(x) ((size_t)(op_end - op) >= (size_t)(x))
++
++#include "lzo1x_compress.c"
 -- 
-2.34.1
+2.43.0
 
 
