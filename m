@@ -1,56 +1,56 @@
-Return-Path: <linux-crypto+bounces-24894-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24895-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id GbPkGcZzIWq0GgEAu9opvQ
-	(envelope-from <linux-crypto+bounces-24894-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 04 Jun 2026 14:47:02 +0200
+	id LdP/Git1IWoKGwEAu9opvQ
+	(envelope-from <linux-crypto+bounces-24895-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 04 Jun 2026 14:52:59 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9235640073
-	for <lists+linux-crypto@lfdr.de>; Thu, 04 Jun 2026 14:47:01 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05034640117
+	for <lists+linux-crypto@lfdr.de>; Thu, 04 Jun 2026 14:52:57 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=bootlin.com header.s=dkim header.b=u+WL7aI7;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24894-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24894-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=bootlin.com header.s=dkim header.b="JQ6zz/4w";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24895-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24895-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=reject) header.from=bootlin.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A31D73044704
-	for <lists+linux-crypto@lfdr.de>; Thu,  4 Jun 2026 12:39:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 85B2430125C2
+	for <lists+linux-crypto@lfdr.de>; Thu,  4 Jun 2026 12:44:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E5643D50C;
-	Thu,  4 Jun 2026 12:39:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E06D43D508;
+	Thu,  4 Jun 2026 12:44:44 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A28C39A4D6;
-	Thu,  4 Jun 2026 12:39:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280EF436358
+	for <linux-crypto@vger.kernel.org>; Thu,  4 Jun 2026 12:44:41 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780576754; cv=none; b=H1+p4UEStvGtC4nPoa1hLWEElxYJtoRjbcM5btjy0MJ8B+wBmmHPbLz5yEV5JECPbfpKUp7XPKneCJTEYrdOiBUVz5LMoUA+Tbc073N7u5s5igIp40IirPEgWZra4brWyLenLC4lBjD3rf9lvItwIP5yWRrUKG3jebPD+W3wnjI=
+	t=1780577084; cv=none; b=BUctFU/dWTEF1kxEC7/iC1vKituM9K2pjMAKyaOZQjP13sHtOa5dxrMS3GuI05QHlOOeasv/iVBQwVsN+Xp270ji7E0ZRaUmaLg4A08/lBZHFimKcPt59Hqf0O3Ahxmx2Axws3wkyusmTqnpj7OjJxTRgicMX+GcN8QfacMXHXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780576754; c=relaxed/simple;
-	bh=tCruOqXpL2smJuUxf0Bv0TD88+WGYP61Zyqd4NpuWoU=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=BitzIck5ltbeZqY+K2VngRvhzt2iT8oszsfgAk919QyhLqooTamXzRlm1ImZL5kLv13vUQJEpkk903Q8M+cLmAyTI2jxzRwuByrpXi4J6ZQ2b0B7WWImMRxZE+l/xFXL/vAR2CXXSgIFohob6Lpn0ZH3GSX/qlLrzrrvPZCJFZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=u+WL7aI7; arc=none smtp.client-ip=185.171.202.116
+	s=arc-20240116; t=1780577084; c=relaxed/simple;
+	bh=YvPcqAsvrPsYklS2EfWUjYqEcZ4GAgQ6WR5VQVo4sAg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
+	 References:In-Reply-To; b=cLcSt9ZJT0oouw5/YcxzKSotC4P4Mw7P6YAQ2Vx97nEUbyA45bjoGGN8JqTyefKkJJIvfhUZmaM7VV/AUzzuOlpabmoCQgdl5RiThYoAVf6LkloRWIeHeJJtPYtzqUC+VvgLzXm0N0vG1YQxGdgwQWkM6ToikpbkUbRLp2YLHzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=JQ6zz/4w; arc=none smtp.client-ip=185.171.202.116
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 4EDB2C63453;
-	Thu,  4 Jun 2026 12:39:11 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id DBCCBC63454;
+	Thu,  4 Jun 2026 12:44:39 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 0ED885FEF7;
-	Thu,  4 Jun 2026 12:39:12 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 630BA106A1945;
-	Thu,  4 Jun 2026 14:39:10 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id A34915FEF7;
+	Thu,  4 Jun 2026 12:44:40 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 19274106A1AA4;
+	Thu,  4 Jun 2026 14:44:39 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1780576751; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1780577079; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=Sep+FfkjsDJ0MMTKrD5vx+i+ogB7pZQrVFCsI2ueKeY=;
-	b=u+WL7aI71+ZzLDQbIMdzPKX3jrLYseHBM9Ko9jv7UhFQ4yBzpQjgk3heVdf0BCdxE9bkWV
-	haLzMGw4+qzaLApdRLLaFwjGTnDxXtCE9MTZeSn5d1j3aN2V7SEi3w7q6vPUdFpL+7+FOt
-	VKE1EU9BZvJ9Pf0fXMpO5amOadKIaaGcTHMvUmvpMUZYRSpLHERRe7rJ28FgQvLXnxKRew
-	Zz42s0RDv/kiIGk8peU1Cbe/oLhf7X/TGs4wkb4GWw5dmSAm7sktLVJ0L2o3YFQrcQBB9U
-	82IyfFYfOlQ/FSH3JSkB+6dKSnEA3DjkFOVH4LCt1ftRWLIW+Qy3R6d3+j0uuw==
+	bh=gONFn4DqUOGzqbMYsfvr+tjtfjyT9w5l4C0ZwSHhYQ8=;
+	b=JQ6zz/4wQHYC/p/ivqGT24bOeux7qRegZ+6GjsUDAowmR0P6XQo2qVbypQ44aTjzra+5Op
+	CElMvzBEloeC/838ywmX6dkIuq3MNpyQomS0QMQ+p9auAPjerV4JpI4sfZOFXkCoIkBoJW
+	LsGJU7/JLyxw+nKKVrgx0e8AHI2kNypT6Ph0LKgyzMsfDoczGHIavAuHg14ngtX6PhADqi
+	KXkElBFHCY46MwB0DxbypaM7mSt77NW1pUI+9jYnCkjgiP6pdxzwSMlqiQxS4qPdggkuRT
+	b+38GDlaJ970nQs30jcjNW7r7uhkgORVmPGotuHWeLtGLutXfndovTderROpvw==
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -59,22 +59,22 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Thu, 04 Jun 2026 14:39:09 +0200
-Message-Id: <DJ09S2IMIFW0.3IISVIS7CVIXT@bootlin.com>
-Cc: "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, "Herve Codina"
- <herve.codina@bootlin.com>, <linux-crypto@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 11/29] crypto: talitos - Remove unused priority field in
- struct talitos_alg_template
+Date: Thu, 04 Jun 2026 14:44:38 +0200
+Message-Id: <DJ09W9GOH1UG.24IMEWGQ179KE@bootlin.com>
 From: "Paul Louvel" <paul.louvel@bootlin.com>
 To: "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>, "Paul Louvel"
  <paul.louvel@bootlin.com>, "Herbert Xu" <herbert@gondor.apana.org.au>,
  "David S. Miller" <davem@davemloft.net>
+Cc: "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>, "Herve Codina"
+ <herve.codina@bootlin.com>, <linux-crypto@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 14/29] crypto: talitos/aead - Convert to init/exit
+ type-specific API
 X-Mailer: aerc 0.21.0-0-g5549850facc2
 References: <20260528-7-1-rc1_talitos_cleanup-v1-0-cb1ad6cdea49@bootlin.com>
- <20260528-7-1-rc1_talitos_cleanup-v1-11-cb1ad6cdea49@bootlin.com>
- <a09e9b6e-83ac-47d2-a641-a4c7ce50875c@kernel.org>
-In-Reply-To: <a09e9b6e-83ac-47d2-a641-a4c7ce50875c@kernel.org>
+ <20260528-7-1-rc1_talitos_cleanup-v1-14-cb1ad6cdea49@bootlin.com>
+ <5c25a511-39c7-43aa-a2e2-7690ca4d074a@kernel.org>
+In-Reply-To: <5c25a511-39c7-43aa-a2e2-7690ca4d074a@kernel.org>
 X-Last-TLS-Session-Version: TLSv1.3
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-1.66 / 15.00];
@@ -82,11 +82,11 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
 	MV_CASE(0.50)[];
 	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-24894-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-24895-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -94,10 +94,10 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	DKIM_TRACE(0.00)[bootlin.com:+];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER(0.00)[paul.louvel@bootlin.com,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS(0.00)[m:thomas.petazzoni@bootlin.com,m:herve.codina@bootlin.com,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:chleroy@kernel.org,m:paul.louvel@bootlin.com,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:chleroy@kernel.org,m:paul.louvel@bootlin.com,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:thomas.petazzoni@bootlin.com,m:herve.codina@bootlin.com,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
@@ -109,43 +109,68 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,bootlin.com:dkim,bootlin.com:mid,bootlin.com:email,bootlin.com:from_mime,bootlin.com:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: B9235640073
+X-Rspamd-Queue-Id: 05034640117
 
-On Mon Jun 1, 2026 at 1:54 PM CEST, Christophe Leroy (CS GROUP) wrote:
+On Mon Jun 1, 2026 at 1:59 PM CEST, Christophe Leroy (CS GROUP) wrote:
 >
 >
 > Le 28/05/2026 =C3=A0 11:08, Paul Louvel a =C3=A9crit=C2=A0:
->> After algorithm properties are now set at definition time, the priority
->> field in struct talitos_alg_template is no longer used. Remove it.
+>> Since commit 6eed1e3552fc0 ("crypto: api - Mark cra_init/cra_exit as
+>> deprecated"), both cra_{init,exit} are deprecated.
+>>=20
+>> Restore the type-specific talitos_cra_exit_aead() wrapper and use
+>> aead_alg->exit instead of the generic cra_exit field, matching the
+>> pattern used by init.
 >
-> Should probably be sqashed (with the above explanation) in the previous=
+> When you say "restore", do you mean it was removed at some point in the=
 =20
-> commit.
+> past ?
 
-Ok.
+No. It was probably true at some point of my the series locally (I did a lo=
+t of
+rebase), I forgot to update the commit message of this patch.
 
->
+Thanks for pointing this out.
+
 >>=20
 >> Signed-off-by: Paul Louvel <paul.louvel@bootlin.com>
+>
+> Reviewed-by: Christophe Leroy (CS GROUP) <chleroy@kernel.org>
+>
 >> ---
->>   drivers/crypto/talitos/talitos.h | 1 -
->>   1 file changed, 1 deletion(-)
+>>   drivers/crypto/talitos/talitos-aead.c | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
 >>=20
->> diff --git a/drivers/crypto/talitos/talitos.h b/drivers/crypto/talitos/t=
-alitos.h
->> index 438be8c8f08d..6cf3628c52c2 100644
->> --- a/drivers/crypto/talitos/talitos.h
->> +++ b/drivers/crypto/talitos/talitos.h
->> @@ -203,7 +203,6 @@ struct talitos_ctx {
+>> diff --git a/drivers/crypto/talitos/talitos-aead.c b/drivers/crypto/tali=
+tos/talitos-aead.c
+>> index c09ed08be2ef..38df616c9b22 100644
+>> --- a/drivers/crypto/talitos/talitos-aead.c
+>> +++ b/drivers/crypto/talitos/talitos-aead.c
+>> @@ -400,6 +400,11 @@ static int talitos_cra_init_aead(struct crypto_aead=
+ *tfm)
+>>   	return talitos_init_common(ctx, talitos_alg);
+>>   }
 >>  =20
->>   struct talitos_alg_template {
->>   	u32 type;
->> -	u32 priority;
->>   	union {
->>   		struct skcipher_alg skcipher;
->>   		struct ahash_alg hash;
+>> +static void talitos_cra_exit_aead(struct crypto_aead *tfm)
+>> +{
+>> +	talitos_cra_exit(crypto_aead_tfm(tfm));
+>> +}
+>> +
+>>   static struct talitos_alg_template aead_driver_algs[] =3D {
+>>   	{	.type =3D CRYPTO_ALG_TYPE_AEAD,
+>>   		.alg.aead =3D {
+>> @@ -950,8 +955,8 @@ int talitos_register_aead(struct device *dev)
+>>   		if (has_ftr_sec1(priv))
+>>   			alg->cra_alignmask =3D 3;
+>>  =20
+>> -		alg->cra_exit =3D talitos_cra_exit;
+>>   		aead_alg->init =3D talitos_cra_init_aead;
+>> +		aead_alg->exit =3D talitos_cra_exit_aead;
+>>   		aead_alg->setkey =3D aead_alg->setkey ?: aead_setkey;
+>>   		aead_alg->encrypt =3D aead_encrypt;
+>>   		aead_alg->decrypt =3D aead_decrypt;
 >>=20
 
 
