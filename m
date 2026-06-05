@@ -1,75 +1,65 @@
-Return-Path: <linux-crypto+bounces-24923-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24922-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 0h7lLze3ImpjcgEAu9opvQ
-	(envelope-from <linux-crypto+bounces-24923-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 05 Jun 2026 13:47:03 +0200
+	id JEDTNCy3ImpecgEAu9opvQ
+	(envelope-from <linux-crypto+bounces-24922-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 05 Jun 2026 13:46:52 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2531647D95
-	for <lists+linux-crypto@lfdr.de>; Fri, 05 Jun 2026 13:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 337AE647D8E
+	for <lists+linux-crypto@lfdr.de>; Fri, 05 Jun 2026 13:46:52 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gondor.apana.org.au header.s=h01 header.b=NDP3QGkF;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24923-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24923-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gondor.apana.org.au header.s=h01 header.b=Php4Wwle;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24922-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24922-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=apana.org.au;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C9203301D07D
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Jun 2026 11:41:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 95556300EAA6
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Jun 2026 11:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA2684D90D2;
-	Fri,  5 Jun 2026 11:41:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC5984D90D6;
+	Fri,  5 Jun 2026 11:40:51 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 304904C900C;
-	Fri,  5 Jun 2026 11:41:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10BA83FA5DD
+	for <linux-crypto@vger.kernel.org>; Fri,  5 Jun 2026 11:40:48 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780659669; cv=none; b=uQPpb6jFf9WxlksLJaTqjGtk+6I1IpdWCgi+wbO0X6VJ/b1ectkPyYoVTHfbdiXyfM1s9JxYjj77UmvLA/VOUeRZCtuRzOq6F6lq+OYeLkjA+CcOdPqaICP9XcwK+HSTdH9hCto5gItRl/0p6dnbvj0L4zxepVg0411BfnGGyaU=
+	t=1780659650; cv=none; b=EsNoWB8pLPjzrz0v4BlGk75LDZhxOlKuElzCBsTom5DwUJoSWogEBi0+8Y48UfzkOCDAoUu6dsUa/aAZQMKSsym/+dFuA3YRQzGWcITumSAkw7L0MssuW3x4VxDXb6iuYw+dazugzn7fGUs9BYQxjUMUL9KTBtxYL3Us9y+Qszo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780659669; c=relaxed/simple;
-	bh=ruvxWh86ohm4ms2IgQ1NLDnLGpVHthhXbP7XOqhzRMQ=;
+	s=arc-20240116; t=1780659650; c=relaxed/simple;
+	bh=/IA2GhPGcKyKbWYtU5uj8zWUnYHNqAgFTF/iGelYM0I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tniczYlUrjeOeJNYZVKiQP1YJXte85xjP3WHui/hQyAzzhRvUo78uhYxtpgW5ZOF4it4SMpZ/+7vkrwbZep+0yRaoSCRbwUgu7VCC62nAOC5I3NQxlgWrfLLxy6ht3wo4VlZc16UBZgbO2lLMvKVzkie9CRKXYR0f8fDbUbZxOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=NDP3QGkF; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=bzL1uezOoJG841XpKbDTMPPvP/WJ4tkfbCoRWF7NlbhsV7FTOPvvP4pw87d120Ps3RCMHW8h0AjoMpXqXmQwy6Svmw11ZpmGGJ9jeZaN8lrC4XsbwsPSAdVtfII62BFaRwk/VdpqpxKzxYOZ035XgfRiISKVlU5jezA4f4u55aA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=Php4Wwle; arc=none smtp.client-ip=180.181.231.80
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=lUIlwDRbVjok4ajTygSVNKHvLUaeGdfxBXTjvFFHo5M=; 
-	b=NDP3QGkFA4vtpHDzQ2UJGolDWjWukJR87ouH3CfqwnMcwyX38SSecaG2dCq0ldYwctFl8/2l0yD
-	BG2x9sEVJOHBYuxYIh43lNeDuM2zh5Ln9zSEZPzVLpMGF8JTNBrPxB6RP35dfuYoMvFgebBcAMGLP
-	oK0YAi33OwIugsdraTEJJQeFVTxD9IIvKt93Xv0J7GoJQes6m7nsL5iHQExpHd8qMNUgEp/8SA6mZ
-	dbICrcnwC0mM/w4ZvaHQya+k2L6JtVRifO3eDbuGEGeP+quV6zKLA5Jp9ZYF/iwZp2YN/WJpFMfkT
-	Sw8zpHTKBT6VZNBSUFD9OAX4hteqkyMKM64Q==;
+	from:content-type:reply-to; bh=GcQZma97cMflM4YVEBJxSBXPm+oi2cPkeKTnkVSao7M=; 
+	b=Php4WwleQS6lCJneIOF5VNdWEDlkViSQYBfDJGqMLD3YsuIQTr+VZuul+8LV0ivG7bT8dY3GANZ
+	5bCcCNB9Gi/FIuW++HB1WAiI/CAUgX8ZI5XzApdP1SYmcEPR/jaYOa2V9yzTp+XvU6KM5WeF1QJp/
+	x7w6X6bhP4jmPp8Qk0h+OBTxSvPe9kuCSr/ft8ecyjEdpxl1qRL68UinKjaBg0Yq2uzG6ZT6X8HYY
+	8LQiijtQA7LNjGNU8gbeBWnwFVYCy7kxoeqmqr7f6ePXz1AwUVxqIf0eGGXqLlnUx4hakwLKzelGD
+	PX+dqQhYdpOaMCTbCij+pDxd2O8sJ9Q6hNQw==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1wVSuT-002olj-0h;
-	Fri, 05 Jun 2026 19:40:22 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 05 Jun 2026 19:40:21 +0800
-Date: Fri, 5 Jun 2026 19:40:21 +0800
+	id 1wVSup-002omE-1S;
+	Fri, 05 Jun 2026 19:40:44 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 05 Jun 2026 19:40:43 +0800
+Date: Fri, 5 Jun 2026 19:40:43 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Sam James <sam@gentoo.org>
-Cc: Breno =?iso-8859-1?Q?Leit=E3o?= <leitao@debian.org>,
-	Nayna Jain <nayna@linux.ibm.com>,
-	Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Eric Biggers <ebiggers@google.com>,
-	Eric Biggers <ebiggers@kernel.org>, stable@vger.kernel.org,
-	Calvin Buckley <calvin@cmpct.info>,
-	Brad Spengler <brad.spengler@opensrcsec.com>,
-	linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] crypto: nx: fix nx_crypto_ctx_exit argument
-Message-ID: <aiK1pSrxD7bnQDy2@gondor.apana.org.au>
-References: <b8b1b6fe740187c70349cd04a820d57324e0f70c.1779509289.git.sam@gentoo.org>
- <844faa8a75585e4088c95c052dd0ecd189bc3a64.1779695779.git.sam@gentoo.org>
+To: Ren Wei <n05ec@lzu.edu.cn>
+Cc: linux-crypto@vger.kernel.org, steffen.klassert@secunet.com,
+	davem@davemloft.net, yiyang13@huawei.com, yuantan098@gmail.com,
+	yifanwucs@gmail.com, tomapufckgml@gmail.com, zcliangcn@gmail.com,
+	bird@lzu.edu.cn, ruijieli51@gmail.com
+Subject: Re: [PATCH crypto 1/1] crypto: pcrypt: restore callback for
+ non-parallel fallback
+Message-ID: <aiK1u37QHKxarYmm@gondor.apana.org.au>
+References: <cover.1779697691.git.ruijieli51@gmail.com>
+ <9baedde966f3bcc64b5cde86c2b9c95943572406.1779697691.git.ruijieli51@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -78,7 +68,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <844faa8a75585e4088c95c052dd0ecd189bc3a64.1779695779.git.sam@gentoo.org>
+In-Reply-To: <9baedde966f3bcc64b5cde86c2b9c95943572406.1779697691.git.ruijieli51@gmail.com>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -88,87 +78,61 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-24923-lists,linux-crypto=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,secunet.com,davemloft.net,huawei.com,gmail.com,lzu.edu.cn];
+	TAGGED_FROM(0.00)[bounces-24922-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[debian.org,linux.ibm.com,gmail.com,ellerman.id.au,kernel.org,davemloft.net,google.com,vger.kernel.org,cmpct.info,opensrcsec.com,lists.ozlabs.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FORGED_RECIPIENTS(0.00)[m:sam@gentoo.org,m:leitao@debian.org,m:nayna@linux.ibm.com,m:pfsmorigo@gmail.com,m:maddy@linux.ibm.com,m:mpe@ellerman.id.au,m:npiggin@gmail.com,m:chleroy@kernel.org,m:davem@davemloft.net,m:ardb@kernel.org,m:ebiggers@google.com,m:ebiggers@kernel.org,m:stable@vger.kernel.org,m:calvin@cmpct.info,m:brad.spengler@opensrcsec.com,m:linux-crypto@vger.kernel.org,m:linuxppc-dev@lists.ozlabs.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:n05ec@lzu.edu.cn,m:linux-crypto@vger.kernel.org,m:steffen.klassert@secunet.com,m:davem@davemloft.net,m:yiyang13@huawei.com,m:yuantan098@gmail.com,m:yifanwucs@gmail.com,m:tomapufckgml@gmail.com,m:zcliangcn@gmail.com,m:bird@lzu.edu.cn,m:ruijieli51@gmail.com,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
 	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,gondor.apana.org.au:mid,gondor.apana.org.au:from_mime,gondor.apana.org.au:dkim,cmpct.info:email,opensrcsec.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lzu.edu.cn:email,vger.kernel.org:from_smtp,gondor.apana.org.au:mid,gondor.apana.org.au:from_mime,gondor.apana.org.au:dkim,apana.org.au:url,apana.org.au:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: C2531647D95
+X-Rspamd-Queue-Id: 337AE647D8E
 
-On Mon, May 25, 2026 at 08:56:19AM +0100, Sam James wrote:
-> nx_crypto_ctx_shash_exit calls nx_crypto_ctx_exit with crypto_shash_ctx(...)
-> but crypto_shash_ctx gives a nx_crypto_ctx *, not a crypto_tfm *.
+On Mon, May 25, 2026 at 07:45:21PM +0800, Ren Wei wrote:
+> From: Ruijie Li <ruijieli51@gmail.com>
 > 
-> Fix the type in nx_crypto_ctx_exit and drop the bogus crypto_tfm_ctx
-> call.
+> pcrypt installs pcrypt_aead_done() on the child AEAD request before
+> trying to submit it through padata.  If padata_do_parallel() returns
+> -EBUSY, pcrypt falls back to calling the child AEAD directly.
 > 
-> This fixes the following oops:
+> That fallback must not keep the padata completion callback.  Otherwise
+> an asynchronous completion runs pcrypt_aead_done() even though the
+> request was never enrolled in padata.
 > 
->   BUG: Unable to handle kernel data access at 0xc0403effffffffc8
->   Faulting instruction address: 0xc000000000396cb4
->   Oops: Kernel access of bad area, sig: 11 [#15]
->   Call Trace:
->    nx_crypto_ctx_shash_exit+0x24/0x60
->    crypto_shash_exit_tfm+0x28/0x40
->    crypto_destroy_tfm+0x98/0x140
->    crypto_exit_ahash_using_shash+0x20/0x40
->    crypto_destroy_tfm+0x98/0x140
->    hash_release+0x1c/0x30
->    alg_sock_destruct+0x38/0x60
->    __sk_destruct+0x48/0x2b0
->    af_alg_release+0x58/0xb0
->    __sock_release+0x68/0x150
->    sock_close+0x20/0x40
->    __fput+0x110/0x3a0
->    sys_close+0x48/0xa0
->    system_call_exception+0x140/0x2d0
->    system_call_common+0xf4/0x258
+> Restore the original request callback and callback data before calling
+> the child AEAD directly.  This keeps the fallback path aligned with a
+> direct AEAD request while leaving the parallel path unchanged.
 > 
-> .. which came from hardlink(1) opportunistically using AF_ALG.
-> 
-> The same problem exists with nx_crypto_ctx_skcipher_exit getting a context
-> it wasn't expecting, but apparently nobody hit that for years.
-> 
-> Cc: Eric Biggers <ebiggers@kernel.org>
-> Cc: stable@vger.kernel.org
-> Fixes: bfd9efddf990 ("crypto: nx - convert AES-ECB to skcipher API")
-> Fixes: 9420e628e7d8 ("crypto: nx - Use API partial block handling")
-> Acked-by: Breno Leitao <leitao@debian.org>
-> Reviewed-by: Eric Biggers <ebiggers@kernel.org>
-> Reported-by: Calvin Buckley <calvin@cmpct.info>
-> Tested-by: Calvin Buckley <calvin@cmpct.info>
-> Suggested-by: Brad Spengler <brad.spengler@opensrcsec.com>
-> Signed-off-by: Sam James <sam@gentoo.org>
+> Fixes: 662f2f13e66d ("crypto: pcrypt - Call crypto layer directly when padata_do_parallel() return -EBUSY")
+> Cc: stable@kernel.org
+> Reported-by: Yuan Tan <yuantan098@gmail.com>
+> Reported-by: Yifan Wu <yifanwucs@gmail.com>
+> Reported-by: Juefei Pu <tomapufckgml@gmail.com>
+> Reported-by: Zhengchuan Liang <zcliangcn@gmail.com>
+> Reported-by: Xin Liu <bird@lzu.edu.cn>
+> Assisted-by: Codex:gpt-5.4
+> Signed-off-by: Ruijie Li <ruijieli51@gmail.com>
+> Signed-off-by: Ren Wei <n05ec@lzu.edu.cn>
 > ---
-> v3: Fix doc tag.
-> v2: Add stable cc, fix doc for tfm param.
-> 
-> v1: https://lore.kernel.org/all/a3e89c1e8342ffa415b0d29725a0571a4f355d34.1779472902.git.sam@gentoo.org/
-> v2: https://lore.kernel.org/all/b8b1b6fe740187c70349cd04a820d57324e0f70c.1779509289.git.sam@gentoo.org/
-> 
->  drivers/crypto/nx/nx.c | 6 ++----
->  drivers/crypto/nx/nx.h | 2 +-
->  2 files changed, 3 insertions(+), 5 deletions(-)
+>  crypto/pcrypt.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 
 Patch applied.  Thanks.
 -- 
