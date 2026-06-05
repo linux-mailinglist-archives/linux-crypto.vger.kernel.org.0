@@ -1,66 +1,75 @@
-Return-Path: <linux-crypto+bounces-24921-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24923-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id /XXVDL21Imr7cQEAu9opvQ
-	(envelope-from <linux-crypto+bounces-24921-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 05 Jun 2026 13:40:45 +0200
+	id 0h7lLze3ImpjcgEAu9opvQ
+	(envelope-from <linux-crypto+bounces-24923-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 05 Jun 2026 13:47:03 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91A7E647CC1
-	for <lists+linux-crypto@lfdr.de>; Fri, 05 Jun 2026 13:40:44 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2531647D95
+	for <lists+linux-crypto@lfdr.de>; Fri, 05 Jun 2026 13:47:02 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gondor.apana.org.au header.s=h01 header.b=en0nmYR0;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24921-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24921-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gondor.apana.org.au header.s=h01 header.b=NDP3QGkF;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24923-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24923-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=apana.org.au;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id ED06530166FB
-	for <lists+linux-crypto@lfdr.de>; Fri,  5 Jun 2026 11:39:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C9203301D07D
+	for <lists+linux-crypto@lfdr.de>; Fri,  5 Jun 2026 11:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A04674D2EDA;
-	Fri,  5 Jun 2026 11:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA2684D90D2;
+	Fri,  5 Jun 2026 11:41:09 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DDF54CA26E;
-	Fri,  5 Jun 2026 11:39:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 304904C900C;
+	Fri,  5 Jun 2026 11:41:08 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780659562; cv=none; b=PgknFlzy5oGylFvxUAhVpsuF2XwVr+i5nAEVuzFYp6hMd/XvljSWw9Rzy02fSNb5w0DSgztXHI+XGfWl5CmNRq49MdI8/AFXIqJ0V+8QdNZlPWJw6lirCaVploIsCff+OvLDXmmIoJX+X+FxvI8YAiPIorL1b6giUTtj3JaTA6o=
+	t=1780659669; cv=none; b=uQPpb6jFf9WxlksLJaTqjGtk+6I1IpdWCgi+wbO0X6VJ/b1ectkPyYoVTHfbdiXyfM1s9JxYjj77UmvLA/VOUeRZCtuRzOq6F6lq+OYeLkjA+CcOdPqaICP9XcwK+HSTdH9hCto5gItRl/0p6dnbvj0L4zxepVg0411BfnGGyaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780659562; c=relaxed/simple;
-	bh=zqH0Q9ITwZQODfgiXtS4y+OJk5FtZCErLivlcfamoMc=;
+	s=arc-20240116; t=1780659669; c=relaxed/simple;
+	bh=ruvxWh86ohm4ms2IgQ1NLDnLGpVHthhXbP7XOqhzRMQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X1hllozU1ofdB2JUxhTMW2X9eGBA5yIcfiaBA4xMDwafXQzA7vr8/k5PGvD7tYEdBROC8RIh1NOzG8RWiKqrWLv5uIUXpoOQ0EGB0NlzeaYeLGDHrYFqYmqmj2M65ZDDhsT8lLclxYVsDbZpdNmKN2q/heEtPftZhAuIZdsMVKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=en0nmYR0; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=tniczYlUrjeOeJNYZVKiQP1YJXte85xjP3WHui/hQyAzzhRvUo78uhYxtpgW5ZOF4it4SMpZ/+7vkrwbZep+0yRaoSCRbwUgu7VCC62nAOC5I3NQxlgWrfLLxy6ht3wo4VlZc16UBZgbO2lLMvKVzkie9CRKXYR0f8fDbUbZxOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=NDP3QGkF; arc=none smtp.client-ip=180.181.231.80
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=CHFPaICTJPqItjzPT3W6kuckW8eRD1ugtO9S1RGUb0U=; 
-	b=en0nmYR0NtYoq2N/hRP19z/02wCbOpSkAmac2uob0FcV7wp+skXXBBBFQAA2dhUXsXsmsz+38I+
-	8gCrPRppb7ohdmZ4CjVfanJMPCnhfg1bY3xO1pRGL8zeE1yiSK/oa9xBc+TN+47yn/7u+LBQhpM8f
-	BBCRv0ftK1wIkllkFBlDq2RYvBovm6655DA8yw+VOeVZiplRsfGGX3I1xFOFe9vcdsLi81k3QEmDH
-	17g2Owg4Yit88ZKvmxGLjH8dxMmJx5XwjT66yyfBGzQ40ov4MKXhczYwyY0aCNi3yh2zC2wt/ujT1
-	ND9T95T178jCgz8V8ZPlMnzyGzSQxQE8vx4Q==;
+	from:content-type:reply-to; bh=lUIlwDRbVjok4ajTygSVNKHvLUaeGdfxBXTjvFFHo5M=; 
+	b=NDP3QGkFA4vtpHDzQ2UJGolDWjWukJR87ouH3CfqwnMcwyX38SSecaG2dCq0ldYwctFl8/2l0yD
+	BG2x9sEVJOHBYuxYIh43lNeDuM2zh5Ln9zSEZPzVLpMGF8JTNBrPxB6RP35dfuYoMvFgebBcAMGLP
+	oK0YAi33OwIugsdraTEJJQeFVTxD9IIvKt93Xv0J7GoJQes6m7nsL5iHQExpHd8qMNUgEp/8SA6mZ
+	dbICrcnwC0mM/w4ZvaHQya+k2L6JtVRifO3eDbuGEGeP+quV6zKLA5Jp9ZYF/iwZp2YN/WJpFMfkT
+	Sw8zpHTKBT6VZNBSUFD9OAX4hteqkyMKM64Q==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.96 #2 (Debian))
-	id 1wVStN-002olC-2u;
-	Fri, 05 Jun 2026 19:39:14 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 05 Jun 2026 19:39:13 +0800
-Date: Fri, 5 Jun 2026 19:39:13 +0800
+	id 1wVSuT-002olj-0h;
+	Fri, 05 Jun 2026 19:40:22 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 05 Jun 2026 19:40:21 +0800
+Date: Fri, 5 Jun 2026 19:40:21 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Manivannan Sadhasivam <mani@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Manivannan Sadhasivam <manivannan.sadhasivam@oss.qualcomm.com>
-Subject: Re: [PATCH 0/2] dt-bindings: crypto: Add Qualcomm Hawi crypto support
-Message-ID: <aiK1YfeKShMTApph@gondor.apana.org.au>
-References: <20260521-hawi-crypto-v1-0-9176a3b51bc0@kernel.org>
+To: Sam James <sam@gentoo.org>
+Cc: Breno =?iso-8859-1?Q?Leit=E3o?= <leitao@debian.org>,
+	Nayna Jain <nayna@linux.ibm.com>,
+	Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Eric Biggers <ebiggers@google.com>,
+	Eric Biggers <ebiggers@kernel.org>, stable@vger.kernel.org,
+	Calvin Buckley <calvin@cmpct.info>,
+	Brad Spengler <brad.spengler@opensrcsec.com>,
+	linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] crypto: nx: fix nx_crypto_ctx_exit argument
+Message-ID: <aiK1pSrxD7bnQDy2@gondor.apana.org.au>
+References: <b8b1b6fe740187c70349cd04a820d57324e0f70c.1779509289.git.sam@gentoo.org>
+ <844faa8a75585e4088c95c052dd0ecd189bc3a64.1779695779.git.sam@gentoo.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -69,23 +78,23 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260521-hawi-crypto-v1-0-9176a3b51bc0@kernel.org>
+In-Reply-To: <844faa8a75585e4088c95c052dd0ecd189bc3a64.1779695779.git.sam@gentoo.org>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-24921-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-24923-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[debian.org,linux.ibm.com,gmail.com,ellerman.id.au,kernel.org,davemloft.net,google.com,vger.kernel.org,cmpct.info,opensrcsec.com,lists.ozlabs.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FORGED_RECIPIENTS(0.00)[m:mani@kernel.org,m:davem@davemloft.net,m:robh@kernel.org,m:krzk+dt@kernel.org,m:conor+dt@kernel.org,m:vkoul@kernel.org,m:andersson@kernel.org,m:linux-arm-msm@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:devicetree@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:manivannan.sadhasivam@oss.qualcomm.com,m:krzk@kernel.org,m:conor@kernel.org,s:lists@lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FORGED_RECIPIENTS(0.00)[m:sam@gentoo.org,m:leitao@debian.org,m:nayna@linux.ibm.com,m:pfsmorigo@gmail.com,m:maddy@linux.ibm.com,m:mpe@ellerman.id.au,m:npiggin@gmail.com,m:chleroy@kernel.org,m:davem@davemloft.net,m:ardb@kernel.org,m:ebiggers@google.com,m:ebiggers@kernel.org,m:stable@vger.kernel.org,m:calvin@cmpct.info,m:brad.spengler@opensrcsec.com,m:linux-crypto@vger.kernel.org,m:linuxppc-dev@lists.ozlabs.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
@@ -100,32 +109,68 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,apana.org.au:url,apana.org.au:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,gondor.apana.org.au:mid,gondor.apana.org.au:from_mime,gondor.apana.org.au:dkim]
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,gondor.apana.org.au:mid,gondor.apana.org.au:from_mime,gondor.apana.org.au:dkim,cmpct.info:email,opensrcsec.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 91A7E647CC1
+X-Rspamd-Queue-Id: C2531647D95
 
-On Thu, May 21, 2026 at 12:36:19PM +0000, Manivannan Sadhasivam wrote:
-> Hi,
+On Mon, May 25, 2026 at 08:56:19AM +0100, Sam James wrote:
+> nx_crypto_ctx_shash_exit calls nx_crypto_ctx_exit with crypto_shash_ctx(...)
+> but crypto_shash_ctx gives a nx_crypto_ctx *, not a crypto_tfm *.
 > 
-> This series adds the crypto (ICE, TRNG) dt-binding support for Qualcomm's
-> upcoming Hawi SoC.
+> Fix the type in nx_crypto_ctx_exit and drop the bogus crypto_tfm_ctx
+> call.
 > 
-> Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
+> This fixes the following oops:
+> 
+>   BUG: Unable to handle kernel data access at 0xc0403effffffffc8
+>   Faulting instruction address: 0xc000000000396cb4
+>   Oops: Kernel access of bad area, sig: 11 [#15]
+>   Call Trace:
+>    nx_crypto_ctx_shash_exit+0x24/0x60
+>    crypto_shash_exit_tfm+0x28/0x40
+>    crypto_destroy_tfm+0x98/0x140
+>    crypto_exit_ahash_using_shash+0x20/0x40
+>    crypto_destroy_tfm+0x98/0x140
+>    hash_release+0x1c/0x30
+>    alg_sock_destruct+0x38/0x60
+>    __sk_destruct+0x48/0x2b0
+>    af_alg_release+0x58/0xb0
+>    __sock_release+0x68/0x150
+>    sock_close+0x20/0x40
+>    __fput+0x110/0x3a0
+>    sys_close+0x48/0xa0
+>    system_call_exception+0x140/0x2d0
+>    system_call_common+0xf4/0x258
+> 
+> .. which came from hardlink(1) opportunistically using AF_ALG.
+> 
+> The same problem exists with nx_crypto_ctx_skcipher_exit getting a context
+> it wasn't expecting, but apparently nobody hit that for years.
+> 
+> Cc: Eric Biggers <ebiggers@kernel.org>
+> Cc: stable@vger.kernel.org
+> Fixes: bfd9efddf990 ("crypto: nx - convert AES-ECB to skcipher API")
+> Fixes: 9420e628e7d8 ("crypto: nx - Use API partial block handling")
+> Acked-by: Breno Leitao <leitao@debian.org>
+> Reviewed-by: Eric Biggers <ebiggers@kernel.org>
+> Reported-by: Calvin Buckley <calvin@cmpct.info>
+> Tested-by: Calvin Buckley <calvin@cmpct.info>
+> Suggested-by: Brad Spengler <brad.spengler@opensrcsec.com>
+> Signed-off-by: Sam James <sam@gentoo.org>
 > ---
-> Manivannan Sadhasivam (2):
->       dt-bindings: crypto: qcom,prng: Document Hawi TRNG
->       dt-bindings: crypto: qcom,inline-crypto-engine: Document Hawi ICE
+> v3: Fix doc tag.
+> v2: Add stable cc, fix doc for tfm param.
 > 
->  Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml | 1 +
->  Documentation/devicetree/bindings/crypto/qcom,prng.yaml                 | 1 +
->  2 files changed, 2 insertions(+)
-> ---
-> base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
-> change-id: 20260521-hawi-crypto-138bfd2a6ec5
+> v1: https://lore.kernel.org/all/a3e89c1e8342ffa415b0d29725a0571a4f355d34.1779472902.git.sam@gentoo.org/
+> v2: https://lore.kernel.org/all/b8b1b6fe740187c70349cd04a820d57324e0f70c.1779509289.git.sam@gentoo.org/
+> 
+>  drivers/crypto/nx/nx.c | 6 ++----
+>  drivers/crypto/nx/nx.h | 2 +-
+>  2 files changed, 3 insertions(+), 5 deletions(-)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
