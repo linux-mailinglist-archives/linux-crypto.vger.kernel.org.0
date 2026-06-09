@@ -1,199 +1,196 @@
-Return-Path: <linux-crypto+bounces-24992-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24997-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id vQ1sFHDjJ2px4AIAu9opvQ
-	(envelope-from <linux-crypto+bounces-24992-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 09 Jun 2026 11:57:04 +0200
+	id AxKeEdnrJ2qa5AIAu9opvQ
+	(envelope-from <linux-crypto+bounces-24997-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 09 Jun 2026 12:32:57 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE14765E9E7
-	for <lists+linux-crypto@lfdr.de>; Tue, 09 Jun 2026 11:57:03 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAB6C65EF64
+	for <lists+linux-crypto@lfdr.de>; Tue, 09 Jun 2026 12:32:56 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=FMt+btAI;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24992-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24992-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=none;
+	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=starfivetech.com (policy=quarantine);
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24997-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24997-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	arc=reject ("cv is fail on i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4040B31239CD
-	for <lists+linux-crypto@lfdr.de>; Tue,  9 Jun 2026 09:48:38 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 79A5C30A034F
+	for <lists+linux-crypto@lfdr.de>; Tue,  9 Jun 2026 10:13:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B96083F54D3;
-	Tue,  9 Jun 2026 09:47:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B933F23B9;
+	Tue,  9 Jun 2026 10:13:08 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2097.outbound.protection.partner.outlook.cn [139.219.146.97])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331A83ED109
-	for <linux-crypto@vger.kernel.org>; Tue,  9 Jun 2026 09:47:29 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780998450; cv=none; b=eSH4PcoBbjRHKo2jhB0DtmfJHd1dnHDR1yBNQQkVTM9NsRzCoCTp0Tyz7dvLjrbDaS1ZGe07BUfyhHf/kcU+zG3UlFL9EU0GLQTHp9oWwOvP2eAA5VA5DaEEHxpDkyPknCIoKB0XlWHd+WJZXUX9cFk0RWHfnmH50EeNojG6M8E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780998450; c=relaxed/simple;
-	bh=4nAM0qRZDd0zFd1x8M47OSHlI/XmBd2QndlfY46yPsM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YaDcNLmkZIxvjlxlWkJ7Wv4VKRjc9/LfGhnu2SGR8U5omF0CMQsFSsi0GWAsrYXzh8LsFSLFWURI1AxBkZ7skCxGq3KsWesXZStenMyAOxG+QNXz1b9FmW6/MudiqhP7g8C7zPIaXxzvFcmm86LGZK8d8v/G4c5+MVEmTqznwU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FMt+btAI; arc=none smtp.client-ip=209.85.128.41
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-490c28f84fdso9170345e9.0
-        for <linux-crypto@vger.kernel.org>; Tue, 09 Jun 2026 02:47:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1780998447; x=1781603247; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=N8+mvEz/uros8or36J+62LaI0/57hxHXfoqkEFi7n/E=;
-        b=FMt+btAIdhqbO4ltlmj2GmM+uxYSkBPyzn8bkw+4EbVQP3IBW21QUvxlzWIKbdnuR0
-         WAYbzMUYLlknPNCu2r+CO9zug0riPWcCO+jzVCMg/+Iaz4RPE8+eHxhT0r/6Gk9CS5p5
-         B9uN6fQNtnCj9HdJehlshwAlO8cMy/mBo7nMYTWu83uegp6uW+/trco+w8D/xhpRYloJ
-         q0dX3IaoGF+Tnz2fzT3WM2TpGT8nJnTwD2sn48MLV1foMz6v2FVI1mlFpZ6gdfJF74sL
-         nIpAz4KY+BWMMJCBu8mq5wEEqNWv2rQeMdhf7z+VwfilYGDzW/QBMUZ3CctlzO2hsLg6
-         6wnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780998447; x=1781603247;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N8+mvEz/uros8or36J+62LaI0/57hxHXfoqkEFi7n/E=;
-        b=Kj0cxR7/19iSHtg8J4KYliMuNgFXwpyUcC6r3xTp6PSGTkvhgD7QSckTawJ6OBLvo5
-         c9RT+C3zTk4h6pJN0vEXmjS+pr0LyYMxdNyB7RWC6fr5a4EfMw8jdGELA1+nKuN1FcUG
-         xV3ABIx+0y+2h80iMzdIsVBvKMUs7ZM1w9lk+rhnrKi254Hc7pbX/6Ai1EZOJdcJtyJq
-         FkxVpJaSMlWFwelDqvpJZTYLI5e+jvJnGKDmxb5nisVT9lIuNE6QD7Dzk5FynbIWdXJ4
-         87zxX3a9WbqTUfBRbpCUTqxE5dd+Y+Yai3I1gYngFU+eI0pw+V83l/szmjg6OcFtI3uz
-         26rQ==
-X-Gm-Message-State: AOJu0YzL8AprSJ3ar8YJw7WeUjLT7mU4PHdUkypvgIn7epqWKHplrdLh
-	clbr6aXjdM+pVmLDwSZj8ZyiCO2GrIhzwCpMQBa2EGvuRlPfg1MwM5qu
-X-Gm-Gg: Acq92OHCFz6Rte+caCpPXEQL5W40McLGUsJDs5ipPeaz5punjzkgl5FwwYOIgvW4oE8
-	6YKPerdbtXvuX2S6HvqlqxB/x/vU50fhj7D86c1dwx8xyHNxc1kEcVMq7rQDNnLP3ac5xob9N7p
-	OPuO8c95tqkI/qAIWKUUdhOiQwCVTFSk3CsdpmlrC/R2Ay7/LI39HMKHee20u5s/utycTlOmaNU
-	Hnp8uNReP1+YW4EUjd7gyiuhxVZAYYb32GCiz++7Kz+JBZxekR+u9JUIoa2YZ2nR4LGiuBZAsYa
-	cexq57t6jXTZSczFrJgk8cSlX7jsZcV7Eq8EGGC+FGrw4+an0GMlHZbm/6NNadTqDi+Iv7RsTIx
-	CRYFKJonVLgyq2UwXqjlLsohcFvK1j53heqDEGeqofFYUk9NGhjLDfuM2P8YAM7lKalNupwBsPE
-	bqW3ZjE5mbDY7jck6Mze/RxeuL3reX7uGMfoFXmho52nn1lyxCUnj7N0Qbz4+RRIb4u0pP+bSn/
-	w==
-X-Received: by 2002:a05:600c:8718:b0:490:b2b2:87d2 with SMTP id 5b1f17b1804b1-490d7255c0bmr10214735e9.5.1780998447423;
-        Tue, 09 Jun 2026 02:47:27 -0700 (PDT)
-Received: from menon.v.cablecom.net (84-74-0-139.dclient.hispeed.ch. [84.74.0.139])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-490bc3e59f5sm496152705e9.14.2026.06.09.02.47.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jun 2026 02:47:27 -0700 (PDT)
-From: Lothar Rubusch <l.rubusch@gmail.com>
-To: thorsten.blum@linux.dev,
-	herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	nicolas.ferre@microchip.com,
-	alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev,
-	ardb@kernel.org,
-	krzk+dt@kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2567D3D34B3;
+	Tue,  9 Jun 2026 10:13:06 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780999988; cv=fail; b=n3cjJ15WqggwbjKN979iuNukErK4tofGB8e64rXeIxzWKlphTjHmRpN5yUBvEiGtWiOk8X6vVP3g24KHzmnmzecNGoNbWsVSAYT3t6raJ2S+SNIuScH305UknuRbEi6Fn2a4rBBmRIiQxnqxmNaE/VJ97BTwKlgGfRQ2O6SRXCA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780999988; c=relaxed/simple;
+	bh=xF07jeNebCJEZUy2oGMZ7sYZcMqrHYCG4SgCw1eUxvs=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=mX/oK7jbr95nG9PkOFvT75YxAXdiX+WrF1hl13pJy85Ge05AjMGbJjh1rRQdlv20mhD70OPgRMrcOB6bYRDhmIky7AXemI1SpG+XOoZW+DiVGLg+yIY7tq7ZfDtRnH/NVJRyPCV/eg+pkMuTJkYgbVO1UQXlFGaKplkmKIfOz78=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.97
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HcCSTfCULhcMJzcL89G/PnZpZV8fA4QKKN8U+HNz93fCP3lQl037sFLbuR3Fg49b3wNZNnG0Y6Syl8TbMt1Myk5dtxN93Xl2zoWW8aArh59/q95hf7lC58vZpAlXk4t98Mo5AuaoEXQEmGh3GNFMbIUqXJMtF5yqubiEePIS3Ou49yrbWW/Gx7928hdvC0Ag29ef1lAWktjvnblVPUEPJ/NOvtYnwqCpjzBXOK/lS3Q+eOI+IhWyZSwOjvVIIWKfijb//hPmUz2r+PeHXf0gvu1HU83pRrEvIahrvFkB/IhWGjDQyLDZpyzsUBjz16b/ZrgjYfP0QZAudQl7tV6BKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sSGSMT09PfgtyHv0ddX0RpKxf/S5NNfRRaN0bFMmUlQ=;
+ b=EyZwyff/IQv2fqIxu4OWbqBF+hK9zG9bWHfaOrj4o9Hj8Dzbkk2lb7yHz45nYoqQlEKliZrwqu0xVUp55hSr+A52jmdVJet27a24XEZce1I88CrWNyKnMxq9I98u0WQef+rV9LxEiJtGDnFJdiOPBCeWojSrEsQxdtOSv11nvRUL9cFfKSgvOdA5MtUM6CzhCbZafGA4jDuqzdo97Jlni4/OS4dT71wWnD010Xok6LmIyAfJpBJYgoTcmx/3Xpq7agid6GqGK9FjovpPNFNyt+ZV8P/+rzShVKJ+jwqzHQsFeIFJ5/tQKBVxBqZ/pMfos29fUJlAB1eCoNhA+YQnRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from ZQ0PR01MB1269.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:18::6) by ZQ0PR01MB1094.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:1::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.15; Tue, 9 Jun 2026
+ 09:57:33 +0000
+Received: from ZQ0PR01MB1269.CHNPR01.prod.partner.outlook.cn
+ ([fe80::973:272c:ab11:7570]) by ZQ0PR01MB1269.CHNPR01.prod.partner.outlook.cn
+ ([fe80::973:272c:ab11:7570%6]) with mapi id 15.21.0092.014; Tue, 9 Jun 2026
+ 09:57:33 +0000
+From: "lianfeng.ouyang" <lianfeng.ouyang@starfivetech.com>
+To: Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>
 Cc: linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	l.rubusch@gmail.com
-Subject: [PATCH RESEND v2 1/1] crypto: atmel-sha204a - fix heap info leak on I2C transfer failure
-Date: Tue,  9 Jun 2026 09:47:23 +0000
-Message-Id: <20260609094723.47237-1-l.rubusch@gmail.com>
-X-Mailer: git-send-email 2.39.5
+	Lianfeng Ouyang <lianfeng.ouyang@starfivetech.com>
+Subject: [PATCH v4 0/2] hwrng: starfive: updates for jh7110-trng DT binding and rework clk/reset teardown
+Date: Tue,  9 Jun 2026 17:57:24 +0800
+Message-Id: <20260609095726.160559-1-lianfeng.ouyang@starfivetech.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SH0PR01CA0013.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:5::25) To ZQ0PR01MB1269.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:18::6)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: ZQ0PR01MB1269:EE_|ZQ0PR01MB1094:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7c94b933-f345-439e-87fe-08dec60d86e3
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|366016|376014|52116014|18002099003|56012099006|38350700014;
+X-Microsoft-Antispam-Message-Info:
+	5xvDsKEa5uHgf8dHA61IxIcnIleUXRWe0WWs3vXfIarjHS67ITys33Uw4FFYVCriLM1zPZjA7hJ5Sak8ymDZNkfkRHK3ZmVo6izU+ClrJlZE0uaBIRviARJUIrIT8K75mHz2K8hkrkeLilrofbQh8dAubmSmeUyWtwdBRnIo1begsH6kAB0f22cBhNIxEKoeriV5k6CFNj9PI8pNSwjmRtytVthEtw/kwgy1bf9coMWzjJgSWnrQdEqwXK2AC1SXZRb/cTytf4CsN93KhldpjyJNYVTncepgwLUClIrCSrw9F373qCzXQpZU6Zu7YRueHm/FwpavaVQ05cSmOmMTrYKTKPHYbCRLievIclYa+1waloiqs44sG9phSy7Mb259d1A1ENwfTtxulZpLsJ2f8m5ffDF3J4ZqApT9YNJW36Z8KnZuDjqubATB9rCfcWaAtB1qx2r5fCnbtVAXTimAfcf4qVhDqOq1XA9utUMsV9nKvUd7wVFFc6SFFxqQrWtrWvHqXGuhM+lI6MfAVT3FOQVO3evMAC1Z0aZ8sFY1HxuMQEgimuu6m9G6772ox/a0
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ0PR01MB1269.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(52116014)(18002099003)(56012099006)(38350700014);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?CPJZmElHDgS/ofHsgAU4641z2jaPezwpvE8avDJDlis/uGykTt8nC5OTPLaB?=
+ =?us-ascii?Q?OuTyp1svWcqMzNpVJfEXd6iMBpF7vjlyd0GKjnzJ5SS6f48ppJktodqCEy/Q?=
+ =?us-ascii?Q?iDPq5DV+fA1rRc/Q8Mu5c1JxteoBK1Nu4DJDHG92m8Np7vdJoLOYeB2nwSoK?=
+ =?us-ascii?Q?B5fjekomrepa+m7Ak9VcNbqKzRquNv5oNHUEU0P7Z5A1MvaPCg4HPw/JhmwD?=
+ =?us-ascii?Q?niA6oVscz9jsHcTIq3d/6G3dF91uO7RK4W4++WeiNx2lClpFytIvHo7DURiG?=
+ =?us-ascii?Q?4L2a/q5BPQLZ82z09SYhGbuI8BRvQdSO789uVsVpV64AKPIuwYZLcgGIntjA?=
+ =?us-ascii?Q?MZSrAPt5j1R0txk5sn1h/i00tr7P12gAU5u715AwWVw9sk8jJM02zrEb2Rsf?=
+ =?us-ascii?Q?VdypI418o+n8EbQDpTKB8LIk2szfx4bM9FSa59kUaQQJYaEKUINCl1EeoNLK?=
+ =?us-ascii?Q?QirgcxXom3IpYovC2Cmr515kkU6vFNO5dJR93bI1Rk/Yz9ADDPoVb0QaE17y?=
+ =?us-ascii?Q?C7pyie9/YbJWj9Sj3mtkCq+ovxiKewVXGRN0Ao4GNy4xpR+qr4t1eGh1t8j7?=
+ =?us-ascii?Q?KNkSUVMYEHqIxTrROYw9vXFiolRlH5MK8ZV/CxVacFdk0spwXtTxjm+P32C3?=
+ =?us-ascii?Q?opmhql15/Oa2Q2h4iHahM3rYb5nFwhFQt8rzu5gKHB1li/6RhznJMrB1YyJo?=
+ =?us-ascii?Q?EJKgtEEvcuIv/tLwyiJr2xZied5nCZVXIRkH+T4RPzpqLvKJZm5taNVbwCoL?=
+ =?us-ascii?Q?EprmFFpdDdNmNyyvk4qw8jCXs0UwAXEtQWu8QCPWGMVPIY//az4baLrsmQAR?=
+ =?us-ascii?Q?rlNrlTTGtKgw2ESoNAg8SHQAmFOfomJEU6zfw5i1H7ur7u6fCZl+1iywvvEZ?=
+ =?us-ascii?Q?iFu/Wr+45YiZWKLfMcgjfKzGrlY2GF087BWZnGWySOCwVItN/i6rTXfI+Lom?=
+ =?us-ascii?Q?7gVznFRgHodkRP7mxztAcox3Emhp3yyGKSDiPx+nuMtVG7nuAz0VbcDW5J7q?=
+ =?us-ascii?Q?9lys6nTDVddX4EndfJyCYvwtrficlHHmEPhDoFRFYiXU8u8nKCWEqerKmrJn?=
+ =?us-ascii?Q?yF862gfRJ76GBZDAqrQdxswg79c458qgIPhpILyAIseUOzlmejJHoAta3N4k?=
+ =?us-ascii?Q?2rBmq9sl6eK+YF04y+DuAVu6r+pQdpcTO03BvJPLlmShhTYeByACpJZuYDxs?=
+ =?us-ascii?Q?S+KOg/FYLQtQnZlN8DrMbK1I8SmcrBXx002C0P1pUlb1ksDdxgTz0lS9o1gw?=
+ =?us-ascii?Q?RBL7+NPhJ+ANY0uD8ku606GgQRh0LFssFyrlyNaTHwnq3zEQ+rFFGhCGi1Z8?=
+ =?us-ascii?Q?lYOkDxjEa8xcjNJLZzn6BB6ck7++v0honvOLCRK8LBQrP9SrwNep2lF4Jj4q?=
+ =?us-ascii?Q?aDVsfiCbpHsqeCGJXxB7oKIkW/+Z84s980uphv9SitO3iHLQF3kNwTua7A/F?=
+ =?us-ascii?Q?rW5Qw1czR/wrvTzc0MLpURs7h1JxLLjSBPNsHlzX48QEVHpmMQi7Fyfjw+/i?=
+ =?us-ascii?Q?tWBneCyowCx/V2QMW8inGUv5x/ZYJMwnCTux6BZSXXvCduhQZPCQEJMQk1kD?=
+ =?us-ascii?Q?+WZOPej41fjHymvHQPwpP0ufdH8jAmTE0NagRpuwx2vf532FhhADYGgTNFQm?=
+ =?us-ascii?Q?JYYiGJsrA8LXRn52RYTp6InUGVgY4eXu3am+53aJ0nugBssGq0I54GCTAHq6?=
+ =?us-ascii?Q?Z1BClKLeXqgyu0i3t/o79px6patkulXbQ0KEWrBII2yfl0+NPArfglv2wyAU?=
+ =?us-ascii?Q?FzCUJr5PGhDrlJsU1kABt5et7DIgbYnVpX9XCbUcQXMZV+IWNNaY?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7c94b933-f345-439e-87fe-08dec60d86e3
+X-MS-Exchange-CrossTenant-AuthSource: ZQ0PR01MB1269.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2026 09:57:33.4911
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Rb37TecWsLUqA0wEbKMYoFV8QRuC8ECkYWR9SjgZ21QKefyqNiW0NM55tPwPWODPoUYJy0vUhHPetU9HB5/7uXKSRtQTyHNflMjdq03ZsuD2afVZoHaO6JovIih4h5bF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ0PR01MB1094
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [5.04 / 15.00];
+	DMARC_POLICY_QUARANTINE(1.50)[starfivetech.com : SPF not aligned (relaxed), No valid DKIM,quarantine];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-24992-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:thorsten.blum@linux.dev,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:nicolas.ferre@microchip.com,m:alexandre.belloni@bootlin.com,m:claudiu.beznea@tuxon.dev,m:ardb@kernel.org,m:krzk+dt@kernel.org,m:linux-crypto@vger.kernel.org,m:linux-arm-kernel@lists.infradead.org,m:linux-kernel@vger.kernel.org,m:l.rubusch@gmail.com,m:krzk@kernel.org,m:lrubusch@gmail.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[lrubusch@gmail.com,linux-crypto@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-24997-lists,linux-crypto=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:olivia@selenic.com,m:herbert@gondor.apana.org.au,m:robh@kernel.org,m:krzk+dt@kernel.org,m:conor+dt@kernel.org,m:p.zabel@pengutronix.de,m:linux-crypto@vger.kernel.org,m:devicetree@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:lianfeng.ouyang@starfivetech.com,m:krzk@kernel.org,m:conor@kernel.org,s:lists@lfdr.de];
+	GREYLIST(0.00)[pass,body];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FROM_NEQ_ENVFROM(0.00)[lrubusch@gmail.com,linux-crypto@vger.kernel.org];
+	FORGED_SENDER(0.00)[lianfeng.ouyang@starfivetech.com,linux-crypto@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	DKIM_TRACE(0.00)[gmail.com:+];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lianfeng.ouyang@starfivetech.com,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	R_DKIM_NA(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,linux.dev:email]
+	RCPT_COUNT_SEVEN(0.00)[10];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,starfivetech.com:email,starfivetech.com:mid,starfivetech.com:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: AE14765E9E7
+X-Rspamd-Queue-Id: EAB6C65EF64
 
-The nonblocking RNG path allocates a work_data structure to track the
-state of an in-flight asynchronous I2C request. This pointer is stored
-in rng->priv and later consumed by the read path once the transaction
-completes.
+From: Lianfeng Ouyang <lianfeng.ouyang@starfivetech.com>
 
-If the underlying I2C transfer fails, the completion callback is invoked
-with a non-zero status. In this case, the allocated work_data is not
-usable for producing RNG output and must not remain associated with the
-hwrng state.
+This patch series adds support for the JHB100 SoC TRNG and fixes
+  clock/reset teardown ordering issues.
 
-Previously, the failure path only logged a warning but left the pointer
-state uncleared, which can result in subsequent read attempts observing
-stale state and interpreting it as valid completion data.
+The first patch updates the device tree bindings by removing the
+  obsolete JH8100 compatible string and adding JHB100 support
+  while updating the maintainer.
 
-Fix this by freeing the pending work_data and clearing rng->priv when
-the I2C transaction reports an error. This ensures that failed requests
-do not leave residual state behind that could be interpreted as valid
-RNG data on later reads.
+The second patch reworks the driver to ensure proper clock gating
+  before reset assertion for JHB100 to avoid reset-domain crossing
+  glitches, fixes RPM usage count handling, and improves error
+  path cleanup through devm actions.
 
-The explicit clearing of rng->priv in the error path is retained as a
-defensive measure. While it may overlap with existing state handling in the
-read path, the ownership and lifecycle across asynchronous completion,
-read, and teardown paths is not fully localised. Clearing the pointer
-ensures no stale state remains after a failed transaction.
+Lianfeng Ouyang (2):
+  dt-bindings: rng: starfive,jh7110-trng: add jhb100, drop jh8100
+  hwrng: starfive: rework clk/reset teardown order for JHB100
 
-Fixes: da001fb651b0 ("crypto: atmel-i2c - add support for SHA204A random number generator")
-Signed-off-by: Lothar Rubusch <l.rubusch@gmail.com>
-Assisted-by: Gemini:1.5 Pro [google]
-Reviewed-by: Thorsten Blum <thorsten.blum@linux.dev>
----
- drivers/crypto/atmel-sha204a.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ .../bindings/rng/starfive,jh7110-trng.yaml    |  10 +-
+ MAINTAINERS                                   |   2 +-
+ drivers/char/hw_random/jh7110-trng.c          | 223 ++++++++++++++----
+ 3 files changed, 180 insertions(+), 55 deletions(-)
 
-diff --git a/drivers/crypto/atmel-sha204a.c b/drivers/crypto/atmel-sha204a.c
-index 4c9af737b33a..20cd915ea8a3 100644
---- a/drivers/crypto/atmel-sha204a.c
-+++ b/drivers/crypto/atmel-sha204a.c
-@@ -31,10 +31,15 @@ static void atmel_sha204a_rng_done(struct atmel_i2c_work_data *work_data,
- 	struct atmel_i2c_client_priv *i2c_priv = work_data->ctx;
- 	struct hwrng *rng = areq;
- 
--	if (status)
-+	if (status) {
- 		dev_warn_ratelimited(&i2c_priv->client->dev,
- 				     "i2c transaction failed (%d)\n",
- 				     status);
-+		kfree(work_data);
-+		rng->priv = 0;
-+		atomic_dec(&i2c_priv->tfm_count);
-+		return;
-+	}
- 
- 	rng->priv = (unsigned long)work_data;
- 	atomic_dec(&i2c_priv->tfm_count);
-
-base-commit: 79bbe453e5bfa6e1c6aa2e8329bfc8f152b81c9b
--- 
-2.53.0
+--
+2.43.0
 
 
