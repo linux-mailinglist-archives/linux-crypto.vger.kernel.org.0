@@ -1,591 +1,132 @@
-Return-Path: <linux-crypto+bounces-24995-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-24993-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id bClZA0XqJ2pE4wIAu9opvQ
-	(envelope-from <linux-crypto+bounces-24995-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 09 Jun 2026 12:26:13 +0200
+	id rQj8NuLmJ2qf4QIAu9opvQ
+	(envelope-from <linux-crypto+bounces-24993-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 09 Jun 2026 12:11:46 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5F1165EDC2
-	for <lists+linux-crypto@lfdr.de>; Tue, 09 Jun 2026 12:26:11 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F0F965EC3C
+	for <lists+linux-crypto@lfdr.de>; Tue, 09 Jun 2026 12:11:46 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=starfivetech.com (policy=quarantine);
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24995-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24995-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	arc=reject ("cv is fail on i=2")
+	dkim=pass header.d=linux.dev header.s=key1 header.b=NPKxOvya;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-24993-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-24993-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 150553076EBA
-	for <lists+linux-crypto@lfdr.de>; Tue,  9 Jun 2026 10:12:39 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2B3AB3010EDC
+	for <lists+linux-crypto@lfdr.de>; Tue,  9 Jun 2026 10:06:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02DFB3F1ACC;
-	Tue,  9 Jun 2026 10:12:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09695368287;
+	Tue,  9 Jun 2026 10:06:21 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2102.outbound.protection.partner.outlook.cn [139.219.146.102])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DCE3F39E9;
-	Tue,  9 Jun 2026 10:12:03 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780999928; cv=fail; b=sW0otfp5qL6FHy6QsTQaBE8j4ogwIF3CHrk2iEl8VnJEzesqn/zexuxb2dM48njwbmaVyjTfrKhEGkjbKpIxtFFilZIoF4E3mQbpacePh1nG5N2VmawVq5WsaI4iviw6OL63sdty+ACDuE/MV/Wr5eahuYJDBEC1iI2T+QMr810=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780999928; c=relaxed/simple;
-	bh=cXbfIzta4lp8w6EsbD8bPxA81wAZldhOnbfd9SQhigA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XDb1qHBWmLBPHhfN/4qKobZyCmNwA8bTbdGtVka4mw4hgVIbFRQMEac0jtTojgj5BLmvy1xDWkNFDyVpBYqWgXeRwvOKl4toV5mNG5WzRQU9mKNqzPnO9CrENiHZtFoaBvFVhYu8UZmxWNQM6jBPPeEwNsuGQIKRwEAZ3YATuio=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.102
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l7X1cTXGjWtTPmyIB6FrZcevp6G2+m+jUDzSMaVxDE2e/QPtIl0NlRXqjHZg7h4fsjRZCr1pSrQfinivdn4JEiyY3114N2QQ4OXdWFbGMv2XHFkMtkcRDrPlr7t3/OXYdbtGHT/eNHOQG5uKv4sP8fTvRgRlsFMFAuWo8oADcywzoQcnzu3UxF0ycR3JRHJdYP7Bm9/Dk0aM2AxcucvgIBEfyGv7hd7dJhmb1EdVw2N+VkQ1qG0yqWxY999Ff5StBJ+DdsGQkftxP13r4owujcJKRE3P16PAN03Xl8rCEJzMY8kymmyUaFAj6euwm3GTEHG8igjOYfAO8RE+Q4VLbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8VD1PBgL3wqcPGBd1YukmA0lKuru5hzdZfqBxc9JIWk=;
- b=ChSjxl2nTcKCU/MWJypTt+MyOKTrobGnKyRuesm1L4jZhZNqk/a5H3Bg+zpmzUZoJIwVuCUsmXb1I1Hn4PFm4EDo6350ZtEBHV9+GpHva+cNMDcEiM8N0c4ThDPbpxFqWgMvbF+hgxxG0K3+qek9tviV+FIzgbaOR46SgkWB/0R+dHyRV38LKOlHJ2WECcUN+yphPc2gx3/3DD0jsHeQUP/41c1CUCqs67NA+d/Hkhrhi/SIYwIZLF1hTt+tnGQHitYi9/nHV2K8MdV6LzUCQHmgAHUMUK7tylfbQQInxm9mQuxwDIs60lS1EVd1V7SJfPNnlKB2WhAQ4RXvhVW58g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Received: from ZQ0PR01MB1269.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:18::6) by ZQ0PR01MB1094.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:1::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.15; Tue, 9 Jun 2026
- 09:57:35 +0000
-Received: from ZQ0PR01MB1269.CHNPR01.prod.partner.outlook.cn
- ([fe80::973:272c:ab11:7570]) by ZQ0PR01MB1269.CHNPR01.prod.partner.outlook.cn
- ([fe80::973:272c:ab11:7570%6]) with mapi id 15.21.0092.014; Tue, 9 Jun 2026
- 09:57:35 +0000
-From: "lianfeng.ouyang" <lianfeng.ouyang@starfivetech.com>
-To: Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>
-Cc: linux-crypto@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lianfeng Ouyang <lianfeng.ouyang@starfivetech.com>
-Subject: [PATCH v4 2/2] hwrng: starfive: rework clk/reset teardown order for JHB100
-Date: Tue,  9 Jun 2026 17:57:26 +0800
-Message-Id: <20260609095726.160559-3-lianfeng.ouyang@starfivetech.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260609095726.160559-1-lianfeng.ouyang@starfivetech.com>
-References: <20260609095726.160559-1-lianfeng.ouyang@starfivetech.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SH0PR01CA0013.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c311:5::25) To ZQ0PR01MB1269.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:18::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 948AE3EBF35
+	for <linux-crypto@vger.kernel.org>; Tue,  9 Jun 2026 10:06:18 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780999580; cv=none; b=OS/j1VLDfVHzpg4BzJ0GLldn01zaFZzIJsWaEfclX+LfOkt1ZdSUhqLa9Z5OVxgtk9tgAe/ka8vVk1HGCb2/6aAvDUVtackZ0era/AItq0q4LKwg/2/L9VoWcdj3q2nkPIUnEGYfW1Gt61RnrK4iwBu7dkswAHVixzo9BfYsfpI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780999580; c=relaxed/simple;
+	bh=BzG3EeqRxWR8HYlURE2Sltt0JWppddYvlfDOjL8KzVw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q/B8tB0qMD9flZQXUptOgQhHC4JrRjWgeMYN1VcFTv2MqNVroacK3AEfUHJcJTv6g3G3jeEFVyTwd00vrLszOGlspHJSkxWPkfXo9wZlql3Mf+0CaEwHEtJKwDSNcTGLU2Z+aEEua5mFyZRRvmkhe0ozEL6Ls8Rkl+Y6QbCga6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NPKxOvya; arc=none smtp.client-ip=95.215.58.174
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1780999576;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=rytQfetHT/8eDI/+MtviowuR9AbKpI1Re4AXCiErncE=;
+	b=NPKxOvya8+KOlxS8s4znKr5+1DVYBKAllGoT9fpazBDaqUxYPfV3NSVPUkffyukCkkXGDq
+	cVj7yGPD3NsWX1tNr32zWcRIffw/PXnOykLsnWuCP2rXUyqu1FMiu8FVgfUT1xIs3cFrJ2
+	7OHfoI8tZT2xdfjwDQy6uFI467LiME0=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	linux-crypto@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] crypto: atmel-i2c - improve comment in atmel_i2c_init_ecdh_cmd
+Date: Tue,  9 Jun 2026 12:05:53 +0200
+Message-ID: <20260609100552.233494-3-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: ZQ0PR01MB1269:EE_|ZQ0PR01MB1094:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7f96bcce-744a-4eb5-a215-08dec60d8827
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|366016|376014|52116014|18002099003|22082099003|6133799003|56012099006|38350700014;
-X-Microsoft-Antispam-Message-Info:
-	gus17kgDc42xhYVkpIe6fsaOzzXGoUODffEnFG1nb5LodHpctb/o/LvamBFXT11rDnljIyFC7TQ++D8bdawRorizfaMLSKXPd4XhMfwkd18zUrjeAszOz3OnIoBCV3YrPTSxZaQh0RUKUCo9yDRIYlGwkBiuWJ6pYQYhO+eB7CP+UfTv7tr4hF44TeKb8wEY/pXiexCvsFGOH5f6tLJbeYRWsETUcrulDI/hmK2A9fvjPyzAoMV47/RkM1MuqCeadca33ynqb0VPVtALQaab7sc4yOlrhzi1kxWl0gidMKQoiCooJVZI8Kz56bBdcHdt4lWrjUiv3EQfQ8hhULJHqL7nKeXuJHgsKYLJzmouHFf03U+sBdKYY8epxxREMlxr9vMMSt6SNILkqjbdROVikezd0M3z2mQATid2IYKsVzX72V+hLHlEVT1u1KMcwYkHzJYJ9Dxs62GL4xGfX9jenUOyNCgHRv6uIl2iVuWRf+WLLdXUhcLOt2dRlEN0yC7OgEBc0zt4VmreHukHDoCv1nyZMZ1o5WjAxC5bbYGngFj6F1MbFmcm5EiFoKyHoBIj
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ0PR01MB1269.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(52116014)(18002099003)(22082099003)(6133799003)(56012099006)(38350700014);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?HZbiEPBe+VVe/TPsgOLrig7DZ4J6JoWCBbVp4iEqsQw7LxHCBwyUqjFPmN06?=
- =?us-ascii?Q?yTUZTEvt/uVkecXNCYt8rox5seXCMGKaBWwiiu6NiuXjIiqFMm3p/Vv9DKnf?=
- =?us-ascii?Q?IZfkEbnFsxLT2VnJbVxSTLXoN+J23wLB9BTPgLvRCZXlygAVE2Ee9L81+tCy?=
- =?us-ascii?Q?pfrDuEgNREGFXNlkJUIgCNN6ZjmeetdJ75lEqD9mWrLVS8A/Euf9TZMPh2Qp?=
- =?us-ascii?Q?zUQlm1FlsM3z8x6RpY99GywSj4z05T9dP69cQm/WqIGv+ZMQEod99eXvGGbI?=
- =?us-ascii?Q?LcqGJ2phQ1zVN+euQo5sHgQggqFzXkh7q07cSbKYG2NpFngpetTU6VxnjoqL?=
- =?us-ascii?Q?LU0BA5x8dhNqJqfg1RTJPhC/mmW5AEyeFpk/o34IdLC8ca1v8lS+YBmwiyOy?=
- =?us-ascii?Q?qH0ttd9RRMAt4vI0gu+f0j7/MImbvNWB6YlsvH0PVuQKTLp33h3pF9sI6xj3?=
- =?us-ascii?Q?DozOhU02J+IjpqP9h3KB74NlcbvTH4aIMqxVGmztT3yUiB3yPstXq4BIjSw3?=
- =?us-ascii?Q?MlpZcfZY7LBictHc8ucErQmMYVcG9XqJZTu2ruDSrVvNXuyxrX4HtDYhg1+3?=
- =?us-ascii?Q?CG+WboCgS8sKQQmjUB+a3x67oud4NXFa/gXGi9a9ED1wQc7OGN4scuqgLYxu?=
- =?us-ascii?Q?AHF9dJbEOxcv/WxOjJyU3qm/TqAGfOll2t+QlAzKXxhy/l2XnAUK/Qc+dKuh?=
- =?us-ascii?Q?VwaDRsIJQmtdnEoFw+esyLc7wYYNjkqM6fi9NspCQC1EBxmKZlri/MnCBdRw?=
- =?us-ascii?Q?/b1FlEcE9kCXb5YgNtMtN1LtG4wAgTT9csMfOsxLMksQPKSXUA8mffX4bHbY?=
- =?us-ascii?Q?NTMZY1vHs6TLZAlFs8qAwfD4AIVohKGMwdWC9sNn+9K1qc1aVB6BcBMSJTZ1?=
- =?us-ascii?Q?JbgBnFss4GkcdCmBdqdFD+PZgOtQFaaHTqC0XqL1CkqM4kfYMYCpOeBxqaov?=
- =?us-ascii?Q?ZfG4/wRexE+9DdRuQJDy7TUrjBafHchzqwN5Ysc8ooVdh5ccheI009tfUU/q?=
- =?us-ascii?Q?ZcWJZ8+/VJQk/ku532b1z5oM92gx+9bxRY5X8Um+v3F9I4JCah2vbYqJKVo+?=
- =?us-ascii?Q?wSzZpTonXJmJamZPOWqDKvEPMk+GnMvzmXoNwqwq3NHUmTo66Dbfk2/tS3QZ?=
- =?us-ascii?Q?cdAlpWaL11dAJwqRIDhaYhtZ6+EsAS6/zl/BitZ3kg/iXqi/lmsI9vpdELes?=
- =?us-ascii?Q?3arGzIKBFVzQoDx12FP49v81zE7ObHrDSPmES0LkAVUiWTvnQETUgZ+SuYa+?=
- =?us-ascii?Q?c9+KnJQE0+pZF2tXZV/PxzywEAsEqquYnRWifgOCA97BzXQ528NksPFrCSR4?=
- =?us-ascii?Q?WNfwFiEdEyB5deGcXmM9NS+xgu7gZaWosWWFDbKy1YN+IWDc7IJVZnVlYpPD?=
- =?us-ascii?Q?Sl7dDtCwJIqJ/mCHuDdsFajZEtkIEFtCernX9Jvob6Mu5W+JMK+6OB3MXdVI?=
- =?us-ascii?Q?m95Ngf6qEV9R5ZbP19HwgZCFR1eCprdnQDeE5ISl2Nrgl5Lhu2KFvXYj5Lz7?=
- =?us-ascii?Q?om0PZeyb1hlUqGYA4bPUhnQlklBG2wkwxM/2Swwi1vAC81/mW44ZkkxiIuzW?=
- =?us-ascii?Q?+kfM9uExfz67RLF+5qtSUdHc4mwwxsLHbHyLDWOkh5XADa35tZowio7qed7B?=
- =?us-ascii?Q?XpTEUSWneWAumBduOf80srWp9eMz/XEl0ZvApBq3rlLtgMJHg1LqB8/Wjwhn?=
- =?us-ascii?Q?8lmjdugDoch0Hom/RKmJ9BT8R0k5IsS0H3nUfMI0Th+LdDLKOJFNkyToAvjC?=
- =?us-ascii?Q?7qHzhaupORYaZoqGxW8u4yTmpupCBZbr6oXRfeNeqyHmWyPTFdDQ?=
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f96bcce-744a-4eb5-a215-08dec60d8827
-X-MS-Exchange-CrossTenant-AuthSource: ZQ0PR01MB1269.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jun 2026 09:57:35.6049
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 31dqYecDVOeFOGKtOl5T94bpvprLyHGgvTENrGS8X4Rimmio3+t5paoGDURK0m2MZEzmFPfJ9yiMBKw7n47/JwszMfk3Ixe08KtXHoRevCkIbFsYB7S0hG22IK6gHlLV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ0PR01MB1094
+X-Developer-Signature: v=1; a=openpgp-sha256; l=970; i=thorsten.blum@linux.dev; h=from:subject; bh=BzG3EeqRxWR8HYlURE2Sltt0JWppddYvlfDOjL8KzVw=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDFnqTxusha/PDl/mfTViatjBGftSVUr3Cl14Xqkf8XR57 uqEO+W7OkpZGMS4GGTFFFkezPoxw7e0pnKTScROmDmsTCBDGLg4BWAiNuyMDHt7U8R1LD+WS69P /3aM5ZTdjVLjqrQ9VwLZXH4/OPn0RwojQ9cbnQ2nElc6HGjtPmMn6vC166f2AbPnfonyCgkLNQr 4eAE=
+X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [5.04 / 15.00];
-	DMARC_POLICY_QUARANTINE(1.50)[starfivetech.com : SPF not aligned (relaxed), No valid DKIM,quarantine];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-24995-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:olivia@selenic.com,m:herbert@gondor.apana.org.au,m:robh@kernel.org,m:krzk+dt@kernel.org,m:conor+dt@kernel.org,m:p.zabel@pengutronix.de,m:linux-crypto@vger.kernel.org,m:devicetree@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:lianfeng.ouyang@starfivetech.com,m:krzk@kernel.org,m:conor@kernel.org,s:lists@lfdr.de];
-	GREYLIST(0.00)[pass,body];
+	TAGGED_FROM(0.00)[bounces-24993-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[lianfeng.ouyang@starfivetech.com,linux-crypto@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	FORGED_SENDER(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:nicolas.ferre@microchip.com,m:alexandre.belloni@bootlin.com,m:claudiu.beznea@tuxon.dev,m:thorsten.blum@linux.dev,m:linux-crypto@vger.kernel.org,m:linux-arm-kernel@lists.infradead.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lianfeng.ouyang@starfivetech.com,linux-crypto@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	R_DKIM_NA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,starfivetech.com:email,starfivetech.com:mid,starfivetech.com:from_mime,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.dev:dkim,linux.dev:email,linux.dev:mid,linux.dev:from_mime,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: C5F1165EDC2
+X-Rspamd-Queue-Id: 2F0F965EC3C
 
-From: Lianfeng Ouyang <lianfeng.ouyang@starfivetech.com>
+Clarify that a P-256 public key is encoded as two 32-byte coordinates.
 
-Rework the StarFive TRNG driver to address hardware-specific requirements
-  for JHB100 SoC. To avoid reset-domain crossing glitches, the driver now
-  ensures clocks are gated before asserting reset during teardown for
-  JHB100, while JH7110 retains the original reset-first sequence.
-
-Fixes RPM handling by marking the device as RPM_ACTIVE after clocks and
-  reset are deasserted but before pm_runtime_enable(), allowing the usage
-  count to drop to zero and enabling autosuspend.
-
-Balances pm_runtime_get/put calls in init, read, and cleanup paths,
-  and moves low-level disable/reset operations into a devm
-  action (starfive_trng_release()) for correct error-path unwind
-  ordering.
-
-Improvements include proper mutex protection for TRNG command sequences,
-  enhanced clock enable error handling.
-
-Signed-off-by: Lianfeng Ouyang <lianfeng.ouyang@starfivetech.com>
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 ---
- MAINTAINERS                          |   2 +-
- drivers/char/hw_random/jh7110-trng.c | 223 +++++++++++++++++++++------
- 2 files changed, 176 insertions(+), 49 deletions(-)
+No changes in patch 1/2.
+---
+ drivers/crypto/atmel-i2c.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d3a6b3f6b6a0..729b20ecc697 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -25280,7 +25280,7 @@ F:	Documentation/devicetree/bindings/perf/starfive,jh8100-starlink-pmu.yaml
- F:	drivers/perf/starfive_starlink_pmu.c
+diff --git a/drivers/crypto/atmel-i2c.c b/drivers/crypto/atmel-i2c.c
+index ff19857894d0..24bded47a32b 100644
+--- a/drivers/crypto/atmel-i2c.c
++++ b/drivers/crypto/atmel-i2c.c
+@@ -138,9 +138,8 @@ int atmel_i2c_init_ecdh_cmd(struct atmel_i2c_cmd *cmd,
+ 	cmd->param2 = cpu_to_le16(DATA_SLOT_2);
  
- STARFIVE TRNG DRIVER
--M:	Jia Jie Ho <jiajie.ho@starfivetech.com>
-+M:	Lianfeng Ouyang <lianfeng.ouyang@starfivetech.com>
- S:	Supported
- F:	Documentation/devicetree/bindings/rng/starfive*
- F:	drivers/char/hw_random/jh7110-trng.c
-diff --git a/drivers/char/hw_random/jh7110-trng.c b/drivers/char/hw_random/jh7110-trng.c
-index 9776f4daa044..cafc873b9ebf 100644
---- a/drivers/char/hw_random/jh7110-trng.c
-+++ b/drivers/char/hw_random/jh7110-trng.c
-@@ -92,20 +92,36 @@ enum mode {
- 	PRNG_256BIT,
- };
- 
-+/*
-+ * For JHB100, assert reset after disabling clocks to avoid
-+ * reset-domain crossing (RDC) induced glitches that can affect
-+ * downstream IPs.
-+ */
-+enum seq_rst_clk {
-+	SEQ_RST_FIRST,
-+	SEQ_CLK_FIRST,
-+};
-+
-+struct starfive_trng_data {
-+	enum seq_rst_clk	seq_rst_clk;
-+};
-+
- struct starfive_trng {
--	struct device		*dev;
--	void __iomem		*base;
--	struct clk		*hclk;
--	struct clk		*ahb;
--	struct reset_control	*rst;
--	struct hwrng		rng;
--	struct completion	random_done;
--	struct completion	reseed_done;
--	u32			mode;
--	u32			mission;
--	u32			reseed;
--	/* protects against concurrent write to ctrl register */
--	spinlock_t		write_lock;
-+	struct device			*dev;
-+	void __iomem			*base;
-+	int				irq;
-+	struct clk			*hclk;
-+	struct clk			*ahb;
-+	struct reset_control		*rst;
-+	struct hwrng			rng;
-+	struct completion		random_done;
-+	struct completion		reseed_done;
-+	const struct starfive_trng_data *data;
-+	u32				mode;
-+	u32				mission;
-+	u32				reseed;
-+	struct mutex			lock; /* protect trng cmd seq */
-+	spinlock_t			write_lock; /* protects register access seq */
- };
- 
- static u16 autoreq;
-@@ -130,7 +146,7 @@ static inline int starfive_trng_wait_idle(struct starfive_trng *trng)
- 					  10, 100000);
- }
- 
--static inline void starfive_trng_irq_mask_clear(struct starfive_trng *trng)
-+static inline void starfive_trng_irq_clear(struct starfive_trng *trng)
- {
- 	/* clear register: ISTAT */
- 	u32 data = readl(trng->base + STARFIVE_ISTAT);
-@@ -138,6 +154,31 @@ static inline void starfive_trng_irq_mask_clear(struct starfive_trng *trng)
- 	writel(data, trng->base + STARFIVE_ISTAT);
- }
- 
-+static void starfive_trng_release(void *data)
-+{
-+	struct starfive_trng *trng = data;
-+
-+	if (!pm_runtime_status_suspended(trng->dev)) {
-+		writel(0, trng->base + STARFIVE_IE);
-+		starfive_trng_irq_clear(trng);
-+
-+		if (trng->irq >= 0)
-+			synchronize_irq(trng->irq);
-+
-+		if (trng->data->seq_rst_clk == SEQ_RST_FIRST)
-+			reset_control_assert(trng->rst);
-+
-+		clk_disable_unprepare(trng->ahb);
-+		clk_disable_unprepare(trng->hclk);
-+
-+		if (trng->data->seq_rst_clk == SEQ_CLK_FIRST)
-+			reset_control_assert(trng->rst);
-+	}
-+
-+	pm_runtime_dont_use_autosuspend(trng->dev);
-+	pm_runtime_disable(trng->dev);
-+}
-+
- static int starfive_trng_cmd(struct starfive_trng *trng, u32 cmd, bool wait)
- {
- 	int wait_time = 1000;
-@@ -174,13 +215,22 @@ static int starfive_trng_init(struct hwrng *rng)
- {
- 	struct starfive_trng *trng = to_trng(rng);
- 	u32 mode, intr = 0;
-+	int ret;
-+
-+	ret = pm_runtime_resume_and_get(trng->dev);
-+	if (ret < 0) {
-+		dev_warn(trng->dev, "Failed to wake device for init: %d\n", ret);
-+		return ret;
-+	}
-+
-+	mutex_lock(&trng->lock);
- 
- 	/* setup Auto Request/Age register */
- 	writel(autoage, trng->base + STARFIVE_AUTO_AGE);
- 	writel(autoreq, trng->base + STARFIVE_AUTO_RQSTS);
- 
- 	/* clear register: ISTAT */
--	starfive_trng_irq_mask_clear(trng);
-+	starfive_trng_irq_clear(trng);
- 
- 	intr |= STARFIVE_IE_ALL;
- 	writel(intr, trng->base + STARFIVE_IE);
-@@ -201,24 +251,33 @@ static int starfive_trng_init(struct hwrng *rng)
- 
- 	writel(mode, trng->base + STARFIVE_MODE);
- 
--	return starfive_trng_cmd(trng, STARFIVE_CTRL_EXEC_RANDRESEED, 1);
-+	ret = starfive_trng_cmd(trng, STARFIVE_CTRL_EXEC_RANDRESEED, 1);
-+
-+	mutex_unlock(&trng->lock);
-+
-+	pm_runtime_put_autosuspend(trng->dev);
-+
-+	return ret;
- }
- 
- static irqreturn_t starfive_trng_irq(int irq, void *priv)
- {
-+	int ret;
- 	u32 status;
- 	struct starfive_trng *trng = (struct starfive_trng *)priv;
- 
-+	ret = pm_runtime_get_if_active(trng->dev);
-+	if (ret <= 0) {
-+		dev_err_ratelimited(trng->dev, "pm is inactive in irq\n");
-+		return IRQ_NONE;
-+	}
-+
- 	status = readl(trng->base + STARFIVE_ISTAT);
--	if (status & STARFIVE_ISTAT_RAND_RDY) {
-+	if (status & STARFIVE_ISTAT_RAND_RDY)
- 		writel(STARFIVE_ISTAT_RAND_RDY, trng->base + STARFIVE_ISTAT);
--		complete(&trng->random_done);
--	}
- 
--	if (status & STARFIVE_ISTAT_SEED_DONE) {
-+	if (status & STARFIVE_ISTAT_SEED_DONE)
- 		writel(STARFIVE_ISTAT_SEED_DONE, trng->base + STARFIVE_ISTAT);
--		complete(&trng->reseed_done);
--	}
- 
- 	if (status & STARFIVE_ISTAT_LFSR_LOCKUP) {
- 		writel(STARFIVE_ISTAT_LFSR_LOCKUP, trng->base + STARFIVE_ISTAT);
-@@ -228,18 +287,37 @@ static irqreturn_t starfive_trng_irq(int irq, void *priv)
- 		spin_unlock(&trng->write_lock);
- 	}
- 
-+	if (status & STARFIVE_ISTAT_RAND_RDY)
-+		complete(&trng->random_done);
-+
-+	if (status & STARFIVE_ISTAT_SEED_DONE)
-+		complete(&trng->reseed_done);
-+
-+	pm_runtime_put_noidle(trng->dev);
-+
- 	return IRQ_HANDLED;
- }
- 
- static void starfive_trng_cleanup(struct hwrng *rng)
- {
- 	struct starfive_trng *trng = to_trng(rng);
-+	int ret;
-+
-+	ret = pm_runtime_resume_and_get(trng->dev);
-+	if (ret < 0) {
-+		dev_warn(trng->dev, "Failed to wake device for cleanup: %d\n", ret);
-+		return;
-+	}
-+
-+	writel(0, trng->base + STARFIVE_IE);
-+	starfive_trng_irq_clear(trng);
-+
-+	if (trng->irq >= 0)
-+		synchronize_irq(trng->irq);
- 
- 	writel(0, trng->base + STARFIVE_CTRL);
- 
--	reset_control_assert(trng->rst);
--	clk_disable_unprepare(trng->hclk);
--	clk_disable_unprepare(trng->ahb);
-+	pm_runtime_put_sync(trng->dev);
- }
- 
- static int starfive_trng_read(struct hwrng *rng, void *buf, size_t max, bool wait)
-@@ -247,7 +325,13 @@ static int starfive_trng_read(struct hwrng *rng, void *buf, size_t max, bool wai
- 	struct starfive_trng *trng = to_trng(rng);
- 	int ret;
- 
--	pm_runtime_get_sync(trng->dev);
-+	ret = pm_runtime_resume_and_get(trng->dev);
-+	if (ret < 0) {
-+		dev_warn(trng->dev, "Failed to wake device for read: %d\n", ret);
-+		return ret;
-+	}
-+
-+	mutex_lock(&trng->lock);
- 
- 	if (trng->mode == PRNG_256BIT)
- 		max = min_t(size_t, max, (STARFIVE_RAND_LEN * 8));
-@@ -257,24 +341,28 @@ static int starfive_trng_read(struct hwrng *rng, void *buf, size_t max, bool wai
- 	if (wait) {
- 		ret = starfive_trng_wait_idle(trng);
- 		if (ret)
--			return -ETIMEDOUT;
-+			goto end;
- 	}
- 
- 	ret = starfive_trng_cmd(trng, STARFIVE_CTRL_GENE_RANDNUM, wait);
- 	if (ret)
--		return ret;
-+		goto end;
- 
- 	memcpy_fromio(buf, trng->base + STARFIVE_RAND0, max);
- 
--	pm_runtime_put_sync_autosuspend(trng->dev);
-+	ret = max;
-+
-+end:
-+	mutex_unlock(&trng->lock);
- 
--	return max;
-+	pm_runtime_put_autosuspend(trng->dev);
-+
-+	return ret;
- }
- 
- static int starfive_trng_probe(struct platform_device *pdev)
- {
- 	int ret;
--	int irq;
- 	struct starfive_trng *trng;
- 
- 	trng = devm_kzalloc(&pdev->dev, sizeof(*trng), GFP_KERNEL);
-@@ -282,22 +370,32 @@ static int starfive_trng_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	platform_set_drvdata(pdev, trng);
-+
- 	trng->dev = &pdev->dev;
-+	trng->data = of_device_get_match_data(&pdev->dev);
-+	if (!trng->data)
-+		return -EINVAL;
-+
-+	if (trng->data->seq_rst_clk != SEQ_RST_FIRST && trng->data->seq_rst_clk != SEQ_CLK_FIRST) {
-+		dev_err(&pdev->dev, "Unknown seq_rst_clk value\n");
-+		return -EINVAL;
-+	}
- 
- 	trng->base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(trng->base))
- 		return dev_err_probe(&pdev->dev, PTR_ERR(trng->base),
- 				     "Error remapping memory for platform device.\n");
- 
--	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
--		return irq;
-+	trng->irq = platform_get_irq(pdev, 0);
-+	if (trng->irq < 0)
-+		return trng->irq;
- 
- 	init_completion(&trng->random_done);
- 	init_completion(&trng->reseed_done);
-+	mutex_init(&trng->lock);
- 	spin_lock_init(&trng->write_lock);
- 
--	ret = devm_request_irq(&pdev->dev, irq, starfive_trng_irq, 0, pdev->name,
-+	ret = devm_request_irq(&pdev->dev, trng->irq, starfive_trng_irq, 0, pdev->name,
- 			       (void *)trng);
- 	if (ret)
- 		return dev_err_probe(&pdev->dev, ret,
-@@ -318,8 +416,19 @@ static int starfive_trng_probe(struct platform_device *pdev)
- 		return dev_err_probe(&pdev->dev, PTR_ERR(trng->rst),
- 				     "Error getting hardware reset line\n");
- 
--	clk_prepare_enable(trng->hclk);
--	clk_prepare_enable(trng->ahb);
-+	ret = clk_prepare_enable(trng->hclk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "hclk clk_enable failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(trng->ahb);
-+	if (ret) {
-+		clk_disable_unprepare(trng->hclk);
-+		dev_err(&pdev->dev, "ahb clk_enable failed: %d\n", ret);
-+		return ret;
-+	}
-+
- 	reset_control_deassert(trng->rst);
- 
- 	trng->rng.name = dev_driver_string(&pdev->dev);
-@@ -333,18 +442,16 @@ static int starfive_trng_probe(struct platform_device *pdev)
- 
- 	pm_runtime_use_autosuspend(&pdev->dev);
- 	pm_runtime_set_autosuspend_delay(&pdev->dev, 100);
-+	pm_runtime_set_active(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
- 
--	ret = devm_hwrng_register(&pdev->dev, &trng->rng);
--	if (ret) {
--		pm_runtime_disable(&pdev->dev);
--
--		reset_control_assert(trng->rst);
--		clk_disable_unprepare(trng->ahb);
--		clk_disable_unprepare(trng->hclk);
-+	ret = devm_add_action_or_reset(&pdev->dev, starfive_trng_release, trng);
-+	if (ret)
-+		return ret;
- 
-+	ret = devm_hwrng_register(&pdev->dev, &trng->rng);
-+	if (ret)
- 		return dev_err_probe(&pdev->dev, ret, "Failed to register hwrng\n");
--	}
- 
- 	return 0;
- }
-@@ -361,10 +468,21 @@ static int __maybe_unused starfive_trng_suspend(struct device *dev)
- 
- static int __maybe_unused starfive_trng_resume(struct device *dev)
- {
-+	int ret;
- 	struct starfive_trng *trng = dev_get_drvdata(dev);
- 
--	clk_prepare_enable(trng->hclk);
--	clk_prepare_enable(trng->ahb);
-+	ret = clk_prepare_enable(trng->hclk);
-+	if (ret) {
-+		dev_err(trng->dev, "hclk clk_enable failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = clk_prepare_enable(trng->ahb);
-+	if (ret) {
-+		clk_disable_unprepare(trng->hclk);
-+		dev_err(trng->dev, "ahb clk_enable failed: %d\n", ret);
-+		return ret;
-+	}
- 
- 	return 0;
- }
-@@ -376,8 +494,17 @@ static const struct dev_pm_ops starfive_trng_pm_ops = {
- 			   starfive_trng_resume, NULL)
- };
- 
-+static const struct starfive_trng_data jh7110_data = {
-+	.seq_rst_clk = SEQ_RST_FIRST,
-+};
-+
-+static const struct starfive_trng_data jhb100_data = {
-+	.seq_rst_clk = SEQ_CLK_FIRST,
-+};
-+
- static const struct of_device_id trng_dt_ids[] __maybe_unused = {
--	{ .compatible = "starfive,jh7110-trng" },
-+	{ .compatible = "starfive,jh7110-trng", .data = &jh7110_data },
-+	{ .compatible = "starfive,jhb100-trng", .data = &jhb100_data },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, trng_dt_ids);
--- 
-2.43.0
+ 	/*
+-	 * The device only supports NIST P256 ECC keys. The public key size will
+-	 * always be the same. Use a macro for the key size to avoid unnecessary
+-	 * computations.
++	 * The device only supports P-256. Its public key is encoded as
++	 * two 32-byte coordinates.
+ 	 */
+ 	copied = sg_copy_to_buffer(pubkey,
+ 				   sg_nents_for_len(pubkey,
 
+base-commit: 79bbe453e5bfa6e1c6aa2e8329bfc8f152b81c9b
 
