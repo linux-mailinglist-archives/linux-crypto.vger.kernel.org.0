@@ -1,62 +1,64 @@
-Return-Path: <linux-crypto+bounces-25023-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25024-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id H5BeCqivKWr6bwMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25023-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2026 20:40:40 +0200
+	id naQDGwmwKWoKcAMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25024-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2026 20:42:17 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A39CE66C553
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2026 20:40:39 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED2E366C571
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2026 20:42:16 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=L1ObFPr2;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25023-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25023-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=M2iCE68C;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25024-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25024-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 887BB31CA93E
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2026 18:39:06 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D484C304AF88
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2026 18:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7B76356742;
-	Wed, 10 Jun 2026 18:39:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32E0F35AC2F;
+	Wed, 10 Jun 2026 18:42:10 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB73134D901;
-	Wed, 10 Jun 2026 18:39:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8F026FD9B;
+	Wed, 10 Jun 2026 18:42:07 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781116745; cv=none; b=rnwaKcR8FhV+BrjtLDgCylkEtFQgG8LiEU8aips/VEbqFtlMFBjCFNyfOvOHdIqWdqx4CFCDrn1Dvfc7/ymvaYJIVE+QPEs9V4SHNr6MzVu04UbambkZigSG2EAA3DR1O7OzCnLGQy48p+hq2bYyHO/Hgd/JWSuk22Aj5BzmmFQ=
+	t=1781116929; cv=none; b=osIsSs0pyGeCsSaNtMjNwBuye3r8GAeNXJo2G5kWUTi0bpxlDeSGnpdtW1M1wYgbUhyYd4PGAByIud5DsJzGtMOzwkNoNUgNgXB5Kk5N6R1F5bCnYTk+qHh7sa/sY7NoroNSEXj+W4lIbcIoHOBISnWCYEZdazMrPjWIW29ljwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781116745; c=relaxed/simple;
-	bh=GxMar0oLEIQoe7sHtEEfoKoR0HEcjBy+/l3pVm1wND8=;
+	s=arc-20240116; t=1781116929; c=relaxed/simple;
+	bh=+ytYljFPg9lTGiZRIxVSjzdKcaMjWrkFZCulMkUS6kc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mFCVGnNzWYgejpEOzB4ZPX5+64K0DQixJ6qnEI5vGhajbKvHT9JcHTy1aMf8h6LJl/tAQ6a61KZph0iZ5EGqWmGzMWd5YRDn07GCUC97tNKS32SmxH/nk9aLc/MQe2jv7VSaImiqYv8ixMsTGTu1+4ihpZ0IN7KSyaHqcyhU86Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L1ObFPr2; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12DC01F00893;
-	Wed, 10 Jun 2026 18:39:04 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=nqYdaDC/0P8mQGkpoqo+jDuFaEHtvb2HiOl1syIeKDsLtaFnymwjh4n7Mzx2eBPKVWMTJ+K0glnvycoYv96qp5XXzqJ0V30jdmh9zSEAhGHBbcGpYCW6mSPC0866l/aSgC4fdWWGQeHbUzw8C93Ss2F9tYqeGOL9+gghxNduEyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M2iCE68C; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F12C01F00893;
+	Wed, 10 Jun 2026 18:42:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781116744;
-	bh=4o1VtWCXoWoxZBd6EawCUnJfQ/1lp18t/RARZHM0h5E=;
+	s=k20260515; t=1781116927;
+	bh=cUxZvwIf+9Y61C7TeQJzj6X8xqLB/pguWODIb9UeiwQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=L1ObFPr2OvgTYrOIIO4/YtP6lSqMh682GiOhOkJWrOkn11BH1KN8+D4dLayTtyAQk
-	 OCKltKKSoaFudM5UTbZ+sDqvJaKgF28LSWLxitUx48re7IN69YoiqhAv4HE7aKihIh
-	 +XbGlAD2J3OJ+EZixK+Wo8iw8K4CDmoLOe6pazU99tWs+FmU0aQMs8QPKLuPd74MHr
-	 w9hezWha/VMuYab5un8ehjztSILHjkRN9dG/0/4SoZ9dQxe4+t+NbkaUDyKD2FemYq
-	 IwsHPk29AfT229gyPnvy6kNFwH4JnlrUTfsyf8BymvScuBdBtvXClCOzC7Z+Q/4Ui3
-	 qm9lGdnlcUozw==
-Date: Wed, 10 Jun 2026 18:39:02 +0000
+	b=M2iCE68Cy6X3/jwTVnf7eWBD6VQdsSxLu7ETMDUKws4X78ZH0mZrkds7+xZ/XYuyB
+	 +keahcmOHziJGRw+atRZX+irBmjuajtT4N4jM0LYKpx2CyqwdE6Sg2Ok9pkvwTAQkH
+	 x+Ld3z48O8TsAY1N2Qmh3H44pZ31nXh3ETIQ0uD6BVwf6tDTdOL124NAGCXZapcqp/
+	 eryOdzz6pEO0Brj16ixaVAmgAcNfqwIa5VHexLA7QM2V1O0ZYZV0uSy4dFFSgsnfBj
+	 b14c+LCZEkWOWWLsqRF0WOIDXvwTQQNIR0uF2bBm5peED3/jKW9InR8g3LeSyz6qbF
+	 ejkyi8GU6+uhg==
+Date: Wed, 10 Jun 2026 18:42:05 +0000
 From: Eric Biggers <ebiggers@kernel.org>
-To: Peter Griffin <peter.griffin@linaro.org>
-Cc: linux-crypto@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-	linux-samsung-soc@vger.kernel.org,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: exynos-rng - Remove exynos-rng driver
-Message-ID: <20260610183902.GA1158828@google.com>
-References: <20260531175932.32171-1-ebiggers@kernel.org>
- <CADrjBPo3BpSk49oasf_9g06xrBMkw+NiKo10xDKjWr8sJ+Zc-Q@mail.gmail.com>
+To: Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>
+Cc: Thara Gopinath <thara.gopinath@gmail.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Bartosz Golaszewski <brgl@kernel.org>,
+	Thara Gopinath <thara.gopinath@linaro.org>,
+	linux-crypto@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] Fix Qualcomm Crypto engine self tests failures
+Message-ID: <20260610184205.GB1158828@google.com>
+References: <20260610-qce_selftest_fix-v1-0-1b0504783a46@oss.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -65,77 +67,50 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CADrjBPo3BpSk49oasf_9g06xrBMkw+NiKo10xDKjWr8sJ+Zc-Q@mail.gmail.com>
+In-Reply-To: <20260610-qce_selftest_fix-v1-0-1b0504783a46@oss.qualcomm.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.16 / 15.00];
+X-Spamd-Result: default: False [-3.66 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-25024-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25023-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:peter.griffin@linaro.org,m:linux-crypto@vger.kernel.org,m:herbert@gondor.apana.org.au,m:linux-samsung-soc@vger.kernel.org,m:krzk@kernel.org,m:alim.akhtar@samsung.com,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[gmail.com,gondor.apana.org.au,davemloft.net,kernel.org,linaro.org,vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:kuldeep.singh@oss.qualcomm.com,m:thara.gopinath@gmail.com,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:brgl@kernel.org,m:thara.gopinath@linaro.org,m:linux-crypto@vger.kernel.org,m:linux-arm-msm@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:tharagopinath@gmail.com,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	TAGGED_RCPT(0.00)[linux-crypto];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: A39CE66C553
+X-Rspamd-Queue-Id: ED2E366C571
 
-On Wed, Jun 10, 2026 at 03:46:54PM +0100, Peter Griffin wrote:
-> Hi Eric,
-> 
-> On Sun, 31 May 2026 at 19:02, Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > This driver has no purpose.  It doesn't feed into the Linux RNG, nor
-> > does it implement the hwrng interface.  It is accessible only via the
-> > "rng" algorithm type of AF_ALG, which isn't used in practice.  Everyone
-> > uses either the Linux RNG, or rarely /dev/hwrng.
-> >
-> > Moreover, this is a PRNG whose only source of entropy is the 160-bit
-> > seed the user passes in.  So this can be used only by a user who already
-> > has a source of cryptographically secure random numbers, such as
-> > /dev/random.  Which they can, and do, just use in the first place.
-> >
-> > Just remove this driver.  There's no need to keep useless code around.
-> >
-> > Note that the other crypto_rng drivers in drivers/crypto/ are similarly
-> > unused and are being removed too.  This commit just handles exynos-rng.
-> >
-> > Signed-off-by: Eric Biggers <ebiggers@kernel.org>
-> > ---
-> 
-> If the driver is being removed, should the binding documentation for
-> this driver not also be deleted (see
-> Documentation/devicetree/bindings/rng/samsung,exynos4-rng.yaml)?
-> 
-> Peter
+On Wed, Jun 10, 2026 at 11:24:03AM +0530, Kuldeep Singh wrote:
+> Steps followed:
+>   - Enable EXPERT and CRYPTO_SEFLTESTS config.
 
-In other discussions I've been told that devicetree bindings are
-hardware descriptions that should still exist even if there is no
-driver.  It doesn't make a lot of sense, but it seems to be what the
-devicetree people want.  I expect there would be objections to removing
-this binding.
+So the full tests (CRYPTO_SELFTESTS_FULL) still haven't been run?
 
 - Eric
 
