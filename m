@@ -1,160 +1,218 @@
-Return-Path: <linux-crypto+bounces-25015-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25021-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id bJLLD98SKWrnPwMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25015-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2026 09:31:43 +0200
+	id qZEGJsGZKWrWaQMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25021-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2026 19:07:13 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E98D8666A97
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2026 09:31:42 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0439666BD7B
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2026 19:07:13 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25015-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25015-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=b+AN00dt;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25021-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25021-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4BC253016276
-	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2026 07:19:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 11E6B307D8DE
+	for <lists+linux-crypto@lfdr.de>; Wed, 10 Jun 2026 16:57:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD8AE33260B;
-	Wed, 10 Jun 2026 07:19:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DA8C342509;
+	Wed, 10 Jun 2026 16:57:22 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AAAB38A29A;
-	Wed, 10 Jun 2026 07:18:56 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781075941; cv=none; b=qRls+61hz445bEL+AUX19IBRv4Z32hLg5xVI3Vf8U6x1gQhT2MeY/Py+818U/wvimTDoOBkm3hYL/xU05aUNCihJ2T6FUPTuOA3vZ/Wa8xsJwA+3r2JykyOy54qJrEqhuZ9LwY4UplWi5Z7bJc3r6MNTWfuTvM3Q+g5i/1ZdilA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781075941; c=relaxed/simple;
-	bh=KabWLugESkcH2GuNNe6giO1ysnlLsWK4c6X3vJq4dUM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=i2+bds9nMKnfIa2qYurb457NcbqzgO0A+voEA8TogXu7mzWsdpGhuJ3gDXXuxMtlRv2eOfeqwHr+1cNYLZUo80JlPMkn6ZphO9h6azpomMgbf30fbPQMQBz5N38HVVNH/8Dl3nJAThqkRFXTpiUfi2/dXBcDmPuR3P5nB2iPTow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Received: from loongson.cn (unknown [10.40.54.15])
-	by gateway (Coremail) with SMTP id _____8CxHurZDylqkpQSAA--.48571S3;
-	Wed, 10 Jun 2026 15:18:49 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.40.54.15])
-	by front1 (Coremail) with SMTP id qMiowJDxaeDWDylqL62hAA--.45694S2;
-	Wed, 10 Jun 2026 15:18:47 +0800 (CST)
-From: Qunqin Zhao <zhaoqunqin@loongson.cn>
-To: lee@kernel.org
-Cc: chenhuacai@kernel.org,
-	xry111@xry111.site,
-	linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-crypto@vger.kernel.org,
-	Qunqin Zhao <zhaoqunqin@loongson.cn>
-Subject: [PATCH v3] mfd: loongson-se: Add multi-node support
-Date: Wed, 10 Jun 2026 23:13:54 +0800
-Message-Id: <20260610151354.32617-1-zhaoqunqin@loongson.cn>
-X-Mailer: git-send-email 2.20.1
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE011344021
+	for <linux-crypto@vger.kernel.org>; Wed, 10 Jun 2026 16:57:18 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781110641; cv=pass; b=mG/oE9/JB9KtUferiA97U/LGVeAJ0x3OR2s7KI2GaWZkMQ2/QFaQMcEzTVgK069NfC3e7mTPGgLqKvxnc6oO4xVPiTAJdRiwXRydgpZESdrVwlUEOL38uGT9dgBSjcRDml3vVR15YvdNorQGbEKqX/NeHkJvlD8k6MLd7O8iE0I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781110641; c=relaxed/simple;
+	bh=6K6RM2gJWpYnx4m1W8Ibuw2HXTgpRjGku8yocxCd2X0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sO1AGymqlDv/u4MirXJfM+iBzA2Oc93D42wCMk4fYM7gie8Y2/qSX3DRbFJQ1eCULzDXdJaCrSvKCGBRhbsiLVkTJ4SlesjMWzncojNvBgQxYc6eQrwOdVyNzINaiOTrpzjO7Fq0lnrb8/kWbzNq/5zKGYUXk153zsMxeuzkYog=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b+AN00dt; arc=pass smtp.client-ip=209.85.128.178
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-7dbcb505578so87364137b3.3
+        for <linux-crypto@vger.kernel.org>; Wed, 10 Jun 2026 09:57:18 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1781110638; cv=none;
+        d=google.com; s=arc-20240605;
+        b=lGcHqb0yVgyjsTBOD98EvYPbmT5oPvls4KuSQkQkX9c2Yd2qPOA0iiADLon0UUbfn8
+         UlfnPeiPOcFtF4VfdjKR2CB3CdvDH8Q5fnf1HZsuJ4pmpBVRyrh+oVxoZ6zJdzAKJMZv
+         b7ZXA7eXDVRMHAzVWqAms3moXqALHz2PW2WydZjUGffT6DfrycmLooJPdRBFs8sMmzkN
+         x9y1+NgP5zNc/tZ3CeTXUvsDu98KmrTViAqVcwaEBtHrhiZZOhZaIhv3xzh17eko4Hyi
+         Li6ALLUXAKKCSnlHUyLMYNTDOstfsExgjWTakYtYjVTUY3o/wAWqmLMnAQPDc2FN8du+
+         rWvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=wCHlxS432TosTwKI9Ji3RuUwzBRg9dGupWbTgwWC7MI=;
+        fh=8fJjr4ekXQwr+tj8rpiQafL8p5QuVWFn8nsDAUf34B4=;
+        b=Njz9dMc3jUbrE8RFXUSz28OzguiYZD8y8Bk2wMCcqAbEfZnYdVwfY89uAtojL07pjY
+         UniUub2+hfEDsy1v7I8xE6teq1t9nVNUaBAwH7VFAdgbFo4/9ihiEOb3aKPcKciGDbh2
+         MBtoqioIv+qK4hGYf73CLqvKT+p8eETHZtMtv2pvhGvQakGGeehMjjIQ9kGT3RpkZCZv
+         DzFwJKOZwuPPVPfZiTR1EUEY88YZ9lcn47NXrwRzNgerITbg9fkVh0yNTbf/zJRZNVNg
+         tmI2wZfXcJCfjjzRrfWUlWpPLQbeJVgGjEd9W7Uw/MdYXqPiXNiRbr/HVkZuIaYZ22VY
+         PPow==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1781110638; x=1781715438; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wCHlxS432TosTwKI9Ji3RuUwzBRg9dGupWbTgwWC7MI=;
+        b=b+AN00dtJCpFsDT0mYUckTRhXslYP+WS/ssa6behS574CXVi5a4x3HwAqQKreONBqf
+         1FjyghBi5NFaHaq7Sgq6KrrRVu5k9oiIdJSM2OnWXwk/kPijLYFAXrXbPvFnNUP4uqPl
+         qfmv8RjaCX+uQHA1f5SMMqe3YjqRCdx4tHixFFoABY++DE7IfowyKs2K1Eg5f5u9Vpbt
+         BbU3Mv1k1itXvYHVbRWSlDpnivUu2J4lfF7NoRSh83bqcC5ZLcGxHwEU8eGvCbDwLFVX
+         Gg2r2Cf6aRpROs1lfp4nm0JMo7ZXB0do4aca0705hwrEkkiuYCswRxFkJZ+Z2/JISwuV
+         9PpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781110638; x=1781715438;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wCHlxS432TosTwKI9Ji3RuUwzBRg9dGupWbTgwWC7MI=;
+        b=Ii+D2RaECRlmeVGpomPqzSAi4lqnjZ8RtOTVJNBfk29dopaLOe8XRDFmIvn+zRRBGd
+         flu9ZUBTx8XN/9QnqGX60kRS2d+Jfvxaq4kg0f9BNTsJ9wvisxjLF3maFLcTVgLk0VZg
+         UUmRvyaOZdWuMc3x0eReFHu4XeqkJNhNgILA5azGRkHfx/D3Xqj2uwrfIXASPpyAb7DR
+         ZkaWcKL6c62H3n3sEiTOUDgkWAWcZ75oylHQs8CbE8ZWJ6bOTcQu0jY0v0zhDS2iGeee
+         I/x3nL3+Lk6weQ9I+LWtFfHnafkWyoGdTNqh1EApjpFplxb0QD249rWWrTDJSoEwzIL6
+         aAfg==
+X-Forwarded-Encrypted: i=1; AFNElJ9GzsO99+2rYW+PRMSbA2Ak/fadwlijJJbHDpa0V/DE1yQWSdGIfvC1AI7WDLo0HpSb56xqDQUfu1lCkOg=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz7sHkoCT5e0+2rhS5DUGN9CmvQ4P02XI+kV0ckbNBb1T1yWU9z
+	yzugE64kvgBqc0JS0YU2X0cTVQtuXtVwSN/VLJXXQPrHgVHG+9+jQ6XwXW4pJrGnYXq78zZtLIC
+	QmQBum7SC3/wfoBSI9O+Yc9dBJUQ+A2I=
+X-Gm-Gg: Acq92OGYZJJ/t4KOuzZT41g9QNBXoBswuGRDtr/yKZgFsahWj4kH+jkepeibh1sTk4o
+	7Pv5CYhbTuMMT2hTa4VY36Hm1iMxEM5+qvd/q93NiuYgFDzPE/YLZ8KfVLUovaDtAins0T7xsQu
+	LMvs795tW6x6rjxDWWc95W6cNlOmhZ0b70TZ/SRxfnkOXtXX29wPJGls8CiWeMDfanc7ZugP4fn
+	0QoroDnPDmh+vKgdk90M5G9lf73FqEjxRDuTPPa+VoHtHCpkZoXq9SrZAQ5rg/WuwsMbnyoqrcp
+	p3McW643M/1Rn7YTIjqvFgvSTvrSMPAuA3DU/HRZD52GkVAiI/Kz1AwV8oGoNRM=
+X-Received: by 2002:a05:690c:4447:b0:7b3:3a49:752 with SMTP id
+ 00721157ae682-7ed108ca2e5mr278537897b3.41.1781110637662; Wed, 10 Jun 2026
+ 09:57:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJDxaeDWDylqL62hAA--.45694S2
-X-CM-SenderInfo: 52kd01pxqtx0o6or00hjvr0hdfq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7urW8tFW7Zw48Jr4fGF1fKrX_yoW8Ar1DpF
-	4UWa4qkr4UG3W0kw1DZa1DuF1YyayYq3y3GanFqw47Aas8tw1kZFy3tFW7WF43AFW8XayU
-	ZrZYgF48uFW8uFcCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUvSb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M280x2IEY4vEnII2IxkI6r1a6r45M28lY4IE
-	w2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84
-	ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l
-	84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8w
-	AqjxCEc2xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8I
-	cVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjc
-	xG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s02
-	6c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF
-	0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvE
-	c7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
-	v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7I
-	U0Jku3UUUUU==
+References: <20260607112435.42804-1-fabianblatter09@gmail.com>
+ <bd992448-8ded-46f8-bf91-97792b9a11ad@linux.ibm.com> <CAGtAT=nJOAxecN+eYVwkzQAUcr2BaBhAO=ni9hWqdRKUQ06=fA@mail.gmail.com>
+ <af632d11-baea-4314-ac17-d81502240a5c@linux.ibm.com>
+In-Reply-To: <af632d11-baea-4314-ac17-d81502240a5c@linux.ibm.com>
+From: Fabian <fabianblatter09@gmail.com>
+Date: Wed, 10 Jun 2026 18:57:06 +0200
+X-Gm-Features: AVVi8Cd3o-dynJYvlTZnmfQiTVEKU-tAtXdO-I1mQjcR0Xi0f_fDnikv6WAPiwY
+Message-ID: <CAGtAT==CRiLqt641wS481+2gwZ3noFqfSyxGwGPvN5CXGLHjWA@mail.gmail.com>
+Subject: Re: [PATCH] crypto: ecc - Optimize vli additive operations using
+ compiler builtins
+To: Stefan Berger <stefanb@linux.ibm.com>
+Cc: lukas@wunner.de, ignat@linux.win, herbert@gondor.apana.org.au, 
+	davem@davemloft.net, linux-crypto@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [4.04 / 15.00];
-	DATE_IN_FUTURE(4.00)[7];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-25015-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:lee@kernel.org,m:chenhuacai@kernel.org,m:xry111@xry111.site,m:linux-kernel@vger.kernel.org,m:loongarch@lists.linux.dev,m:linux-crypto@vger.kernel.org,m:zhaoqunqin@loongson.cn,s:lists@lfdr.de];
-	GREYLIST(0.00)[pass,body];
-	MIME_TRACE(0.00)[0:+];
-	DMARC_NA(0.00)[loongson.cn];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[zhaoqunqin@loongson.cn,linux-crypto@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[zhaoqunqin@loongson.cn,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-25021-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:stefanb@linux.ibm.com,m:lukas@wunner.de,m:ignat@linux.win,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER(0.00)[fabianblatter09@gmail.com,linux-crypto@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	R_DKIM_NA(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fabianblatter09@gmail.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,loongson.cn:email,loongson.cn:mid,loongson.cn:from_mime]
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,mail.gmail.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E98D8666A97
+X-Rspamd-Queue-Id: 0439666BD7B
 
-On the Loongson platform, each node is equipped with a security engine
-device. However, due to a hardware flaw, only the device on node 0 can
-trigger interrupts. Therefore, interrupts from other nodes are forwarded
-by node 0. We need to check in the interrupt handler of node 0 whether
-this interrupt is intended for other nodes, this can be accomplished via
-shared interrupt handling.
+On Wed, 10 Jun 2026 at 16:52, Stefan Berger <stefanb@linux.ibm.com> wrote:
+>
+>
+>
+> On 6/9/26 4:51 PM, Fabian wrote:
+> > On Tue, 9 Jun 2026 at 20:58, Stefan Berger <stefanb@linux.ibm.com> wrote:
+> >>
+> >>
+> >>
+> >> On 6/7/26 7:24 AM, Fabian Blatter wrote:
+> >>> Replace the software carry flag emulation with compiler builtins.
+> >>>
+> >>> Even the newest compilers struggle with taking advantage of the
+> >>> hardware carry flag. Compiler builtins allow the compiler to
+> >>> much more easily achieve this while still remaining constant-time.
+> >>
+> >> It looks like you made vli_usub and vli_uadd constant-time now because
+> >> otherwise the loops could be ended early once borrow == 0 or carry == 0
+> >> respectively. Are all the other functions that operate on the private
+> >> keys constant-time?
+> >>
+> >
+> > Thanks for the reply,
+> >
+> > My primary goal with this patch was performance optimization.
+> > I did not add early exiting because the original version didn't either.
+> >
+> > To answer your question: No, some other functions in ecc.c
+> > are not constant-time. For example, vli_is_zero and vli_cmp both
+> > contain early exits.
+>  > > My patch does remove the branches in the inner loop,
+> > however, the original ones were already constant-time in practice,
+> > because the compiler replaces the branches with cmov's.
+>  > > I am happy to make any changes to this patch if you like.
+>
+> ecrdsa calls ecc_is_pubkey_valid_partial -> vli_mod_square_fast ->
+> vli_mmod_fast and then may call vli_usub or vli_uadd via
+> vli_mmod_special2 or vli_mmod_barret.
+>
+> ecc_point_mult operates on a private key and will call vli_mmod_fast and
+> for some non-NIST keys it may call either one of vli_usub or vli_uadd
+> via vli_mmod_special2 or vli_mmod_barret.
+>
+> Due to the private key operations it's probably better to keep the
+> functions constant-time for now.
 
-Signed-off-by: Qunqin Zhao <zhaoqunqin@loongson.cn>
----
-V3: 
-Using shared interrupts (IRQF_SHARED) instead of manually
-iterating through all devices to check for interrupts.
+Agreed.
 
-Link to v2:
-https://lore.kernel.org/all/20260427165133.23350-1-zhaoqunqin@loongson.cn/
+>
+> > I could also look into making `vli_cmp` and `vli_is_zero`,
+> > or others constant-time in a future patch.
+>
+> I wonder whether it would be practical to suffix constant-time functions
+> with _ct so that it becomes visible whether the call paths of functions
+> operation on private keys only call _ct functions? Sometimes one could
+> optimize functions shared by private and public key operations for
+> performance -- call them with 'bool ct' in this case and suffix them
+> with _oct (o=optimized + ct) indicating that they support both variants?
+>
 
- drivers/mfd/loongson-se.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I am unsure whether constant-time operations are even slower than
+early-exit variants by a significant margin. vli_uadd and vli_usub
+don't seem to be called that often anyways. I believe this probably
+doesn't justify the resulting binary size and complexity increase.
 
-diff --git a/drivers/mfd/loongson-se.c b/drivers/mfd/loongson-se.c
-index 3902ba377d6..e63ea40d5db 100644
---- a/drivers/mfd/loongson-se.c
-+++ b/drivers/mfd/loongson-se.c
-@@ -219,7 +219,7 @@ static int loongson_se_probe(struct platform_device *pdev)
- 
- 	for (i = 0; i < nr_irq; i++) {
- 		irq = platform_get_irq(pdev, i);
--		err = devm_request_irq(dev, irq, se_irq_handler, 0, "loongson-se", se);
-+		err = devm_request_irq(dev, irq, se_irq_handler, IRQF_SHARED, "loongson-se", se);
- 		if (err)
- 			dev_err(dev, "failed to request IRQ: %d\n", irq);
- 	}
-@@ -228,7 +228,7 @@ static int loongson_se_probe(struct platform_device *pdev)
- 	if (err)
- 		return err;
- 
--	return devm_mfd_add_devices(dev, PLATFORM_DEVID_NONE, engines,
-+	return devm_mfd_add_devices(dev, PLATFORM_DEVID_AUTO, engines,
- 				    ARRAY_SIZE(engines), NULL, 0, NULL);
- }
- 
-
-base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
--- 
-2.47.2
-
+Let me know how you'd like to move forward.
 
