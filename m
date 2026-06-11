@@ -1,239 +1,125 @@
-Return-Path: <linux-crypto+bounces-25027-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25028-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id cMTOHhUjKmqmjAMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25027-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 04:53:09 +0200
+	id FxJrCgA9KmojlAMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25028-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 06:43:44 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C92A66DE57
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 04:53:08 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3FB166E43F
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 06:43:35 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=amd.com header.s=selector1 header.b=1NbTHbB5;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25027-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25027-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=amd.com;
-	arc=reject ("cv is fail on i=2")
+	dkim=temperror ("DNS error when getting key") header.d=gondor.apana.org.au header.s=h01 header.b=ZjU3VnKx;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25028-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25028-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=temperror reason="SPF/DKIM temp error" header.from=apana.org.au (policy=temperror);
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 1E8513008CA4
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 02:53:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8862A3022F70
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 04:43:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83351288C08;
-	Thu, 11 Jun 2026 02:53:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE5A34CFD3;
+	Thu, 11 Jun 2026 04:43:27 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from BN1PR04CU002.outbound.protection.outlook.com (mail-eastus2azon11010049.outbound.protection.outlook.com [52.101.56.49])
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D99F421A95D;
-	Thu, 11 Jun 2026 02:52:59 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781146381; cv=fail; b=tnrCcOz/A7rbNLgFFSHhV9RjG+obKE9c9iLESHdGmVaQAkhgG0YN2qaHE3RRFBPYbW0F5peaX67+IOCP7okmvCPgBU8EOPKrbpk62fhULPTFCuCopCL2ohmryBDrEtb8tpa8auWENZDrx22/DmFkvy5yzQCiex6hllwmYOnAznI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781146381; c=relaxed/simple;
-	bh=d+xzT3dhgauhk+5az6jPxY8L4WgguVyR3aJCIuTPjCI=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=FS7XIxgHYzQDOlhWxgg/t5nGcIIJ8fmC89ffdgTrfv303VfYUJwA8hXPGbxCj3eC2SxfCdV6IeKiSY9TPcGcLSTjkrfEajx4GSOTcQDI7yvO9YcVSoNwOUMmVxPWJSlSfyyu4Ase36GrFz8KsoCL5et2Xi1y7phbFDNXPZqdHRI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=1NbTHbB5; arc=fail smtp.client-ip=52.101.56.49
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=hw1Ye/DNHcbNStjX9p7PiCrQE4GvJDW7QOU96W6liLYI9Ug8LatSU6fed/bKUnuiqp7n7mk/Yd/HLW+/+xgl0hDnlA25wMx5fmXqUitnj6H3NAGL5VBj0VESSJEq8DdsutnP1nwYBNfeu/65JRAYEr0dYFiAPVdlHR/QZqtQGeKG1sRYXzrzJUCIeESZ3bND3xvcK/do+nYtvb71y71oE8yE+oHJq/mKEnkWMo+ygfm/m1vY65u7HQG70JO5J63F5l/yEZLbbbNMT3haniiAMUL7AvL25C8sS9SvSl8XW7LVab5CwYG2ASUqykwRkBEC78IIlqObA+8EeGmCpgthcg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lV1aAtPyXCcnP+P6XkpiCKHOZt6IpgeaVy/0s1tJef0=;
- b=FOJJo642y9uZNn4U5nwhb5RlJ1wfXkAtcR0o7eM/Mj2/TH8JAYfz1hk5noJRx7MAmP9riOUzfN+ghS1/0gqrf0EUet4cn0JGGZf3W+E4IgOFA5PX7MQHFBKcd1meqlZ51dehhaPQCcLEnZC5hz8JU8Q/W+WillVc94NOncjn0a50c83l1FPp/QpFvsHNRzRcz2OJj70rvzZPKkjvDswVNwlbrbPVW2xWYi1VN4KXUqecexNdvBMmsGCnSiduqfN4Z7IRaUKmYTo2eVBqPT7oJca9kTtewezC2Sb32swPb4d7aQhCtCW7qD12i300Nn7GI130rQ99axEuAs6/BrYM/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lV1aAtPyXCcnP+P6XkpiCKHOZt6IpgeaVy/0s1tJef0=;
- b=1NbTHbB5Fot0jY1vBNELVsBXOTcszsyFdk8yxXa3H0pI9MoysfmrB1hKYY9OYUhNavUMYF2FcPZR5TodvNve6yWh/Kbsu1+74q03TIRfCp8kruVEFNZbu4EppT3wDygA1Kt1xcp6sM5Xq/GvbwtAeGaDJ8W4AYdc7yu9eQbTx/A=
-Received: from DS7PR12MB9549.namprd12.prod.outlook.com (2603:10b6:8:24e::7) by
- SN7PR12MB8602.namprd12.prod.outlook.com (2603:10b6:806:26d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.92.17; Thu, 11 Jun
- 2026 02:52:56 +0000
-Received: from DS7PR12MB9549.namprd12.prod.outlook.com
- ([fe80::bace:1330:9ab2:acc6]) by DS7PR12MB9549.namprd12.prod.outlook.com
- ([fe80::bace:1330:9ab2:acc6%6]) with mapi id 15.21.0092.011; Thu, 11 Jun 2026
- 02:52:56 +0000
-From: "Jain, Harsh (AECG-SSW)" <h.jain@amd.com>
-To: Eric Biggers <ebiggers@kernel.org>, "linux-crypto@vger.kernel.org"
-	<linux-crypto@vger.kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Botcha,
- Mounika" <Mounika.Botcha@amd.com>, Olivia Mackall <olivia@selenic.com>,
-	"Simek, Michal" <michal.simek@amd.com>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "Savitala, Sarat Chand"
-	<sarat.chand.savitala@amd.com>, "Dhanawade, Mohan" <mohan.dhanawade@amd.com>
-Subject: RE: [PATCH 0/4] Xilinx TRNG fix and simplification
-Thread-Topic: [PATCH 0/4] Xilinx TRNG fix and simplification
-Thread-Index: AQHc8TLoUsF1hl40KkacAzPG2NSr+7Y4t2RA
-Date: Thu, 11 Jun 2026 02:52:56 +0000
-Message-ID:
- <DS7PR12MB9549D4679D5011B6B25FEA0C971B2@DS7PR12MB9549.namprd12.prod.outlook.com>
-References: <20260531191738.55843-1-ebiggers@kernel.org>
-In-Reply-To: <20260531191738.55843-1-ebiggers@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_198e8dea-a4f3-4850-b16a-fd6d2b1302b4_Enabled=True;MSIP_Label_198e8dea-a4f3-4850-b16a-fd6d2b1302b4_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;MSIP_Label_198e8dea-a4f3-4850-b16a-fd6d2b1302b4_SetDate=2026-06-11T02:49:17.0000000Z;MSIP_Label_198e8dea-a4f3-4850-b16a-fd6d2b1302b4_Name=AMD
- General
- v26;MSIP_Label_198e8dea-a4f3-4850-b16a-fd6d2b1302b4_ContentBits=3;MSIP_Label_198e8dea-a4f3-4850-b16a-fd6d2b1302b4_Method=Standard
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DS7PR12MB9549:EE_|SN7PR12MB8602:EE_
-x-ms-office365-filtering-correlation-id: b3d3e020-7b35-4fda-2ebc-08dec7648a35
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|23010399003|376014|366016|38070700021|18002099003|22082099003|56012099006|11063799006;
-x-microsoft-antispam-message-info:
- du1buuNCfRO2ehXdeAb5XCzlarjXh3yEnpWC4o9CQ9Cixk3yXeOroKpDOmWk1ROLMMB97VVgUBgMx6wBA4HWNugqYsd1krgpYbNQNu7GYbb5JUuD8AXds9vwK1D44j6kh8gTF6bUv0HQ8t3DiuOrMHyntjKiW4DTpJ200i4tLwg8MMgiLB5hgngLaE4oYYxbXNs7QH20wt4lxa69m94RMOWcKktE2jD86BptGWCPm/HYSKk9LcV/sOxSVyL+NLVmuoPUdk3L75fcetqArLKLD6fyBDSkUjstkfmZrL/i4QVlNinIRZAbg+8+6F/Wd5pDiGbldLGWthlBmXT0H/MB3bYALQvtOgk5/QDyPLtYMaZx0pE+yuwLWI0b9XYSkOwOyxdqGaIJYdKvXDKAM3g3+nMGZ2c4/ea44XzxWLrFVI2fGIf9MpQ+C3XTMOVjsZzl/tt5mjpQs5vlNDPhxuLbsWH7aPNS4QRD26V4sOtko9cf8OKMsUDjYXS+tZNwcYEnqbIH1TxUCSEUxZ9QK7kEkEhg0y7VpOGrI/cT4zRHvvesx62C47WBB9SATwKHnMFZoSMyQMlx3a/Au9GfOoD3Qkd+kDvUoY/Z8qf2SNVihVlivD09r1kFa+gW7IO/0qVg4/id4aROGthyF12T/e79D2r4apTSJdVvUaFSwPAebDgV4h0vietWJj2DtmdFNkKPkStE/v/kN9WWMop6t4KLLxPsMh/fexqvvO2zM+6kM7AtRoZ8/YhlMz7Cm076oLi6
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB9549.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(23010399003)(376014)(366016)(38070700021)(18002099003)(22082099003)(56012099006)(11063799006);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?iwN+npcK58zEOleWerCO9BRZ67GRRYv+Pr/WNrOItUsWr+BmhC7Q55Uz/Pk1?=
- =?us-ascii?Q?CU4sifzIJ917sJAwL7/ZuKOkIkUb+wjDLTM0/z3Ph1lIZz6lKI1Oq+H1My+3?=
- =?us-ascii?Q?LJTOz5xbQnexHIp0H4OtUXAKOcnG/DwUy2aCfS0vZynsKHTcViSTKPBJSPpX?=
- =?us-ascii?Q?nyUSP5oA0Pu0IHtPAlaEYrEM+4YbuOkhk8IffwIdI4jk5ESV/ALUg7dygarG?=
- =?us-ascii?Q?hdvN/Z9j81MSTiUPQYs4pQPS94Kq/vMIfvpXyNw3FPxSuiVqg3/evyWisEYK?=
- =?us-ascii?Q?/xubg6ivnPZKzW86LOQiCDsL7A90HKBC1q/OnpPAZu3ya0JgFIXzF1EM+XiA?=
- =?us-ascii?Q?SxASvZK+JyfhG6P6wf7sjAeNhSvbx9QPqoSiuP1WJmBs+Mx7vbxjk6xF8FwO?=
- =?us-ascii?Q?mSR1gxnwkjbxFPAelvpCMDp5nzJ3/OlfHRpjCzxASS1J/xHo8FuiG4viiaNO?=
- =?us-ascii?Q?tm5KaCBZSmwJN7DMuxVG6InbFAo+TBUp5T/FrWEG+8Z5k/2RQzMCuSeCSKkO?=
- =?us-ascii?Q?b+QWP4kcUh+QXtBmr3VeEGvbgPOktgJIXp9lSF09ip/vtiwwgD4kiI98PqzS?=
- =?us-ascii?Q?pxPBbNj1LoreJpCPpa2KMHKCMzH+/owZ0RDZWRiH2psdKdlAhQbGZCO1LlWW?=
- =?us-ascii?Q?JuwtUSQkXZ1Ns/DWvwTUA5J7SbmU2x+CwptiE/J9I2qejX3TVsuyO4CGSyt2?=
- =?us-ascii?Q?DwaZYai6MpNr7BPyyDb3/xRPF2U366kGZTDb54FR3V7dP/kwFndIYaMlVKGr?=
- =?us-ascii?Q?e+CjuFJu2CpH6tEUVI1tjwXqK6mDnLC7anZ+tCJ/sUr1kpXdxGGr2kfmzAxh?=
- =?us-ascii?Q?Z5g/7oojRtNiHMrwwVxjJi/ZupwtYzksCbBmjbrNJrxIpNoo53J4BdfVa/W6?=
- =?us-ascii?Q?YzXr9syNWahEkE51T9arlLPswwst6NVErpYJtUcfUU6V1SXZ3Q6OHFqB8DLg?=
- =?us-ascii?Q?7zxZZivVvk73WvTJLKVf0MU4kQw+i30td26VLNI0u5oNOrNGRcX837dfgBw9?=
- =?us-ascii?Q?xPgZTGavxuxPN7XmPR+htIAF56TjrV3hX39+tw44vVhm0Jn5d9bqRUf9zDDU?=
- =?us-ascii?Q?WN1OhnzBRdVKIjsuDsF5KCKu0KV+60j2gc2iroglXOdFWRk9AT27KYD+9Pq+?=
- =?us-ascii?Q?ka/URnX0RvN9pJl5NdqWB3Gi+9FNBdj5jms1VVFqlrEh0/E+/g64q2p+NVPA?=
- =?us-ascii?Q?QyFxOeQx81Nz3m3DixEr/dIn2cW4ipbI2eMQN1gAQ1hkGsvCu9lEI4xa2Kjj?=
- =?us-ascii?Q?EXivC8WnXjHjFr3zXRu7bKuzEO85Yg4KMlLO69yvvSXren+iqnrntVVqbKAA?=
- =?us-ascii?Q?VX2T7kwTHuXv8mgmMnbCBoG+xAM/ztqXcriskZGBvtECV7yW3cnfdAiN98CO?=
- =?us-ascii?Q?+h8WMJ8gp/Ni6nxJf7cNW6WDEOXeBWWVWbzVykd5cJrqX1bidujQxdX/kgY5?=
- =?us-ascii?Q?uRShPMHu3pw0rbMm5sx3pd0W8PWOpaFgjpsDNpGyFPDtF+/KZTw3ZY584K+V?=
- =?us-ascii?Q?N+wU4JqrRPkNv+v3MWqCnxkZWYQ5BAKaXWViA9eEMpqSLDzIFavCggsgXiZv?=
- =?us-ascii?Q?zvJVBDWCs0neLhRIlSiTfz/XozRWzij6bHSqOuepVcqE/cFCIcWRhnjBZeWi?=
- =?us-ascii?Q?smMIbxmojqzTVz7mNZtoEACvbGx8jEOm1NbQ47yR54VVwtsCQhgBuIayv1Hh?=
- =?us-ascii?Q?WhUXSwxx6/1r0GLCAoncueT/AlFgCGEn7shX8f9GnOeLL1lf?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC70D33D6F7;
+	Thu, 11 Jun 2026 04:43:22 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1781153007; cv=none; b=lMmev1ascIVRzXILShDX1I/Py2l/73/jAKTVVTqgTDLqS+oG0D7GOVHOD7+24BnehB6Ty2m4xtpFXeYOtbclLXBdmdwV7+tXMmD0BwmZ2qxAAJaXX2OvK7wIppUSd0d7A5E9I4LO6oG+zJZqw2xWyB0ZDChrbCtB2KjqobZIlrE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1781153007; c=relaxed/simple;
+	bh=CDqx9r46DKTCgMW2sSnhdavaJ0jvRv2bg0+WpwCCWpU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=meikgd+OiK7hWxw2FS7qs8i34qhbkYiWqabBDuVSbXrqPUa5THSPgn5f9jaGn16/FEVxJ3KNRAwsHgXcuA+z1KVN8RDWSt7MXKIbsrdnoOfMNPanBOl0jEzxqDYzjiE7o9jWMIaKW/XSFqacE34smeDTduk+CXVtO9jfqseRIgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=ZjU3VnKx; arc=none smtp.client-ip=180.181.231.80
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=oeKD7mPCFKhQ8XKM32Ys/gTK8P2DHVnaFTKN61Ko/f4=; 
+	b=ZjU3VnKxYZzffPHALzdUB7Yr4P+GxkfqKDpTXXkqDhfSPmTlcjNY85wPaGG+xwhcKcG6Jt0sj+2
+	DVOtLfwXLZsK0ci2cHBmIkMAFWu+J8R5DN2GOBCwbIuOHmbePVkwHc5VgpeV+iIWQygm5DW35VeDB
+	uVuaPxQAREyuNnr9Hxmm+AE4htUEguHlKdKDUap2JSgQCsbRonYzvvCA8GhDzEef4TnFQzfhWoQJz
+	+sp5OQajECFSFTnqirWkwP8gfDRDU41Uibd5RUWN0QXNOx0e0d4G8NIYv0mLUlGvwzx1TOL/av/Vf
+	WLi1FlhSZRe2kz6Yl+/rUi9dZv+TXNMuWTzA==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.98.2 #2 (Debian))
+	id 1wXXG1-00000004TTX-0Aiu;
+	Thu, 11 Jun 2026 12:43:10 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 11 Jun 2026 12:43:09 +0800
+Date: Thu, 11 Jun 2026 12:43:09 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Michael Bommarito <michael.bommarito@gmail.com>
+Cc: Olivia Mackall <olivia@selenic.com>, linux-crypto@vger.kernel.org,
+	"Michael S . Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>, Kees Cook <kees@kernel.org>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Dan Williams <djbw@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, torvalds@linux-foundation.org,
+	alan@linux.intel.com, tglx@linutronix.de
+Subject: Re: [PATCH v3] hwrng: virtio: clamp device-reported used.len at
+ copy_data()
+Message-ID: <aio83ZWadVTiuNpR@gondor.apana.org.au>
+References: <20260531142251.2792061-1-michael.bommarito@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB9549.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b3d3e020-7b35-4fda-2ebc-08dec7648a35
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2026 02:52:56.2534
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: btIYMoMd9zPP0xrriejz8lk40jzVuxDM4W6yWtOMdgpGtEZyjaank4WLbg6rviXb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8602
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260531142251.2792061-1-michael.bommarito@gmail.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25027-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:ebiggers@kernel.org,m:linux-crypto@vger.kernel.org,m:herbert@gondor.apana.org.au,m:linux-kernel@vger.kernel.org,m:Mounika.Botcha@amd.com,m:olivia@selenic.com,m:michal.simek@amd.com,m:linux-arm-kernel@lists.infradead.org,m:sarat.chand.savitala@amd.com,m:mohan.dhanawade@amd.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[h.jain@amd.com,linux-crypto@vger.kernel.org];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:michael.bommarito@gmail.com,m:olivia@selenic.com,m:linux-crypto@vger.kernel.org,m:mst@redhat.com,m:jasowang@redhat.com,m:kees@kernel.org,m:borntraeger@linux.ibm.com,m:virtualization@lists.linux.dev,m:linux-kernel@vger.kernel.org,m:djbw@kernel.org,m:mingo@redhat.com,m:hpa@zytor.com,m:torvalds@linux-foundation.org,m:alan@linux.intel.com,m:tglx@linutronix.de,m:michaelbommarito@gmail.com,s:lists@lfdr.de];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:?];
+	TAGGED_FROM(0.00)[bounces-25028-lists,linux-crypto=lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_SENDER(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[amd.com:+];
 	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[h.jain@amd.com,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_TEMPFAIL(0.00)[gondor.apana.org.au:s=h01];
+	DMARC_DNSFAIL(0.00)[apana.org.au : SPF/DKIM temp error,quarantine];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	FORGED_SENDER_MAILLIST(0.00)[]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,gondor.apana.org.au:mid,gondor.apana.org.au:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5C92A66DE57
+X-Rspamd-Queue-Id: D3FB166E43F
 
-AMD General
+On Sun, May 31, 2026 at 10:22:51AM -0400, Michael Bommarito wrote:
+>
+> +	size = min_t(unsigned int, size, avail - vi->data_idx);
+> +	idx = array_index_nospec(vi->data_idx, sizeof(vi->data));
+> +	memcpy(buf, vi->data + idx, size);
 
-Acked-by: Harsh Jain <h.jain@amd.com>
+I don't see how nospec can help here.  Please enlighten me.
 
-> -----Original Message-----
-> From: Eric Biggers <ebiggers@kernel.org>
-> Sent: Monday, June 1, 2026 12:48 AM
-> To: linux-crypto@vger.kernel.org; Herbert Xu <herbert@gondor.apana.org.au=
->
-> Cc: linux-kernel@vger.kernel.org; Botcha, Mounika <Mounika.Botcha@amd.com=
->;
-> Jain, Harsh (AECG-SSW) <h.jain@amd.com>; Olivia Mackall
-> <olivia@selenic.com>; Simek, Michal <michal.simek@amd.com>; linux-arm-
-> kernel@lists.infradead.org; Eric Biggers <ebiggers@kernel.org>
-> Subject: [PATCH 0/4] Xilinx TRNG fix and simplification
->
->
->
-> This series fixes and greatly simplifies the Xilinx TRNG driver by:
->
-> - Removing the gratuitous crypto_rng interface, leaving just hwrng which
->   is the one that actually matters.
->
-> - Replacing the really complicated AES based entropy extraction
->   algorithm with a much simpler one.
->
-> Note that this mirrors similar changes in other drivers.
->
-> Eric Biggers (4):
->   crypto: xilinx-trng - Remove crypto_rng interface
->   crypto: xilinx-trng - Fix return value of xtrng_hwrng_trng_read()
->   crypto: xilinx-trng - Replace crypto_drbg_ctr_df() with HMAC-SHA512
->   hwrng: xilinx - Move xilinx-rng into drivers/char/hw_random/
->
->  MAINTAINERS                                   |   2 +-
->  arch/arm64/configs/defconfig                  |   2 +-
->  crypto/Kconfig                                |   5 -
->  crypto/Makefile                               |   2 -
->  crypto/df_sp80090a.c                          | 222 ------------------
->  drivers/char/hw_random/Kconfig                |  11 +
->  drivers/char/hw_random/Makefile               |   1 +
->  .../xilinx =3D> char/hw_random}/xilinx-trng.c   | 134 ++---------
->  drivers/crypto/Kconfig                        |  13 -
->  drivers/crypto/xilinx/Makefile                |   1 -
->  include/crypto/df_sp80090a.h                  |  53 -----
->  11 files changed, 37 insertions(+), 409 deletions(-)
->  delete mode 100644 crypto/df_sp80090a.c
->  rename drivers/{crypto/xilinx =3D> char/hw_random}/xilinx-trng.c (75%)
->  delete mode 100644 include/crypto/df_sp80090a.h
->
->
-> base-commit: 5624ea54f3ba5c83d2e5503411a31a8be0278c1e
-> prerequisite-patch-id: 07e982b663ac3f8312ca524f6b91b5b38661df5e
-> prerequisite-patch-id: 72064361a8f36e015ab0b7e1fa4d364b40d90506
-> prerequisite-patch-id: 8978b8e0db7f47935e5f6f0aff14a97f55d3073c
-> prerequisite-patch-id: 6aa0e3e93a008279d71e535a3d0cf48643f55e19
-> --
-> 2.54.0
-
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
