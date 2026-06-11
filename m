@@ -1,204 +1,159 @@
-Return-Path: <linux-crypto+bounces-25089-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25090-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id bcnZNnqpKmpougMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25089-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 14:26:34 +0200
+	id pvP0EKCyKmovvQMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25090-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 15:05:36 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47669671D03
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 14:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94DB76722BD
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 15:05:35 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=rDMyA0To;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25089-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25089-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=gmail.com;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=VZd0c5nH;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25090-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25090-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 85C0F32C0FF5
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 12:23:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 48EDA34129CF
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 12:59:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C996B3EFD03;
-	Thu, 11 Jun 2026 12:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C7C43FADFD;
+	Thu, 11 Jun 2026 12:59:58 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A43C35CBD6
-	for <linux-crypto@vger.kernel.org>; Thu, 11 Jun 2026 12:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2644C2DA76C;
+	Thu, 11 Jun 2026 12:59:56 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781180612; cv=none; b=OazIwqOoXAqpigKMhFFyEHjhFH9+I17kZRr6h+Ywzdw0cUlUDVr+H0NCkO7GfjRlBA8vL2B3WlNFStpeJhaDtry4lIBu9qb1KomKib645erP7vyY4dUTnN1OaH3PNiaNUcUhk0nVDAk3wd3TSKKa/KtA2cWDWkUYBHaw/tzAedQ=
+	t=1781182798; cv=none; b=Ab8AOCT57nbd/UcAisrckVx51rTQvovlnAU7BsXSz7d2PYRO2dWhaVSgHfoVE3pyq0rFsw70c+55MX9CurnAvYnbJmvC9ADiZgFwHrHWs0w4PEnvLMEfQHPnxhzkw08+It6Z3LOWtBk5RVGnNro0OjNl9rmxyNNgKeOfWnCE/60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781180612; c=relaxed/simple;
-	bh=5o4uZfIewxYg8nMi5ai68NOliBQBC5fgwexMfo7Y0Io=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jHrg+qBDhBLoCRcSphxz1esjhaC178Lu/PF02aWrGmzygDmRM1MQavJQHFCkRYadbGGNcjYibwzjr3lYuqrLnrIEIVc4PvAXhluOwPT14M4LHs/FTmB8cr0s/EXyoWt8P5pSdbjOBjHWsIz/ZHFbMENivBbcB+pLJ/3Ci/W6tA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=rDMyA0To; arc=none smtp.client-ip=209.85.216.48
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-36ba285e98bso7784547a91.2
-        for <linux-crypto@vger.kernel.org>; Thu, 11 Jun 2026 05:23:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1781180610; x=1781785410; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XWWde8oTiwpIrCzHwuGTBaaddX/30yZJJn3ORVLoQD4=;
-        b=rDMyA0To7eYCGKdkD0X1hvFeSWK3dK1uJej6aK5E6la/0LYWBBMuh44DuxHEztONY+
-         YpaNPMZP9micyD4LIG5bP+vxSxX+N6LIEd90f9ZpbsdTcksPtX/HJAPbe2Lt+XaZLdgV
-         FAoHhuGV/8Efx3rRn7JqEZcj/KcnAPgmDicH0/SpD+V0yl/VjC5DWuX3PhxWWrdRBHKe
-         Y59GlYJI9M3uyuBBL14k1YVjOq6cFqshbXbIsc0J77R2kaUz5AJY4meFRazr7+MfpoNF
-         DRsA2Z+fM8PXfIatGLImrFpICNfQtrMGp1qL/7wjIoDIo17wbhPdSpa/QQXdGmprOulY
-         jbmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781180610; x=1781785410;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XWWde8oTiwpIrCzHwuGTBaaddX/30yZJJn3ORVLoQD4=;
-        b=JI2In7rl9A5kYkZuzJtHCpA5/TSZP+b9Jnnk00yJOMFssuJTKRETXlDIP0gRSsD94I
-         SHGlRRo+0Xeo+vZ/+SbGzpmgt6k4Yx1W7o0HEYc3/cxESd45HAfBUPH21b6WwMmzV5Cp
-         n0L+LvUKHhLw240Ad+h898BnzUk16mBL5TNcFruoXHNru8hMY9SGLAsBBYT/ruEXgyuT
-         Gx8f5g32NCfnBoR3TnSHoLNAi9jYIpy1T0EizsZo5tp7V1jMJoW+aeUYu6Mo64CjJhXE
-         pxA7HFefAyOMmkdfUyZBhYt3vVEJE7tBxG8Il0/shZGyPR+t59687Twn78Xmfu9TWjTH
-         9b2A==
-X-Forwarded-Encrypted: i=1; AFNElJ9mc0l0d3Ddg6tuTlJAsB7dmCOzcjkJQFZzVp/oag6xgyp4ceScYoBvfMKNB4frv8JbiY+oczjqmVW5haw=@vger.kernel.org
-X-Gm-Message-State: AOJu0YytsGpgqaYdM7MmLoShSmIoJD2I3mDv12tBaYEV3sVKmrCg4SFX
-	Y41xZqOVSr/9+lHHX3eq7edoPHAWLTwjX1RhLcMQckdEZxf5NCrMS3Ii
-X-Gm-Gg: Acq92OHnH+g8G4lKIu0z62lH66K6ymxITdBqQHg8VwrVFj34SYFkK0bscXpk6XK0YLo
-	74gP8Vus57xXgg0Cvrk7njiRZ9+eFNpA+8+CIdZVQOgj4ApOP+TE/MlWL58Qua9kSnTHTZNvW/T
-	RByROajl6p/sLWuu1Yw5f3K0gI2r7ZtMtZTO5+KNqcKp2i2tpnuk/Ic/qTb3kP/kBRAs6ggXyY7
-	VNLN+sxxGQkBSz8+yCxCSGxcU2NBROtLm7SQtcajFpSVECPTqB0nicDNZyquLPsMTFhjYUt0Ei2
-	rRlgfEuBph9SAY4ypdSHJQCrmKmqjq1EffiIoiizJLSSiULLvJ8tvtO2hmqOXY+i7vA8YkJjfDf
-	PrAqSZOFBAxfeZswmei6rfN0VBwnQlMrjzj11/EjPCQswfQLCNkuxTygTAncjTjDN3JEBC3ZW1q
-	m3hijIfkxUY87GXEGNZxuy7qQAnWxI+BTGaxk7JRrlvw==
-X-Received: by 2002:a17:90b:3a05:b0:36d:b12f:613c with SMTP id 98e67ed59e1d1-3779f186dcfmr2904451a91.10.1781180609829;
-        Thu, 11 Jun 2026 05:23:29 -0700 (PDT)
-Received: from [192.168.89.2] ([27.232.220.71])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3774f4c2e5asm2564395a91.0.2026.06.11.05.23.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Jun 2026 05:23:29 -0700 (PDT)
-Message-ID: <61bf60fd-2ccb-4d23-be5e-041c7c312510@gmail.com>
-Date: Thu, 11 Jun 2026 21:23:25 +0900
+	s=arc-20240116; t=1781182798; c=relaxed/simple;
+	bh=8KAGxG+bTzZw0NtXACFDYDhwLup09FdT2xtTamsCuMk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ag1DfnLoVIYnLg6J4cFL12bvNlWAr8q0sDVvivQmSohNcFoB6wSgSJ51bAfBdktHHe1PBXAR9rp+brAxXcgclNWDwMv1IzaJP6gKo39+Mv0my3FM+utICff2bxiDXkng7wnJymrHHzxCMGOpJEGIv1mWH7yX2Hq6E3p9siasw/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VZd0c5nH; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B77F1F00893;
+	Thu, 11 Jun 2026 12:59:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1781182796;
+	bh=zfe+53sDR95Yk81P6I4goSKtYHLjwJCYHiFTrpzsUlc=;
+	h=From:To:Cc:Subject:Date;
+	b=VZd0c5nHMgfT64+gqRWhAqWqHiJyAx6KhY1MwIRMr8tWmqAOFe+V5O+IujkmUCUwT
+	 LulxrT51VENissvj6gyb5iAsFIYuFcku8/wAOQ1V1qt4cDThgatvJJb16gTd3HUSC3
+	 vwLyzGfawRHiVHIzdlGyv6Gv1GJkmMNgzCrN0tVWHHuVHPMlC/HHr8DHDEh2tinep7
+	 fNfmK3sEc7p8q2ZlR8CWgHGVvC5OYtGprFiubfHURUOaGquQszPOPx92rJ8h/rR0Q9
+	 D49ZpkB9rPEO9JLCunMbHWQTIsJzYYs++C3i11xfsv/cEocbebvqAFZ+lDNzE71Zhf
+	 MkeBf2bKhWAtg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Eric Biggers <ebiggers@kernel.org>,
+	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Subject: [PATCH] lib/crypto: gf128hash: mark clmul32() as noinline_for_stack
+Date: Thu, 11 Jun 2026 14:59:39 +0200
+Message-Id: <20260611125952.3387258-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] xfrm: extend ESP offload infrastructure for packet
- engines
-To: Leon Romanovsky <leon@kernel.org>
-Cc: Christian Marangi <ansuelsmth@gmail.com>,
- Antoine Tenart <atenart@kernel.org>, Herbert Xu
- <herbert@gondor.apana.org.au>, "David S . Miller" <davem@davemloft.net>,
- Lorenzo Bianconi <lorenzo@kernel.org>, Andrew Lunn <andrew+netdev@lunn.ch>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- Steffen Klassert <steffen.klassert@secunet.com>,
- linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- netdev@vger.kernel.org
-References: <20260523121522.3023992-1-hurryman2212@gmail.com>
- <20260523121522.3023992-2-hurryman2212@gmail.com>
- <20260611115646.GN327369@unreal>
-Content-Language: en-US
-From: Jihong Min <hurryman2212@gmail.com>
-In-Reply-To: <20260611115646.GN327369@unreal>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	TAGGED_FROM(0.00)[bounces-25089-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[arndb.de,gmail.com,google.com,vger.kernel.org,lists.linux.dev];
+	TAGGED_FROM(0.00)[bounces-25090-lists,linux-crypto=lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:leon@kernel.org,m:ansuelsmth@gmail.com,m:atenart@kernel.org,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:lorenzo@kernel.org,m:andrew+netdev@lunn.ch,m:edumazet@google.com,m:kuba@kernel.org,m:pabeni@redhat.com,m:horms@kernel.org,m:steffen.klassert@secunet.com,m:linux-kernel@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:linux-arm-kernel@lists.infradead.org,m:linux-mediatek@lists.infradead.org,m:netdev@vger.kernel.org,m:andrew@lunn.ch,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[hurryman2212@gmail.com,linux-crypto@vger.kernel.org];
-	FREEMAIL_CC(0.00)[gmail.com,kernel.org,gondor.apana.org.au,davemloft.net,lunn.ch,google.com,redhat.com,secunet.com,vger.kernel.org,lists.infradead.org];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_SENDER(0.00)[arnd@kernel.org,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:ebiggers@kernel.org,m:Jason@zx2c4.com,m:ardb@kernel.org,m:nathan@kernel.org,m:arnd@arndb.de,m:nick.desaulniers+lkml@gmail.com,m:morbo@google.com,m:justinstitt@google.com,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:llvm@lists.linux.dev,m:nickdesaulniers@gmail.com,s:lists@lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hurryman2212@gmail.com,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[arnd@kernel.org,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,netdev];
-	TO_DN_SOME(0.00)[]
+	TAGGED_RCPT(0.00)[linux-crypto,lkml];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,arndb.de:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 47669671D03
+X-Rspamd-Queue-Id: 94DB76722BD
 
+From: Arnd Bergmann <arnd@arndb.de>
 
+During randconfig testing, I came across a lot of warnings for the newly
+added carryless multiplication function triggering excessive stack usage
+from spilling temporary variables to the stack:
 
-On 6/11/26 20:56, Leon Romanovsky wrote:
-> On Sat, May 23, 2026 at 09:15:20PM +0900, Jihong Min wrote:
->> Some ESP offload engines operate on whole ESP packets rather than the
->> generic software trailer layout. They can generate outbound ESP padding,
->> next-header and ICV bytes in hardware, and inbound decapsulation can
->> return an already-trimmed packet with the recovered next-header value.
-> 
-> How does this differ from the existing IPsec packet‑offload support in the
-> Linux kernel?
-> 
-> Thanks
+lib/crypto/gf128hash.c:166:1: error: stack frame size (1192) exceeds limit (1024) in 'polyval_mul_generic' [-Werror,-Wframe-larger-than]
 
-Hi Leon,
+In addition to the possible risk of overflowing the kernel stack,
+the generated object code surely performs very poorly.
 
-The short answer is that the series did not explain the relationship
-with the existing XFRM packet-offload model clearly enough.
+This only happens on architectures that don't provide uint128_t
+(which should be all 32-bit architectures on modern compilers), but
+though I tested random x86 and arm configs, I only saw this with arm's
+CONFIG_THUMB2_KERNEL, which adds more pressure to the register allocator.
 
-Existing XFRM_DEV_OFFLOAD_PACKET already represents the high-level model
-where hardware handles ESP packet processing instead of only crypto
-transforms. What I was trying to handle in this series was a narrower
-case: EIP93 is a look-aside crypto/IPsec engine, not the netdev itself,
-so the Airoha netdev had to attach that engine into its TX/RX path and
-let it generate or consume the ESP packet framing. The extra hooks in
-this series were meant for that look-aside integration, but looking
-back, the split between the existing packet-offload model and the new
-plumbing was not clean enough.
+The testing was done using clang-22, I don't know if gcc has the same
+problem. Marking clmul32() as noinline_for_stack experimentally shows
+all of the affected builds to completely solve the problem, reducing
+the stack usage to a few bytes as expected.
 
-At this point, though, I think the right thing is to withdraw this
-EIP93/Airoha series.
+Since u64 arithmetic frequently leads to compilers badly optimizing
+32-bit targets, keeping clmul32 out of line is likely to help on
+other 32-bit configurations as well when they run into this problem,
+though it may also result in a small performance degradation in
+configurations that would benefit from inlining.
 
-The reason is related to the SOE work I mentioned in the other patch
-thread. Many Airoha SoCs also have a higher-performance IP block called
-SOE (Secure Offload Engine). I recently wrote and tested a driver for
-that block, and I am currently carrying it here: [kernel: add bonding
-LAG XFRM offload infrastructure and Airoha
-support](https://github.com/hurryman2212/OpenW1700k-test/commit/fbfe8f919f836bb62b3849f803865a4d9b8dc76f).
-With the EIP93 path I could get around 1 Gbps, while the SOE path can
-reach about 5 Gbps in my current setup. Because of that, integrating
-this EIP93 ESP packet path directly into `airoha_eth` is no longer the
-most useful direction for Airoha Ethernet.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+---
+ lib/crypto/gf128hash.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That said, SOE exists only on some Airoha SoCs. EIP93 can still be
-useful on other platforms as a look-aside ESP packet offloader, but I
-think that needs a cleaner infrastructure than this series had. The
-look-aside offloader should be able to live as a separate module, not be
-tied directly to one specific netdev driver, while still allowing
-compatible netdevs to attach it into the XFRM path. I think that needs a
-more general infrastructure extension, so I would rather revisit the
-EIP93 work later on top of that kind of model.
-
-
-Sincerely,
-Jihong Min
-
+diff --git a/lib/crypto/gf128hash.c b/lib/crypto/gf128hash.c
+index 2650603d8ba8..8dcdf5ec98be 100644
+--- a/lib/crypto/gf128hash.c
++++ b/lib/crypto/gf128hash.c
+@@ -109,7 +109,7 @@ static void clmul64(u64 a, u64 b, u64 *out_lo, u64 *out_hi)
+ #else /* CONFIG_ARCH_SUPPORTS_INT128 */
+ 
+ /* Do a 32 x 32 => 64 bit carryless multiplication. */
+-static u64 clmul32(u32 a, u32 b)
++static noinline_for_stack u64 clmul32(u32 a, u32 b)
+ {
+ 	/*
+ 	 * With 32-bit multiplicands and one term every 4 bits, there are up to
+-- 
+2.39.5
 
 
