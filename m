@@ -1,72 +1,62 @@
-Return-Path: <linux-crypto+bounces-25062-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25064-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id zIRGA3lvKmoqpQMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25062-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 10:19:05 +0200
+	id HqSdBB52KmropgMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25064-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 10:47:26 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E730A66FC72
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 10:19:03 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB46366FFDA
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 10:47:24 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gondor.apana.org.au header.s=h01 header.b=K4EWc5Df;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25062-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25062-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gondor.apana.org.au header.s=h01 header.b=ewanb71h;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25064-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25064-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=apana.org.au;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 377423017F92
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 08:19:01 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id DCA5D3003497
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 08:47:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816D0377020;
-	Thu, 11 Jun 2026 08:18:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C51D3BAD8B;
+	Thu, 11 Jun 2026 08:47:18 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F9A372B32;
-	Thu, 11 Jun 2026 08:18:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4D8F3BAD94;
+	Thu, 11 Jun 2026 08:47:15 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781165937; cv=none; b=eQQREdmA9u+U8LwOuIYNf/FWxVvlYkCwhXPugSXmaPTZvvTgnptzoAiF43OgddWgP+3FqlOdyTRwl7T7mEF3Sc3u0oSWaMbztV0j0KzDIUS97F510G6uVpMrq+P5ObIEMx/PHzr+uhhiKAPbax6mjZMbcfTqbhUSefwxXoUSP+4=
+	t=1781167637; cv=none; b=LZFvL3TBr/kTKVSiHdfU+vakUq/L3Bj7jKK/Xlu5DlhWzMGGQbPPfJ1yaidKJ37RVtXCjD3X0tcBwygs4Ywod14DGEWOaKZP0tYZnmdvBoJqnrV1mQ6LqWtOLgPFPzEKQy03fqQoeYai1UchqDylChpEDmOCfz4Cjf5Jcz3Blms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781165937; c=relaxed/simple;
-	bh=5G70vOCM2WZ3J9uoB6jY52+G26GMBhwcbbbSTI1xENg=;
+	s=arc-20240116; t=1781167637; c=relaxed/simple;
+	bh=p3VFzluSG4KUtmK2o4PmhRNpzIz4XrdG4befu3O85zM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rhwEAcdwwOVOopUtSeYTpjCuVhfk/mjRBn9I0wek2OlM1aMe35OoRAHnV6HRidmQ04IxqF9GezlnnOV88k5l6FtZF/qGcYwfoBWiIJ+lG0e1kHC3f4XGJhX82FchozLvYx8xDa/ntF50hyXhHQwE+dQKq1NUjJH5v/88VFpEoYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=K4EWc5Df; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=ohBUZV8XCtAwBq6XJtuJ7NlZzz+iPMeVccriOzMoofytfhsOttnwQZOrqCSj5e9LOB3+2BKwMy6BhbGgvh99VqaLU2t4roCroRLEeazmhbL1PFKPYkkynkTKmBeoJV4OCGHs0iQWWPBBX1ISoZS0XKHQ858fTquvbNqMAfyh5Uc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=ewanb71h; arc=none smtp.client-ip=180.181.231.80
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=O+nCbDPXlUZ+LQVSkJK2EmiKnCMOMg1kYFQHMYzV0XE=; 
-	b=K4EWc5DfQkLYPA/nqUw8gHig8REgh1vnQbRQaqlTGtv+kFyrtGPsPFKYihqNzPCrkgRfk2Wxo+7
-	w8cIT7gL7sORrSQVroRuV2nKS/VoWEpPNlyfcw91XdcEPucYijfTCNU1NAE+F+jBRn0/2aIRqld51
-	RmlHucWV4yuAdGzE60o2H6vqrdVnM2mMgZukqdPGhcymdX9Y5mulCrzvfGYWZqwaFRs/1lyaGklqM
-	lBobVM8gsy9JDWr3eIjho2QWVGwQHqUg10zqlz855pe415IYr3XgsqX8r+EDqhGfYcLV4f5+XvAoZ
-	tCZhvkJqWHCtmjicY3V6zuskUOkNQrHJC3Hg==;
+	from:content-type:reply-to; bh=sKVfby74oDjxfTtZORtOiAzRAVYhFnZVQ82kmcDTCDI=; 
+	b=ewanb71h8n4GjOKPrbT8Hfaju1SItPx3fUZ+cOX6wMpTbQUd0M+yOc2MoRc0VBxWaAlLtvm/5J+
+	cc4utsZeVhST+K5QRVFeu49BsCEXcdd71p/KN7ZlfMLwqk+jtl8W6kz9m6sH2C9ppLmIx7UK7eP1A
+	h6Qfn0UpLniYL6JwdObQXR9vgYY7JCb2EnMlKYyIVtaa4YMoTgGVxeB1Ys/1ZvqoAEeFvHpfotQLe
+	zjMpJAECDaN7thuCC7iMxG6NL6Ih3H3kQCjox8qU7HtmuPJ/JndNq6GNEcZlxg6K5/FCYxHhVyYjF
+	WctMgSxbAEL6o+Br79udaVAxg/lmYp9Wjmhg==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.98.2 #2 (Debian))
-	id 1wXacg-00000004Wyj-3bPC;
-	Thu, 11 Jun 2026 16:18:47 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 11 Jun 2026 16:18:46 +0800
-Date: Thu, 11 Jun 2026 16:18:46 +0800
+	id 1wXb4B-00000004XR0-41FU;
+	Thu, 11 Jun 2026 16:47:13 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 11 Jun 2026 16:47:11 +0800
+Date: Thu, 11 Jun 2026 16:47:11 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Michael Bommarito <michael.bommarito@gmail.com>,
-	Olivia Mackall <olivia@selenic.com>, linux-crypto@vger.kernel.org,
-	Jason Wang <jasowang@redhat.com>, Kees Cook <kees@kernel.org>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Dan Williams <djbw@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, torvalds@linux-foundation.org,
-	alan@linux.intel.com, tglx@linutronix.de
-Subject: Re: [PATCH v3] hwrng: virtio: clamp device-reported used.len at
- copy_data()
-Message-ID: <aipvZhfvdtRxOQm0@gondor.apana.org.au>
-References: <20260531142251.2792061-1-michael.bommarito@gmail.com>
- <aio83ZWadVTiuNpR@gondor.apana.org.au>
- <20260611025916-mutt-send-email-mst@kernel.org>
- <aipn8sIAQ6Ai2sax@gondor.apana.org.au>
- <20260611035035-mutt-send-email-mst@kernel.org>
+To: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc: linux-crypto@vger.kernel.org, qat-linux@intel.com,
+	stable@vger.kernel.org, Ahsan Atta <ahsan.atta@intel.com>,
+	Laurent M Coquerel <laurent.m.coquerel@intel.com>
+Subject: Re: [PATCH] crypto: qat - validate RSA CRT component lengths
+Message-ID: <aip2D_O8EprwIL4u@gondor.apana.org.au>
+References: <20260528155854.40858-1-giovanni.cabiddu@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -75,79 +65,69 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260611035035-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20260528155854.40858-1-giovanni.cabiddu@intel.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-25062-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:mst@redhat.com,m:michael.bommarito@gmail.com,m:olivia@selenic.com,m:linux-crypto@vger.kernel.org,m:jasowang@redhat.com,m:kees@kernel.org,m:borntraeger@linux.ibm.com,m:virtualization@lists.linux.dev,m:linux-kernel@vger.kernel.org,m:djbw@kernel.org,m:mingo@redhat.com,m:hpa@zytor.com,m:torvalds@linux-foundation.org,m:alan@linux.intel.com,m:tglx@linutronix.de,m:michaelbommarito@gmail.com,s:lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	FREEMAIL_CC(0.00)[gmail.com,selenic.com,vger.kernel.org,redhat.com,kernel.org,linux.ibm.com,lists.linux.dev,zytor.com,linux-foundation.org,linux.intel.com,linutronix.de];
+	TAGGED_FROM(0.00)[bounces-25064-lists,linux-crypto=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:giovanni.cabiddu@intel.com,m:linux-crypto@vger.kernel.org,m:qat-linux@intel.com,m:stable@vger.kernel.org,m:ahsan.atta@intel.com,m:laurent.m.coquerel@intel.com,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,gondor.apana.org.au:dkim,gondor.apana.org.au:mid,gondor.apana.org.au:from_mime]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,intel.com:email,gondor.apana.org.au:dkim,gondor.apana.org.au:mid,gondor.apana.org.au:from_mime,apana.org.au:url,apana.org.au:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E730A66FC72
+X-Rspamd-Queue-Id: EB46366FFDA
 
-On Thu, Jun 11, 2026 at 03:58:17AM -0400, Michael S. Tsirkin wrote:
-> On Thu, Jun 11, 2026 at 03:46:58PM +0800, Herbert Xu wrote:
-> > On Thu, Jun 11, 2026 at 03:30:14AM -0400, Michael S. Tsirkin wrote:
-> > > On Thu, Jun 11, 2026 at 12:43:09PM +0800, Herbert Xu wrote:
-> > > > On Sun, May 31, 2026 at 10:22:51AM -0400, Michael Bommarito wrote:
-> > > > >
-> > > > > +	size = min_t(unsigned int, size, avail - vi->data_idx);
-> > > > > +	idx = array_index_nospec(vi->data_idx, sizeof(vi->data));
-> > > > > +	memcpy(buf, vi->data + idx, size);
-> > > 
-> > > All the "malicious device" things are confusing. Spectre things -
-> > > doubly so.
-> > > 
-> > > So if an access is speculated then CPU might speculate feeding a kernel
-> > > secret into RNG. And then the speculated RNG value maybe can be also
-> > > speculatively be used by some kernel code as an index
-> > > to trigger a cache access, finally leaking the secret?
-> > > 
-> > > Maybe?
-> > 
-> > The way Spectre works is if you have an actual instruction using
-> > idx directly.  I don't see how that translates to memcpy.
+On Thu, May 28, 2026 at 04:57:44PM +0100, Giovanni Cabiddu wrote:
+> The generic RSA key parser (rsa_helper.c) bounds each CRT component (p,
+> q, dp, dq, qinv) by the modulus size n_sz, but qat_rsa_setkey_crt()
+> allocates half-size DMA buffers (key_sz / 2) and right-aligns each
+> component with:
 > 
-> I am not sure it has to be direct:
+>     memcpy(dst + half_key_sz - len, src, len)
 > 
-> if (malicious_idx > SIZE)
-> 	return;
-> src += malicious_idx;
+> When a CRT component is larger than half_key_sz the subtraction
+> underflows and memcpy writes past the DMA buffer, causing memory
+> corruption.
+> 
+> Add a len > half_key_sz check next to the existing !len check for each
+> of the five CRT components so the driver falls back to the non-CRT path
+> instead of writing out of bounds.
+> 
+> Fixes: 879f77e9071f ("crypto: qat - Add RSA CRT mode")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+> Reviewed-by: Ahsan Atta <ahsan.atta@intel.com>
+> Reviewed-by: Laurent M Coquerel <laurent.m.coquerel@intel.com>
+> Tested-by: Laurent M Coquerel <laurent.m.coquerel@intel.com>
+> ---
+>  drivers/crypto/intel/qat/qat_common/qat_asym_algs.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 
-Wait but vi->data_idx isn't even under the hypervisor's control.
-
-It's an index maintained by our own driver.  So how can it be
-malicious?
-
-Cheers,
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
