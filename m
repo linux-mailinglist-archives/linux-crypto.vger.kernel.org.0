@@ -1,60 +1,60 @@
-Return-Path: <linux-crypto+bounces-25049-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25048-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 2FrLM4tmKmoIowMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25049-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 09:40:59 +0200
+	id vXwIMHxmKmr9ogMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25048-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 09:40:44 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D44A66F76A
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 09:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ADA366F758
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 09:40:44 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=bootlin.com header.s=dkim header.b=2iXBmCCN;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25049-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25049-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=bootlin.com header.s=dkim header.b=YiGKM7hg;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25048-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25048-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=reject) header.from=bootlin.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 83C14325FAA1
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 07:37:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4F4F4324DD94
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 07:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF29E368D57;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D97368296;
 	Thu, 11 Jun 2026 07:36:58 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8E4366049;
-	Thu, 11 Jun 2026 07:36:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D9443655E9
+	for <linux-crypto@vger.kernel.org>; Thu, 11 Jun 2026 07:36:57 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781163418; cv=none; b=SvZ7qWlTT23jqOh8+VGpe7DnsAuKoHLvbuhABy9mL3cINQyOmGQNf3LQM47SjVQZYKijgrBhKZHi9Y5W3rTfagFXvWKaIgD2W10RWrHWYacJJq7QG8ECXXhQ5Oz6d4QYuvmHU5l96+iYAP2gK9lTf/vHgE/JSPHJcb8Uhltarmg=
+	t=1781163418; cv=none; b=Xim0SRKsqQCPZAtqOMEVxf0/YQknbEcm5EC5TuIrZb2wFGrCNtrNzSlGzrqGQyUzFAqVV3ENTl/3A70KdHSUKSpuE5LcO0bgf+/6hwLA+sZHPHFmaSBB82UpTi+QRp06rIx2CUVR6bfvVgOzKY2y1kYopu0NmumG8EJ0VE/+RPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1781163418; c=relaxed/simple;
-	bh=PCm+/hfaLwohrAvRc5ONSp8f9KBvzp30IozA6bw/3ec=;
+	bh=UejnX9Pin+yT4V22urOfMFmOlcGGliOwuKA+6ZhJMS0=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=PbsgLPCkWIsEkqmPOJs26B1m1YoJJb0owA8sG3gOqOE0c7cGPnEY6js00jK3NiaBRFqYq3qcpCgPrOsu+lIzz8fVRhRN7NVjifGr0W+2ISUx9ux1i7fFec8CskWDIo2XTOp1XCCpqk+o7Vhy6MX/0oRBRo9pDkjKKigL6ljItS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=2iXBmCCN; arc=none smtp.client-ip=185.171.202.116
+	 In-Reply-To:To:Cc; b=REbZWUtPQ1IlxT4u0fG33xv15GefLEO+xIHdij8GK7dH3zMO4qIsdy1SCvurkxOFKPriSaYoeU5goUEYJIf24X8NhkH/8SUb9VCrB3y3/mJEhP7yvMpb/sLMSTYCM1xfzvt8gKZC9NO+CdUM0CcYYQcjoeoKMQP7H8EubxCbgbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=YiGKM7hg; arc=none smtp.client-ip=185.246.85.4
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id 463C0C49F65;
-	Thu, 11 Jun 2026 07:36:55 +0000 (UTC)
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 137C24E42E16;
+	Thu, 11 Jun 2026 07:36:54 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 0A2575FF03;
+	by smtpout-01.galae.net (Postfix) with ESMTPS id DD19F5FF03;
 	Thu, 11 Jun 2026 07:36:53 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C51DC106B9E55;
-	Thu, 11 Jun 2026 09:36:51 +0200 (CEST)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C5668106B9E54;
+	Thu, 11 Jun 2026 09:36:52 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1781163412; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1781163413; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=fVre01GCa6nsUsOcI8TqOEm5sXAqUPWD2JB5TDQ/zgA=;
-	b=2iXBmCCNZCccxO2Ajcx73T8gavLd68EG9EQ6Phj3dkQjSQc2o8HuJ7Tuk4tPb8Z3EtEMe0
-	iEdnuwOn+4gMSPc8brWSJHTwUrU7Bc4McQNEf7SruJhlrRU88p5vJzS+pcNtPqoZU8OqD7
-	5Wz+yu8qyZqNhhx1f6frXj4lH896npzv/OqRMFVm7/l/+GKJM7Io3JJ1MmfO5H8BYnARhh
-	e9F7AfeBNz3ipGcrdi1JXY++mxit3Uj7YSH859+u+LtGh5GzoUJxFui7S7siCyOgEv4Hiz
-	R5HpssA4HNClO4vJ0j7MAMFWG2KBZy7/qy1FNSBI5XKRuslIR2GlNjKQHpYUCQ==
+	bh=zPu+L7NALdnBFGYxiIERs6XyteONnwsG0/uMJabYvOc=;
+	b=YiGKM7hgLOOykUpGOkPFfxGtdBlGMmSjIu8D5RiJzL3Fk7tirLWg5FZgjVbU071F1RqXRi
+	bJEpK9EhBD02CZ4oZwc5SyfrWdguiZeBAdJ7x8rCb0qKmCg/44KSRqgIS3YIFADzpnVzD2
+	V1OtG5icBrSRT36dlMtqgayWGqZRRLTA8pr2k2NWCGH+641t8GkbGmh/Dp2cjZN4tXvp+U
+	VJiSTKPBSrXD+3+TiBw8I1lvUomGTghdexuh2bTh5UyGEXa9Nr3gvBjEpGyL4Ix9j3VlIo
+	kJ2dFR4GwWLmlZl0ipSVxB1hnG8vog6x9LsCaMr3+3ntOezictaIb2v6CHsn2Q==
 From: Paul Louvel <paul.louvel@bootlin.com>
-Date: Thu, 11 Jun 2026 09:36:03 +0200
-Subject: [PATCH v2 09/19] crypto: talitos/hash - Convert to {init,exit}_tfm
- type-specific API
+Date: Thu, 11 Jun 2026 09:36:04 +0200
+Subject: [PATCH v2 10/19] crypto: talitos/skcipher - Convert to
+ {init,exit}_tfm type-specific API
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -63,7 +63,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260611-7-1-rc1_talitos_cleanup-v2-9-aa4a813ce69b@bootlin.com>
+Message-Id: <20260611-7-1-rc1_talitos_cleanup-v2-10-aa4a813ce69b@bootlin.com>
 References: <20260611-7-1-rc1_talitos_cleanup-v2-0-aa4a813ce69b@bootlin.com>
 In-Reply-To: <20260611-7-1-rc1_talitos_cleanup-v2-0-aa4a813ce69b@bootlin.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>, 
@@ -73,11 +73,11 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Christophe Leroy <chleroy@kernel.org>, linux-crypto@vger.kernel.org, 
  linux-kernel@vger.kernel.org, Paul Louvel <paul.louvel@bootlin.com>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1781163398; l=2070;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1781163398; l=1562;
  i=paul.louvel@bootlin.com; s=20260313; h=from:subject:message-id;
- bh=PCm+/hfaLwohrAvRc5ONSp8f9KBvzp30IozA6bw/3ec=;
- b=SjAQ7c/xkhNk3gqMNPFyxUZckfMKnGq39BCWINDDrwgM74s75Gu9j2lWljKvoTRgmwPTySS2L
- F30wnUyNYYwADfn1aylpRC6lSmkbXhRKX1i81MZ9CRfIZElNNO9woSM
+ bh=UejnX9Pin+yT4V22urOfMFmOlcGGliOwuKA+6ZhJMS0=;
+ b=UUYZ+o3AU4ARSSw8QcV4ySlUsI2xlIjDY/yWf6nU/Njv7H8UPViDSRm53nct1OrR17I2O4WSI
+ ZlF+Q5MW9KYDCirAz52R/Dp9gf5KoukQvsvKImJZZ1KWxgGBZAFX51Z
 X-Developer-Key: i=paul.louvel@bootlin.com; a=ed25519;
  pk=eLW50NT18UAvUT5cAcYf88zNbBCZDLFXuptpyLVhVIU=
 X-Last-TLS-Session-Version: TLSv1.3
@@ -90,7 +90,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-25049-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25048-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -115,7 +115,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[bootlin.com:dkim,bootlin.com:email,bootlin.com:mid,bootlin.com:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3D44A66F76A
+X-Rspamd-Queue-Id: 3ADA366F758
 
 Since commit 6eed1e3552fc0 ("crypto: api - Mark cra_init/cra_exit as
 deprecated"), both cra_{init,exit} are deprecated.
@@ -125,54 +125,38 @@ Use {init,exit}_tfm instead.
 Reviewed-by: Christophe Leroy (CS GROUP) <chleroy@kernel.org>
 Signed-off-by: Paul Louvel <paul.louvel@bootlin.com>
 ---
- drivers/crypto/talitos/talitos-hash.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ drivers/crypto/talitos/talitos-skcipher.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/talitos/talitos-hash.c b/drivers/crypto/talitos/talitos-hash.c
-index 76be6b6c6fcc..60e7f278243e 100644
---- a/drivers/crypto/talitos/talitos-hash.c
-+++ b/drivers/crypto/talitos/talitos-hash.c
-@@ -530,13 +530,13 @@ static int ahash_setkey(struct crypto_ahash *tfm, const u8 *key,
- 	return 0;
- }
- 
--static int talitos_cra_init_ahash(struct crypto_tfm *tfm)
-+static int talitos_cra_init_ahash(struct crypto_ahash *tfm)
- {
--	struct crypto_alg *alg = tfm->__crt_alg;
-+	struct ahash_alg *alg = crypto_ahash_alg(tfm);
- 	struct talitos_crypto_alg *talitos_alg;
--	struct talitos_ctx *ctx = crypto_tfm_ctx(tfm);
-+	struct talitos_ctx *ctx = crypto_ahash_ctx(tfm);
- 
--	talitos_alg = container_of(__crypto_ahash_alg(alg),
-+	talitos_alg = container_of(alg,
- 				   struct talitos_crypto_alg,
- 				   algt.alg.hash);
- 
-@@ -545,6 +545,11 @@ static int talitos_cra_init_ahash(struct crypto_tfm *tfm)
+diff --git a/drivers/crypto/talitos/talitos-skcipher.c b/drivers/crypto/talitos/talitos-skcipher.c
+index f80373610aa4..4c03573efb0a 100644
+--- a/drivers/crypto/talitos/talitos-skcipher.c
++++ b/drivers/crypto/talitos/talitos-skcipher.c
+@@ -232,6 +232,11 @@ static int talitos_cra_init_skcipher(struct crypto_skcipher *tfm)
  	return talitos_init_common(ctx, talitos_alg);
  }
  
-+static void talitos_cra_exit_ahash(struct crypto_ahash *tfm)
++static void talitos_cra_exit_skcipher(struct crypto_skcipher *tfm)
 +{
-+	talitos_cra_exit(crypto_ahash_tfm(tfm));
++	talitos_cra_exit(crypto_skcipher_tfm(tfm));
 +}
 +
- static struct talitos_alg_template hash_driver_algs[] = {
- 	{	.type = CRYPTO_ALG_TYPE_AHASH,
- 		.alg.hash = {
-@@ -792,8 +797,8 @@ int talitos_register_hash(struct device *dev)
- 		ahash_alg = &hash_driver_algs[i].alg.hash;
- 		alg = &ahash_alg->halg.base;
+ static struct talitos_alg_template skcipher_driver_algs[] = {
+ 	{	.type = CRYPTO_ALG_TYPE_SKCIPHER,
+ 		.alg.skcipher = {
+@@ -375,11 +380,11 @@ int talitos_register_skcipher(struct device *dev)
+ 		skcipher_alg = &skcipher_driver_algs[i].alg.skcipher;
+ 		alg = &skcipher_alg->base;
  
--		alg->cra_init = talitos_cra_init_ahash;
 -		alg->cra_exit = talitos_cra_exit;
-+		ahash_alg->init_tfm = talitos_cra_init_ahash;
-+		ahash_alg->exit_tfm = talitos_cra_exit_ahash;
- 		ahash_alg->init = ahash_init;
- 		ahash_alg->update = ahash_update;
- 		ahash_alg->final = ahash_final;
+ 		if (has_ftr_sec1(priv))
+ 			alg->cra_alignmask = 3;
+ 
+ 		skcipher_alg->init = talitos_cra_init_skcipher;
++		skcipher_alg->exit = talitos_cra_exit_skcipher;
+ 		skcipher_alg->setkey = skcipher_alg->setkey ?: skcipher_setkey;
+ 		skcipher_alg->encrypt = skcipher_encrypt;
+ 		skcipher_alg->decrypt = skcipher_decrypt;
 
 -- 
 2.54.0
