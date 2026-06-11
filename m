@@ -1,187 +1,219 @@
-Return-Path: <linux-crypto+bounces-25040-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25041-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id pP1GBB5kKmqVogMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25040-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 09:30:38 +0200
+	id EyvZOZVlKmrbogMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25041-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 09:36:53 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7560266F63F
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 09:30:37 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C226B66F6D4
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 09:36:52 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=fPBMBiDQ;
-	dkim=pass header.d=redhat.com header.s=google header.b=Zp76OBJ5;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25040-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25040-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=redhat.com;
+	dkim=pass header.d=bootlin.com header.s=dkim header.b=J7MRpvM1;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25041-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25041-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=bootlin.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 494D730221D8
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 07:30:27 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D6E8A3004619
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 07:36:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 439C2364028;
-	Thu, 11 Jun 2026 07:30:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4FD367B9E;
+	Thu, 11 Jun 2026 07:36:47 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC3F6362152
-	for <linux-crypto@vger.kernel.org>; Thu, 11 Jun 2026 07:30:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF70368942;
+	Thu, 11 Jun 2026 07:36:45 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781163026; cv=none; b=JTmGfHoUGzbLxJ94R6LBrnsTVyFyekV4Mpe6e2jMFt4EZr0c+JEYvL9PUeBFx01PaEUftDWF58tEUobDroCPgEC/Qj/HEd2bQfGUS7zVDURTo/+owZyKIsFuDxyrJg3yw1GjB9MJ5qwZMc3IeOce5Mf0CwtYB/Tve7rpBXXqPVU=
+	t=1781163407; cv=none; b=u1H2jf5HWD00bX40L1lcMGCwJ+dPk3/Lt9JqVLGUFDe1/oceUjTfzAgNkkzpysgcMDCzOOYrYRx3FKP1z/16B1UiT14wtuP2NaJmBHyCFZ1K4gDKVoSX/X8xZIMVDY78BCmRu9Zcz4795WaI/q3g4lDoRQ1vCRtBRQt+QMNQc/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781163026; c=relaxed/simple;
-	bh=42msgMb3P+btIm3Tjqc0kuZBe+w26HUqseSgoftktpY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rDYnzH6ScGt5Fz7lyjDN484nY/pO2fVu789EgTd3sAQN0WsiN2CM+pCm7ogXd8mTAF4e8FjCWQB+eLRi7QNdMODz59dXIIBLQy8C+/GPvmy8PYIe8UlNb2qVpZkFm2eSXHtMUDgvsoSGt1Qv+Kavtj04b34kRiQjCPMqG05vD8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fPBMBiDQ; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zp76OBJ5; arc=none smtp.client-ip=170.10.133.124
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1781163024;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QHOpC92ZLUKoaDH3aPL88/GHfZMM5nBt86vbyTmpcKE=;
-	b=fPBMBiDQSIT7ejtPtX5KAKlopa5gNWyapcCBqB5S99p2rzFW2oXPnazuKrEbbgenQHqOjB
-	b9BNJ8WhAV10beSOX4WSwJX3OoC2qe7PtU3GMrpZUPgO7cY6BUuxB+2GwBySMKeOvw5XId
-	a8Ob34x3tauspT4Hdw30uq5nXvtPMvQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-240-EnY2q6G8PhaxzVjqaXO8zQ-1; Thu, 11 Jun 2026 03:30:22 -0400
-X-MC-Unique: EnY2q6G8PhaxzVjqaXO8zQ-1
-X-Mimecast-MFC-AGG-ID: EnY2q6G8PhaxzVjqaXO8zQ_1781163022
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-46016bedbaaso3722483f8f.1
-        for <linux-crypto@vger.kernel.org>; Thu, 11 Jun 2026 00:30:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1781163022; x=1781767822; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QHOpC92ZLUKoaDH3aPL88/GHfZMM5nBt86vbyTmpcKE=;
-        b=Zp76OBJ5NUD+C4YhbPL7OwX2M2SD4rLosky/UP0EIqnIjW2RDnboVKirHjL67abWtf
-         t/z3ydYuUX12Hzi8N/CjyMQiU2dUO3J0mKdSWDXuBH7dSDLLzuE/IxJqQ+8soCE3SNnT
-         qsyT05WvRpCbXqqxMoR2He00dHrSKOYZbaGhmffUGqM+7MPDJZYoR6TC2C5MaXk722iC
-         WoDIW49Y5pxy+ys9Oh62O645k7fURRwCHpZequ2gfU4WPkhJB4RKQpm9TB6phCxeECpr
-         4FxHDiLt+80gMnRZdBYR9hnSKfG6NwWc8ywkND8xFS1E1hLuBkJwzliRNpxgQp8Mimrj
-         uIHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1781163022; x=1781767822;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QHOpC92ZLUKoaDH3aPL88/GHfZMM5nBt86vbyTmpcKE=;
-        b=fs4kpiEr3Dx8aOk/Hk5w6Q2TVvBV75wmE70KInrD0MZHGHsiv9VjK1zOl28amdNk2a
-         +kjsZnMuCxezU5/R67DMMuoUytn54Eh2Md6XF2V3S9RSrLlLRIt74i71lWBDYI9tZw2z
-         DkHTn0/7xRZcbftZl/xx65T/65iJFhD79MGDlogGZhgsXB4lFL2XUZ9PyJmK9ANPa6wz
-         n+LpH9uNjp8IULfa9rKaoeNXZzz4QbOCvcNl7Z1fsFP/JNsO29AabdifBbTPnbsxxWR0
-         UrxFEFldO6MORQ5frZAJgd6f1d/8qF/5uvglhAlJhR1F+dkHRIA9KE1oKGJNyPy3ftxu
-         DjJA==
-X-Forwarded-Encrypted: i=1; AFNElJ9Drjo1R3fPpObscTPR95BwxKbUxhsOjigo+nXaiodaGdacrlFwVFsMTcif9ujjYkuznEnM4QDl9p8pCd4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6coGBQ0LOUG5b+t07X/jO1kuholTozVLr9G63G/FifjGGqCjX
-	ds2OD1xftNG85zWguvQBRBUPKqif75oSaan8pcUXC26wXKd17VmoGcvPk6zXC/aXj/Ya378KbSb
-	bx3TEv23vj7h98+zIRohMyvJSXCPlhXiWBGMBbsEqBe9SgWfPOvuTK/+vsKfa68Mk7g==
-X-Gm-Gg: Acq92OGTiHupeLQHilgUwGe+xL4OXZcH35Dq9bR73F4TqJEGXwc1mkAI7efMFKYqvO0
-	QVngjILL3AfQgl/DFs37CL0yrYWaGO3a7/o/d2a8TOyuM8R8w7gHBnylHliP+ZeHazPx3rj2Arx
-	kQ/tG5Atr+yWFIBCLPtQU4hN1LRW2BlA2SFelbuePgVeUJ7ed4lCOlBdDONHA+rhJwh86mc8nAi
-	5D17xSOxgzv4PQrRFW8+7/TBTc3tY0Lti01mGXalMmr0l00GMYWVz6lz7pPysgVNDTXceJrYA9J
-	zinmAaQwmCrVnuUNeksks7grG6iUybbHoyv48ntenUz8FJy45LkNLlb7EjF0TUmvcX5AKdhUUEu
-	VX8WsZ4cfIQFEnPTSoCeIRdDY3icxw/fOPfjvBvnfFLZpr5dOlTq7+g==
-X-Received: by 2002:a05:6000:220b:b0:460:1643:caf7 with SMTP id ffacd0b85a97d-460677acf24mr2526965f8f.27.1781163019836;
-        Thu, 11 Jun 2026 00:30:19 -0700 (PDT)
-X-Received: by 2002:a05:6000:220b:b0:460:1643:caf7 with SMTP id ffacd0b85a97d-460677acf24mr2526879f8f.27.1781163019248;
-        Thu, 11 Jun 2026 00:30:19 -0700 (PDT)
-Received: from redhat.com (IGLD-80-230-85-71.inter.net.il. [80.230.85.71])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4601f2e4b18sm62096991f8f.10.2026.06.11.00.30.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2026 00:30:18 -0700 (PDT)
-Date: Thu, 11 Jun 2026 03:30:14 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Michael Bommarito <michael.bommarito@gmail.com>,
-	Olivia Mackall <olivia@selenic.com>, linux-crypto@vger.kernel.org,
-	Jason Wang <jasowang@redhat.com>, Kees Cook <kees@kernel.org>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Dan Williams <djbw@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, torvalds@linux-foundation.org,
-	alan@linux.intel.com, tglx@linutronix.de
-Subject: Re: [PATCH v3] hwrng: virtio: clamp device-reported used.len at
- copy_data()
-Message-ID: <20260611025916-mutt-send-email-mst@kernel.org>
-References: <20260531142251.2792061-1-michael.bommarito@gmail.com>
- <aio83ZWadVTiuNpR@gondor.apana.org.au>
+	s=arc-20240116; t=1781163407; c=relaxed/simple;
+	bh=45mA4XoHbVDMLCYsFGSDlEsmkzVdocVt46n2mVtkeGc=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Itt2OTkHl1cPrd8BlyMBU2FH7KYliJkp9UvmuOlJHqf6NQ2Exyp9KmtTOeyHoH8plyYSMXucajdShe9a9QuA99bE3XQZG3uaL7iyq4AW9aHk/qPsBZkX1mMP2TL5FQHHDB6K2PDMEHE02PdHV4t0BFBgZUJqPxUIdZ5Rf+HOWqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=J7MRpvM1; arc=none smtp.client-ip=185.246.85.4
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id 9FA7B4E42DF5;
+	Thu, 11 Jun 2026 07:36:43 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 73E8F5FF03;
+	Thu, 11 Jun 2026 07:36:43 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 1195E106B98A2;
+	Thu, 11 Jun 2026 09:36:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1781163402; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding; bh=nVMWlVGnvGK9dFz65T+Gr4iwONiDyFcs+A/j17EAPiE=;
+	b=J7MRpvM1pwy924YnunDUSOR5AquWku30534yoH2YIYwJKMSKsfyZKUnGu8ywhWUh4u+Ibt
+	AT8UZQZWndL2U8bhvZ3adGiPbATTrziZPKBM6Bkb0u4s5ppGEnkWXQlHFT5gmzFti/egE5
+	/Y3v5oI2Qpnd2vUD+/SA6MQgoPvUoETlJddOPNWIAos1J5tqn5modf/J9ryY2vK9hF8+rt
+	YaopdVVxQgVK+ZHwiMtJLk1ot44d7v1jsIDa/u5BzrU0hyI10/hvzZ/rYK+YZLDdvws1SU
+	DqrOP8d6fcChm1teFNunRZbKKJznTgeRAY1iUZoz9B8mCbxmfZ7LlPx9BzIe4w==
+From: Paul Louvel <paul.louvel@bootlin.com>
+Subject: [PATCH v2 00/19] crypto: talitos - Driver cleanup
+Date: Thu, 11 Jun 2026 09:35:54 +0200
+Message-Id: <20260611-7-1-rc1_talitos_cleanup-v2-0-aa4a813ce69b@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aio83ZWadVTiuNpR@gondor.apana.org.au>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/3WQy26DMBBFfwV5XVeMeRlW/Y8qQmN7SFwRnNoGN
+ Yr49xiIqm66vNKdM2fmwQJ5S4F12YN5WmywbkpBvGVMX3A6E7cmZSZyUecVSN5w4F5DH3G00YV
+ ej4TTfOOtKADrkkQ7IEvTN0+D/dnJn6cjh1l9kY4b7tXw9D2nlfGoMYWBuHbXq41dZpRU7SBEI
+ 4uCmg07lCVWIBCBpMRaVKpCI9lf1WS+i+YlV87F0U59gsdf60C6V/M5mXEooG7J5I0xulsKtkl
+ ebIjO3/dvLLA7HTzx/+EL8JxrBWhqbQjL9uO1+T1dwk7ruj4BP4YvWGUBAAA=
+X-Change-ID: 20260518-7-1-rc1_talitos_cleanup-9231a64e29fa
+To: Herbert Xu <herbert@gondor.apana.org.au>, 
+ "David S. Miller" <davem@davemloft.net>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Herve Codina <herve.codina@bootlin.com>, 
+ Christophe Leroy <chleroy@kernel.org>, linux-crypto@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Paul Louvel <paul.louvel@bootlin.com>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1781163398; l=4812;
+ i=paul.louvel@bootlin.com; s=20260313; h=from:subject:message-id;
+ bh=45mA4XoHbVDMLCYsFGSDlEsmkzVdocVt46n2mVtkeGc=;
+ b=Ht+7vRLFCyelrnAB1dqFJnLWnbeV5yQKMsuTV1F6M25PZxeaMuLGg4jvtWmGeeTIFxxhjmkGI
+ /7jjhw+X2p4B3zuUeoEOLZaTGTMTDv4KyYc9zbOmOHqHbt5dgq64y9V
+X-Developer-Key: i=paul.louvel@bootlin.com; a=ed25519;
+ pk=eLW50NT18UAvUT5cAcYf88zNbBCZDLFXuptpyLVhVIU=
+X-Last-TLS-Session-Version: TLSv1.3
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-25041-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-25040-lists,linux-crypto=lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:herbert@gondor.apana.org.au,m:michael.bommarito@gmail.com,m:olivia@selenic.com,m:linux-crypto@vger.kernel.org,m:jasowang@redhat.com,m:kees@kernel.org,m:borntraeger@linux.ibm.com,m:virtualization@lists.linux.dev,m:linux-kernel@vger.kernel.org,m:djbw@kernel.org,m:mingo@redhat.com,m:hpa@zytor.com,m:torvalds@linux-foundation.org,m:alan@linux.intel.com,m:tglx@linutronix.de,m:michaelbommarito@gmail.com,s:lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[mst@redhat.com,linux-crypto@vger.kernel.org];
-	FREEMAIL_CC(0.00)[gmail.com,selenic.com,vger.kernel.org,redhat.com,kernel.org,linux.ibm.com,lists.linux.dev,zytor.com,linux-foundation.org,linux.intel.com,linutronix.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:thomas.petazzoni@bootlin.com,m:herve.codina@bootlin.com,m:chleroy@kernel.org,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:paul.louvel@bootlin.com,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[bootlin.com:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[paul.louvel@bootlin.com,linux-crypto@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mst@redhat.com,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[paul.louvel@bootlin.com,linux-crypto@vger.kernel.org];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ALIAS_RESOLVED(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[apana.org.au:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,bootlin.com:url,bootlin.com:from_mime,bootlin.com:dkim,bootlin.com:email,bootlin.com:mid,vger.kernel.org:from_smtp,davemloft.net:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7560266F63F
+X-Rspamd-Queue-Id: C226B66F6D4
 
-On Thu, Jun 11, 2026 at 12:43:09PM +0800, Herbert Xu wrote:
-> On Sun, May 31, 2026 at 10:22:51AM -0400, Michael Bommarito wrote:
-> >
-> > +	size = min_t(unsigned int, size, avail - vi->data_idx);
-> > +	idx = array_index_nospec(vi->data_idx, sizeof(vi->data));
-> > +	memcpy(buf, vi->data + idx, size);
-> 
-> I don't see how nospec can help here.  Please enlighten me.
+The Freescale Integrated Security Engine (SEC) aka "Talitos" driver
+implementation is a monolithic ~3800-line file that mixes SEC1 and SEC2
+hardware variants with hash, skcipher, aead and hwrng algorithm.
 
+This series reorganises the driver to improve readability and
+maintainability:
 
-All the "malicious device" things are confusing. Spectre things -
-doubly so.
+- Split the driver into a dedicated directory with separate files for
+  hash, skcipher, aead, and hwrng implementations.
 
-So if an access is speculated then CPU might speculate feeding a kernel
-secret into RNG. And then the speculated RNG value maybe can be also
-speculatively be used by some kernel code as an index
-to trigger a cache access, finally leaking the secret?
+- Modernise the crypto API usage: adopt {init,exit}_tfm (deprecated
+  cra_init/cra_exit), use CRYPTO_AHASH_ALG_BLOCK_ONLY to eliminate
+  manual partial-block buffering, and use macros to deduplicate
+  algorithm definitions.
 
-Maybe?
+- Introduce a is_sec1() helper to get rid of is_sec1 variables /
+  parameters.
 
+- Define descriptor/pointer structures for each hardware version,
+  instead of using a single structure and anonymous union.
 
+No functional changes are intended except for patch 1.
 
+This series depends on the "crypto: talitos - bug fixes" series :
+https://patch.msgid.link/20260507-bootlin_test-7-1-rc1_sec_bugfix-v3-0-c98d7589b942@bootlin.com
 
-> Thanks,
-> -- 
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Signed-off-by: Paul Louvel <paul.louvel@bootlin.com>
+---
+Changes in v2:
+- Fixed compilation warnings and errors.
+- Instead of using ops to dispatch SEC1/SEC2 variants, keep the small
+  helpers, and introduce is_sec1() inline function that can use static
+  key branching in case both hardware version are compiled.
+- Dropped the SEC1/SEC2 function variants inside the core driver file.
+- Reworded the cover letter for clarity.
+- Link to v1: https://patch.msgid.link/20260528-7-1-rc1_talitos_cleanup-v1-0-cb1ad6cdea49@bootlin.com
+
+To: Herbert Xu <herbert@gondor.apana.org.au>
+To: "David S. Miller" <davem@davemloft.net>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+---
+Paul Louvel (19):
+      crypto: talitos/hash - Use CRYPTO_AHASH_BLOCK_ONLY API
+      crypto: talitos - Move driver into dedicated directory
+      crypto: talitos - Add missing includes to driver header file
+      crypto: talitos/hwrng - Move into separate file
+      crypto: talitos - Prepare crypto implementation file splitting
+      crypto: talitos/hash - Move into separate file
+      crypto: talitos/skcipher - Move into separate file
+      crypto: talitos/aead - Move into separate file
+      crypto: talitos/hash - Convert to {init,exit}_tfm type-specific API
+      crypto: talitos/skcipher - Convert to {init,exit}_tfm type-specific API
+      crypto: talitos/aead - Convert to {init,exit}_tfm type-specific API
+      crypto: talitos/hash - Use macro for algorithm definitions
+      crypto: talitos/skcipher - Use macro for algorithm definitions
+      crypto: talitos/aead - Use macro for algorithm definitions
+      crypto: talitos - Remove alg settings in talitos_register_common()
+      crypto: talitos - Introduce is_sec1() helper with static key support
+      crypto: talitos - Replace has_ftr_sec1() with is_sec1() static key helper
+      crypto: talitos - Introduce per-SEC-version descriptor and pointer structures
+      crypto: talitos - Remove TALITOS_DESC_SIZE macro
+
+ drivers/crypto/Kconfig                    |   38 +-
+ drivers/crypto/Makefile                   |    2 +-
+ drivers/crypto/talitos.c                  | 3640 -----------------------------
+ drivers/crypto/talitos/Kconfig            |   36 +
+ drivers/crypto/talitos/Makefile           |    3 +
+ drivers/crypto/talitos/talitos-aead.c     |  657 ++++++
+ drivers/crypto/talitos/talitos-hash.c     |  691 ++++++
+ drivers/crypto/talitos/talitos-rng.c      |   93 +
+ drivers/crypto/talitos/talitos-skcipher.c |  356 +++
+ drivers/crypto/talitos/talitos.c          | 1337 +++++++++++
+ drivers/crypto/{ => talitos}/talitos.h    |  316 ++-
+ 11 files changed, 3463 insertions(+), 3706 deletions(-)
+---
+base-commit: db8b9f227833e729faf44a512aa1e88a625b5ad8
+change-id: 20260518-7-1-rc1_talitos_cleanup-9231a64e29fa
+prerequisite-change-id: 20260504-bootlin_test-7-1-rc1_sec_bugfix-13169ed07ddc:v3
+prerequisite-patch-id: 7b364911e4b8d1c1033eb14e67ed24dac6a4bc13
+prerequisite-patch-id: 2c1cd7fdd003d9a116a697efa25d1716d548389f
+prerequisite-patch-id: b12bdbf565747609e0cfe0609a42cf69b5d816a1
+prerequisite-patch-id: 72cb2bc0fc2a48a5a029b049c199f4c86085cf04
+prerequisite-patch-id: 5f1f5ad6add760161bd48875df48c0893aa12613
+prerequisite-patch-id: 934931086968229434d15a2f2358aeb7e6975a1d
+prerequisite-patch-id: 8a0b4828fc0690e0c841bc9adcc6568bb522e0e8
+prerequisite-patch-id: 1d870f32e7dbf9a8bd3b8979558544107693e0f4
+prerequisite-patch-id: 758c18d7c9fabb14bd90df62e5e8a62a6f880db4
+prerequisite-patch-id: ce6e9e585f8edc1861ae6bb8fbdd836c20cbd290
+prerequisite-patch-id: 9446dc03e442ea81c5f5b39e802e01b37da29971
+
+Best regards,
+--  
+Paul Louvel, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
