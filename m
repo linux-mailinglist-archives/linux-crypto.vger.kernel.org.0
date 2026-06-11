@@ -1,60 +1,60 @@
-Return-Path: <linux-crypto+bounces-25043-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25046-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id q+MLM5llKmrdogMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25043-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 09:36:57 +0200
+	id Q0bHEX1mKmr+ogMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25046-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 09:40:45 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05A3C66F6DC
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 09:36:57 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA4B166F75C
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 09:40:44 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=bootlin.com header.s=dkim header.b=Thpg2Mfd;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25043-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25043-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=bootlin.com header.s=dkim header.b="C97H820/";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25046-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25046-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=reject) header.from=bootlin.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 519A33001F9F
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 07:36:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5FFDF324F78D
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 07:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E833368D59;
-	Thu, 11 Jun 2026 07:36:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA73368276;
+	Thu, 11 Jun 2026 07:36:58 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F99367B6A
-	for <linux-crypto@vger.kernel.org>; Thu, 11 Jun 2026 07:36:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0132D367F3A
+	for <linux-crypto@vger.kernel.org>; Thu, 11 Jun 2026 07:36:54 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781163409; cv=none; b=ElBh3xIfN6hS8L9tfepFup7uYvjFZnBQV0XfspvoIEh7ADQ352TTRX7n4ao+VWXudTV1ZWT0BQWNAJM4Q2mS5FHTY3Vr3GIzeoo+zotg5Cy3xkZroULkyAKaeL+ZJamzqbPJZI/hG58nnJSfSbhCASWYfjWPHM7mHSgpMmyKAd8=
+	t=1781163418; cv=none; b=TDotkHV89eL8HebBYXS3vajGjmg2b36tBbipcZxE+uYLHsSUoI8DgRWVi1wbH4XQO6X399eq+DJc4iz87cVz7As1JbotQptCWi4kVJenlLYsRjwoyey22trshy3H4yvylFY+MdCVmWesakmVHEne6rmSVUgf32LUwB4tWNEqVW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781163409; c=relaxed/simple;
-	bh=AbMNTsWT4ICFxe5P1QMFr0o1DAujs2qHoBfkOxpDHAw=;
+	s=arc-20240116; t=1781163418; c=relaxed/simple;
+	bh=ZhwkxMNrbLlRGOKH79ICGkEWHub2AqZM6xi8x+7MMLo=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=JQLvqM1ztKS5DnfmPUCOXFEOsAmoXH55A/Ab9nFQ6YB5U7JCAvRCXolH3hQGagWLdf2UUZRfnXnCgrKXqRa3TnD7i2kwqGaQe8CYugrU3y+J2BGYmDg5pc4Y2aB3BxT7alhUvlBx/Thn7gKillWxfYeqFMepgVXpCTgeE2Jjjwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Thpg2Mfd; arc=none smtp.client-ip=185.171.202.116
+	 In-Reply-To:To:Cc; b=YJmYYI17nfWhiRgbclabi28HAWSOaT0xfwZ+ZeIQLD+sTTHIs4OuliirAoSqzXs6IXKTB1VMcv7M7g1ws+wjGBFo+mJdujCsVuglbtDJZoYutevCP9JuDTtVAOqi5K4T+Z5pLtUgP0UYEC7aEX9Xn8fDweVZVfT8Oz18OxoE+44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=C97H820/; arc=none smtp.client-ip=185.246.84.56
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-04.galae.net (Postfix) with ESMTPS id C2B3EC49F66
-	for <linux-crypto@vger.kernel.org>; Thu, 11 Jun 2026 07:36:47 +0000 (UTC)
+	by smtpout-02.galae.net (Postfix) with ESMTPS id C84D01A38A1;
+	Thu, 11 Jun 2026 07:36:46 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 71B385FF03;
-	Thu, 11 Jun 2026 07:36:45 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 30B65106B9E1F;
-	Thu, 11 Jun 2026 09:36:44 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 95C0B5FF03;
+	Thu, 11 Jun 2026 07:36:46 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 420E8106B9E52;
+	Thu, 11 Jun 2026 09:36:45 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1781163404; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1781163405; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=8K8qqwYMLYf2wBsVGqxOFMAz9CzVbdicwsuOzEDro/E=;
-	b=Thpg2MfdniXt42b1rw1O+IH5klkh3CQR3k1Hvv78icsSd5JGV280WKZDY6oM/ElyHEW1dC
-	fI/PjAWNrXGUCsAbfy2HAMjkb7mo4YnA9T5UVX43iY4I9ET0LozpTtKr2gK1SS2KKdSbR6
-	M9ryF8hq6hJj5hxbC8CxdMlcZ0yu/kMglXwSD/8OzMer1D44mAyXaR7e73QIxjAZE8UbF7
-	76UjxfiZiLcKnKd5R73S30KNqzzn7V5vAr7CZfTcJZakD9MslNOcpXM/G6HbZjvE9mr/TA
-	4l4ff5zjBhCBqVQ0Micd6AH8DF28hVPEBvZ+Z2FFUluQ8vhSVmODQABCGL5ROQ==
+	bh=pLer9r9C/w4e5tX9P7DiI5ZjR9vsAoGaJ188GmfbwEQ=;
+	b=C97H820/jxH/vQc+MSDI5b3XZ4A8fpynF2s04fAcXduU2FuqFL/VMOovCaHAZapwlNxE7d
+	Bs3/LUvYb8m5sN7PMTwU0j5K6dS74F0FRZLoly/jXfqHNVnmqb6O+ai90+BmoQCI5gA6tk
+	DUpM3xYevJk84C77Ew+yZdduTsrR9GihXMUCwLE5R4LWRhE9adCjp3LStS1T+ZnFIyNTvN
+	qwTKlZalAPgRh3g0KVgK30w9G7w+NB++5N0BmuT9B8uoPwwTeWuxQib5feFEBxLVgyV3PR
+	uwOqkGR3qLw2JVGn1+5bF1qYcovBwF6d7vycaJSqAFgGanlIcfUsfMwBOGXBWw==
 From: Paul Louvel <paul.louvel@bootlin.com>
-Date: Thu, 11 Jun 2026 09:35:56 +0200
-Subject: [PATCH v2 02/19] crypto: talitos - Move driver into dedicated
- directory
+Date: Thu, 11 Jun 2026 09:35:57 +0200
+Subject: [PATCH v2 03/19] crypto: talitos - Add missing includes to driver
+ header file
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -63,7 +63,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260611-7-1-rc1_talitos_cleanup-v2-2-aa4a813ce69b@bootlin.com>
+Message-Id: <20260611-7-1-rc1_talitos_cleanup-v2-3-aa4a813ce69b@bootlin.com>
 References: <20260611-7-1-rc1_talitos_cleanup-v2-0-aa4a813ce69b@bootlin.com>
 In-Reply-To: <20260611-7-1-rc1_talitos_cleanup-v2-0-aa4a813ce69b@bootlin.com>
 To: Herbert Xu <herbert@gondor.apana.org.au>, 
@@ -73,11 +73,11 @@ Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Christophe Leroy <chleroy@kernel.org>, linux-crypto@vger.kernel.org, 
  linux-kernel@vger.kernel.org, Paul Louvel <paul.louvel@bootlin.com>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1781163398; l=4762;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1781163398; l=1415;
  i=paul.louvel@bootlin.com; s=20260313; h=from:subject:message-id;
- bh=AbMNTsWT4ICFxe5P1QMFr0o1DAujs2qHoBfkOxpDHAw=;
- b=eVFzHYuvVo9YCZ3kd1gNfgCb8HMjLnfET2GICRYGZH/brE1Rk//9X7QWllQJuM78+HDmrFGgD
- d/AZ+5lPcb/BcRnVUTreFjvM2FsSJwkgAma19RZUwwO5txC/2X5Ha4I
+ bh=ZhwkxMNrbLlRGOKH79ICGkEWHub2AqZM6xi8x+7MMLo=;
+ b=S8LsvFYcvSVZLt3UA0h8KvaKFkqCufMScIBNwNxnZh4JiL1526MkWntuP+42ZegeyTUYtauKo
+ sEtFmeoPhfkAWnWm4h3tZb0Ov6XOmYjPLxh7lN306fWEMa1e7VBERdi
 X-Developer-Key: i=paul.louvel@bootlin.com; a=ed25519;
  pk=eLW50NT18UAvUT5cAcYf88zNbBCZDLFXuptpyLVhVIU=
 X-Last-TLS-Session-Version: TLSv1.3
@@ -85,12 +85,12 @@ X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-25043-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25046-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -101,7 +101,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FORGED_SENDER(0.00)[paul.louvel@bootlin.com,linux-crypto@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
@@ -113,143 +113,51 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[bootlin.com:dkim,bootlin.com:email,bootlin.com:mid,bootlin.com:from_mime,vger.kernel.org:from_smtp,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[bootlin.com:dkim,bootlin.com:email,bootlin.com:mid,bootlin.com:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 05A3C66F6DC
+X-Rspamd-Queue-Id: DA4B166F75C
 
-Move the talitos driver files from drivers/crypto/ into
-drivers/crypto/talitos/ to accommodate upcoming code
-reorganization.
+Add explicit includes for types used by the header file to make
+it self-contained and fix implicit include dependencies.
 
 Signed-off-by: Paul Louvel <paul.louvel@bootlin.com>
 ---
- drivers/crypto/Kconfig                 | 38 +---------------------------------
- drivers/crypto/Makefile                |  2 +-
- drivers/crypto/talitos/Kconfig         | 36 ++++++++++++++++++++++++++++++++
- drivers/crypto/talitos/Makefile        |  1 +
- drivers/crypto/{ => talitos}/talitos.c |  0
- drivers/crypto/{ => talitos}/talitos.h |  0
- 6 files changed, 39 insertions(+), 38 deletions(-)
+ drivers/crypto/talitos/talitos.c | 3 ---
+ drivers/crypto/talitos/talitos.h | 6 ++++++
+ 2 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index d23b58b81ca3..783b5dc42a42 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -253,43 +253,7 @@ config CRYPTO_DEV_HIFN_795X_RNG
- 	  on the HIFN 795x crypto adapters.
+diff --git a/drivers/crypto/talitos/talitos.c b/drivers/crypto/talitos/talitos.c
+index 12fb61ee8066..58663edd4ad4 100644
+--- a/drivers/crypto/talitos/talitos.c
++++ b/drivers/crypto/talitos/talitos.c
+@@ -15,10 +15,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+-#include <linux/device.h>
+-#include <linux/interrupt.h>
+ #include <linux/crypto.h>
+-#include <linux/hw_random.h>
+ #include <linux/of.h>
+ #include <linux/of_irq.h>
+ #include <linux/platform_device.h>
+diff --git a/drivers/crypto/talitos/talitos.h b/drivers/crypto/talitos/talitos.h
+index d4ff8d589f46..56e36a65ddcc 100644
+--- a/drivers/crypto/talitos/talitos.h
++++ b/drivers/crypto/talitos/talitos.h
+@@ -5,6 +5,12 @@
+  * Copyright (c) 2006-2011 Freescale Semiconductor, Inc.
+  */
  
- source "drivers/crypto/caam/Kconfig"
--
--config CRYPTO_DEV_TALITOS
--	tristate "Talitos Freescale Security Engine (SEC)"
--	select CRYPTO_AEAD
--	select CRYPTO_AUTHENC
--	select CRYPTO_SKCIPHER
--	select CRYPTO_HASH
--	select CRYPTO_LIB_DES
--	select HW_RANDOM
--	depends on FSL_SOC
--	help
--	  Say 'Y' here to use the Freescale Security Engine (SEC)
--	  to offload cryptographic algorithm computation.
--
--	  The Freescale SEC is present on PowerQUICC 'E' processors, such
--	  as the MPC8349E and MPC8548E.
--
--	  To compile this driver as a module, choose M here: the module
--	  will be called talitos.
--
--config CRYPTO_DEV_TALITOS1
--	bool "SEC1 (SEC 1.0 and SEC Lite 1.2)"
--	depends on CRYPTO_DEV_TALITOS
--	depends on PPC_8xx || PPC_82xx
--	default y
--	help
--	  Say 'Y' here to use the Freescale Security Engine (SEC) version 1.0
--	  found on MPC82xx or the Freescale Security Engine (SEC Lite)
--	  version 1.2 found on MPC8xx
--
--config CRYPTO_DEV_TALITOS2
--	bool "SEC2+ (SEC version 2.0 or upper)"
--	depends on CRYPTO_DEV_TALITOS
--	default y if !PPC_8xx
--	help
--	  Say 'Y' here to use the Freescale Security Engine (SEC)
--	  version 2 and following as found on MPC83xx, MPC85xx, etc ...
-+source "drivers/crypto/talitos/Kconfig"
- 
- config CRYPTO_DEV_PPC4XX
- 	tristate "Driver AMCC PPC4xx crypto accelerator"
-diff --git a/drivers/crypto/Makefile b/drivers/crypto/Makefile
-index 283bbc650b5b..a059139d4a75 100644
---- a/drivers/crypto/Makefile
-+++ b/drivers/crypto/Makefile
-@@ -35,7 +35,7 @@ obj-$(CONFIG_CRYPTO_DEV_SA2UL) += sa2ul.o
- obj-$(CONFIG_CRYPTO_DEV_SAHARA) += sahara.o
- obj-$(CONFIG_CRYPTO_DEV_SL3516) += gemini/
- obj-y += stm32/
--obj-$(CONFIG_CRYPTO_DEV_TALITOS) += talitos.o
-+obj-$(CONFIG_CRYPTO_DEV_TALITOS) += talitos/
- obj-$(CONFIG_CRYPTO_DEV_TEGRA) += tegra/
- obj-$(CONFIG_CRYPTO_DEV_VIRTIO) += virtio/
- obj-$(CONFIG_CRYPTO_DEV_BCM_SPU) += bcm/
-diff --git a/drivers/crypto/talitos/Kconfig b/drivers/crypto/talitos/Kconfig
-new file mode 100644
-index 000000000000..c3470553a966
---- /dev/null
-+++ b/drivers/crypto/talitos/Kconfig
-@@ -0,0 +1,36 @@
-+config CRYPTO_DEV_TALITOS
-+	tristate "Talitos Freescale Security Engine (SEC)"
-+	select CRYPTO_AEAD
-+	select CRYPTO_AUTHENC
-+	select CRYPTO_SKCIPHER
-+	select CRYPTO_HASH
-+	select CRYPTO_LIB_DES
-+	select HW_RANDOM
-+	depends on FSL_SOC
-+	help
-+	  Say 'Y' here to use the Freescale Security Engine (SEC)
-+	  to offload cryptographic algorithm computation.
++#include <linux/device.h>
++#include <linux/hw_random.h>
++#include <linux/interrupt.h>
++#include <linux/scatterlist.h>
++#include <linux/types.h>
 +
-+	  The Freescale SEC is present on PowerQUICC 'E' processors, such
-+	  as the MPC8349E and MPC8548E.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called talitos.
-+
-+config CRYPTO_DEV_TALITOS1
-+	bool "SEC1 (SEC 1.0 and SEC Lite 1.2)"
-+	depends on CRYPTO_DEV_TALITOS
-+	depends on PPC_8xx || PPC_82xx
-+	default y
-+	help
-+	  Say 'Y' here to use the Freescale Security Engine (SEC) version 1.0
-+	  found on MPC82xx or the Freescale Security Engine (SEC Lite)
-+	  version 1.2 found on MPC8xx
-+
-+config CRYPTO_DEV_TALITOS2
-+	bool "SEC2+ (SEC version 2.0 or upper)"
-+	depends on CRYPTO_DEV_TALITOS
-+	default y if !PPC_8xx
-+	help
-+	  Say 'Y' here to use the Freescale Security Engine (SEC)
-+	  version 2 and following as found on MPC83xx, MPC85xx, etc ...
-diff --git a/drivers/crypto/talitos/Makefile b/drivers/crypto/talitos/Makefile
-new file mode 100644
-index 000000000000..fcc5db5e63c2
---- /dev/null
-+++ b/drivers/crypto/talitos/Makefile
-@@ -0,0 +1 @@
-+obj-$(CONFIG_CRYPTO_DEV_TALITOS) += talitos.o
-diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos/talitos.c
-similarity index 100%
-rename from drivers/crypto/talitos.c
-rename to drivers/crypto/talitos/talitos.c
-diff --git a/drivers/crypto/talitos.h b/drivers/crypto/talitos/talitos.h
-similarity index 100%
-rename from drivers/crypto/talitos.h
-rename to drivers/crypto/talitos/talitos.h
+ #define TALITOS_TIMEOUT 100000
+ #define TALITOS1_MAX_DATA_LEN 32768
+ #define TALITOS2_MAX_DATA_LEN 65535
 
 -- 
 2.54.0
