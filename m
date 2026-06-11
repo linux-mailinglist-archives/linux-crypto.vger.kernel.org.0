@@ -1,169 +1,136 @@
-Return-Path: <linux-crypto+bounces-25093-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25094-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 0wuaE9YeK2ri2wMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25093-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 22:47:18 +0200
+	id V4fxOi8rK2os3gMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25094-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 23:39:59 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D438E6754B3
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 22:47:17 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D08E6757A1
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 23:39:59 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=EQCnh2FC;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25093-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25093-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=linux.dev header.s=key1 header.b=CnfkFdcz;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25094-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25094-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linux.dev;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 54DFD313F623
-	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 20:47:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A00B331DA212
+	for <lists+linux-crypto@lfdr.de>; Thu, 11 Jun 2026 21:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F36A4CA28D;
-	Thu, 11 Jun 2026 20:47:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7133806B5;
+	Thu, 11 Jun 2026 21:36:42 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4292639F188;
-	Thu, 11 Jun 2026 20:47:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8944E36A022;
+	Thu, 11 Jun 2026 21:36:39 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781210825; cv=none; b=a3tiqEwX3+hRqHx/CoJ6+S8vDXY4WBCoBLwSHTwze/ywrdJaGmIvJJrLkVOd/wFPXZ98g27A9ND6f/bdY+ill2rLzvfj6m5zSfiGUyuD0jdDxGDg9FnQRaCQC/qEGJtEmY6kTfjldnl+/QXrPNQUfdDm9mU6UqFFRgspbIUBtAA=
+	t=1781213801; cv=none; b=MaJtsRTeXlkdFv8RlmBxwmcelOUW9oUJKJYYGs08aeH3ts+X9jnJGMYS30OQUEYHvd+w/xamq6Z+vmrR1SPyTqSLzKotMuIN5NPtChDmVErm2eXvX0/e+niw58EArlGWCHbAr8f7dkw1kHIJqf/bQ764NElEwVncgMLtPqVjc4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781210825; c=relaxed/simple;
-	bh=IyYRxRg3MeYz33vBBG8MyxsFl8rxieoHXQRP3G6L9aU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dGj/K8gIMMFm+yD1zQAi4VGArrN1BO4KFmUFUe8VkP7aXNCE2eU+OoFYjJmOqAV71/Oebww0u8Do1WGrBdOQTM+Gw6yQzM0MSzgr6WGZ1aAhgQxpBSDKxB+LIFcI79J+2tksK6LqNsbOFNyeQghnznG3ItPSUTEV7Kxybvu9AeU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EQCnh2FC; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E216E1F00A3A;
-	Thu, 11 Jun 2026 20:47:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781210824;
-	bh=8YUgGB7unUfuXaH5pfE121ZOgCzzrH9HhF5tOcGI554=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=EQCnh2FCvEu1io2MpQW3qyrOqoiUSUjMnJfNKoZ8lIPcGe9MTiL0FTk8rFl+/fHqW
-	 GdN0/DVHIaFEf+cdJzNxt7riig00q+HHX21wZ6pn2wDTxbhLUs10yH82aYCqHL9sTl
-	 QUencz6XOI2GALaBOpNWB3WImqzD3VZ7015Ok5i3mSJxWQPc2hBkWggQhAVAg82eT+
-	 qaJAsQPmu52hJUn6kUMdJssCJNfjFl6frJ0+53waVp+Y0Xv/dh3boBwRtUcg+MTObG
-	 lp3hETH5mq1QSBNXAPZOM9eiIdTIwQ9J93ZoPB6/qJWBi4MQhMzZ9uyz5FdUMjVa5D
-	 hLZifhzblF8aQ==
-Date: Thu, 11 Jun 2026 13:47:02 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Mounika Botcha <mounika.botcha@amd.com>,
-	Harsh Jain <h.jain@amd.com>, Olivia Mackall <olivia@selenic.com>,
-	Michal Simek <michal.simek@amd.com>,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/4] Xilinx TRNG fix and simplification
-Message-ID: <20260611204702.GB1747@quark>
-References: <20260531191738.55843-1-ebiggers@kernel.org>
- <aip2l1pwMY4UDBdA@gondor.apana.org.au>
+	s=arc-20240116; t=1781213801; c=relaxed/simple;
+	bh=t3+XshRL09d6biiCDeS6+8HgJOqrtebPzUOHS7SPm6k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WyvbtYXWfXoA2r3NX2QDsAbA3uubCBd5cnNVygA+twO0Pb6lgxVggOwO9Wy6dFQG6qSsZSVnSCGI+WyYGTsfwe1/nIYkAW57irBBPkTqBxsta3TuGX/rD8cXHcSPa9ExRaWfmZtz+6bhKbm+EScd+DEVsSeMgUWKwrk0P4KkG38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CnfkFdcz; arc=none smtp.client-ip=91.218.175.188
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1781213796;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=4IEYPeJLO0t9DaZJvm8UdXCFj3OVpL5b6N7+5vqSmAM=;
+	b=CnfkFdczXxEtBWpFsK09nkHE+qs7/SNLcVWSFr7Qyk68N+85DMXki4safyWUeTckt7e5eY
+	QuNVPLYSv1SxSWhWRl8dpJEzWNb3yIqNL+JfN3uD1sBvVWbb2Ua7IQxsrFDA9isR0NoxIq
+	fJ9cxPql9SHb/zQkl026p23CWsnnVBk=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: Thorsten Blum <thorsten.blum@linux.dev>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: linux-crypto@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: atmel-ecc - reject hardware ECDH without a public key
+Date: Thu, 11 Jun 2026 23:36:17 +0200
+Message-ID: <20260611213617.463552-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aip2l1pwMY4UDBdA@gondor.apana.org.au>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1198; i=thorsten.blum@linux.dev; h=from:subject; bh=t3+XshRL09d6biiCDeS6+8HgJOqrtebPzUOHS7SPm6k=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDFnaWoFBFQuVMq/xcyz+nMKspOjcrf85xeLnmvo3/ktv8 pYs93vbUcrCIMbFICumyPJg1o8ZvqU1lZtMInbCzGFlAhnCwMUpABP5L8jwT/fdO3/5j8vut/Xa /b88/dvMVQxVZp1LH7e8UTu3JXri/qmMDL9t9Ld3C6TUrLuiJy8ttMm5cf52Bs6F2+ZvNhVZtsd cnhkA
+X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-25094-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:herbert@gondor.apana.org.au,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:mounika.botcha@amd.com,m:h.jain@amd.com,m:olivia@selenic.com,m:michal.simek@amd.com,m:linux-arm-kernel@lists.infradead.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-25093-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:thorsten.blum@linux.dev,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:nicolas.ferre@microchip.com,m:alexandre.belloni@bootlin.com,m:claudiu.beznea@tuxon.dev,m:tudor.ambarus@linaro.org,m:linux-crypto@vger.kernel.org,m:linux-arm-kernel@lists.infradead.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	TAGGED_RCPT(0.00)[linux-crypto];
 	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
+	RCPT_COUNT_SEVEN(0.00)[10];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.dev:dkim,linux.dev:email,linux.dev:mid,linux.dev:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D438E6754B3
+X-Rspamd-Queue-Id: 4D08E6757A1
 
-On Thu, Jun 11, 2026 at 04:49:27PM +0800, Herbert Xu wrote:
-> On Sun, May 31, 2026 at 12:17:34PM -0700, Eric Biggers wrote:
-> > This series fixes and greatly simplifies the Xilinx TRNG driver by:
-> > 
-> > - Removing the gratuitous crypto_rng interface, leaving just hwrng which
-> >   is the one that actually matters.
-> > 
-> > - Replacing the really complicated AES based entropy extraction
-> >   algorithm with a much simpler one.
-> > 
-> > Note that this mirrors similar changes in other drivers.
-> > 
-> > Eric Biggers (4):
-> >   crypto: xilinx-trng - Remove crypto_rng interface
-> >   crypto: xilinx-trng - Fix return value of xtrng_hwrng_trng_read()
-> >   crypto: xilinx-trng - Replace crypto_drbg_ctr_df() with HMAC-SHA512
-> >   hwrng: xilinx - Move xilinx-rng into drivers/char/hw_random/
-> > 
-> >  MAINTAINERS                                   |   2 +-
-> >  arch/arm64/configs/defconfig                  |   2 +-
-> >  crypto/Kconfig                                |   5 -
-> >  crypto/Makefile                               |   2 -
-> >  crypto/df_sp80090a.c                          | 222 ------------------
-> >  drivers/char/hw_random/Kconfig                |  11 +
-> >  drivers/char/hw_random/Makefile               |   1 +
-> >  .../xilinx => char/hw_random}/xilinx-trng.c   | 134 ++---------
-> >  drivers/crypto/Kconfig                        |  13 -
-> >  drivers/crypto/xilinx/Makefile                |   1 -
-> >  include/crypto/df_sp80090a.h                  |  53 -----
-> >  11 files changed, 37 insertions(+), 409 deletions(-)
-> >  delete mode 100644 crypto/df_sp80090a.c
-> >  rename drivers/{crypto/xilinx => char/hw_random}/xilinx-trng.c (75%)
-> >  delete mode 100644 include/crypto/df_sp80090a.h
-> > 
-> > 
-> > base-commit: 5624ea54f3ba5c83d2e5503411a31a8be0278c1e
-> > prerequisite-patch-id: 07e982b663ac3f8312ca524f6b91b5b38661df5e
-> > prerequisite-patch-id: 72064361a8f36e015ab0b7e1fa4d364b40d90506
-> > prerequisite-patch-id: 8978b8e0db7f47935e5f6f0aff14a97f55d3073c
-> > prerequisite-patch-id: 6aa0e3e93a008279d71e535a3d0cf48643f55e19
-> > -- 
-> > 2.54.0
-> 
-> All applied.  Thanks.
+The hardware ECDH path in atmel_ecdh_compute_shared_secret() uses the
+private key stored in the device. However, the public key is cached only
+after atmel_ecdh_set_secret() successfully generated that private key
+for the current tfm.
 
-Can you re-add the following to "hwrng: xilinx - Move xilinx-rng into
-drivers/char/hw_random/"?  It seems you applied this before the qcom-rng
-series, then dropped the drivers/char/hw_random/Makefile change rather
-than resolve it.
+atmel_ecdh_generate_public_key() already rejects requests when no public
+key is cached. Add the same check to atmel_ecdh_compute_shared_secret()
+to prevent the device from using a private key that was not generated
+for the current tfm.
 
-diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
-index 3e655d6e116b..95b5adb49560 100644
---- a/drivers/char/hw_random/Makefile
-+++ b/drivers/char/hw_random/Makefile
-@@ -51,5 +51,6 @@ obj-$(CONFIG_HW_RANDOM_XIPHERA) += xiphera-trng.o
- obj-$(CONFIG_HW_RANDOM_ARM_SMCCC_TRNG) += arm_smccc_trng.o
- obj-$(CONFIG_HW_RANDOM_CN10K) += cn10k-rng.o
- obj-$(CONFIG_HW_RANDOM_POLARFIRE_SOC) += mpfs-rng.o
- obj-$(CONFIG_HW_RANDOM_ROCKCHIP) += rockchip-rng.o
- obj-$(CONFIG_HW_RANDOM_JH7110) += jh7110-trng.o
-+obj-$(CONFIG_HW_RANDOM_XILINX) += xilinx-trng.o
+Fixes: 11105693fa05 ("crypto: atmel-ecc - introduce Microchip / Atmel ECC driver")
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+---
+ drivers/crypto/atmel-ecc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
+diff --git a/drivers/crypto/atmel-ecc.c b/drivers/crypto/atmel-ecc.c
+index 93f219558c2f..542c8cc13a0f 100644
+--- a/drivers/crypto/atmel-ecc.c
++++ b/drivers/crypto/atmel-ecc.c
+@@ -173,6 +173,9 @@ static int atmel_ecdh_compute_shared_secret(struct kpp_request *req)
+ 		return crypto_kpp_compute_shared_secret(req);
+ 	}
+ 
++	if (!ctx->public_key)
++		return -EINVAL;
++
+ 	/* must have exactly two points to be on the curve */
+ 	if (req->src_len != ATMEL_ECC_PUBKEY_SIZE)
+ 		return -EINVAL;
 
