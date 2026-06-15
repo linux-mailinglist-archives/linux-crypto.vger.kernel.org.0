@@ -1,150 +1,202 @@
-Return-Path: <linux-crypto+bounces-25185-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25186-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id zW9gBWeCMGrPTwUAu9opvQ
-	(envelope-from <linux-crypto+bounces-25185-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Jun 2026 00:53:27 +0200
+	id JMJEMGyDMGoJUAUAu9opvQ
+	(envelope-from <linux-crypto+bounces-25186-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Jun 2026 00:57:48 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C10D168A7E9
-	for <lists+linux-crypto@lfdr.de>; Tue, 16 Jun 2026 00:53:26 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1974668A827
+	for <lists+linux-crypto@lfdr.de>; Tue, 16 Jun 2026 00:57:48 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=MV8U6ioU;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25185-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25185-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=gmail.com header.s=20251104 header.b="Z/ZqeNlp";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25186-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25186-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7C8E2301C6FD
-	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jun 2026 22:53:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0889D305B4AB
+	for <lists+linux-crypto@lfdr.de>; Mon, 15 Jun 2026 22:57:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1150C3BBA0A;
-	Mon, 15 Jun 2026 22:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0CD3BBFAE;
+	Mon, 15 Jun 2026 22:57:43 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCF553B9DBC;
-	Mon, 15 Jun 2026 22:53:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CFE13B9929
+	for <linux-crypto@vger.kernel.org>; Mon, 15 Jun 2026 22:57:42 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781564000; cv=none; b=KBWvP5Wn9SGVLFQ8MTljYr/uW3lDwvhYuwylJlTbrS7x/e98oIsI4bAB1I+EhuBeGNO/oZWsTIJyrYS63orhAd1ufw16r1b095WMrXcc8OiOmFh3FjJ7GMZHvhVf7DX6tgWqSFIwvn1rn6BagvDzTAFAFpkRnXSL5MfHAN4LiPU=
+	t=1781564263; cv=none; b=o81vlfmMgK4PSD8NMf8Em8CbZUMXfz2nlERl/jxCYKF7CD1EoJldT0t6RDR7vqAXshAsb9HNIQ38uPDdPyAoM5CTnAL9Tv10Cq30FybfpjrhK2jBuxIvg37NfFVGmXP4aHs0a6D3wSiascdmkIn3cY7u19fGKzQbeZUaCXg46+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781564000; c=relaxed/simple;
-	bh=QrWwRpOZlbqR/ijsvjrylyXZdIn7/QTqxQdNFwTdOvg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VxH4eT5S9peQYjfNUf7kbQSKj9UsdT3wZ4/41YPQ8Coao01Dqf2Wz8RaqG4Mv3tixZpQbfmOujEb4wBEi/TWAvaJc5lajehKYOd8FfbKMFNkpO0+qcr6IULxsbKkgqOmIR6/iDa9Sd+V+svaABjhFs06Gv35EXT6thDvV8nEGIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MV8U6ioU; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43BF31F000E9;
-	Mon, 15 Jun 2026 22:53:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1781563999;
-	bh=/OfPahqSyS/jHREvee15nAI++QhhEJbHrIUvoqnSfKI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=MV8U6ioUVmLQsXR/wZk0yLXYM6FP1llitrjboLCexn7CV4JM+jwnGcuImHAg0bdbV
-	 Nu38+GtYissDdR8A938hcuYWn3L0CoxNddcJd48Pxw/Wv6UqLntofPAfoZIpNQAVB2
-	 Oe+FKxEWhDE3YDMHSXOpnz6ZcY0YOQa68BOJRCw1Bq6i+nEeH3wta4xKCYevfRpLdB
-	 q7P7fLLmvhuxL5xcxanWfPJIaSGC1KFlcz4jwEVGrMi5EoG5P3Zu9e2FcsduXjrTjn
-	 0gr1kNPTr0h71tmSA9JGSwal++3nru2HQgb8KE5x1bPPwZhP0RmqX+IzpacPj3Gj1s
-	 PoYtmVMsE3m/A==
-Date: Mon, 15 Jun 2026 15:53:17 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Leonid Ravich <lravich@amazon.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
-	Alasdair Kergon <agk@redhat.com>, Ard Biesheuvel <ardb@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>, Horia Geanta <horia.geanta@nxp.com>,
-	Gilad Ben-Yossef <gilad@benyossef.com>,
-	linux-crypto@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-block@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] crypto: skcipher - per-request multi-data-unit
- batching
-Message-ID: <20260615225317.GB28589@quark>
-References: <20260615111459.9452-1-lravich@amazon.com>
+	s=arc-20240116; t=1781564263; c=relaxed/simple;
+	bh=xlDI29oAJ/RkZP2O27U2v7nIGJegpCQFhPSOGe1YZRo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dxNC5H1dAT43wcz6ncpFLnVLbVHwAdkGoCqBy2Qj5dH/RWcQD3qu+7ktmCnP0WAwQ101LpNMqYr4uWebhCs9APH32H9140397N61/pXYFs0ZaDCp2fm8EURYI1XkEmfCgDYzYsgTVMQbRlk7Lxar4B3uRjmC4LCNYEIPqFx6Qkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z/ZqeNlp; arc=none smtp.client-ip=209.85.221.51
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-4602e2a0372so2986012f8f.3
+        for <linux-crypto@vger.kernel.org>; Mon, 15 Jun 2026 15:57:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1781564260; x=1782169060; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nvgJd06ouiRA1Bt6a4YifRiNbd6eY+jmmfs208b9fGI=;
+        b=Z/ZqeNlpdgF3Cx08OWWCbBfyTn2r/l04h8344mIIqTlvx7mK1woE0Vq3tomZPyDW5Z
+         YUUxfx0jhso0H+Bc+p2OBiYhWlMOwYKWAWXNKqsqywwDrQNQw0btowaP7br39ncgTmmy
+         QgP3A6Ki98/dqGoAeGMB4wtwcrz1xPs5+FDDnZ013KQn/vWOCvHIeuiXRGEOCXZQ2qUp
+         77mheMc2lLukVK95yPu0FcF2qpZNBT79sl2DMr1K6L7Ge4xSppBvyVmuWs9kHuJ8DLNv
+         JQAcBAkHij+5/LIjYWUpkHkmIFG1CZunT/LHqYbfQBHuSWhAJ53fD+03lA+BjPQ4F9v6
+         R1OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781564260; x=1782169060;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=nvgJd06ouiRA1Bt6a4YifRiNbd6eY+jmmfs208b9fGI=;
+        b=LAtPZqo/S6Z6I2DyR2iwTKBs0hvznfcOPjyDExfuoBRguosMcESmoZq0J69CdlfEnd
+         57S5lBxFVzDKWU0mIN+2JA1+M+ZXzhsDlYL2hRdC6mqG5FlIO1SDIVghczbYymeGDymv
+         PADuL617+LjqLIR2svG0nriidf1bpqTciDEus5qRvldVNU8nMzMooeB2Lk1922Hyfxig
+         bhmcp5RSDfA+DOiEQJKoxGSOBSRNez7e8D6fOn3XkCi+Y8GmyRQpV0bPSILppVbsLhUP
+         tfKMjtzcBC0GyrHIUEus6A15rOXL5yGc0GWIrKLEYUECsCYE6dKIjchXHvF9mEvqisbh
+         lgbQ==
+X-Forwarded-Encrypted: i=1; AFNElJ/w/HaxuhB+kXCCDBoUI4Z1bpwffZ0LP8+UzRijWYfxmw7cHMQC5OdAQOv7X25NR3Tt3E/gbaT518MmDZU=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzdZ3BmDdEGee0G4amQ4jYqxrkereX8zCu7A3UhP6Ue+MxnWbm0
+	U02t80UiyNqxBPkhsH9GaAqzP0DYK1N3tV+efLQimyg7un0jX2umq/1WRudLBxtu
+X-Gm-Gg: Acq92OGPeyGLUsUQvH5ontov0VvCmO2U4tCBIO1EsxY2GM1cHyaKxHnXCCtJe0TpzVF
+	8NjYaZAqcm5JeYBQMqcZ4u8B1IRU+qlL4Yh39DhDMNzdLkeoc8SEKt9/6r88ZbNZBJ1fpENgwqX
+	arNAK/UEzCJPni+AF/SqvGOWVkzvVny6EsCJkIQzet4CtfZZfZRDOUSsrask6OtoC05qO50Nn03
+	jJW78gNdn0v2dRUat2Em/RcXgYX4sBrIp0IIaOvG1CzEOXxFjB4D4rRTNd304+gmJpIBifTyv1W
+	ZZPQ7itn38ypWwyZ9sy4wIkNqlGCalXP2pLC6QAdBGGnpDqgSMT74QtXiNdQjq/WK79F0QvJoWs
+	QPLXpgF+QFZBNVLeC7YgPleKQp6hBFluj7Zpad2Kw1ufraljG5tU8eifX8bqKdvl4UWDvllhZHZ
+	Nn55rX9R1SabAYUgSgdlwoB7sw9Dv7CcbAvLDrw2quGdVHjW1KtUVzysHemGs9
+X-Received: by 2002:a05:6000:25f1:b0:43f:ea25:20ff with SMTP id ffacd0b85a97d-4606dbefc51mr24706743f8f.29.1781564260379;
+        Mon, 15 Jun 2026 15:57:40 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4606f2b0d70sm38633487f8f.19.2026.06.15.15.57.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Jun 2026 15:57:40 -0700 (PDT)
+Date: Mon, 15 Jun 2026 23:57:38 +0100
+From: David Laight <david.laight.linux@gmail.com>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ Christoph Hellwig <hch@lst.de>, linux-crypto@vger.kernel.org,
+ x86@kernel.org, linux-raid@vger.kernel.org
+Subject: Re: [PATCH v2] lib/raid/xor: x86: Add AVX-512 optimized xor_gen()
+Message-ID: <20260615235738.48a04644@pumpkin>
+In-Reply-To: <20260615184435.GA17731@quark>
+References: <20260614010357.69416-1-ebiggers@kernel.org>
+	<20260614111628.00af46b9@pumpkin>
+	<20260615184435.GA17731@quark>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260615111459.9452-1-lravich@amazon.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:lravich@amazon.com,m:herbert@gondor.apana.org.au,m:agk@redhat.com,m:ardb@kernel.org,m:axboe@kernel.dk,m:horia.geanta@nxp.com,m:gilad@benyossef.com,m:linux-crypto@vger.kernel.org,m:dm-devel@lists.linux.dev,m:linux-block@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-25185-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25186-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	FORGED_SENDER(0.00)[davidlaightlinux@gmail.com,linux-crypto@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:ebiggers@kernel.org,m:akpm@linux-foundation.org,m:linux-kernel@vger.kernel.org,m:hch@lst.de,m:linux-crypto@vger.kernel.org,m:x86@kernel.org,m:linux-raid@vger.kernel.org,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp,quark:mid]
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,pumpkin:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: C10D168A7E9
+X-Rspamd-Queue-Id: 1974668A827
 
-On Mon, Jun 15, 2026 at 11:14:56AM +0000, Leonid Ravich wrote:
-> The series adds a per-request "data unit size" to the skcipher API
-> so a caller can submit several data units (typically 512..4096-byte
-> sectors) sharing one starting IV in a single request.  Algorithms
-> derive each data unit's IV from the caller-supplied IV by treating
-> it as a 128-bit little-endian counter and adding the data-unit
-> index, matching the layout produced by dm-crypt's plain64 IV mode
-> and by typical inline-encryption hardware.
-> 
-> This mirrors the data_unit_size concept already exposed by
-> struct blk_crypto_config for inline encryption.
-> 
-> The first user is dm-crypt, which today issues one skcipher request
-> per sector and so pays a per-sector cost in request allocation,
-> callback dispatch, completion handling, and scatterlist setup.
-> 
-> Proof-of-concept performance numbers from the RFC reply [1]: +19%
-> throughput / -40% CPU on a single-core arm64 system with a hardware
-> XTS-AES-256 accelerator running fio 4 KiB sequential writes through
-> dm-crypt, when an out-of-tree arm64 xts driver advertises
-> CRYPTO_ALG_SKCIPHER_NATIVE_MULTI_DU.  This series itself does not
-> include arch enablement; the fast path is opt-in per driver, the
-> slow path is universal via the auto-splitter.
-> 
-> The native fast path amortises both per-sector dispatch and per-sector
-> crypto setup across a bio - the measured win above, on an engine that
-> offloads the AES compute.  The auto-splitter is for correctness and
-> reach: any consumer can set data_unit_size and get correct output with
-> the per-request allocation/callback/completion cost removed, but it
-> still issues one alg->encrypt per data unit, so on a software cipher it
-> saves only dispatch overhead (no throughput figure claimed - that is
-> hardware- and workload-dependent).  What it guarantees unconditionally
-> is byte-identical output (Verification below) at O(entries + units),
-> walking the scatterlists with a pair of struct scatter_walk cursors
-> rather than rescanning from the head per unit.
+On Mon, 15 Jun 2026 11:44:35 -0700
+Eric Biggers <ebiggers@kernel.org> wrote:
 
-So in other words, this series slows down dm-crypt and crypto_skcipher
-for everyone to optimize for an out-of-tree driver.  And there's also no
-benchmark showing that your driver is even worth it over just using the
-CPU.
+> On Sun, Jun 14, 2026 at 11:16:28AM +0100, David Laight wrote:
+> > On Sat, 13 Jun 2026 18:03:57 -0700
+> > Eric Biggers <ebiggers@kernel.org> wrote:
+...
+> > Some 'not very important' comments:
+> > 
+> > I did wonder whether moving the loop into the asm() would help.
+> > gcc has a nasty habit of pessimising loops when you try to be clever.
+> > It is certainly safer for tight loops like these.  
+> 
+> I originally tried leaving the loops to the compiler, but gcc unrolled
+> the 1x ones by 2x, despite it having no visibility into the asm block.
+> That broke the intent with the indexed addressing, since to achieve the
+> unrolling it generated code that incremented the pointers.
 
-- Eric
+I did suspect that might happen.
+
+> So I just ended up moving the loop to the asm, which reliably gives us
+> the code we want.
+
+Yep...
+
+...
+> > The code should be limited by the memory reads, so the 3-argument xor and
+> > the interleave of the unroll may make no difference.  
+> 
+> The unroll by 2x in the 2 and 3-buffer cases helped a little bit on
+> Sapphire Rapids.  I don't know exactly why, but it makes sense that
+> those cases are where the loop overhead is most likely to matter.
+
+Each iteration does 2 (or 3) reads and a write.
+The cpu can do two reads and a write every clock.
+However Intel cpu can only execute a branch every other clock,
+so the shortest loop is two clocks.
+That means you need need to unroll once to keep the memory logic busy.
+
+The zen5 seems to be able to execute 1-clock loops, so wouldn't need
+the unroll.
+
+> > Some cpu do have constraints on the cache alignment in order to do two
+> > reads per clock, but I've forgotten them and they got better before AVX-512.
+> > If that were affecting this code (on the tested cpu) then I'd expect the
+> > interleaved unroll would improve the _4 and -5 functions.
+> > So it probably doesn't affect this code.  
+> 
+> The buffers are always 64-byte aligned here, as documented.
+
+It is all more complex that that.
+Whether you can do two reads/clock depends on whether the reads manage to
+avoid needing the same buffers (etc) in the cache logic.
+For instance it might not work if the addresses differ by the size of the
+cache (one of Agner's books might have the answer).
+(It was pretty hard to get two reads/clock on Sandy Bridge.)
+
+Then there are some really strange effects.
+On zen5 (at least on the one I've got) 'rep movsb' is very slow (setup and copy)
+if (IIRC) (%di - %si) mod 4k is between 1 and 127.
+The only other alignment that makes much difference is 64byte aligning %di (which
+doubles throughput).
+
+-- David
+
+
 
