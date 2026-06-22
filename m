@@ -1,52 +1,52 @@
-Return-Path: <linux-crypto+bounces-25293-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25294-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id liONOxbmOGpVjwcAu9opvQ
-	(envelope-from <linux-crypto+bounces-25293-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 22 Jun 2026 09:36:55 +0200
+	id GzEKLHHmOGpfjwcAu9opvQ
+	(envelope-from <linux-crypto+bounces-25294-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 22 Jun 2026 09:38:25 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80E876AD4A2
-	for <lists+linux-crypto@lfdr.de>; Mon, 22 Jun 2026 09:36:54 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03F756AD4C1
+	for <lists+linux-crypto@lfdr.de>; Mon, 22 Jun 2026 09:38:25 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=G7Qip6xv;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25293-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25293-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=gyuWmIlz;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25294-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25294-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id DDE9A300A4A1
-	for <lists+linux-crypto@lfdr.de>; Mon, 22 Jun 2026 07:36:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D0CE13030E9B
+	for <lists+linux-crypto@lfdr.de>; Mon, 22 Jun 2026 07:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7116636F411;
-	Mon, 22 Jun 2026 07:36:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6219036E468;
+	Mon, 22 Jun 2026 07:38:01 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5528C36E489;
-	Mon, 22 Jun 2026 07:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3991A36D9EB;
+	Mon, 22 Jun 2026 07:37:59 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782113802; cv=none; b=rfC4o6DFePR44obTuXHDrT9jYixksHGYna51CqJuJDBIqaZvtN7OlDoasqrG1WCv0xSLm/0NdrkTq7htF9aqXXX3LHZyDyOFWFXxkCdmJYBOmkOd7llxixviIjPsoN9QVjVfTDBHb4x4XEu9mN7mF5EwlRtwOXRZq+9rl0hs1wU=
+	t=1782113881; cv=none; b=K6CZWrYAdf0MzdXc0Xp7/LeL5YcR3m0cXTd/J8n1bx7Fl7FYn7i/+mmiuEEO4dm0ao8ctztLNRyzFniMYaYqiaO1S3SCforqJM+SV2RXo0La9mqJ9m8yxIWRWSP3bzylqCDGvInfm4F5CcLIORKWMPwHWWT5RnuIqkRmySjrqFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782113802; c=relaxed/simple;
-	bh=NGcfW53OD7hUMG7jk+IL7DLAol0wfrB4eVEwWeRgxlU=;
+	s=arc-20240116; t=1782113881; c=relaxed/simple;
+	bh=2JnZp7M49poI/fSZ0yf26kQj+a0PRFmsz1BVhRR/bks=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Kh0iekPLPg1Fp/hn8VQMmU0kb+ACgKRfC65XVJet/GUAm6WKjcjc76zjR4raADWoJI38kTRDuEHqYnMtE8IOIKW5I8d7hEo99eqCnM1mxZMkPfvo7OwooWiM8QgpoAmP0eq8yMPSr7MQ20k/gTMLWGcTym9TiNfY6c1U0e3nxJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G7Qip6xv; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02A181F00A3A;
-	Mon, 22 Jun 2026 07:36:39 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=tNZdQMMhYLG2AGmSLwyRb6UvMF6bwWsuQQu8O9M3mh83q3+NigmKiZL+YLTyMOQqi1uWW+yb2kXkEC5RqHMuOZpVfhLv3mRR16Sq7kHFweOWJXw4RJ04EYXxMlB23glHv1ZxtW0x1xx2MgiR7e2zM/RQaEkS/7XGwAiQET04iTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gyuWmIlz; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1F221F000E9;
+	Mon, 22 Jun 2026 07:37:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782113801;
-	bh=Do3/3VdIxMtgHjklQ9oNzFDNcBXRA87Y/Bdni4pf3Yk=;
+	s=k20260515; t=1782113879;
+	bh=moTbx0RFo+uvT+Pxb32XDw9nJ+Mu1YWJBEYCVjzKA+E=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=G7Qip6xvIt1iRuNN7fUwoflCEWhC6bPFFfaISollUjWTFH641KTj0JOlYyXjkDba4
-	 VhXZHKR7jF+UzwA3JOupMgb+C8ToR9ao9d294tN+PP98DzvJnlBFNed4+0opaXIlaB
-	 oO7yj4sowW9YbSfawND3fRso3tjjIrUM4b5+aGztbD9q9YSone56FwCuYsvcvktWMU
-	 RnST0cld8RlGMOlVCaDrJggMJ70E3+Z0gWWS/bsxUXwqZcMmfx/xTXHuZj2o8F79jo
-	 CULMq8elD6lMytEg5fN9FnWwLB0V6V69lWgcDqCE40b8mjQuzprwaJgTwygaNWHfPQ
-	 5xxfUZpNvv4Tg==
-Date: Mon, 22 Jun 2026 09:36:37 +0200
+	b=gyuWmIlzux+LBkkR4jhe2TAl1Hs2vJWj4OJdIJ3+TcUw0MFBJX5fc2iZobWTqYi+T
+	 D8VhnGvQTp9tk+Nl55mE0e60KT+Ph+JO5NOluxLJ84I3tCtFPZCykz9mMqiiZT28pq
+	 ziR+ABsRpqibaA8KgpwgzF9r31Fov1L206e4RA0lFkE9LXJVvkyXSrr5O/i57fhtnu
+	 GdEWIdVhX8ICzRiM1uA37DW9La0xdpu1LSx8hqxRIHbNL343H6VUdW5rrNVNmVqlVL
+	 XR0lZ7M0DLP01Uzvhly5ZeSiYOksBxY3vGELdOc1Cunxdhmg/R5WkHzfDUWo15o/+d
+	 gAZQ+/GJ3GwSQ==
+Date: Mon, 22 Jun 2026 09:37:55 +0200
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Jad Keskes <inasj268@gmail.com>
 Cc: Rob Herring <robh@kernel.org>, 
@@ -54,10 +54,11 @@ Cc: Rob Herring <robh@kernel.org>,
 	Olivia Mackall <olivia@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
 	Alexander Clouter <alex@digriz.org.uk>, devicetree@vger.kernel.org, linux-crypto@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: rng: timeriomem_rng: add
- reg-io-width and mask properties
-Message-ID: <20260622-inescapable-primitive-horse-48cf65@quoll>
+Subject: Re: [PATCH v5 2/2] hw_random: timeriomem-rng: add configurable read
+ width and data mask
+Message-ID: <20260622-exotic-seagull-from-neptune-bb5f97@quoll>
 References: <20260618120110.36439-1-inasj268@gmail.com>
+ <20260618120110.36439-2-inasj268@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -66,7 +67,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260618120110.36439-1-inasj268@gmail.com>
+In-Reply-To: <20260618120110.36439-2-inasj268@gmail.com>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-3.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
@@ -74,12 +75,12 @@ X-Spamd-Result: default: False [-3.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-25293-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25294-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FREEMAIL_TO(0.00)[gmail.com];
@@ -100,25 +101,31 @@ X-Spamd-Result: default: False [-3.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-crypto,dt];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,quoll:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,quoll:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 80E876AD4A2
+X-Rspamd-Queue-Id: 03F756AD4C1
 
-On Thu, Jun 18, 2026 at 01:01:09PM +0100, Jad Keskes wrote:
-> Add optional reg-io-width (1, 2, or 4 bytes) and mask properties.
-> reg-io-width selects the bus access size.  mask is ANDed with the raw
-> register value to allow only the entropy-bearing bits through.
+On Thu, Jun 18, 2026 at 01:01:10PM +0100, Jad Keskes wrote:
+> The TODO for supporting read sizes other than 32 bits and masking has
+> been sitting in this driver since 2009.  Implement it.
 
-You should explain here why. Why are you doing this? Why do we want
-this?
+And who - which driver/platform - uses or needs that? We are not really
+doing things because someone wrote TODO in 2009. Quite likely notes
+from 2009 are way outdated...
 
 > 
-> Update the example to show a 1-byte configuration.
+> Add reg-io-width (1, 2, or 4 bytes) and mask support.  The read loop
+> dispatches on width using readb/readw/readl so a configured 1-byte
+> access does not trigger a bus error on hardware that rejects 32-bit
+> reads to that address.  The mask is ANDed with the value before storing.
 > 
-> Signed-off-by: Jad Keskes <inasj268@gmail.com>
-> ---
+> These are platform properties, not runtime policy -- width depends on
+> SoC integration, mask reflects which output bits carry entropy.
+> 
+> The alignment check in probe is updated to verify the resource is
+> aligned to the configured width instead of hardcoding 4-byte alignment.
 
 Best regards,
 Krzysztof
