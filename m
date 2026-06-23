@@ -1,132 +1,206 @@
-Return-Path: <linux-crypto+bounces-25340-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25341-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id LqpuFNfKOmp3HAgAu9opvQ
-	(envelope-from <linux-crypto+bounces-25340-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2026 20:05:11 +0200
+	id dw/5EdTVOmrFIAgAu9opvQ
+	(envelope-from <linux-crypto+bounces-25341-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2026 20:52:04 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BAEC6B95AF
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2026 20:05:11 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CED126B9884
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2026 20:52:03 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=LOuNqKAa;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25340-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25340-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=VKg1qICd;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25341-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25341-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9A68D304438C
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2026 18:05:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8F9D23075434
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2026 18:51:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 945463921CD;
-	Tue, 23 Jun 2026 18:05:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE32334E745;
+	Tue, 23 Jun 2026 18:51:28 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yx1-f51.google.com (mail-yx1-f51.google.com [74.125.224.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 765F438A722;
-	Tue, 23 Jun 2026 18:05:04 +0000 (UTC)
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782237905; cv=none; b=iXWlHGpqPjrjmq8LyBMo1Uv/z4TMucVtNBwLhRbpZX957QNfL78DMsDTGauyWsYfmV1/ehS0UHpW6AzRPtKgcIv/iYpAFTEvjxvQXDNNvuNpFeTqTenVfoGqKH7RLEX0in/dGAnLesHdyS8PSlvMPOyPJEt4gmJSZ+QCFWwTcZk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782237905; c=relaxed/simple;
-	bh=laPZuoKzOlRgjMu009Sv1XuC5u1F5zM24h/pb88UUgY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gvzn2ZmUWOejzase+GBWEw3pFDxTYm0jtIkYJ/7PUrjeYxCKpfmJ0ZtICpWfJyPWIcF78Fzk6GXw+z+/eRcfNM3w51FSJtfSjpxovoGoWVr5GjDCAdYN6DMBPimKW5lA/qEd7q50OtXn5LDFW36OSVp7j9I/SuKhCsaN7WwAFkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LOuNqKAa; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AE4F1F000E9;
-	Tue, 23 Jun 2026 18:05:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1782237904;
-	bh=DcbPuct3JcioZ7MKEBA7Z8jvWe10D5XpmKWh6eWGb4Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=LOuNqKAa9bECpMHiIJ8rhDaCCQpm6/yHxaGtZrvh8/E4Z2q40mqJ3tKyCL6745HV8
-	 x6GAW3AtEFeW/BFVRLXn3gEITy3i/MLrxsoicNPIUuF8GlEvNdEurHp0LHeejWM3i2
-	 tj2jsrBf3KM1a0oOLrlLZaI/JhUYqL5bDGo1ki+dklz42tz76Ogh7AWA3AG5HSSXMx
-	 OFLm1bBiI4U3eq/Cnl/cqg8SREI57wgZ6BXkPCQXUFSCgwAwf318FOEbd/OYVTSW02
-	 Nd9rGlZYX8uzFJ5MWMQRNxHe8pSKdhW3t0Vapq5uwLwTA+tMc625EWDpZ4nPoZ9mXt
-	 nouimSdmHgFSw==
-Date: Tue, 23 Jun 2026 18:05:02 +0000
-From: Eric Biggers <ebiggers@kernel.org>
-To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: linux-crypto@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-bluetooth@vger.kernel.org, iwd@lists.linux.dev,
-	linux-hardening@vger.kernel.org, Milan Broz <gmazyland@gmail.com>,
-	Demi Marie Obenour <demiobenour@gmail.com>,
-	Andy Lutomirski <luto@amacapital.net>
-Subject: Re: [PATCH] crypto: af_alg - Add af_alg_restrict sysctl, defaulting
- to 1
-Message-ID: <20260623180502.GC1850517@google.com>
-References: <20260622234803.6982-1-ebiggers@kernel.org>
- <CABBYNZ+QLvkYkn_EcBZ4+GopyhKqJLcfCoABYcw1VamavbSvhg@mail.gmail.com>
- <20260623165208.GB1793@sol>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F27346AE8
+	for <linux-crypto@vger.kernel.org>; Tue, 23 Jun 2026 18:51:27 +0000 (UTC)
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782240688; cv=pass; b=KgXaWwzxJC0lY0oL9SidMHPgK+UBn/N1WtIsH5EygIACNkOh/N76YnPAu83qjhrmFpEet2uajcUg1m1KiDCf4Vg0lzza9hx2iFbJFtRJHcENnMltZBx04rKhP4396xtE2bMHNuLxAWisVLH+UIPyGLRQGYbg/qaNYqWpRoyHnhI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782240688; c=relaxed/simple;
+	bh=Efr1OooVVeTRTisiJfG3vsg/+MXEtgRrVmeiLqYtGck=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sFDGGZQwzMdG2Wv0I5RG6u125moPguuNZMl0A93cg43fXLrxZE29ToSNviA8IuIs0ckZK5egZJVy5EfEX/7GBzzTbueZBWK7bW6E70JBiKbjrQlGVOCY6Nq3R9xm1cklDPMeE0PvaoB90xSVL3jFFzZisjTg6mPGD1yxCPkdw9w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VKg1qICd; arc=pass smtp.client-ip=74.125.224.51
+Received: by mail-yx1-f51.google.com with SMTP id 956f58d0204a3-6611689dc10so183857d50.1
+        for <linux-crypto@vger.kernel.org>; Tue, 23 Jun 2026 11:51:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1782240686; cv=none;
+        d=google.com; s=arc-20240605;
+        b=hNah65USrbD57H3dczw0iWLIrJaFd/wxgM5Tm4KZu4t0Fme1wTfbopeThqivJiw7v0
+         E7ePfKUEartUNzteR179edxiON8T0JtXvduD9HXE2Ag+gY+FHiIJTNXpB6q0zPnCQT0N
+         8/vhmqQbFI8qb6am7EW/i5Y8fNomtid7arpaFSQQpQw+Z08VqhHSGOsMUtSA9eYh/zep
+         WEN4z4V8n4gKF2NfGAk0uDoPsAyt0j/nadn7UWmAOFqNFsozVM31RCLA9RxjeU89/EkX
+         oLOEeek8tZtFPVDN0fdRmcJFOIwEkyonZwlMkUM+w0/TM7AcHAoydEoDjDaLmlOrjTV7
+         TH2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=QGHdQke52quudoElH5DIY+sbZKk9j5FB05lJCBdajHM=;
+        fh=oQPyVsOfiflImFtc3HupBs+Qdh4bh24JxOAgZ5D/+F0=;
+        b=exS1LdFCGW2xuSJPtNZFgWl/aij5fKWNoLObyyddzIgttO7K3TZfTSudF6WtC0n9zJ
+         pmfAjBqB8VLCiMDLMF/aKaKgqdaH8ggVjdPsyMvIxZmch7Wg+Uppp8wEHkwk45F0gdc4
+         JHZxU7NjvFsT6kiItk7ECd0H6v4duPQYGClXkqfT8YeqPlX++MYu5ArIc1k1ZgsAgc7/
+         8t69FjNN6LezQSYgbs0WqLkKq1qGR/QKrieCNz86Lzg9dMpwSIa8GfKmhVVb5tnaIHJm
+         b1qOJvI1rCMIK+oStH6RwJUzYYzLNFXQ3mLw29KTQ7QPnXPwZQ4bqg4qnZtKJJr7ilIw
+         caHw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1782240686; x=1782845486; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QGHdQke52quudoElH5DIY+sbZKk9j5FB05lJCBdajHM=;
+        b=VKg1qICdpjOxcsGBBOa4HZh/J0a1Gkb0EZzxvAidRzTC9Dgp3FVJETu+voTIFXZxS9
+         UYFdLjMqUKDF0mxBrllAHICDgZD+qQSKxnSxU9nkMI+B/Hj3biuRvkqYLxfxBOmEFxsu
+         Freiwsq4CyIepsrOIqLrOgA3rbH6vsfofjT1UFSLlkucOdTkw9LaTqURfGeZtbNV+WcJ
+         ZCEVFbQktuN1ovYuqx4WIcWMn6WFtRBznePqU8AhkFJtqZ38FY3fPJJGTqE6+8tqtsQD
+         TAw/ScKHLKE81rwrUg3cUbxtLBu60RT20g7JqkAs9dZa+SzGX0pB98TwZMYP37yMrdB+
+         tcsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1782240686; x=1782845486;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=QGHdQke52quudoElH5DIY+sbZKk9j5FB05lJCBdajHM=;
+        b=bvwgRDozqsmo1twtDoj+sX2Pg0X9zdj0Xt+3fEc4FGL6xGF2rSJKPFp8ysxZQd4/zq
+         ionJ7/NhrrWWyd9/OxxLDiW45BuKI4ZtTnvryIJmGSAaFsNNJf6GLYDfhpdioaDNhhIe
+         YKPLs/veAeNcgvqVTaOmaiKCRQDeEzsFanpz378Jb9q2GyYNO7xEM4iw16Yr6oOOSoqG
+         BAa9oJ8zomw2NrDJPmFErwSR2vm5k9JFKL1b7dc3WzvgkJ8nEQUxQZxLIIXBfmqp7zxn
+         fdq2bXZPmNBpsjZ5Ejs7j9M6R0UMacHc7HZuECvHeYqBrVme/gG+TM9/fc2DyOd+9odG
+         WKcg==
+X-Gm-Message-State: AOJu0Yw3sO83A5o7cNGGIIRxcHlYVLQ2YZfRLCjvXZnF2XTQuuiRWGvd
+	yJudZfvT7PSKd7wLIcym9Ys2HR+wrArlUDXymzhiJXNQoTn/BcYL+oJSfOpnhN7JA6ZnkNodt9d
+	bF5pXp+GEo1uX172rX6HJf0GyGEbwvgo=
+X-Gm-Gg: AfdE7cnZhjR+ceo4I0fHMdi5DKNsQLhjQ1/vQoXKCeNI1+vOiJot2pBkfeAHXyH2/i9
+	8w2C72iILlK7ZTw/UUXkN1RXn8dImHj/fC/kXZc0904w3vvIn1b4d71+3cEewNR7q595cQQNaeM
+	38K4uM0VyVSXiJUEwxvgEpWFRm2FCJqbCFLrTLk44JUoNhk1XPLnGrJWsdcSUMHnOWA6o+lfru0
+	HEj++bWyXos67etCcwiqNakaLRt/9m/1UEiCUycSq4KOZGdxJ5uBC61yLa5Ynp55/1VtQEjA3XG
+	z1UGl9Z1ihTaU/hPXswdRDWUt5SnhDHXLKyANWbI3dvBVwLAHSVBXJAzvU8=
+X-Received: by 2002:a05:690e:e87:b0:662:f2d1:f27 with SMTP id
+ 956f58d0204a3-66359ece524mr3827196d50.27.1782240686326; Tue, 23 Jun 2026
+ 11:51:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260623165208.GB1793@sol>
+References: <20260622234803.6982-1-ebiggers@kernel.org> <CABBYNZ+QLvkYkn_EcBZ4+GopyhKqJLcfCoABYcw1VamavbSvhg@mail.gmail.com>
+ <20260623165208.GB1793@sol> <20260623180502.GC1850517@google.com>
+In-Reply-To: <20260623180502.GC1850517@google.com>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Tue, 23 Jun 2026 14:51:13 -0400
+X-Gm-Features: AVVi8CfbI5Vx_0h2Ev3jl-1KL9OujVxy8AaPvUK9sScHwsY8ABVyPNIyPnDwcl8
+Message-ID: <CABBYNZKdd2-S9C1z0vtUB5yMVTWxLHi+Ta0_aUrahDYAq5rpxg@mail.gmail.com>
+Subject: Re: [PATCH] crypto: af_alg - Add af_alg_restrict sysctl, defaulting
+ to 1
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-crypto@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-bluetooth@vger.kernel.org, iwd@lists.linux.dev, 
+	linux-hardening@vger.kernel.org, Milan Broz <gmazyland@gmail.com>, 
+	Demi Marie Obenour <demiobenour@gmail.com>, Andy Lutomirski <luto@amacapital.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25340-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:luiz.dentz@gmail.com,m:linux-crypto@vger.kernel.org,m:herbert@gondor.apana.org.au,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:linux-bluetooth@vger.kernel.org,m:iwd@lists.linux.dev,m:linux-hardening@vger.kernel.org,m:gmazyland@gmail.com,m:demiobenour@gmail.com,m:luto@amacapital.net,m:luizdentz@gmail.com,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gondor.apana.org.au,lists.linux.dev,gmail.com,amacapital.net];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-25341-lists,linux-crypto=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,gondor.apana.org.au,lists.linux.dev,gmail.com,amacapital.net];
+	FORGED_RECIPIENTS(0.00)[m:ebiggers@kernel.org,m:linux-crypto@vger.kernel.org,m:herbert@gondor.apana.org.au,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:linux-bluetooth@vger.kernel.org,m:iwd@lists.linux.dev,m:linux-hardening@vger.kernel.org,m:gmazyland@gmail.com,m:demiobenour@gmail.com,m:luto@amacapital.net,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[luizdentz@gmail.com,linux-crypto@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	FROM_NEQ_ENVFROM(0.00)[luizdentz@gmail.com,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+	RCPT_COUNT_SEVEN(0.00)[11];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2BAEC6B95AF
+X-Rspamd-Queue-Id: CED126B9884
 
-On Tue, Jun 23, 2026 at 09:52:08AM -0700, Eric Biggers wrote:
-> On Tue, Jun 23, 2026 at 11:04:14AM -0400, Luiz Augusto von Dentz wrote:
-> > > +===  ==================================================================
-> > > +0    AF_ALG is unrestricted.
-> > > +
-> > > +1    AF_ALG is supported with a limited list of algorithms. The list
-> > > +     is designed for compatibility with known users such as iwd and
-> > > +     bluez that haven't yet been fixed to use userspace crypto code.
-> > 
-> > Is the expectation that we go shopping for userspace crypto here?
-> 
-> Yes, same as what 99% of userspace already does.  Probably you'll just
-> want to link to OpenSSL, but it could be something else if you want.
-> 
+Hi Eric,
+
+On Tue, Jun 23, 2026 at 2:05=E2=80=AFPM Eric Biggers <ebiggers@kernel.org> =
+wrote:
+>
+> On Tue, Jun 23, 2026 at 09:52:08AM -0700, Eric Biggers wrote:
+> > On Tue, Jun 23, 2026 at 11:04:14AM -0400, Luiz Augusto von Dentz wrote:
+> > > > +=3D=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > +0    AF_ALG is unrestricted.
+> > > > +
+> > > > +1    AF_ALG is supported with a limited list of algorithms. The li=
+st
+> > > > +     is designed for compatibility with known users such as iwd an=
+d
+> > > > +     bluez that haven't yet been fixed to use userspace crypto cod=
+e.
+> > >
+> > > Is the expectation that we go shopping for userspace crypto here?
+> >
+> > Yes, same as what 99% of userspace already does.  Probably you'll just
+> > want to link to OpenSSL, but it could be something else if you want.
+> >
+> > - Eric
+>
+> By the way you do know that bluez already has a local implementation of
+> ECDH, right?  See src/shared/ecc.c.
+
+It's never been audited; it's only used for hardware emulation, I
+didn't even remember we had that thingy. What we really use is
+src/shared/crypto.c, and I'm not looking forward to having it changed.
+With something like Zephyr, changing crypto libraries every so often
+just because one didn't fit on a platform wasn't a great experience,
+and that is a much bigger project. In the end it seems they are using
+a forked mbedtls:
+
+https://github.com/zephyrproject-rtos/mbedtls
+
+I'm quite sure whatever choice we make will be the wrong choice for
+someone. Then someone will have the brilliant idea to add some sort of
+backend support to let everyone plug in their preferred crypto
+library, possibly adding even more code to audit.
+
 > - Eric
 
-By the way you do know that bluez already has a local implementation of
-ECDH, right?  See src/shared/ecc.c.
 
-- Eric
+
+--=20
+Luiz Augusto von Dentz
 
