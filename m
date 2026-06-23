@@ -1,161 +1,135 @@
-Return-Path: <linux-crypto+bounces-25325-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25326-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id n9ceLpJROmoE6AcAu9opvQ
-	(envelope-from <linux-crypto+bounces-25325-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2026 11:27:46 +0200
+	id qHrFNCaAOmqS+QcAu9opvQ
+	(envelope-from <linux-crypto+bounces-25326-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2026 14:46:30 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B1DF6B5CC4
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2026 11:27:46 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B0936B72C2
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2026 14:46:30 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25325-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25325-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25326-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25326-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8EBAC3020133
-	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2026 09:26:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 63FD830AD461
+	for <lists+linux-crypto@lfdr.de>; Tue, 23 Jun 2026 12:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326813403ED;
-	Tue, 23 Jun 2026 09:26:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D68663D648C;
+	Tue, 23 Jun 2026 12:44:40 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mailout1.hostsharing.net (mailout1.hostsharing.net [83.223.95.204])
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F36D3644A4;
-	Tue, 23 Jun 2026 09:26:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B57453D413C;
+	Tue, 23 Jun 2026 12:44:38 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782206779; cv=none; b=avtLKFp7rj1v3J0PR57vBc8FstUR+fwHGVkNM+uwnZlf/yQapzJVxYoAlpo3d/TE4bScRAQ4b51HSCcfSgatfMQXTtrrmKuBmRUzN+nJlVPFJ/Wtc1CyH0SDj4ksKvsYB8pTFmvqycCvrYhhQb99tIxTSwZqsEIgpd3IEqjU2Zs=
+	t=1782218680; cv=none; b=UvozculmCazwj+/GFQxi4DOE7geza0N4xcNX/KXNz28fHAMIoB78jwB4E7Lt5nFg9js1kvWc6SgHQkrZI+9u5N459FZRCOAdS5qZDaZnCDt6jCTxUpIDHgCNRo9uvIyF0UBF+rscnCiIeHJFFf4msbH7tQzIrlKOORs9YO8PkHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782206779; c=relaxed/simple;
-	bh=3G+s78ZGaE4w/7G+m2+1z/grM1j3s1Or94a6zPTLhgE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D6wmKyUCzr9m+QKiYNcXOc+tU+6lyLuJZscK5W4GnX444d3/1eAaKupzeA8T5xOrwPRjwzYoAB9xBmFnw/whbPc2jlSrqGWbQePe+Dh46hZc4QeGlfTFDcnEqQKADMubc90l1v0ZixvagM038pA381dhL4j/dmxm/0I8kjB6NXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=pass smtp.mailfrom=wunner.de; arc=none smtp.client-ip=83.223.95.204
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature ECDSA (secp384r1) server-digest SHA384
-	 client-signature ECDSA (secp384r1) client-digest SHA384)
-	(Client CN "*.hostsharing.net", Issuer "GlobalSign GCC R6 AlphaSSL CA 2025" (verified OK))
-	by mailout1.hostsharing.net (Postfix) with ESMTPS id AB164367;
-	Tue, 23 Jun 2026 11:26:05 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id A3B1A602090D; Tue, 23 Jun 2026 11:26:05 +0200 (CEST)
-Date: Tue, 23 Jun 2026 11:26:05 +0200
-From: Lukas Wunner <lukas@wunner.de>
-To: azraelxuemo <eilaimemedsnaimel@gmail.com>
-Cc: linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
-	dhowells@redhat.com, Ignat Korchagin <ignat@linux.win>,
-	Jarkko Sakkinen <jarkko@kernel.org>, keyrings@vger.kernel.org
-Subject: Re: [PATCH] KEYS: asymmetric: fix OOB read in KEYCTL_PKEY_DECRYPT on
- zero-length message
-Message-ID: <ajpRLY4unsqxS46e@wunner.de>
-References: <20260622025002.798934-1-xuemo@xuemo.com>
+	s=arc-20240116; t=1782218680; c=relaxed/simple;
+	bh=Os+Dq9xu4+1uB0pLfKgdOOhC4ysk0rTzQttxlAmQB2Q=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Ia5P6IdzsmEtIyUeanNjrJHqgw3xWa3m5jAglRrdgzzv4WUWG4gAi+WCd3NfPVhX2+TLDpNAvrfJwNiSNMsHMoZ5tzUqe6ymBKwhiubN8UzhQOhFzBjCQCuhDzJxLPYxKmPgWp0nPlnv3Su4fPSvczXC22geSp3jU9VNQ8csW+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hadess.net; spf=pass smtp.mailfrom=hadess.net; arc=none smtp.client-ip=217.70.183.196
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 242DA3F62F;
+	Tue, 23 Jun 2026 12:44:29 +0000 (UTC)
+Message-ID: <7d08a6df54279e9915f5df6bd4e5e5dde52b4fe1.camel@hadess.net>
+Subject: Re: [PATCH] crypto: af_alg - Document the deprecation of AF_ALG
+From: Bastien Nocera <hadess@hadess.net>
+To: Eric Biggers <ebiggers@kernel.org>, linux-crypto@vger.kernel.org, 
+ Herbert Xu <herbert@gondor.apana.org.au>, Marcel Holtmann
+ <marcel@holtmann.org>, Luiz Augusto von Dentz	 <luiz.dentz@gmail.com>
+Cc: linux-doc@vger.kernel.org, linux-api@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, Linus Torvalds
+	 <torvalds@linux-foundation.org>, linux-bluetooth@vger.kernel.org, 
+	ell@lists.linux.dev
+Date: Tue, 23 Jun 2026 14:44:28 +0200
+In-Reply-To: <20260430011544.31823-1-ebiggers@kernel.org>
+References: <20260430011544.31823-1-ebiggers@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.60.2 (3.60.2-1.fc44) 
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260622025002.798934-1-xuemo@xuemo.com>
+X-GND-Sasl: hadess@hadess.net
+X-GND-State: clean
+X-GND-Score: -100
+X-GND-Cause: dmFkZTFSdMa/vorSWAPy5DzVBQOrA5W2CderI2r8bhYQ2EoH5VrunMUW4F+lob0aw2PDQT52P9oKJQ7Bc+ZmGg5FLS47m3kHsnL0/eV+3XWE+F4diLFd8e9nu3o4i32idkosmDFchhVJC3nly1ComxK8P/aL7NCh427bMVxArtJi1+8zJU4qnakVtn4pXwS7gUXQQSGFPcaGkbHlc52LfmJWg5Xlm6xwGFN1wb+UetO4FCFwrmL/QezjIkqk8BlkUF15JvJlOtt2gFYzNZmEYZ+TOeu/SqzT814a85hCNogSS4A43b3ro+RlPF01qEkspz+C4G6uVBR7jPZ+DmeQGzPLSmwjWQvgzyK7ED+22J3K815RYB90/WyR2jJ9E+TpSEIuCjN8yCT9Yy7Q6O1DSR0bardG347BFh/ZgxCO/vzJnJPBcWOy3l8rUtv2mcI9/7igbu5SToeLaMIlxZXaEWrDNH82KK7lW9VqNWH0lbp84/CzQdtjlUtmcTkGrOxNzhyj13LOnkQCuPheAYpdX9EuSX/votNGV+SVkYYkw5gNS6im/7I+GjfubVIzPQCTNDnUyH59CZ7d70rqNUuEI/Pyzh8pIUgMSpNmHKmxW3UxhDAiHIYYZR7VC+ql1VKY0cF1nKpy2Tm6hdy+emcJtd/OYrPa/UUCSRd+hTMdJRbN/GPThg
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25325-lists,linux-crypto=lfdr.de];
-	DMARC_NA(0.00)[wunner.de: no valid DMARC record];
-	FORGED_RECIPIENTS(0.00)[m:eilaimemedsnaimel@gmail.com,m:linux-crypto@vger.kernel.org,m:herbert@gondor.apana.org.au,m:dhowells@redhat.com,m:ignat@linux.win,m:jarkko@kernel.org,m:keyrings@vger.kernel.org,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_RECIPIENTS(0.00)[m:ebiggers@kernel.org,m:linux-crypto@vger.kernel.org,m:herbert@gondor.apana.org.au,m:marcel@holtmann.org,m:luiz.dentz@gmail.com,m:linux-doc@vger.kernel.org,m:linux-api@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:netdev@vger.kernel.org,m:torvalds@linux-foundation.org,m:linux-bluetooth@vger.kernel.org,m:ell@lists.linux.dev,m:luizdentz@gmail.com,s:lists@lfdr.de];
+	DMARC_NA(0.00)[hadess.net];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[kernel.org,vger.kernel.org,gondor.apana.org.au,holtmann.org,gmail.com];
+	FORGED_SENDER(0.00)[hadess@hadess.net,linux-crypto@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	TAGGED_FROM(0.00)[bounces-25326-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[lukas@wunner.de,linux-crypto@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lukas@wunner.de,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	ALIAS_RESOLVED(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hadess@hadess.net,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	R_DKIM_NA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2B1DF6B5CC4
+X-Rspamd-Queue-Id: 2B0936B72C2
 
-[cc += Ignat, Jarkko, keyrings; start of thread is here:
-https://lore.kernel.org/r/20260622025002.798934-1-xuemo@xuemo.com
-]
+Hey,
 
-On Mon, Jun 22, 2026 at 02:50:02AM +0000, azraelxuemo wrote:
-> When ret is replaced with maxsize, the caller keyctl_pkey_e_d_s()
-> does copy_to_user(_out, out, ret) with ret = key_size (e.g. 256
-> for RSA-2048) on a buffer allocated with kmalloc(params.out_len),
-> which can be as small as 1 byte.  This reads key_size - out_len
-> bytes beyond the allocation.
+Replying to this older patch.
 
-It would probably make sense to tighten security in keyctl_pkey_e_d_s()
-by using kzalloc() instead of kmalloc() and by capping the amount of
-data copied with min(ret, params.out_len).
+On Wed, 2026-04-29 at 18:15 -0700, Eric Biggers wrote:
+<snip>
+> This isn't intended to change anything overnight.=C2=A0 After all, most L=
+inux
+> distros won't be able to disable the kconfig options quite yet, mainly
+> because of iwd.=C2=A0 But this should create a bit more impetus for these
+> userspace programs to be fixed, and the documentation update should also
+> help prevent more users from appearing.
 
-> Fixes: 63ba4d67594a ("KEYS: asymmetric: Use new crypto interface without scatterlists")
-> Signed-off-by: HanQuan <eilaimemedsnaimel@gmail.com>
+There are 2 other users that I know of: bluez, and the ell library
+(used by iwd and bluez).
 
-Please add:
+From what I could tell, bluetoothd uses AF_ALG for cryptography:
+https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/src/shared/crypto.c
+https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/tools/mesh-gatt/cry=
+pto.c
 
-Cc: stable@vger.kernel.org # v6.5+
+It uses "ecb(aes)" and "cmac(aes)" as algorithms.
 
-You don't need to cc that address when submitting the patch,
-but including the tag in the commit message helps stable
-maintainers identify patches that need backporting.
+Finally, it also uses them both again:
+https://git.kernel.org/pub/scm/bluetooth/bluez.git/tree/mesh/crypto.c
+through ell:
+https://git.kernel.org/pub/scm/libs/ell/ell.git/tree/ell/cipher.c
 
-> +++ b/crypto/asymmetric_keys/public_key.c
-> @@ -358,7 +358,10 @@ static int software_key_eds_op(struct kernel_pkey_params *params,
->  		BUG();
->  	}
->  
-> -	if (!issig && ret == 0)
-> +	/* Decrypt may legitimately return 0 (zero-length message); only
-> +	 * replace ret with maxsize for encrypt, which returns 0 on success.
-> +	 */
-> +	if (!issig && ret == 0 && params->op == kernel_pkey_encrypt)
->  		ret = crypto_akcipher_maxsize(tfm);
+Because that's a question that also came up, bluetoothd also uses the
+CAP_NET_ADMIN capability.
 
-Given that out of 3 operations (encrypt, decrypt, sign),
-2 already return the size, I think a better approach would be
-to let crypto_akcipher_sync_encrypt() return crypto_akcipher_maxsize()
-on success, i.e.:
+I'll let Luiz and Marcel take it over from here.
 
-	return crypto_akcipher_sync_prep(&data) ?:
-	       crypto_akcipher_sync_post(&data,
--					 crypto_akcipher_encrypt(data.req));
-+					 crypto_akcipher_encrypt(data.req)) ?:
-+	       crypto_akcipher_maxsize(tfm);
-
-and then remove the if-clause in software_key_eds_op() altogether
-which overwrites ret with the maxsize.
-
-Do you agree?
-
-Your patch wasn't cc'ed to all maintainers of this file.
-Please double-check that you've checked out Linus' current
-master when running scripts/get_maintainer.pl.
-
-Thanks,
-
-Lukas
+Cheers
 
