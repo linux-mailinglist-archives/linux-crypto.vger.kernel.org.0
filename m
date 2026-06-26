@@ -1,51 +1,51 @@
-Return-Path: <linux-crypto+bounces-25414-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25408-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id hg7OOt0CPmo8+ggAu9opvQ
-	(envelope-from <linux-crypto+bounces-25414-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2026 06:41:01 +0200
+	id 2Yt7CY0CPmoh+ggAu9opvQ
+	(envelope-from <linux-crypto+bounces-25408-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2026 06:39:41 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D64B6CA276
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2026 06:41:01 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B1C16CA234
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2026 06:39:40 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=aY5nPgvb;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25414-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25414-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="Q/7sEja+";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25408-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25408-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E69B3306AD3C
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2026 04:39:56 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CC5F03059333
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2026 04:39:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61FD73A3E96;
-	Fri, 26 Jun 2026 04:39:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F197E3859FA;
+	Fri, 26 Jun 2026 04:39:25 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698AA303C8A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C230A305689;
 	Fri, 26 Jun 2026 04:39:24 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782448768; cv=none; b=bM0uBxngRsE3/Y7xG3exPdrZMGvv8OiN8vAAZxKz8f1BhwlC/IRI2SzJP+4ZPvgbw774Veety5JCd57H663B3wbV3IITNADxUXlHFVXnu1/19BBCWCA2KHtZriH8GqX6WpatJw7gi3g5nBzuE9XOgiZ7OVMprcq3+463ZS1fyzM=
+	t=1782448765; cv=none; b=h3jSNR2nRNaXAe7y22OCimKOOks3ze+URkIyE+P1xYYrTRVI2poLRWhEPDBUxXHxz45w21Qng13nZFXqlAM9CgAW7hBiTOsi+2gIFaFr8+0pzETGaMtB0Ib/F9lv6N20jQu07Se7FB7u43kfi81dWiP/SqC5Rf0bvQInolbJIj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782448768; c=relaxed/simple;
-	bh=AnFJLbySyDeETlahUwPNSX4yvDcZvB12/BG4xCpoqSs=;
+	s=arc-20240116; t=1782448765; c=relaxed/simple;
+	bh=DAkG5ZcHe5k3NDWVAeg+i2n9Jn/8ibRQsvfnigbcnLU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RuUUomZLZYDoZxlpH+GV13SzY+0TDZ4VIq5FC/91rXwSbuVU6jWFJbiOfsAqKpk1oS/sDfEQAKrv6GzXmKYhSihS0n6t4qtT1VGzAYMTdEj8/036swaSCuTnEs2igfGDZA9CzCGQmZ6Bmd9OnjE4Iu8LmSDUdZ5c5CSDKXIKQOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aY5nPgvb; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A4E31F00A3A;
+	 MIME-Version; b=E7+4sBIMD4EUdRcJW4rFvz95y7UHrOW24aUvM4z7HgFGi7PTjeNLaeUxy7Bp6BxYd8L7wZ5Vu37SjP/xF4+vnypwPOGodyn64Co14Cx0V1tKq6P8ocayb2Ikpxj+tB7UpDfSrZR/+Nxsv0DlGfWKkdpBskGpxwSrmh+ag7YFRVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q/7sEja+; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 730D71F00A3F;
 	Fri, 26 Jun 2026 04:39:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1782448764;
-	bh=LTvew5FISW1+Y3DoGy6/+WEaicn3tFu5Y6jzIXpOte4=;
+	bh=qlf7k2IWeCHamtcpWOO1GJP/ujnSA1ip2v29jSHJHMM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=aY5nPgvbra9i2bLfegYp1BAgDIW7yQTbZOTbY43eHQpARuNo8vS8rxIW8dHP97WzX
-	 FdHvq7EK/hRKLDUYEuOL8JBSgd5gwtd+ZEC43UuakTmE/iZKhQpcuZwi6fmaJRdOYV
-	 GDIHewT/RRFX0RcExOrIJoye03Ek8YK6tUlzKStr7oypfBloh3fc2Lr3/GbDiX+UGn
-	 TOYnEbWOEXzSlmqJ6AnERYnsgHw8cB/pvZn2U9Q9AfaNZ8WQkM/7LhCkNxdUmaM25t
-	 CEhk2lm8DPDXjkUeRPT8yTLMDkekhAGaEX14YILcfCJUuIkCUtf25WlhuQ0TplOzzr
-	 G8+RpnKSX1/Pw==
+	b=Q/7sEja+Br7/M1lEynfT8OwuQ/+YvF6oXhZU+4Vl12jUOb/LUccVKsNtGMr2pj1Kf
+	 JRjry17LzPYDw0iAWjQdf2Z3HZHy1ppusY7WgYrfFMGMenxDpmMstZu9E0/M3AaB9a
+	 iKfC7LnvKgXeUZR7FTPZeMzasd+Zyjqx9WRws151/oHa3SJS5GVyertH92R3j9j+Y/
+	 qe1yQe6B85p2lqhxK5zw3zT0XJdDV54yYXi2ncK7KnB9zp8nz4JG+kcnXjUiLlrt4m
+	 Uwk07RexC0raptQdFZ36f+fn+qwS9SMmQsWnErwv/leJaasfYx18pMejllOUGBDwhp
+	 DOxomO2AN/zHw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: x86@kernel.org
 Cc: linux-um@lists.infradead.org,
@@ -55,9 +55,9 @@ Cc: linux-um@lists.infradead.org,
 	Christoph Hellwig <hch@lst.de>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 1/8] x86/fpu: Check for missing AVX and AVX-512 xstate bits
-Date: Thu, 25 Jun 2026 21:37:24 -0700
-Message-ID: <20260626043731.319287-2-ebiggers@kernel.org>
+Subject: [PATCH 2/8] um: Check for missing AVX and AVX-512 xstate bits
+Date: Thu, 25 Jun 2026 21:37:25 -0700
+Message-ID: <20260626043731.319287-3-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260626043731.319287-1-ebiggers@kernel.org>
 References: <20260626043731.319287-1-ebiggers@kernel.org>
@@ -76,12 +76,12 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-25414-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25408-lists,linux-crypto=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -98,72 +98,125 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6D64B6CA276
+X-Rspamd-Queue-Id: 8B1C16CA234
 
-If the CPU declares AVX or AVX-512 support, verify that the
-corresponding xstate bits are also set.  If not, warn and clear them.
+If the CPU declares AVX or AVX-512 support, verify that all the
+corresponding xstate bits are also set.  If any are missing, warn and
+don't set the corresponding X86_FEATURE_* flags.
 
-This eliminates the perceived need for AVX and AVX-512 optimized code in
-the kernel to call cpu_has_xfeatures().  That has never been universally
-done, which strongly suggests that it has never really been needed in
-practice, but this should remove any remaining doubt.
+This eliminates the perceived need for UML-supporting AVX and AVX-512
+optimized code in the kernel (that is, lib/raid/ currently) to start
+checking the xstate bits in addition to X86_FEATURE_AVX*.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- arch/x86/kernel/fpu/xstate.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ arch/um/kernel/um_arch.c | 78 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 77 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index a7b6524a9dea..7f7e62e4ebc5 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -797,10 +797,27 @@ static u64 __init guest_default_mask(void)
- 	 * for KVM guests.
- 	 */
- 	return ~(u64)XFEATURE_MASK_USER_DYNAMIC;
- }
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 2141f5f1f5a2..aafbaef2ae82 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -262,16 +262,92 @@ EXPORT_SYMBOL(task_size);
  
-+/* Clear any X86_FEATURE_* used by the kernel whose xfeatures are missing. */
-+static void __init clear_cpu_caps_with_missing_xfeatures(u64 xfeatures)
+ unsigned long brk_start;
+ 
+ #define MIN_VMALLOC (32 * 1024 * 1024)
+ 
++static u64 __init read_xcr0(void)
 +{
-+	u64 mask;
++	u32 a, b, c, d;
 +
-+	mask = XFEATURE_MASK_FPSSE | XFEATURE_MASK_YMM;
-+	if (boot_cpu_has(X86_FEATURE_AVX) && (xfeatures & mask) != mask) {
-+		pr_err("x86/fpu: Disabling AVX support due to missing xstate features\n");
-+		setup_clear_cpu_cap(X86_FEATURE_AVX);
++	asm volatile("cpuid"
++		     : "=a"(a), "=b"(b), "=c"(c), "=d"(d)
++		     : "a"(0), "c"(0));
++	if (a >= 1) { /* max_leaf >= 1 */
++		asm volatile("cpuid"
++			     : "=a"(a), "=b"(b), "=c"(c), "=d"(d)
++			     : "a"(1), "c"(0));
++		if (c & (1 << 27)) { /* XSAVE enabled by OS */
++			asm volatile("xgetbv" : "=d"(d), "=a"(a) : "c"(0));
++			return ((u64)d << 32) | a;
++		}
 +	}
-+	mask = XFEATURE_MASK_FPSSE | XFEATURE_MASK_YMM | XFEATURE_MASK_AVX512;
-+	if (boot_cpu_has(X86_FEATURE_AVX512F) && (xfeatures & mask) != mask) {
-+		pr_err("x86/fpu: Disabling AVX-512 support due to missing xstate features\n");
-+		setup_clear_cpu_cap(X86_FEATURE_AVX512F);
-+	}
++	return 0;
 +}
 +
- /*
-  * Enable and initialize the xsave feature.
-  * Called once per system bootup.
-  */
- void __init fpu__init_system_xstate(unsigned int legacy_size)
-@@ -853,10 +870,12 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
- 		pr_err("x86/fpu: Both APX/MPX present in the CPU's xstate features: 0x%llx.\n",
- 		       fpu_kernel_cfg.max_features);
- 		goto out_disable;
- 	}
- 
-+	clear_cpu_caps_with_missing_xfeatures(fpu_kernel_cfg.max_features);
++static void __init validate_and_set_cpu_cap(int cap, u64 xcr0)
++{
++	/*
++	 * Check for missing xstate features right away, so that there's no
++	 * perceived need for all optimized code in the kernel to do so.
++	 */
++	switch (cap) {
++	case X86_FEATURE_AVX:
++	case X86_FEATURE_AVX2:
++	case X86_FEATURE_AVX_VNNI:
++	case X86_FEATURE_FMA:
++	case X86_FEATURE_VAES:
++	case X86_FEATURE_VPCLMULQDQ:
++		if ((xcr0 & 0x7) != 0x7) {
++			static bool warned;
 +
- 	fpu_kernel_cfg.independent_features = fpu_kernel_cfg.max_features &
- 					      XFEATURE_MASK_INDEPENDENT;
++			if (!warned) {
++				os_warn("Disabling AVX support due to missing xstate features\n");
++				warned = true;
++			}
++			return;
++		}
++		break;
++	case X86_FEATURE_AVX512F:
++	case X86_FEATURE_AVX512BW:
++	case X86_FEATURE_AVX512CD:
++	case X86_FEATURE_AVX512DQ:
++	case X86_FEATURE_AVX512ER:
++	case X86_FEATURE_AVX512IFMA:
++	case X86_FEATURE_AVX512PF:
++	case X86_FEATURE_AVX512VBMI:
++	case X86_FEATURE_AVX512VL:
++	case X86_FEATURE_AVX512_4FMAPS:
++	case X86_FEATURE_AVX512_4VNNIW:
++	case X86_FEATURE_AVX512_BF16:
++	case X86_FEATURE_AVX512_BITALG:
++	case X86_FEATURE_AVX512_FP16:
++	case X86_FEATURE_AVX512_VBMI2:
++	case X86_FEATURE_AVX512_VNNI:
++	case X86_FEATURE_AVX512_VP2INTERSECT:
++	case X86_FEATURE_AVX512_VPOPCNTDQ:
++		if ((xcr0 & 0xe7) != 0xe7) {
++			static bool warned;
++
++			if (!warned) {
++				os_warn("Disabling AVX-512 support due to missing xstate features\n");
++				warned = true;
++			}
++			return;
++		}
++		break;
++	}
++	set_cpu_cap(&boot_cpu_data, cap);
++}
++
+ static void __init parse_host_cpu_flags(char *line)
+ {
++	u64 xcr0 = read_xcr0();
+ 	int i;
++
+ 	for (i = 0; i < 32*NCAPINTS; i++) {
+ 		if ((x86_cap_flags[i] != NULL) && strstr(line, x86_cap_flags[i]))
+-			set_cpu_cap(&boot_cpu_data, i);
++			validate_and_set_cpu_cap(i, xcr0);
+ 	}
+ }
  
- 	/*
- 	 * Clear XSAVE features that are disabled in the normal CPUID.
+ static void __init parse_cache_line(char *line)
+ {
 -- 
 2.54.0
 
