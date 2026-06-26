@@ -1,185 +1,208 @@
-Return-Path: <linux-crypto+bounces-25431-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25432-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id O10PL6CWPmp6IgkAu9opvQ
-	(envelope-from <linux-crypto+bounces-25431-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2026 17:11:28 +0200
+	id dgffE9KsPmpPKAkAu9opvQ
+	(envelope-from <linux-crypto+bounces-25432-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2026 18:46:10 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18D006CE5A5
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2026 17:11:28 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F6AA6CF38A
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2026 18:46:09 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=Nvidia.com header.s=selector2 header.b=urjBklV6;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25431-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25431-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=reject) header.from=nvidia.com;
-	arc=reject ("cv is fail on i=2")
+	dkim=fail ("body hash did not verify") header.d=alien8.de header.s=alien8 header.b=MFflujch;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25432-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25432-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=fail reason="SPF not aligned (strict)" header.from=alien8.de (policy=none);
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 50680303ADFE
-	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2026 15:07:42 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 6F216304C89A
+	for <lists+linux-crypto@lfdr.de>; Fri, 26 Jun 2026 16:41:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6536374726;
-	Fri, 26 Jun 2026 15:07:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0ACA3FD134;
+	Fri, 26 Jun 2026 16:41:33 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from PH0PR06CU001.outbound.protection.outlook.com (mail-westus3azon11011027.outbound.protection.outlook.com [40.107.208.27])
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F9AD1D5ADE;
-	Fri, 26 Jun 2026 15:07:40 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782486461; cv=fail; b=AKM+nVCGdCCOCq2OEOlhZQxWwc8F5kknuOJ/2R6NBxkTpBTlehj3CyL/fv+GXQVUxIl/4x3Xh7Uhc+vaXxHZA6E3JJ12EKP+3dCSjCuslGKQtL66PNFXXKPTURO1TAVqN/jRA1jcZN8WrBKveVokksiBwBsSEshQWXrOF8xYtJw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782486461; c=relaxed/simple;
-	bh=4v57BDCmnjvZYHbV/ADwoQMxoARkygg41ALj1Aiw+bE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cPK1jDRtxDE2knbmYlS048+e00wxAaNkMLDgLk0YJrtrOIj6T+7fM7ltQw7wJ+5Um7buw1bX7Ozw37NIPJRrb7U42IVQz+Zq4dO0yotbU90tKg+BxEic42rmt+wPZZqzntrSSxqV4CxBRFU69/8g+TOF/1XMBtCE9aylj2vEneI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=urjBklV6; arc=fail smtp.client-ip=40.107.208.27
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mrXTLuLlX4SHTAHtYmWu5Np5xnWKuphUK+8IYndIbOgI3aYzIVfm0gAeefQiKzbgpBqe4xMil5RJHwezHoFfL2CuFqxSYGvzJBKQg17ToQ143dS7jy5O20jeqd/vEmP3yTejQuO293u5LJVCetTrWw/rZ1CDoBYrdA6HORA2YEe1DTMotlQnaWOQXDZQVZ8Xa265l27k1VMfvPYmw6egLQIm2sYn9am7rf05+g3X6a11dN5yPa9prek/t/aOFm0hw/Mijr///2VHg9b7gVm7EONQWN6sIfJzgndr5LWN1YIFlJd4l+nFFJTACbuIh04jg3lDzBnYjiZOs2ZBB6yt9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L5eXkn5GP07eRs/dNhARGljfr/HRmEEG0/vTJNTJShQ=;
- b=FgrozDERYoJ8DWs+R18F6l3QTp02UlXL3xPIrTtytjBD70JXvGECFcsNVze9mlCHM28MVUP7EV0XW/U2GyHz0lYHWAJdalOhnoe2FxolUOpc5EzSP1vZXTlBSg17PLNMucdMZ6OZZ1aZzlPpRa2Jd2c0z90nBM51yu+vfrc/Y2uBIywpSvhPiDiym8U+XFhq719nOLAcY7eGW+4UMNuy1Oe+ZJzvFoUVYMpOia08wAX2ulxtXDVkEgMgDQe7BlUCnz6OqTwlpqZB3Hn+K7rkiMabv6HguhLPo39GRLLx38gwZOnwVgw9XZnhzm08NfIsCTfpi875YsK2wwgIf/JEbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=iscas.ac.cn smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L5eXkn5GP07eRs/dNhARGljfr/HRmEEG0/vTJNTJShQ=;
- b=urjBklV69WuwP7yzDSKdHJuak5MfS8KZl3sMG9oEcwpK4bkE+koS8oIuZVInV2V4ExMT7nXXY4l3GhAGNyN+Wt2JOyEEvT/xiGw/E7uLhF3WCvYYBhKmlcClq1Vx6AqPYAEqG8xs+tIh4DvqoFtKHZZSSU4HJ/cUuRsv7EeL93t4vTozy+EF7wj1o7cAyWqA41sm8gfYuuGqkqEglwB9THOvTZMAnsegPIx8kmZmHHPyJqLFu4N44/x0ghcHdiyc6QSIyiTNFNhwjeobm3JunUt0t41OC4WdzXq43jRotkRE6lowUbryTQMKFMOxcKMPfbBreNfGv/tTp7RRDRjLWA==
-Received: from SN7PR04CA0045.namprd04.prod.outlook.com (2603:10b6:806:120::20)
- by DS7PR12MB5792.namprd12.prod.outlook.com (2603:10b6:8:77::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.139.20; Fri, 26 Jun
- 2026 15:07:30 +0000
-Received: from SN1PEPF0002636D.namprd02.prod.outlook.com
- (2603:10b6:806:120:cafe::6a) by SN7PR04CA0045.outlook.office365.com
- (2603:10b6:806:120::20) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.159.17 via Frontend Transport; Fri,
- 26 Jun 2026 15:07:30 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- SN1PEPF0002636D.mail.protection.outlook.com (10.167.241.138) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.181.6 via Frontend Transport; Fri, 26 Jun 2026 15:07:30 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.43; Fri, 26 Jun
- 2026 08:07:10 -0700
-Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.20; Fri, 26 Jun 2026 08:07:09 -0700
-Received: from build-akhilrajeev-noble-20260602.internal (10.127.8.11) by
- mail.nvidia.com (10.126.190.182) with Microsoft SMTP Server id 15.2.2562.20
- via Frontend Transport; Fri, 26 Jun 2026 08:07:06 -0700
-From: Akhil R <akhilrajeev@nvidia.com>
-To: <vulab@iscas.ac.cn>
-CC: <akhilrajeev@nvidia.com>, <davem@davemloft.net>,
-	<herbert@gondor.apana.org.au>, <jonathanh@nvidia.com>,
-	<linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>,
-	<thierry.reding@kernel.org>
-Subject: [PATCH] fix: crypto/tegra: tegra_se_host1x_submit: timeout path leaks host1x_job   reference
-Date: Fri, 26 Jun 2026 15:07:05 +0000
-Message-ID: <20260626150705.5658-1-akhilrajeev@nvidia.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260626121453.35043-1-vulab@iscas.ac.cn>
-References: <20260626121453.35043-1-vulab@iscas.ac.cn>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A80E637F8DB;
+	Fri, 26 Jun 2026 16:41:29 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782492093; cv=none; b=ex7IUgTnhzRrvV5rPv/T29H68LDH94Ajbe1HxP3rHGknooTIkaBuYkEHvw/o+L7YaqxlVG+4U8YghuEzij7r8CYTqLiuymYUzLxgtWWnKlBQr4NTacQBl2irjN75Zwp4O8k/6vilWe+sIx+vSOLk7dpyewcW5+qtq1uYROXjieM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782492093; c=relaxed/simple;
+	bh=oKmUTCkU5vkJKigNiyNEjJdUjg+AAzcV8q5fFuRtHgE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lRG9arDkrGck2EjM4w+QMZLSKESewRstDt7e6LWvoLbLk9k5+/TbtsjTKSqo+wDlei/R1XSvh5Y1FFdonJEeYrmsFNMXnQrgMclQEUHg8rGENNBHWOsaY3CB0MFscWuO+abBS7qo2GRnlaevzhptTRZ8cpyQhluml8OAltKavNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=MFflujch reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 571E240E0031;
+	Fri, 26 Jun 2026 16:41:21 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id TfaXCwUB0Pi5; Fri, 26 Jun 2026 16:41:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1782492071; bh=ADxacD02dQ3O7qZRO7JLGvhTz+orY0cjlcqp6joinc4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MFflujchlwk4Abj9tjcgCnq8OTnQQ/pSziCHpkktj8xsBxxxbUcAWz6KJA5jP5jgZ
+	 GMhiJYd3H4SCrfrXiNygY373l5ZZABg2nyLCE7BbB57dwMSwV/cdwbduZtfNf3aKd4
+	 DXqibixZDulULxE3CO96uhdm3Nro+JkUqM5zUlOIootTmizjkdBUpNUZztAZVQewvz
+	 KlwleWSjo20pgW2vg45dEGX4oItTublq6QU25KgFW7iAZq3iNfwnAtpHye7D/ofZSn
+	 ej+tDHs+5OG5zgBPemlExMjF0MZAEfmEMN5iIEpK3pGgXC0mVTDwaMhGYQQ/LXboI5
+	 VQMZxcUf+NDA++2o/RJFeD06RSXganbXPluklhiRzQxjjVyMALacqwrBbHMoR81xcP
+	 BY6VE3uZZrf9ttSh9fYpCuUyqfySNd22tls1T1IAyWxEc/7BDsgW1grpwASoap4wID
+	 Fjt0dxgQUfRT0scjnqfESCHFnnnYEwp6e/QNZ4T/Z1T23mqVuGh9zrYhJP4mDqalVQ
+	 7DzxL/otrk+NvkjSQmjDPVKU924c6+PATDsY6UDtW372LVktKIcQIxxEU7nYyoFlgx
+	 AfButWofu3+gxd1T8+OiQm4lyh3Zx8+f3v00smb/SJLWa+HG6ZtZp8ubmc1dYzA3oT
+	 JaJuuF+AnEb+H0QsDMOv8R08=
+Received: from stx.tnic (unknown [IPv6:2600:1700:38ca:c00::1a])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5009640E00BA;
+	Fri, 26 Jun 2026 16:40:36 +0000 (UTC)
+Date: Fri, 26 Jun 2026 09:40:32 -0700
+From: Borislav Petkov <bp@alien8.de>
+To: "Kalra, Ashish" <ashish.kalra@amd.com>
+Cc: tglx@kernel.org, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, seanjc@google.com,
+	peterz@infradead.org, thomas.lendacky@amd.com,
+	herbert@gondor.apana.org.au, davem@davemloft.net, ardb@kernel.org,
+	pbonzini@redhat.com, aik@amd.com, Michael.Roth@amd.com,
+	KPrateek.Nayak@amd.com, Tycho.Andersen@amd.com,
+	Nathan.Fontenot@amd.com, ackerleytng@google.com, jackyli@google.com,
+	pgonda@google.com, rientjes@google.com, jacobhxu@google.com,
+	xin@zytor.com, pawan.kumar.gupta@linux.intel.com,
+	babu.moger@amd.com, dyoung@redhat.com, nikunj@amd.com,
+	john.allen@amd.com, darwi@linutronix.de,
+	linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	kvm@vger.kernel.org, linux-coco@lists.linux.dev
+Subject: Re: [PATCH v9 3/6] x86/sev: Disable CPU hotplug while SNP is active
+Message-ID: <20260626164032.GDaj6rgHq4xPd-qjvG@fat_crate.local>
+References: <cover.1782336473.git.ashish.kalra@amd.com>
+ <ba146ca15b7f76eee386c8c073fb3f1cc36e5781.1782336473.git.ashish.kalra@amd.com>
+ <20260625150253.GAaj1DHZC8ULg6PzbI@fat_crate.local>
+ <7c64d96f-f932-4db9-8119-b9e40d5b7fd9@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002636D:EE_|DS7PR12MB5792:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8117e62f-411c-48fc-b459-08ded394a498
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|82310400026|23010399003|36860700016|56012099006|11063799006|18002099003|22082099003;
-X-Microsoft-Antispam-Message-Info:
-	Rt2afTNBnNwN5zMsjuNYw35p6pIhW0ioRWMzhAnWGE3WqotIuJ6B16kpjmFNTTll7QynTtwNkySjRSJGZoPZTZoUulWUASTP0lbwH3QvxiAm1D0y/A+10wPOFS+M9UeUXAsqefsUlXBS3ptSJk556bF8n+u//3vP1lqvkiKbPQfDwbxVP8O8wdiKKEmm4QkJ51xbi8FY56HeKZXDeLNsOyaHFv2Vx2uSU4J1b6rXhRH/YbJl/MqBxAGyTNFfTxOWxvFT8O+4YZs4XnQgRVGgyt1quREiYJ8e9H9dhTnHh+of4CumyKKvDrEfIN/dq6eSudQKzZ60cKRT7YKbk4+MdwUEZmQXNQ3bdkj5C5PINPIAOJBoZ1UlVCasS/7EB+UKeaY86yXEYbZwXViQ5r25fU6awwCIkpBQXjOx3ik40u/yx68g/WYfVIa6BnG8nK7F/UoIoNxncioWd14C7e6ggPT1Onnwycpi5xfLti92q2bHp26HgiCtGDRl+O5+l1OeETLDoR+k8C5lQAj0HJIjmCxUhJZTNXxWdua3IWgcbNr44JGHyCmxnVj1oF/FJtbDrQoIWa6rnWrx21uYs3FL/XWtQ20Mq7ydiog66HnDEMFcHbgoWdH/lmvr59UO4os2wEGHYLuV+JbfEe6JDvcyEYI36uGnS/aRqBouILtOnwq8olXXcU184Xeu1tArXQONNpq1qtOneD4blopGz7z9Og==
-X-Forefront-Antispam-Report:
-	CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230040)(1800799024)(376014)(82310400026)(23010399003)(36860700016)(56012099006)(11063799006)(18002099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	Evs8waAw52CjidUGQl/oU8SA0wxTw6wKv/zilbA3kGHButWAM6BmGaL5UL9VoOPy25Od3nGe2ymA7mc36eiwiDGi9pupj+9/huw7VoUZ+0egGf1/lXqrsj+C9IlFs12udysht7edA8Cw6YTwj/DxB04loaZXgOREgf7ZfZuJ6WyRlvN8N5BhsjIgFmhO5KdWCgZCm58flYZzga94G7KPCnXSoLH1VTgkQnciXFvqUENUDKwSOlHZXrl5BE+9FMmAtQIRavx32Z5UfjvtpQ55z2+2gnZiEXQp9RMk/eh7XxEtI3vHpQ7f1ah1mEIC7nKcheZoDXaxy72mHOWxP/ybvJv84pq7d+TRboLapkegCWlh/PZ7fVTmIgbawYo98qx7RBj3xytN5b2+RDoqdN1fNL9bD/HJDjr2lKnjGLYnP14PHVSoN5ogqRj/0T64xEBb
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2026 15:07:30.2055
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8117e62f-411c-48fc-b459-08ded394a498
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002636D.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5792
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7c64d96f-f932-4db9-8119-b9e40d5b7fd9@amd.com>
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-5.66 / 15.00];
-	WHITELIST_DMARC(-7.00)[nvidia.com:D:+];
-	MID_CONTAINS_FROM(1.00)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-0.36 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_DKIM_REJECT(1.00)[alien8.de:s=alien8];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[alien8.de : SPF not aligned (strict),none];
 	HAS_LIST_UNSUB(-0.01)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-25432-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25431-lists,linux-crypto=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,Nvidia.com:dkim,iscas.ac.cn:email,nvidia.com:mid,nvidia.com:from_mime];
-	FROM_NEQ_ENVFROM(0.00)[akhilrajeev@nvidia.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:ashish.kalra@amd.com,m:tglx@kernel.org,m:mingo@redhat.com,m:dave.hansen@linux.intel.com,m:x86@kernel.org,m:hpa@zytor.com,m:seanjc@google.com,m:peterz@infradead.org,m:thomas.lendacky@amd.com,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:ardb@kernel.org,m:pbonzini@redhat.com,m:aik@amd.com,m:Michael.Roth@amd.com,m:KPrateek.Nayak@amd.com,m:Tycho.Andersen@amd.com,m:Nathan.Fontenot@amd.com,m:ackerleytng@google.com,m:jackyli@google.com,m:pgonda@google.com,m:rientjes@google.com,m:jacobhxu@google.com,m:xin@zytor.com,m:pawan.kumar.gupta@linux.intel.com,m:babu.moger@amd.com,m:dyoung@redhat.com,m:nikunj@amd.com,m:john.allen@amd.com,m:darwi@linutronix.de,m:linux-kernel@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:kvm@vger.kernel.org,m:linux-coco@lists.linux.dev,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:vulab@iscas.ac.cn,m:akhilrajeev@nvidia.com,m:davem@davemloft.net,m:herbert@gondor.apana.org.au,m:jonathanh@nvidia.com,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-tegra@vger.kernel.org,m:stable@vger.kernel.org,m:thierry.reding@kernel.org,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER(0.00)[akhilrajeev@nvidia.com,linux-crypto@vger.kernel.org];
-	FORWARDED(0.00)[lists@lfdr.de];
-	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	ALIAS_RESOLVED(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	FORGED_SENDER(0.00)[bp@alien8.de,linux-crypto@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_COUNT_SEVEN(0.00)[9]
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[alien8.de:-];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bp@alien8.de,linux-crypto@vger.kernel.org];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,alien8.de:from_mime,vger.kernel.org:from_smtp,fat_crate.local:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 18D006CE5A5
+X-Rspamd-Queue-Id: 3F6AA6CF38A
 
-On Fri, 26 Jun 2026 20:14:53 +0800, WenTao Liang wrote:
-> When host1x_syncpt_wait returns a timeout error, the function returns ret
->   directly without calling host1x_job_put(job). The job reference acquired
->   by host1x_job_alloc is properly released on all other error paths via the
->   job_put label but is missing on the timeout path.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 0880bb3b00c8 ("crypto: tegra - Add Tegra Security Engine driver")
-> Signed-off-by: WenTao Liang <vulab@iscas.ac.cn>
+On Thu, Jun 25, 2026 at 02:42:23PM -0500, Kalra, Ashish wrote:
+> Hello Boris,
 
-This fix is already applied in linux-next as commit 6ea0ce3a19f9
-("crypto: tegra - fix refcount leak in tegra_se_host1x_submit()").
+Hello Ashish,
 
-https://lore.kernel.org/linux-tegra/aip3_Hqk876NZFHf@gondor.apana.org.au/T/#t
+lemme try to make sense of your AI reply...
 
-Regards,
-Akhil
+> cpu_hotplug_disable()/cpu_hotplug_enable() are refcounted (cpu_hotplug_=
+disabled++/--,
+> with a WARN on underflow), so they have to be balanced. This flag colla=
+pses them to
+> exactly one outstanding disable per SNP-active window, because the disa=
+ble and enable
+> sites are not reached a symmetric number of times:
+
+Well, why aren't they?
+
+Why isn't a simple design where on SNP init hotplug is disabled - *exactl=
+y*
+one call to cpu_hotplug_disable() and on SNP shutdown hotplug is reenable=
+d
+again - also exactly one call.
+
+I know why...
+
+>   - On firmware without SNP_X86_SHUTDOWN_SUPPORTED, __sev_snp_shutdown_=
+locked() does not
+
+This function is one convoluted mess which does gazillion things. If I we=
+re
+maintaining that code, I would impose a mandatory cleanup phase before ne=
+w
+features are added. But I probably said that already before...
+
+And because a lot of code from your set goes into areas I maintain, I wou=
+ld
+suggest you take the time and do that cleanup. Before that code goes
+completely off the rails. And I'm willing to offer you review bandwidth a=
+nd
+other help I can with doing this right.
+
+>   call snp_shutdown() (it's gated on data.x86_snp_shutdown), so SNP sta=
+ys enabled in
+>   hardware =E2=80=94 SNP_EN stays set and hotplug stays disabled =E2=80=
+=94 while sev->snp_initialized is
+>   cleared. Re-init after that is routine, the SNP ioctls self-bracket i=
+nit and shutdown
+>   (e.g. SNP_COMMIT, SNP_SET_CONFIG, SNP_VLEK_LOAD):
+
+That init and teardown flow should be simplified:
+
+You have multiple things which you need to do at different times
+
+- per-CPU init=20
+- global init=20
+
+- per-CPU teardown
+- global teardown
+
+CPU hotplug toggling belongs to the global category. Instead of piling mo=
+re
+stuff onto that __sev_snp_shutdown_locked() function, you should take som=
+e
+time to clean it up, analyze what goes where and then simplify that flow.
+
+So let's clean stuff up first, please, analyze the flow and determine wha=
+t
+goes where and then do it. Not bolt more stuff on what is already wobbly.
+
+Thx.
+
+--=20
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
