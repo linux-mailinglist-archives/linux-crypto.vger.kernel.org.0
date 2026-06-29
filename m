@@ -1,83 +1,47 @@
-Return-Path: <linux-crypto+bounces-25446-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25448-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Z/PrMgjhQWqqvQkAu9opvQ
-	(envelope-from <linux-crypto+bounces-25446-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2026 05:05:44 +0200
+	id otCEJ3zkQWpjvgkAu9opvQ
+	(envelope-from <linux-crypto+bounces-25448-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2026 05:20:28 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F0216D59B9
-	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2026 05:05:44 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF6E06D5A49
+	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2026 05:20:27 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=amd.com header.s=selector1 header.b=2l0TMJkG;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25446-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25446-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=amd.com;
-	arc=reject ("cv is fail on i=2")
+	dkim=none;
+	dmarc=none;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25448-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25448-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 851FF300D15C
-	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2026 03:05:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D53373016531
+	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2026 03:20:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A4E37C108;
-	Mon, 29 Jun 2026 03:05:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F5F37D131;
+	Mon, 29 Jun 2026 03:20:15 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11013071.outbound.protection.outlook.com [40.93.196.71])
+Received: from psionic.psi5.com (psionic.psi5.com [185.187.169.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4364A3655F1;
-	Mon, 29 Jun 2026 03:05:26 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782702327; cv=fail; b=VqU09ceBmsA3SxbcYlVkWntRy4Cw82FPjr1zUU4zypZhpK+fA7Vby67wesubSSTH8865of60+1au6Gxr3bJQqnBjNbsyueyXYP57m29zxrmT0ImAQA4pDFlHSTI2Awhma8llqC11fy1PIeFvJsIFSp9M1YhxmK90hLmT1pIt7cQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782702327; c=relaxed/simple;
-	bh=RLQRHMX8nwVuBP0OlDW5CncUPO1ApmJsF5cJL8IYjgA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=iy9clzoJ1CKhjyDYeis/v1oY1xjBhAXYfMkpDGYFlKOAASV/rkel9gFee/X+BcBgd1hSLYBcMZVeIQCE0DmWYpl8HSJs2Za5ROag6IbI3xtMKyUBCnUGgowPj+i1tvL82YoQEB7fdpClqKLB8w9tREU+E7NyzhvtWp1xD5PhbTA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=2l0TMJkG; arc=fail smtp.client-ip=40.93.196.71
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=GtvKRZ7Q/91EOsImjUY7lOtebFu0thT0wUNTn4SQmelZRoCqhTAtaQUVZwzz6tjBO1oWlA2rzy3nJyLAfnu/7YhE0pwtM7W1WZshTMgPzgf8e8AAYJw7Eg4j4mZPktFNbeBDLP6ZPT4rx+l7MrTUI6Ezt5QOYgWIw/nqkPNFvMqcBZfwx6dQZLWM3Femha/nS8xLQOVL6EM0RJgjCnMEW21lWj1NLrybLzvje1FMuMZ70kdFQDu23mw3d9h9OTRkpQpRxvn4vcS0YW+Psuc2uNf3URNrl3Nr05RHHAX6ojjtu2T0cv41LW0qmnfyci+QRodD8PNaa7Z5peeD5RyFLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cw0TzyDpeTW4qjkfkzMCrDPps7CccER2n0WsFGexch0=;
- b=Tq7CArOhOxiOS5Zz5qdBczHHkdNq6Jd+jCzVcJlbXEDb4XoFsxyIYYEVpTwW3zi/8aM3D9p/NIhvjGiGE+BZ+70CsPlBLmr8iHgiqwjg7eG9RUljrlO3u/+dOvvWfPJT1aoklLYTDbtsI+HmrsyJ4DWTHxQClRfVr7VKPBMGZFaPCMVN6Z7Nc33CiXFyWvP0yfDUanzSwuUejsLV+B4z9Pog6N9JU8mZlAccNKphS5b54Rggk7FTIEMjqT5yhUdjU4ZtAm95AtZIOXbY8KbrtlteXac1zrEJPM/TLt3vFykzroqXmDLTGW6Gb041pbe8E2S5a2aP82gy1Yj+oPq/Ig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cw0TzyDpeTW4qjkfkzMCrDPps7CccER2n0WsFGexch0=;
- b=2l0TMJkGe3ktQA884c0E/iVgKZ1BwNXdrRTROQmhIXce54/SRMwR2DOlP6iq06rBG7/JufBTdtO/6CDE8y33+o33KNIdHKzagitKGym8DkH6W51mBaD9TPYUUMy62sz62NkYVT4aNZbKUMskEicvhYlBBNtsaTzWio5xC82dV2g=
-Received: from DS7P220CA0042.NAMP220.PROD.OUTLOOK.COM (2603:10b6:8:223::35) by
- PH7PR12MB8178.namprd12.prod.outlook.com (2603:10b6:510:2b3::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.159.18; Mon, 29 Jun
- 2026 03:05:19 +0000
-Received: from DS1PEPF0001708F.namprd03.prod.outlook.com
- (2603:10b6:8:223:cafe::8c) by DS7P220CA0042.outlook.office365.com
- (2603:10b6:8:223::35) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.159.19 via Frontend Transport; Mon,
- 29 Jun 2026 03:05:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb07.amd.com; pr=C
-Received: from satlexmb07.amd.com (165.204.84.17) by
- DS1PEPF0001708F.mail.protection.outlook.com (10.167.17.139) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.181.6 via Frontend Transport; Mon, 29 Jun 2026 03:05:19 +0000
-Received: from satlexmb07.amd.com (10.181.42.216) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.41; Sun, 28 Jun
- 2026 22:05:15 -0500
-Received: from [10.136.39.208] (10.180.168.240) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.41 via Frontend
- Transport; Sun, 28 Jun 2026 22:05:06 -0500
-Message-ID: <75a397c3-5251-45c8-8aba-a185685b382d@amd.com>
-Date: Mon, 29 Jun 2026 08:35:04 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B26731A3172;
+	Mon, 29 Jun 2026 03:20:12 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1782703215; cv=none; b=fnkElokmddvfbGT/RHqignAEN800PHnS5B6Elx8of8EG9gZem70K21ugQLdmHH4RG187qd03EIx5WeBCQILAlwHD8zPOr09wpa01oSwZJCJHLyv6fIo6f5MCYCEnbnG/7Yu3ASaYoEWqPIcJUK3tnpE03bzChgwbhiPvQHeMOOM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1782703215; c=relaxed/simple;
+	bh=ADXiNB9r584fVcz58aoglRRDDRnHgsGaxlcnPJMrx/U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BmDZd4xfTORNiClGbxM4TWmS9G1J7uURMv6uDFs35bFLM6T5HT7vHB/puBUF9+zYaTaUS6kvwNk7czkER6hw9lJdn5fBXxkIRzTgIopqDX9SmzHfHKAvXChqIUYVhwyb79aVObigsGyqfSt4zQT9W4CESUHFXXZb3OLxZaPO+a0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hogyros.de; spf=pass smtp.mailfrom=hogyros.de; arc=none smtp.client-ip=185.187.169.70
+Received: from [192.168.10.90] (unknown [39.110.247.193])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by psionic.psi5.com (Postfix) with ESMTPSA id 32BDE3F209;
+	Mon, 29 Jun 2026 05:11:16 +0200 (CEST)
+Message-ID: <641f0391-dd4b-4b25-88f5-5298fa6bf823@hogyros.de>
+Date: Mon, 29 Jun 2026 12:11:12 +0900
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -85,115 +49,83 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 3/6] x86/sev: Disable CPU hotplug while SNP is active
-To: Borislav Petkov <bp@alien8.de>, "Kalra, Ashish" <ashish.kalra@amd.com>
-CC: <tglx@kernel.org>, <mingo@redhat.com>, <dave.hansen@linux.intel.com>,
-	<x86@kernel.org>, <hpa@zytor.com>, <seanjc@google.com>,
-	<peterz@infradead.org>, <thomas.lendacky@amd.com>,
-	<herbert@gondor.apana.org.au>, <davem@davemloft.net>, <ardb@kernel.org>,
-	<pbonzini@redhat.com>, <aik@amd.com>, <Michael.Roth@amd.com>,
-	<Tycho.Andersen@amd.com>, <Nathan.Fontenot@amd.com>,
-	<ackerleytng@google.com>, <jackyli@google.com>, <pgonda@google.com>,
-	<rientjes@google.com>, <jacobhxu@google.com>, <xin@zytor.com>,
-	<pawan.kumar.gupta@linux.intel.com>, <babu.moger@amd.com>,
-	<dyoung@redhat.com>, <nikunj@amd.com>, <john.allen@amd.com>,
-	<darwi@linutronix.de>, <linux-kernel@vger.kernel.org>,
-	<linux-crypto@vger.kernel.org>, <kvm@vger.kernel.org>,
-	<linux-coco@lists.linux.dev>
-References: <cover.1782336473.git.ashish.kalra@amd.com>
- <ba146ca15b7f76eee386c8c073fb3f1cc36e5781.1782336473.git.ashish.kalra@amd.com>
- <20260625150253.GAaj1DHZC8ULg6PzbI@fat_crate.local>
- <7c64d96f-f932-4db9-8119-b9e40d5b7fd9@amd.com>
- <20260626164032.GDaj6rgHq4xPd-qjvG@fat_crate.local>
- <9d019b55-739d-429c-bb34-ce792e8340b6@amd.com>
- <20260627044117.GEaj9UbSvTExfmFilu@fat_crate.local>
+Subject: Re: [PATCH] crypto: af_alg - Add af_alg_restrict sysctl, defaulting
+ to 1
+To: Eric Biggers <ebiggers@kernel.org>,
+ Demi Marie Obenour <demiobenour@gmail.com>
+Cc: Andy Lutomirski <luto@amacapital.net>, linux-crypto@vger.kernel.org,
+ Herbert Xu <herbert@gondor.apana.org.au>, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ iwd@lists.linux.dev, linux-hardening@vger.kernel.org,
+ Milan Broz <gmazyland@gmail.com>
+References: <20260622234803.6982-1-ebiggers@kernel.org>
+ <CALCETrXPj0u=FZ=aFcZAHk3fFZa7rCuPEjx6cOMXmT3sdkC7SA@mail.gmail.com>
+ <20260623192715.GE1850517@google.com>
+ <c7cb79ce-48f9-4433-ab4f-88b4c4df996c@gmail.com>
+ <20260628185404.GA2292@quark>
 Content-Language: en-US
-From: K Prateek Nayak <kprateek.nayak@amd.com>
-In-Reply-To: <20260627044117.GEaj9UbSvTExfmFilu@fat_crate.local>
-Content-Type: text/plain; charset="UTF-8"
+From: Simon Richter <Simon.Richter@hogyros.de>
+In-Reply-To: <20260628185404.GA2292@quark>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF0001708F:EE_|PH7PR12MB8178:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9deaa726-700d-4662-a00b-08ded58b4071
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|7416014|1800799024|36860700016|82310400026|23010399003|22082099003|18002099003|4143699003|11063799006|5023799004|56012099006;
-X-Microsoft-Antispam-Message-Info:
-	j1+XASNJnPce0sWUOEnTkigSVsi45PhDvA6IOTovtXXxn1mAvKQeKJ+a1yda+msrMQCa+c8Jq1g4e78zW/KVV1FabF7nrPCgKD/UKSLbw7E+lhXRJ/9s+RZoWJPA+bnKJc9LkBZ3fwoQBlwx3wuCLr05Gpz+QY+erT7K2FW7/aAjQlnP2xP5R2F/xsL9nFO1pAfuSOeibt64JCujcs+fiuIpi8J7EiYktvQfTiACy6nyfXbotYFM3g2BLD30SiBFsd/bG/F9H5+72Nv1jWgkonuRBn8/FtloXQHc7MkDp3NaBYmADkjyMW8gte3KhYNLbRBt4TeLKRx3eb+R+CuDxHhDuiC3fu5qO+wsUP0/PlVbmy86zFl+kblQAHmrOs8/W5LERXdgVHx3DlTdOnjwSZrIcvvQZi2SGspfCfoC+YSCvLRiSJKv0X8L1aTfKkTTg9LWjIEquVjphCKmcih1ABd/rnq6OSnFX7aYfhnb0ET6jMZTjESZyHuFvcaXR712gDanZgyFNbcJtaj8KMZoEDEnAnL53LqQAEk047PCHDAKm6q/ZF/B035Gj3exwUS0Yb4tKmodYrSUTCKCYbI2VDrpBP5V59ZQmcnWTlih/qQDF/kfdGNsW4suirj/Q+LPFRKVRwDBaKVABvaJnK2OwNDI+QFJ/DVjiJLW1dlHGygqQ2z02u1ckD3+xe443u8nsVE7aQq0jvxPLp/nTSz6Kg==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb07.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(36860700016)(82310400026)(23010399003)(22082099003)(18002099003)(4143699003)(11063799006)(5023799004)(56012099006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	7yHX1TsJPkPw4sy2I/R8lUXw732W30A4a8WKwhv/uOIR3uTMNiMxlzu9L8/jTyPllQWbOueq04sEznfRLpsFL/v3OzxesisZg6dp7aEWg56e0RaifW2VmMKoJb7sW/qVgpsHXNVEwDRokdjfqM0wh33IdcNPw8liuvF434maJA4T5ArE5d9rURnmXI2BGiPCSAPhVeoRvLPl/Kn1pS/ERFIpvgKH4L5VaI08qfYoDmrPKLjBGtYBE5/3D9FPvbAtLYOjHGF3xeipWMj5lrwYaZlWm5jDwLgUUE8aD5obGoRCdqH4oqCGQzmww42ANFBjVJkFL9YqBQxlTzI0FWWI4YKZef0lpPVqUFto51guzaOIJTt1HJndSZpvlj1owK5n6P97NGPS9AJjjZMBwAsD0oSBCZUV0pTiPgxqXBEfB7EKtyazn6xRoHVDALHIIqkA
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jun 2026 03:05:19.0794
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9deaa726-700d-4662-a00b-08ded58b4071
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb07.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS1PEPF0001708F.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8178
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	DMARC_NA(0.00)[hogyros.de];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-25448-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25446-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:bp@alien8.de,m:ashish.kalra@amd.com,m:tglx@kernel.org,m:mingo@redhat.com,m:dave.hansen@linux.intel.com,m:x86@kernel.org,m:hpa@zytor.com,m:seanjc@google.com,m:peterz@infradead.org,m:thomas.lendacky@amd.com,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:ardb@kernel.org,m:pbonzini@redhat.com,m:aik@amd.com,m:Michael.Roth@amd.com,m:Tycho.Andersen@amd.com,m:Nathan.Fontenot@amd.com,m:ackerleytng@google.com,m:jackyli@google.com,m:pgonda@google.com,m:rientjes@google.com,m:jacobhxu@google.com,m:xin@zytor.com,m:pawan.kumar.gupta@linux.intel.com,m:babu.moger@amd.com,m:dyoung@redhat.com,m:nikunj@amd.com,m:john.allen@amd.com,m:darwi@linutronix.de,m:linux-kernel@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:kvm@vger.kernel.org,m:linux-coco@lists.linux.dev,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[kprateek.nayak@amd.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:ebiggers@kernel.org,m:demiobenour@gmail.com,m:luto@amacapital.net,m:linux-crypto@vger.kernel.org,m:herbert@gondor.apana.org.au,m:linux-kernel@vger.kernel.org,m:linux-doc@vger.kernel.org,m:linux-bluetooth@vger.kernel.org,m:iwd@lists.linux.dev,m:linux-hardening@vger.kernel.org,m:gmazyland@gmail.com,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[Simon.Richter@hogyros.de,linux-crypto@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[kernel.org,gmail.com];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,amd.com:dkim,amd.com:mid,amd.com:from_mime,vger.kernel.org:from_smtp];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kprateek.nayak@amd.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[amd.com:+];
-	ALIAS_RESOLVED(0.00)[];
+	FREEMAIL_CC(0.00)[amacapital.net,vger.kernel.org,gondor.apana.org.au,lists.linux.dev,gmail.com];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[Simon.Richter@hogyros.de,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCVD_COUNT_SEVEN(0.00)[8]
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,hogyros.de:mid,hogyros.de:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 3F0216D59B9
+X-Rspamd-Queue-Id: DF6E06D5A49
 
-Hello Boris,
+Hi,
 
-On 6/27/2026 10:11 AM, Borislav Petkov wrote:
-> You could also block hotplug for the time being by grabbing cpus_read_lock().
-> And only when you know you are all clear to disable hotplug, then you can do
-> that in the end and drop the hotplug lock.
+On 6/29/26 3:54 AM, Eric Biggers wrote:
 
-This is bad idea because it'll stall the tasks trying to do a hotplug
-until the last SNP VM exits. Instead of simply getting an -EBUSY, the
-users will start seeing a hung task splats in dmesg.
+> We could do that if it's what people want.  Just keep in mind that it
+> would be much more complex than the single tristate sysctl.  And in
+> practice the number of people who are knowledgeable enough to create
+> these lists is quite small; we've seen similar things with other "Crypto
+> API" configuration knobs that seem to never be touched in practice.
 
-Also, since the last VM has to re-enable hotplug, you'll need a
-up_read_non_owner() variant for cpus_read_unlock() to unlock the rwsem
-from a different thread compared to the one that locks.
+I don't think finer grained control is necessary.
 
-I think cpu_hotplug_disable() is the correct way to go forward but if
-you are not a fan of the global "snp_cpu_hotplug_disabled" flag, maybe
-it can be turned into an indicator like "snp_initialized" in
-"struct sev_device". Thoughts?
+The tristate is the best possible interface for the people running 
+precompiled distribution kernels. Ideally, deactivating the restriction 
+should also be disallowed in lockdown mode -- and this becomes a lot 
+easier to subvert if the list of algorithms is runtime configurable.
 
--- 
-Thanks and Regards,
-Prateek
+I think it is safe to assume that the people using AF_ALG with hardware 
+crypto engines are building embedded systems with a custom kernel 
+configuration, so the .config is probably the best place for the 
+selection of algorithms that should remain available in restricted mode.
 
+    Simon
 
