@@ -1,42 +1,43 @@
-Return-Path: <linux-crypto+bounces-25461-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25459-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id DhfpJoceQmo30gkAu9opvQ
-	(envelope-from <linux-crypto+bounces-25461-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2026 09:28:07 +0200
+	id AWfsCWceQmor0gkAu9opvQ
+	(envelope-from <linux-crypto+bounces-25459-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2026 09:27:35 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F28626D6FF8
-	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2026 09:28:06 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 487406D6FE7
+	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2026 09:27:34 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
 	dkim=none;
 	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25461-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25461-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25459-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25459-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 433AA3031ACD
-	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2026 07:25:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 15C8A302FB6A
+	for <lists+linux-crypto@lfdr.de>; Mon, 29 Jun 2026 07:24:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9F913D332B;
-	Mon, 29 Jun 2026 07:24:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 434943C5827;
+	Mon, 29 Jun 2026 07:24:51 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F8613D0C18;
-	Mon, 29 Jun 2026 07:24:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959243CFF5E;
+	Mon, 29 Jun 2026 07:24:46 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782717895; cv=none; b=pLCjPjIe90vDYqMteLh26QUTPVcG8hPXtH5ho+3dCTr2GBKF42y+sqlNmiQsjTeFrjAbOkGrbCYNhGsqzEWoH7gKaaRq4nfipRPnVte2RqOMBpHXnDFXQ3V/zCkzLMB2+iBRm2Qzp06I5LrcNfc3xMyA+WIPBc+d7FATJm5idU8=
+	t=1782717890; cv=none; b=ZjYrgl4/dn4TKMYJQMRB5/BjT2XNlFjkeRfHu4KVrborstxtEbbKCBGomBND+UJ0FK9qzT/qkXq9CMcxlwOZQ3zXVGeYVlKEZCkTzySj9jX51zty+SvxU27F2n9b7aVQufjwTID/KU3oMnlqsqgF6DxC3l1j2PSNSGZwW7h7Ly4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782717895; c=relaxed/simple;
-	bh=8KDyBRVIEpQomG4KojVPk5YEjDwmARSS/fg3zqyuV38=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dNeb7I187qSiR1KFPBa/DB/utp27AJPKUCVvsITxboRFNZcrskOJEc83zgAxuoJEMPgtPxJYsf9iHiJi+jWg0NgA4zOyocftZADJjQHTXEv2CITLFBqpkt4+oqtja3ciXowX9SNfiJ0coLLFmkNWkJjfj0wzafTlsb3Zv03Ldpk=
+	s=arc-20240116; t=1782717890; c=relaxed/simple;
+	bh=t2j4x1tQzO6lUJC1qpDcM57ofV7QdQ0+xWJs3H/v980=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Ecp7SlqTtTPaOQSW26VmLEB5NCXWrrHFIMLKHumSU1iRAsUgGYH+WCaqAxxt7DsosASgBQcBHh1pQ5ZOfhHsg3U6Qp3keD30a0chz9ntxi7+Ko8Jip9dEDWgdT0m0qpRi2LV5pfpAZn2d4MtMZsSGcTFS6yWVAuwddW5tMa1lpQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
 Received: from loongson.cn (unknown [10.40.54.123])
-	by gateway (Coremail) with SMTP id _____8DxsOq3HUJqkxMZAA--.64351S3;
-	Mon, 29 Jun 2026 15:24:39 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8Cx3sC8HUJqmBMZAA--.40589S3;
+	Mon, 29 Jun 2026 15:24:44 +0800 (CST)
 Received: from localhost.localdomain (unknown [10.40.54.123])
-	by front1 (Coremail) with SMTP id qMiowJDxhcCxHUJqJl63AA--.61324S2;
-	Mon, 29 Jun 2026 15:24:33 +0800 (CST)
+	by front1 (Coremail) with SMTP id qMiowJDxhcCxHUJqJl63AA--.61324S3;
+	Mon, 29 Jun 2026 15:24:42 +0800 (CST)
 From: Qunqin Zhao <zhaoqunqin@loongson.cn>
 To: lee@kernel.org
 Cc: chenhuacai@kernel.org,
@@ -45,10 +46,12 @@ Cc: chenhuacai@kernel.org,
 	loongarch@lists.linux.dev,
 	linux-crypto@vger.kernel.org,
 	Qunqin Zhao <zhaoqunqin@loongson.cn>
-Subject: [PATCH v4 0/2] mfd: loongson-se: Fix miscellaneous issues and add multi-node support
-Date: Mon, 29 Jun 2026 15:11:07 +0800
-Message-ID: <20260629071109.7341-1-zhaoqunqin@loongson.cn>
+Subject: [PATCH v4 1/2] mfd: loongson-se: Fix miscellaneous issues
+Date: Mon, 29 Jun 2026 15:11:08 +0800
+Message-ID: <20260629071109.7341-2-zhaoqunqin@loongson.cn>
 X-Mailer: git-send-email 2.47.2
+In-Reply-To: <20260629071109.7341-1-zhaoqunqin@loongson.cn>
+References: <20260629071109.7341-1-zhaoqunqin@loongson.cn>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -56,36 +59,36 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJDxhcCxHUJqJl63AA--.61324S2
+X-CM-TRANSID:qMiowJDxhcCxHUJqJl63AA--.61324S3
 X-CM-SenderInfo: 52kd01pxqtx0o6or00hjvr0hdfq/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrZFWfKw4rJr4UXrWUtryrAFc_yoW3KrbE93
-	40v3s7Grn7GF92qa43Cws7WFyruFW8JF1YkFyqqF15Xasrtw13Gry2vryfua48GFZrJr15
-	ur1v9r1fAr17KosvyTuYvTs0mTUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE
-	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
-	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
-	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
-	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-	CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8j-e5UUUUU==
+X-Coremail-Antispam: 1Uk129KBj93XoWxZw4xCr48KFWDuF47Kw13Jrc_yoWrCw1fpF
+	43ua4Ykr45CF48u398J398uFWa93yrtr9rCa9Fgw4xZFyDJw15WFy5KF1UGr4rArWvqr1U
+	ZrykGrWfuF4rCabCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
+	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+	kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j83kZUUUUU=
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[loongson.cn];
-	TAGGED_FROM(0.00)[bounces-25461-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25459-lists,linux-crypto=lfdr.de];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_RECIPIENTS(0.00)[m:lee@kernel.org,m:chenhuacai@kernel.org,m:xry111@xry111.site,m:linux-kernel@vger.kernel.org,m:loongarch@lists.linux.dev,m:linux-crypto@vger.kernel.org,m:zhaoqunqin@loongson.cn,s:lists@lfdr.de];
 	FORGED_SENDER(0.00)[zhaoqunqin@loongson.cn,linux-crypto@vger.kernel.org];
@@ -94,7 +97,7 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FROM_NEQ_ENVFROM(0.00)[zhaoqunqin@loongson.cn,linux-crypto@vger.kernel.org];
 	ALIAS_RESOLVED(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
@@ -104,33 +107,130 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,loongson.cn:mid,loongson.cn:from_mime,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,loongson.cn:email,loongson.cn:mid,loongson.cn:from_mime]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: F28626D6FF8
+X-Rspamd-Queue-Id: 487406D6FE7
 
-- Patch 1 focuses entirely on structural and error-path hardening for the
-  pre-existing baseline code. This includes resolving critical issues such as
-  uninitialized stack memory writes, engines array out-of-bounds writes.
+Address multiple historical driver issues discovered by the Sashiko
+Automation system within the loongson_se_probe() initialization flow
+and the driver's interrupt service routines [1].
 
-  v4: new patch
+- Add an explicit bounds check for 'id' before accessing the fixed-size
+  'engines' array in se_irq_handler() to prevent potential out-of-bounds
+  memory writes.
 
-- Patch 2 introduces the multi-node platform support.
+- Switch the allocations from devm_kmalloc() to devm_kzalloc() to
+  guarantee the descriptor structures are properly zero-initialized.
 
-  v4: Safely handling shared interrupt handler returns.
-  v3: Using shared interrupts (IRQF_SHARED) instead of manually
-      iterating through all devices to check for interrupts.
+- Return an error code from loongson_se_probe() if devm_request_irq()
+  fails, preventing an indefinite hang during completion waits.
 
+- Add a reinit_completion() before waiting on the completions to ensure
+  proper hardware synchronization.
 
-Qunqin Zhao (2):
-  mfd: loongson-se: Fix miscellaneous issues
-  mfd: loongson-se: Add multi-node support
+- Prevent writing uninitialized stack memory to device registers in
+  loongson_se_init() by properly initializing local command structures.
 
- drivers/mfd/loongson-se.c       | 32 ++++++++++++++++++++++++++------
+- Add a .remove callback to the platform driver to properly halt the
+  hardware.
+
+Link: https://lore.kernel.org/all/20260618095949.GB1672911@google.com/ [1]
+Fixes: e551fa3159e3 ("mfd: Add support for Loongson Security Engine chip controller")
+Signed-off-by: Qunqin Zhao <zhaoqunqin@loongson.cn>
+---
+ drivers/mfd/loongson-se.c       | 23 +++++++++++++++++++----
  include/linux/mfd/loongson-se.h |  1 +
- 2 files changed, 27 insertions(+), 6 deletions(-)
+ 2 files changed, 20 insertions(+), 4 deletions(-)
 
-
-base-commit: dc59e4fea9d83f03bad6bddf3fa2e52491777482
+diff --git a/drivers/mfd/loongson-se.c b/drivers/mfd/loongson-se.c
+index 3902ba377d..aa34e663c4 100644
+--- a/drivers/mfd/loongson-se.c
++++ b/drivers/mfd/loongson-se.c
+@@ -85,6 +85,8 @@ int loongson_se_send_engine_cmd(struct loongson_se_engine *engine)
+ 	if (err)
+ 		return err;
+ 
++	reinit_completion(&engine->completion);
++
+ 	return wait_for_completion_interruptible(&engine->completion);
+ }
+ EXPORT_SYMBOL_GPL(loongson_se_send_engine_cmd);
+@@ -150,7 +152,8 @@ static irqreturn_t se_irq_handler(int irq, void *dev_id)
+ 	/* For engines */
+ 	while (int_status) {
+ 		id = __ffs(int_status);
+-		complete(&se->engines[id].completion);
++		if (id < SE_ENGINE_MAX)
++			complete(&se->engines[id].completion);
+ 		int_status &= ~BIT(id);
+ 		writel(BIT(id), se->base + SE_S2LINT_CL);
+ 	}
+@@ -162,7 +165,7 @@ static irqreturn_t se_irq_handler(int irq, void *dev_id)
+ 
+ static int loongson_se_init(struct loongson_se *se, dma_addr_t addr, int size)
+ {
+-	struct loongson_se_controller_cmd cmd;
++	struct loongson_se_controller_cmd cmd = {0};
+ 	int err;
+ 
+ 	cmd.command_id = SE_CMD_START;
+@@ -190,7 +193,7 @@ static int loongson_se_probe(struct platform_device *pdev)
+ 	int nr_irq, irq, err, i;
+ 	dma_addr_t paddr;
+ 
+-	se = devm_kmalloc(dev, sizeof(*se), GFP_KERNEL);
++	se = devm_kzalloc(dev, sizeof(*se), GFP_KERNEL);
+ 	if (!se)
+ 		return -ENOMEM;
+ 
+@@ -220,8 +223,10 @@ static int loongson_se_probe(struct platform_device *pdev)
+ 	for (i = 0; i < nr_irq; i++) {
+ 		irq = platform_get_irq(pdev, i);
+ 		err = devm_request_irq(dev, irq, se_irq_handler, 0, "loongson-se", se);
+-		if (err)
++		if (err) {
+ 			dev_err(dev, "failed to request IRQ: %d\n", irq);
++			return err;
++		}
+ 	}
+ 
+ 	err = loongson_se_init(se, paddr, se->dmam_size);
+@@ -232,6 +237,15 @@ static int loongson_se_probe(struct platform_device *pdev)
+ 				    ARRAY_SIZE(engines), NULL, 0, NULL);
+ }
+ 
++static void loongson_se_remove(struct platform_device *pdev)
++{
++	struct loongson_se *se = dev_get_drvdata(&pdev->dev);
++	struct loongson_se_controller_cmd cmd = {0};
++
++	cmd.command_id = SE_CMD_STOP;
++	loongson_se_send_controller_cmd(se, &cmd);
++}
++
+ static const struct acpi_device_id loongson_se_acpi_match[] = {
+ 	{ "LOON0011", 0 },
+ 	{ }
+@@ -240,6 +254,7 @@ MODULE_DEVICE_TABLE(acpi, loongson_se_acpi_match);
+ 
+ static struct platform_driver loongson_se_driver = {
+ 	.probe   = loongson_se_probe,
++	.remove  = loongson_se_remove,
+ 	.driver  = {
+ 		.name  = "loongson-se",
+ 		.acpi_match_table = loongson_se_acpi_match,
+diff --git a/include/linux/mfd/loongson-se.h b/include/linux/mfd/loongson-se.h
+index 07afa0c252..8237ccab7b 100644
+--- a/include/linux/mfd/loongson-se.h
++++ b/include/linux/mfd/loongson-se.h
+@@ -9,6 +9,7 @@
+ #define SE_SEND_CMD_REG_LEN		0x8
+ /* Controller command ID */
+ #define SE_CMD_START			0x0
++#define SE_CMD_STOP			0x1
+ #define SE_CMD_SET_DMA			0x3
+ #define SE_CMD_SET_ENGINE_CMDBUF	0x4
+ 
 -- 
 2.47.2
 
