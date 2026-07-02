@@ -1,190 +1,171 @@
-Return-Path: <linux-crypto+bounces-25543-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25544-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id md5qN5DzRmpcfwsAu9opvQ
-	(envelope-from <linux-crypto+bounces-25543-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 01:26:08 +0200
+	id AWd8JbT2RmrgfwsAu9opvQ
+	(envelope-from <linux-crypto+bounces-25544-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 01:39:32 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B5F76FD604
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 01:26:08 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E383D6FD680
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 01:39:31 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=AI72Ce01;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25543-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25543-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=XxdsEtnh;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25544-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25544-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	dmarc=pass (policy=none) header.from=gmail.com;
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B82BA30125C0
-	for <lists+linux-crypto@lfdr.de>; Thu,  2 Jul 2026 23:25:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B55BA301D332
+	for <lists+linux-crypto@lfdr.de>; Thu,  2 Jul 2026 23:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC5DE3C9898;
-	Thu,  2 Jul 2026 23:25:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B53F3B7776;
+	Thu,  2 Jul 2026 23:39:30 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D6C4397AE4
-	for <linux-crypto@vger.kernel.org>; Thu,  2 Jul 2026 23:25:51 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783034753; cv=pass; b=iupELQe16kU3sOwnQN/zZxrT1YU/4/0rgf9AkUTS3ZlJGvNLAV8aVRXusUFN8dFzBID5bEUJpJ22uHp/2/DH8HGW3aQnK/z+OUFI22SsQ8ztJaLyeqHr/6n1TVydIhucjvD3cZdsys3Fd26TOKpOs9QFkBC/TWUVH3olS2+7u10=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783034753; c=relaxed/simple;
-	bh=jBFlTz3g5ssVNguswpHGDgcnemlVnurn+9r1kQA5U3s=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=kzz1kk8b1LjslkFQeznSoPhIORdLfgsYK02f/oE2dhGrxhTezEAHfByyobDw8ep+xgR6SiPMVtKokX0lWq4b9f4sTrEaq5Kn/On0KXIp5dmiIRKQnZv6OxT+K1HlQrjtAoq1+x8ELSmPrahhcUwDaXpqmyamblDCC7h+5fQkm9g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AI72Ce01; arc=pass smtp.client-ip=209.85.128.181
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-80814edb536so27793407b3.2
-        for <linux-crypto@vger.kernel.org>; Thu, 02 Jul 2026 16:25:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1783034750; cv=none;
-        d=google.com; s=arc-20260327;
-        b=OEu2PQHma/BsD/mFr+thgdl7ey2qPAWa+NnlJNmaFIeOPg1Gdgc41poDypT5zBs5Rk
-         mflTUO7k9caxw0geRBcn1bkEt31UUcN4LBdo0eNduOqE0+UbiinidkkFSnIJmxy4osMn
-         DqbvTc40s/XNYsj1t3f4piB8RUUmyImgwl+X/qtCfPEse0qwVea0mxk51donulHq9jId
-         QNxqk3WdvYQgcCjvEr7H1siyzQYuYJygYiNrpW1HhAdCMsOhAXk414tWGzkUht2WYrnH
-         SAx6APLqnT642srD0rnNYsFvXavBanyPsxU/XpIVzrH0iLNd9aSwFFmtYTQUmBozLJLP
-         zaRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=rV21b9f1O4/MyL675P4mxep7qc3mbKP7uI9y1dxCBTI=;
-        fh=ovY0qJIUChw/rwSe8L59UGFcM+d8tAN6haFGBvlF41Q=;
-        b=JI2PXUxnmHE+3dPsEsnrebex0hwkOVGNI4faMUQ9v4bYB9PyvGx4qzRZnntG3GBn6H
-         22EOazX5wsczM2n3LMd9jfK0Npt/F+0qap9cPPBEm4DyICtJjrLHb1BL7qZKgOyc9G/Z
-         0Ga4wxS1jhga+S+PJoLPHdsEEzNA9yd2/zFumNXlozuE7ufhKrwQP08ifUv3HjYBwJ1G
-         w5sbeBOR0qexRmoIHnm/vLVe2t/OytRqimXuiRhLAm6pscnnrbcIZAwYqIlWxjXF2omP
-         yqCWGJmBK0GQNMoymlTalm9To/aPq31I13KU2+fdKDF8iQvVlTIpqQzr/q5u62BG6CeD
-         fmRg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DE8C34D4C9
+	for <linux-crypto@vger.kernel.org>; Thu,  2 Jul 2026 23:39:28 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783035569; cv=none; b=nFr8OmVxu2s+vp3ccTFbeJA29OFLBp4PZUt1N872YQ+MfuTvHFwzGaz8i2w76HajlgGCJXtM1IQg4LoIwTfiShNJPLXEQ8xUNh4mNWu4YoIteGXobZGX2ONuMWUCWGWi8eHqMEuXhwglyBGLKWSt9zLWicJFU6PR6U8nNKRKtTs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783035569; c=relaxed/simple;
+	bh=RMNYY3fjjV69/m+j/rX8VNshnfJkZr46jhy+RJtWjw4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NIDQ1vGPl6h5vVNOEws0DY9o0sxQWSffLbfVx2iE3fW34UqNtA2FuUcM/rHncrRm30+3r3G50IXbF/XHk4aSQOX1YizdqRQhR0+LEY+l2UQ+2rs0Pcd0NKO/t6Q5vMQhqWxkSJgc00bznesFPIdl4UIEy5hWcj2rWbP+1/JKGKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XxdsEtnh; arc=none smtp.client-ip=209.85.222.181
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-92e6391b114so189487685a.3
+        for <linux-crypto@vger.kernel.org>; Thu, 02 Jul 2026 16:39:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783034750; x=1783639550; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rV21b9f1O4/MyL675P4mxep7qc3mbKP7uI9y1dxCBTI=;
-        b=AI72Ce01MLz1dTyigXrPHDBQ+H3Atx3PQA8iWx/3pkK3Tz989Hcs/4wE8TL/OU2XcD
-         d4/FERMmoPbFSYLIH7rhTIEbh//3OF+GaG3OMpfOyBgGfD9ANyQFxLTq2mIlBZEd9EP/
-         qeqozMqTeijUvvYkKdhi36RR7jIDYqeJPSUg6xAynvNZWi85mh3wvIipSqrbGqo3AdWf
-         3Lpm4ovrlbldd9MKg3aE+YtWY1CCiDf8K2GpMqp4eeXCIa19Pfiiwz/LUfI6TMaQtM66
-         TXODn85s/RMGeAQHtS0EIDfoyOsQ4iWHk1qVBDzf/I52IwCWWvQCLJLad0mlQn+iWY7t
-         glBA==
+        d=gmail.com; s=20251104; t=1783035568; x=1783640368; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=WNKDryeWnXSKKY8fUHk6zFjL8w+dDzKefQJ/uzoOjJU=;
+        b=XxdsEtnh7Twxz798rYThkEQGzUeQ+dfJZenTFyKgm0ZuClEDdwTOVNzR8PcjgX4H5c
+         ny8udbwDVeAFeY+tT2I9soLbsAB4cqmGaDaaTR54i7BnM93GKGJRVT32p7euwbfivGVl
+         x0IDmBtDe9p103y5ZWBorI1b52Nkm5fpBijKpslht5HLNdTurQzZJ9+4TCyYRBLS/z75
+         r9pMSn26JoX0Ls4TiAsiOZ/2I9YEk78IqnAUxlHDy6bFGw/eH+owtsmTY4n6vVFv2z0b
+         zPqlU3nxd6xxcCn9ag9PnHfrM39KEDpDOATPMYpD3ZJxvWSKzRyweNdG48PkVER/6cuq
+         mJpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783034750; x=1783639550;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rV21b9f1O4/MyL675P4mxep7qc3mbKP7uI9y1dxCBTI=;
-        b=BnU9u8BErr1HpJG1ixsEouFYZ4E8bJWQvnaCPEzGU8U3iaPGWg1D+uKqeV5oA3ZeWr
-         f383P5slUvFYE7S5Gw+e3xUMqfjRonjX2Lyjh72+bK0ATcT32SXOxHAshYBN41qzF6/g
-         Xs30q6hGq0q1jd9T8wGL/LUHvOH3rTdhwvI4E+kwXQHdhHDLUejoZfQRyvO6C+9dIu6N
-         cNjxSxqXkSSXex6szifyJH4EEHy4kaqS5uMktBVPf0/76aO8GfWS4P3KRTA5JuEmvnnZ
-         P9oq+6zF2XhLHE7ZBwOEK7k3spKqSiL5jjyhedCF/ZS48KSJDb682XcruhULDI1JbTZR
-         7DOQ==
-X-Gm-Message-State: AOJu0YxhKnt17BG7RDgH8iSblvPMJvfUJHXjToZRaXnBfklR2Dk1p3/M
-	z3KVKhWhqEkQ3sLsZR1RzuztRnT5cLc/+TRMSGJxZze/eKI1hj/80TCilApTULwC838RL5DhcrM
-	SHlbuQCHNdFutVYsPn/t0n7TAOZJHHyw=
-X-Gm-Gg: AfdE7cmx9uXJpkElDA2k+BSjbolKHLUfCoxE1IJSakkilEyDHeX3nHActm3WOmr6Gs+
-	m4df4/QmkKNv+ZEB3qSPkO0z7DqAdr9r1Mb9iymiPq83l1OQcAas7RVnlwjvW0Yt9ijc5nC23bj
-	AbpvOZjtNGKmDbUqYYGEK/cQlDJZwdK6Ui+qlPZpTHWSiyr84aFPmVQmjqyli5if3EJE9HSbr4R
-	jla50ykLVfj6r6NiHYmjDZgEBd80N6dXN9wkHWQYCy1NJ8F0dUKU/wIINSwlcgR9Xq1yDsqpYOH
-	IALtVgi8fpJvd2d4w07N/r3io/5JjSqBdsBM7+xV/g==
-X-Received: by 2002:a05:690c:7201:b0:7bd:7c16:1711 with SMTP id
- 00721157ae682-8138391605cmr80930037b3.22.1783034750258; Thu, 02 Jul 2026
- 16:25:50 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1783035568; x=1783640368;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=WNKDryeWnXSKKY8fUHk6zFjL8w+dDzKefQJ/uzoOjJU=;
+        b=Du02KtWH8KeJviBUOxqyj2ChuTzQ0qld6lV/Eh30eZrH4HO/uX4eXiygWe5atBt6BV
+         MB553DHjZl3z0imzqE8jTvJ33VjhcLFYABmiTYSueLRqims1OB11fHQR8kFqPoDuQOkC
+         lyX/9zyyArD8oW8eqhV+8weOqwoxqHApz1zHFEFmrX0MkWbutJingWgckFTTYYfLzkWt
+         2cra9GoxPvU+A4sHht7oj+MzUs+0DXgCjY4cBJqJFoRhvi0mS/GbGKRow5+eOnRZ7fKQ
+         g4sTdNarIWZ5Vfx+6zFWn4/tj4uo+ZPSc3gJgyRfSeWTgb+hipjRS/efrNDlDQbLJwlB
+         oErA==
+X-Forwarded-Encrypted: i=1; AFNElJ+lfWZ1OrvJ5VW3FSmtdUskGQYNP0sK31VNwgg1tzeiSlCiKJY7OTdO1AfdVk2o4jWQdRoeqBBs8S+xssY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yya+qLbBs05pyQag+E9OTwiYzaCqryax2Z1p2no4XivM6pTrebK
+	ZpY5UFdfldva1+M0OEUIvpJ6T+oNg9jtbwrW8FdDBp8vvVswTDt+kGD87qeLfwhIEy4=
+X-Gm-Gg: AfdE7cmUx8iSEvm2+FHvZ4tubGLZHi1eCnTPMn5XSCEacDgdLNlraEeq638P3alPrUS
+	BSQsZoS+VjPf7i6QD9LJ2SK4Fa9zs8EkX2xfKPWfxWTZ/DEYOlfvySDgq8iMRFyQU9YZvhJew8W
+	Gpwge73pUJQMZhh1WzDMBPJ5wTgEQp5ih511Dn6xJmzEkdMYtVfSkv5BV1UJxq1ejy/b+qZuQOS
+	nu7jRIWGNEtmMoCU2oUGM/6fVt1629O7NbVpLT08/HXw4joVYR1I/XNQVdN9I85E62cAeJcfR9B
+	dfqrgPRp2v5GzVV1rUySKB0l7WOzNoTsQvqOIfNDXAJssR4E7qBSjHLchQRyJrjUFCQPOwILS99
+	IbEqorcOozPlqEjkX55Y1XMBee/oxLnBTyaUZiHLWBkKFs25hm+n0TbugiYWWYIU/SQlwV2D8fw
+	1FXq4rRYTYALBn5COHyY8Bc42s9pofkccQb9PsEwrGgG1jTP+vCrvrI1EKF449vcuCa1PoGXGW6
+	yCCAdasJUu/Izo=
+X-Received: by 2002:a05:620a:4628:b0:92e:5cfd:154e with SMTP id af79cd13be357-92e7afb156emr1054949485a.14.1783035567540;
+        Thu, 02 Jul 2026 16:39:27 -0700 (PDT)
+Received: from i4-gl-tmk5904.ad.psu.edu ([130.203.156.186])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8f46e84e1casm42310676d6.11.2026.07.02.16.39.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Jul 2026 16:39:27 -0700 (PDT)
+From: Yuho Choi <dbgh9129@gmail.com>
+To: Olivia Mackall <olivia@selenic.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Alexander Sverdlin <alex@sverdlin.org>,
+	Nishanth Menon <nm@ti.com>,
+	linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yuho Choi <dbgh9129@gmail.com>
+Subject: [PATCH v1] hwrng: ks-sa: Fix runtime PM cleanup on registration failure
+Date: Thu,  2 Jul 2026 19:39:21 -0400
+Message-ID: <20260702233921.100478-1-dbgh9129@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Cen Zhang <blbllhy@gmail.com>
-Date: Thu, 2 Jul 2026 19:25:39 -0400
-X-Gm-Features: AVVi8CeR71I-euCD7xjaFrXPODeAJrnVqaPU2G_cAszqT4M8lt0djgSGh1a0Mh8
-Message-ID: <CAB8m9Wh559e+=n8z51gB8DrbEyCc2mc0MgGjrRR6_VXBmU=2AQ@mail.gmail.com>
-Subject: [PATCH] lib/rhashtable: clear stale iter->p on table restart
-To: tgraf@suug.ch, "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>, akpm@linux-foundation.org
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	AutonomousCodeSecurity@microsoft.com, tgopinath@linux.microsoft.com, 
-	kys@microsoft.com, Cen Zhang <blbllhy@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25543-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:tgraf@suug.ch,m:herbert@gondor.apana.org.au,m:akpm@linux-foundation.org,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:AutonomousCodeSecurity@microsoft.com,m:tgopinath@linux.microsoft.com,m:kys@microsoft.com,m:blbllhy@gmail.com,s:lists@lfdr.de];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,microsoft.com,linux.microsoft.com,gmail.com];
 	FORWARDED(0.00)[lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[blbllhy@gmail.com,linux-crypto@vger.kernel.org];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[sverdlin.org,ti.com,vger.kernel.org,gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-25544-lists,linux-crypto=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:olivia@selenic.com,m:herbert@gondor.apana.org.au,m:alex@sverdlin.org,m:nm@ti.com,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:dbgh9129@gmail.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[dbgh9129@gmail.com,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dbgh9129@gmail.com,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[blbllhy@gmail.com,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,vger.kernel.org:from_smtp,mail.gmail.com:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 4B5F76FD604
+X-Rspamd-Queue-Id: E383D6FD680
 
-rhashtable_walk_start_check() has two restart paths when resuming a
-walk.  When iter->walker.tbl is valid, it re-validates iter->p against
-the table and sets iter->p = NULL if the object is gone.  When
-iter->walker.tbl is NULL (table was freed during resize), it resets
-slot and skip but forgets to clear iter->p.
+ks_sa_rng_probe() enables runtime PM and resumes the device before
+registering the hwrng. If devm_hwrng_register() fails, probe returns
+without dropping the runtime PM usage count or disabling runtime PM.
 
-rhashtable_walk_next() then dereferences the stale iter->p, reading
-freed memory.  This is a use-after-free.
+Unwind the runtime PM state on the registration failure path, matching
+the cleanup done by remove().
 
-Any caller that does multi-fragment rhashtable walks across
-walk_stop/walk_start boundaries is affected.  Concrete cases include
-netlink_diag (__netlink_diag_dump in net/netlink/diag.c) and TIPC
-(tipc_nl_sk_walk in net/tipc/socket.c).
-
-Crash stack (netlink_diag):
-  BUG: KASAN: slab-use-after-free in rhashtable_walk_next+0x365/0x3c0
-  Read of size 8 at addr ffff88801a9d2438 (freed kmalloc-2k, offset 1080)
-  Call Trace:
-   rhashtable_walk_next+0x365/0x3c0
-   __netlink_diag_dump+0x160/0x760
-   netlink_diag_dump+0xc2/0x240
-   netlink_dump+0x5bc/0x1270
-   netlink_recvmsg+0x7a3/0x980
-   sock_recvmsg+0x1bc/0x200
-   __sys_recvfrom+0x1d4/0x2c0
-
-Fixes: 5d240a8936f6 ("rhashtable: add rhashtable_walk_start_check()")
-Reported-by: AutonomousCodeSecurity@microsoft.com
-Signed-off-by: Cen Zhang (Microsoft) <blbllhy@gmail.com>
+Fixes: e9009fb227fa ("hwrng: ks-sa - Use pm_runtime_resume_and_get() to replace open coding")
+Signed-off-by: Yuho Choi <dbgh9129@gmail.com>
 ---
- lib/rhashtable.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/char/hw_random/ks-sa-rng.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/lib/rhashtable.c b/lib/rhashtable.c
---- a/lib/rhashtable.c
-+++ b/lib/rhashtable.c
-@@ -877,6 +877,7 @@ int rhashtable_walk_start_check(struct
-rhashtable_iter *iter)
-        if (!iter->walker.tbl) {
-                iter->walker.tbl = rht_dereference_rcu(ht->tbl, ht);
-                iter->slot = 0;
-                iter->skip = 0;
-+               iter->p = NULL;
-                return -EAGAIN;
-        }
+diff --git a/drivers/char/hw_random/ks-sa-rng.c b/drivers/char/hw_random/ks-sa-rng.c
+index 9e408144a10c..4494f1e4ab4d 100644
+--- a/drivers/char/hw_random/ks-sa-rng.c
++++ b/drivers/char/hw_random/ks-sa-rng.c
+@@ -242,7 +242,14 @@ static int ks_sa_rng_probe(struct platform_device *pdev)
+ 		return dev_err_probe(dev, ret, "Failed to enable SA power-domain\n");
+ 	}
+ 
+-	return devm_hwrng_register(&pdev->dev, &ks_sa_rng->rng);
++	ret = devm_hwrng_register(dev, &ks_sa_rng->rng);
++	if (ret) {
++		pm_runtime_put_sync(dev);
++		pm_runtime_disable(dev);
++		return ret;
++	}
++
++	return 0;
+ }
+ 
+ static void ks_sa_rng_remove(struct platform_device *pdev)
+-- 
+2.43.0
+
 
