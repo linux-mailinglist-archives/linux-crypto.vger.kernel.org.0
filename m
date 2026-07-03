@@ -1,134 +1,148 @@
-Return-Path: <linux-crypto+bounces-25561-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25562-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id s3+nAY5iR2obXgAAu9opvQ
-	(envelope-from <linux-crypto+bounces-25561-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 09:19:42 +0200
+	id TU5tDPB1R2pOYgAAu9opvQ
+	(envelope-from <linux-crypto+bounces-25562-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 10:42:24 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D93C26FF7CF
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 09:19:40 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A86B700328
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 10:42:23 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gondor.apana.org.au header.s=h01 header.b="Z9G/Dfyi";
-	dmarc=pass (policy=quarantine) header.from=apana.org.au;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25561-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25561-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=SnxsbFRr;
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25562-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25562-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 019E33023D82
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jul 2026 07:18:19 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C3FD83022979
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jul 2026 08:16:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97BBF2EEE9E;
-	Fri,  3 Jul 2026 07:18:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F10331A66;
+	Fri,  3 Jul 2026 08:16:24 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1C22C21D9;
-	Fri,  3 Jul 2026 07:18:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9503D2BEC4E
+	for <linux-crypto@vger.kernel.org>; Fri,  3 Jul 2026 08:16:23 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783063098; cv=none; b=bwj6sBJAEbTyte4AVXgWMmhMJoLdEMUPh7U5kZEQDgEDtKzrCiAyH8gL61cHw5Sl8UtLnwdikiKYr/af2giSSp9YC06IGdG8Oj6nVJwiTzzUXF6dQDq21NXVfTDC4hz0zjVVgka40gCyDAyeCzI94r8xQ6Sb6IHzDFeiuLLHhc4=
+	t=1783066584; cv=none; b=onom9PzxwbTgmhMLVHSTkcJNN0gV5dt/yTm78qmU03uk27KYnLAc2ZI2yL2mOzFRB1Plq7dBPjOMTJsTxKQyTHVk9euMnIW+koCZj1Zp1PEULNCkx0478z3G4ULtQ8f/YgFm3QBLV6n6sHn7E9+sXJD6JGAMcf+FdK9benT2vLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783063098; c=relaxed/simple;
-	bh=9j1rleesf6eU1gz52aImXaulF7Yq0IZ9pa+dr53kFDU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BCgusXsRxiCyz9FnS52TtFCMFrsyyq3iybbHDH2Bf+2wRQLJXiJMG/4wy3cTqXmI1FQF9xfj6DL8g9b8IAUcK6ZXLAAFWQRJPnIJKBL7sIDdtmZskmoxwoB/umndisfqoZRH2F+GxNBON2Tq4ZIl682fa4c5Lfuo1c7e7odz/JE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=Z9G/Dfyi; arc=none smtp.client-ip=180.181.231.80
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=PRFdd3N33TY7ztrR7vrjtBo7P1zO+yDY2pFBvFjUSL4=; 
-	b=Z9G/DfyiyKf7kQrh6hDsOLBOtnwGQKqgYRTXgVjaVc6/XJB4p00GcMEz1DLd4gxrydQLuIDd8D9
-	we96TxP3PVYMzmaCYlBhdpZAJ5fChKKLiiHaN3PlsOXNeRbmlylbN7+RI1967ZqpyZ/oXOrn3Vn46
-	ZutZx0QQeGCzsgx/qqFdEXgV1blS8EmaYVV/ZuI19BW1W9WmJc8N+RPelj9z7RxrSOXcNmzyaeGSh
-	pK0ja+Q+1v1LKD9F66dTF7a2bbVwPBLrIEZZ9SXaXa//KhIn2KlDclX23oyBd9tK9M+hMhY6mZYjS
-	JaTDNYhCY5XbmBB4bCbqhExiS7Z/cD6SB5qA==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.98.2 #2 (Debian))
-	id 1wfYA6-0000000AHne-42Nu;
-	Fri, 03 Jul 2026 15:18:12 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 03 Jul 2026 15:18:10 +0800
-Date: Fri, 3 Jul 2026 15:18:10 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Paul Louvel <paul.louvel@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Christophe Leroy <chleroy@kernel.org>, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/19] crypto: talitos/hash - Use
- CRYPTO_AHASH_BLOCK_ONLY API
-Message-ID: <akdiMro0yKwwicaa@gondor.apana.org.au>
-References: <20260611-7-1-rc1_talitos_cleanup-v2-0-aa4a813ce69b@bootlin.com>
- <20260611-7-1-rc1_talitos_cleanup-v2-1-aa4a813ce69b@bootlin.com>
+	s=arc-20240116; t=1783066584; c=relaxed/simple;
+	bh=qQC6pzd7ZW+6w81nTceX1afYorhY8BSlJVG/W/7Y+l4=;
+	h=From:In-Reply-To:MIME-Version:References:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tSKl5OuNBxOFOpmm62PR72Bd9W4RLo7OeCIgKQCDOQG3/Db5aTl0Gj+iCn0/v9tALehOnwQo4+hKT+OFUgYPiq5RDGLEM4CVHCCjhQjnhMtAlfCVYC5PhCoQ/c1dJ5QX/D+J7jVqzN4I1OpH5bOtf1XP+pEhQ+6Nrp5PFIhVKis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SnxsbFRr; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52E931F00A3A
+	for <linux-crypto@vger.kernel.org>; Fri,  3 Jul 2026 08:16:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783066583;
+	bh=qQC6pzd7ZW+6w81nTceX1afYorhY8BSlJVG/W/7Y+l4=;
+	h=From:In-Reply-To:References:Date:Subject:To:Cc;
+	b=SnxsbFRrKsb107wQrvD0J/wnqyeeG0qlWaTxooQGjbvtWgOPp2ppKVs9iugUO2dIe
+	 PTNpGIajPjxxqrbrVu9/tjuZpDcg+HEXephaY0hvvu1Y2hG0w+tx85iCYK7SNF5TiN
+	 FcMMg9FnoqszzXErKQliIWqgLkOybc9CE0oM919hCCrUDMrBh6xuwtl0Qedz+HYQAR
+	 l1tG7yeaRNe4dh5ialvoF80Y20+ydDEDMeiP7gbSj4KS9bSpb9VtTdofdwypWESm7k
+	 NY+wknY2PT8YhPtrcSzsNSTW0lHRCUcRSB4xuagsJlWcXuX9ZOKBXQnQSb3QG5MUSL
+	 PfrTX3WZqfSQw==
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-39afb0d9f7eso3172911fa.0
+        for <linux-crypto@vger.kernel.org>; Fri, 03 Jul 2026 01:16:23 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+RrvV9lAUTzYs0N85DcvGRTG/NSAxbXJWOAACxYBvuKEWzFruPdyYvJMRZSC00mIywAZHF4DJ20eH7LHaoE=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxsnGURTBFPAk17EpcxnNzlQB+/xjHi3tmEJLfdrcwWp822RQF/
+	/l1JsVyDrnlRTqrScOHI+Y5l8SVb+clVkmmRW83T9c2LcpWfJ7oAn6aPOC0Pr6OWzIcfj3aO5+S
+	TeYuus+WsfBEtv72RrqEvoq9BsgWKrVwb6GTjz6Kj8A==
+X-Received: by 2002:a05:6512:124d:b0:5ae:c542:33ef with SMTP id
+ 2adb3069b0e04-5aec6795b43mr2021138e87.8.1783066582095; Fri, 03 Jul 2026
+ 01:16:22 -0700 (PDT)
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 3 Jul 2026 03:16:21 -0500
+Received: from 969154062570 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 3 Jul 2026 03:16:21 -0500
+From: Bartosz Golaszewski <brgl@kernel.org>
+In-Reply-To: <20260702-b4-shikra_crypto_changse-v2-6-66173f2f28b3@qti.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260611-7-1-rc1_talitos_cleanup-v2-1-aa4a813ce69b@bootlin.com>
+References: <20260702-b4-shikra_crypto_changse-v2-0-66173f2f28b3@qti.qualcomm.com>
+ <20260702-b4-shikra_crypto_changse-v2-6-66173f2f28b3@qti.qualcomm.com>
+Date: Fri, 3 Jul 2026 03:16:21 -0500
+X-Gmail-Original-Message-ID: <CAMRc=MdNrdAJmD-mgP0wXaiKid5pE8m4_9rOpXcrLk+T35sFgA@mail.gmail.com>
+X-Gm-Features: AVVi8Cc4AXtmTJ4dPWDBNLruLtcz6tHIZccf9Ba9r0GLPfEhItZNEGvR8CW_x68
+Message-ID: <CAMRc=MdNrdAJmD-mgP0wXaiKid5pE8m4_9rOpXcrLk+T35sFgA@mail.gmail.com>
+Subject: Re: [PATCH v2 6/6] arm64: dts: qcom: shikra: Add ICE, TRNG and QCE nodes
+To: Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, linux-arm-msm@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, 
+	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Harshal Dev <harshal.dev@oss.qualcomm.com>, 
+	Vinod Koul <vkoul@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>, 
+	Konrad Dybcio <konradybcio@kernel.org>, Frank Li <Frank.Li@kernel.org>, 
+	Andy Gross <agross@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-25562-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25561-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:paul.louvel@bootlin.com,m:davem@davemloft.net,m:thomas.petazzoni@bootlin.com,m:herve.codina@bootlin.com,m:chleroy@kernel.org,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,qualcomm.com:email,mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
+	FORGED_SENDER(0.00)[brgl@kernel.org,linux-crypto@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	FORGED_RECIPIENTS(0.00)[m:kuldeep.singh@oss.qualcomm.com,m:krzysztof.kozlowski@oss.qualcomm.com,m:linux-arm-msm@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:devicetree@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:dmaengine@vger.kernel.org,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:robh@kernel.org,m:krzk+dt@kernel.org,m:conor+dt@kernel.org,m:andersson@kernel.org,m:harshal.dev@oss.qualcomm.com,m:vkoul@kernel.org,m:brgl@kernel.org,m:konradybcio@kernel.org,m:Frank.Li@kernel.org,m:agross@kernel.org,m:krzk@kernel.org,m:conor@kernel.org,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
 	TO_DN_SOME(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:from_mime,gondor.apana.org.au:dkim,gondor.apana.org.au:mid,vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[brgl@kernel.org,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto,dt];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RWL_MAILSPIKE_POSSIBLE(0.00)[104.64.211.4:from];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D93C26FF7CF
+X-Rspamd-Queue-Id: 2A86B700328
 
-On Thu, Jun 11, 2026 at 09:35:55AM +0200, Paul Louvel wrote:
+On Wed, 1 Jul 2026 22:17:16 +0200, Kuldeep Singh
+<kuldeep.singh@oss.qualcomm.com> said:
+> Add device tree nodes describing the crypto hardware blocks present
+> on the Qualcomm Shikra platform:
 >
-> @@ -2932,8 +2861,11 @@ static struct talitos_alg_template driver_algs[] = {
->  				.cra_name = "md5",
->  				.cra_driver_name = "md5-talitos",
->  				.cra_blocksize = MD5_HMAC_BLOCK_SIZE,
-> +				.cra_reqsize = sizeof(struct talitos_ahash_req_ctx),
->  				.cra_flags = CRYPTO_ALG_ASYNC |
-> -					     CRYPTO_ALG_ALLOCATES_MEMORY,
-> +					     CRYPTO_ALG_ALLOCATES_MEMORY |
-> +					     CRYPTO_AHASH_ALG_BLOCK_ONLY |
-> +					     CRYPTO_AHASH_ALG_FINAL_NONZERO,
+> - BAM DMA controller used by the Qualcomm crypto engine
+> - QCE (crypto) engine with DMA support
+> - TRNG hardware random number generator
+> - Inline crypto engine (ICE)
+>
+> Also connect the SDHC controller to ICE via "qcom,ice" property to
+> support inline encryption.
+>
+> On Shikra, different BAM pipe pairs (for example 0x84/0x94 and
+> 0x86/0x96) may still resolve to the same resulting SID due SMMU-side
+> optimization. They are still distinct pipe pairs and therefore require
+> separate DT IOMMU entries.
+>
+> Signed-off-by: Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>
+> ---
 
-Sorry, but the FINAL_NONZERO flag doesn't work for algorithms like
-md5.
-
-The reason is that all implementations of md5 must accept the exports
-from each other.  So as long as the generic md5 doesn't not set
-FINAL_NONZERO, your driver will need to be able to take that on
-import.
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
 
