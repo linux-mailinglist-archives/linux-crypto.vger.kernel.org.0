@@ -1,148 +1,139 @@
-Return-Path: <linux-crypto+bounces-25562-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25563-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id TU5tDPB1R2pOYgAAu9opvQ
-	(envelope-from <linux-crypto+bounces-25562-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 10:42:24 +0200
+	id w/zrAlp0R2rgYQAAu9opvQ
+	(envelope-from <linux-crypto+bounces-25563-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 10:35:38 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A86B700328
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 10:42:23 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 428CF70020D
+	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 10:35:37 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=SnxsbFRr;
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25562-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25562-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=bootlin.com header.s=dkim header.b=Dn5x12fV;
+	dmarc=pass (policy=reject) header.from=bootlin.com;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25563-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25563-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id C3FD83022979
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jul 2026 08:16:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 831ED318358D
+	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jul 2026 08:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F10331A66;
-	Fri,  3 Jul 2026 08:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D7222BEC4E;
+	Fri,  3 Jul 2026 08:16:37 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from smtpout-03.galae.net (smtpout-03.galae.net [185.246.85.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9503D2BEC4E
-	for <linux-crypto@vger.kernel.org>; Fri,  3 Jul 2026 08:16:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4736E23393F
+	for <linux-crypto@vger.kernel.org>; Fri,  3 Jul 2026 08:16:35 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783066584; cv=none; b=onom9PzxwbTgmhMLVHSTkcJNN0gV5dt/yTm78qmU03uk27KYnLAc2ZI2yL2mOzFRB1Plq7dBPjOMTJsTxKQyTHVk9euMnIW+koCZj1Zp1PEULNCkx0478z3G4ULtQ8f/YgFm3QBLV6n6sHn7E9+sXJD6JGAMcf+FdK9benT2vLQ=
+	t=1783066597; cv=none; b=LQ9cLLu76Og5fHt8bWOVS5WvqDvGWfYv0dCy5IaOD/2JrR0SxuhEpagpIbAzY1FJQq1O03pMTQqTzg2/v1bwiWb3PUufUPIo4cjuEfr5RXC3wHfM0upAE26PmD6T803aVAOYBs358TplV/PeVBcmRJ7NlrQsg3De63HahLMXgek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783066584; c=relaxed/simple;
-	bh=qQC6pzd7ZW+6w81nTceX1afYorhY8BSlJVG/W/7Y+l4=;
-	h=From:In-Reply-To:MIME-Version:References:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tSKl5OuNBxOFOpmm62PR72Bd9W4RLo7OeCIgKQCDOQG3/Db5aTl0Gj+iCn0/v9tALehOnwQo4+hKT+OFUgYPiq5RDGLEM4CVHCCjhQjnhMtAlfCVYC5PhCoQ/c1dJ5QX/D+J7jVqzN4I1OpH5bOtf1XP+pEhQ+6Nrp5PFIhVKis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SnxsbFRr; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52E931F00A3A
-	for <linux-crypto@vger.kernel.org>; Fri,  3 Jul 2026 08:16:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783066583;
-	bh=qQC6pzd7ZW+6w81nTceX1afYorhY8BSlJVG/W/7Y+l4=;
-	h=From:In-Reply-To:References:Date:Subject:To:Cc;
-	b=SnxsbFRrKsb107wQrvD0J/wnqyeeG0qlWaTxooQGjbvtWgOPp2ppKVs9iugUO2dIe
-	 PTNpGIajPjxxqrbrVu9/tjuZpDcg+HEXephaY0hvvu1Y2hG0w+tx85iCYK7SNF5TiN
-	 FcMMg9FnoqszzXErKQliIWqgLkOybc9CE0oM919hCCrUDMrBh6xuwtl0Qedz+HYQAR
-	 l1tG7yeaRNe4dh5ialvoF80Y20+ydDEDMeiP7gbSj4KS9bSpb9VtTdofdwypWESm7k
-	 NY+wknY2PT8YhPtrcSzsNSTW0lHRCUcRSB4xuagsJlWcXuX9ZOKBXQnQSb3QG5MUSL
-	 PfrTX3WZqfSQw==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-39afb0d9f7eso3172911fa.0
-        for <linux-crypto@vger.kernel.org>; Fri, 03 Jul 2026 01:16:23 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RrvV9lAUTzYs0N85DcvGRTG/NSAxbXJWOAACxYBvuKEWzFruPdyYvJMRZSC00mIywAZHF4DJ20eH7LHaoE=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxsnGURTBFPAk17EpcxnNzlQB+/xjHi3tmEJLfdrcwWp822RQF/
-	/l1JsVyDrnlRTqrScOHI+Y5l8SVb+clVkmmRW83T9c2LcpWfJ7oAn6aPOC0Pr6OWzIcfj3aO5+S
-	TeYuus+WsfBEtv72RrqEvoq9BsgWKrVwb6GTjz6Kj8A==
-X-Received: by 2002:a05:6512:124d:b0:5ae:c542:33ef with SMTP id
- 2adb3069b0e04-5aec6795b43mr2021138e87.8.1783066582095; Fri, 03 Jul 2026
- 01:16:22 -0700 (PDT)
-Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 3 Jul 2026 03:16:21 -0500
-Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 3 Jul 2026 03:16:21 -0500
-From: Bartosz Golaszewski <brgl@kernel.org>
-In-Reply-To: <20260702-b4-shikra_crypto_changse-v2-6-66173f2f28b3@qti.qualcomm.com>
+	s=arc-20240116; t=1783066597; c=relaxed/simple;
+	bh=EIBe/UpzO28bJYvjkpUVEnGyTFedIlsOKy7KllFDjS0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i3tQnhMp4B7yVRqCjX8MOSeiyVxSlce/lbOcXAb6KgjpCSzgm9lBjcWcmEyxL8w4gIGc1SE/MTYMzNElm2RXGQIk5t4acEGhIFWrJ2mxtBD0AgW307i8Yf6jw4yaicUzOLFocLMXyj1SrFn7fYG3l0sq1WM9kQ+Tq9DBVjdMc6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Dn5x12fV; arc=none smtp.client-ip=185.246.85.4
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-03.galae.net (Postfix) with ESMTPS id D97024E40C55
+	for <linux-crypto@vger.kernel.org>; Fri,  3 Jul 2026 08:16:33 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id AD9AC60300;
+	Fri,  3 Jul 2026 08:16:33 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id E2A7A104C95A8;
+	Fri,  3 Jul 2026 10:16:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1783066593; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language:in-reply-to:references;
+	bh=TGphaH8QpkCQumsy46H81CexagRvkzNp/RPzeBq7vK8=;
+	b=Dn5x12fVjq213GZK/j3jC5OEIxbWQye+oa7hSDqnHrDdJMBDL2RRXd/q5+dVO5wO7NS4HO
+	1bwqdKwQX3spt7oQgTW5Au+7eVfU1ZI0/xH2LQujzwa8uR78CDAoind7Wxg9WjfLcoA9VX
+	gJQpWVOvKj/xJl4PaMBpHQURvRwute+Nc67dvEM+pNYzqV47GTShOSJ01CiqXf326eRLHk
+	7p28cOpxeNI9R57BZFT6tNBvOvlkLqc5obVPcOxdKI76UAWtG/wbVu3WfYwbwOJjn0bBMR
+	nefycSHiBL5MVBIJNCJus0uLNdt8faUZNDYr3sPhcM23SAGLJmMn61gaQZYWjg==
+Message-ID: <26e5a7b2-8369-4cbe-90f6-56c5991e8301@bootlin.com>
+Date: Fri, 3 Jul 2026 10:16:26 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260702-b4-shikra_crypto_changse-v2-0-66173f2f28b3@qti.qualcomm.com>
- <20260702-b4-shikra_crypto_changse-v2-6-66173f2f28b3@qti.qualcomm.com>
-Date: Fri, 3 Jul 2026 03:16:21 -0500
-X-Gmail-Original-Message-ID: <CAMRc=MdNrdAJmD-mgP0wXaiKid5pE8m4_9rOpXcrLk+T35sFgA@mail.gmail.com>
-X-Gm-Features: AVVi8Cc4AXtmTJ4dPWDBNLruLtcz6tHIZccf9Ba9r0GLPfEhItZNEGvR8CW_x68
-Message-ID: <CAMRc=MdNrdAJmD-mgP0wXaiKid5pE8m4_9rOpXcrLk+T35sFgA@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] arm64: dts: qcom: shikra: Add ICE, TRNG and QCE nodes
-To: Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, linux-arm-msm@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org, 
-	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Harshal Dev <harshal.dev@oss.qualcomm.com>, 
-	Vinod Koul <vkoul@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>, 
-	Konrad Dybcio <konradybcio@kernel.org>, Frank Li <Frank.Li@kernel.org>, 
-	Andy Gross <agross@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] hwrng: core - Do not read data during PM sleep
+ transition
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Olivia Mackall <olivia@selenic.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+ gregory.clement@bootlin.com, richard.genoud@bootlin.com, u-kumar1@ti.com,
+ a-kumar2@ti.com
+References: <20260601-hw-random-fix-hwrng-fillfn-crash-suspend-resume-v2-1-667ce5da32ee@bootlin.com>
+ <aipEqj982ozWJXn4@gondor.apana.org.au>
+Content-Language: en-US
+From: Thomas Richard <thomas.richard@bootlin.com>
+In-Reply-To: <aipEqj982ozWJXn4@gondor.apana.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Last-TLS-Session-Version: TLSv1.3
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-25562-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25563-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,qualcomm.com:email,mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
-	FORGED_SENDER(0.00)[brgl@kernel.org,linux-crypto@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	FORGED_RECIPIENTS(0.00)[m:kuldeep.singh@oss.qualcomm.com,m:krzysztof.kozlowski@oss.qualcomm.com,m:linux-arm-msm@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:devicetree@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:dmaengine@vger.kernel.org,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:robh@kernel.org,m:krzk+dt@kernel.org,m:conor+dt@kernel.org,m:andersson@kernel.org,m:harshal.dev@oss.qualcomm.com,m:vkoul@kernel.org,m:brgl@kernel.org,m:konradybcio@kernel.org,m:Frank.Li@kernel.org,m:agross@kernel.org,m:krzk@kernel.org,m:conor@kernel.org,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[brgl@kernel.org,linux-crypto@vger.kernel.org];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:herbert@gondor.apana.org.au,m:olivia@selenic.com,m:thomas.petazzoni@bootlin.com,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:gregory.clement@bootlin.com,m:richard.genoud@bootlin.com,m:u-kumar1@ti.com,m:a-kumar2@ti.com,s:lists@lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[bootlin.com:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[thomas.richard@bootlin.com,linux-crypto@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[thomas.richard@bootlin.com,linux-crypto@vger.kernel.org];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RWL_MAILSPIKE_POSSIBLE(0.00)[104.64.211.4:from];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,bootlin.com:from_mime,bootlin.com:dkim,bootlin.com:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2A86B700328
+X-Rspamd-Queue-Id: 428CF70020D
 
-On Wed, 1 Jul 2026 22:17:16 +0200, Kuldeep Singh
-<kuldeep.singh@oss.qualcomm.com> said:
-> Add device tree nodes describing the crypto hardware blocks present
-> on the Qualcomm Shikra platform:
->
-> - BAM DMA controller used by the Qualcomm crypto engine
-> - QCE (crypto) engine with DMA support
-> - TRNG hardware random number generator
-> - Inline crypto engine (ICE)
->
-> Also connect the SDHC controller to ICE via "qcom,ice" property to
-> support inline encryption.
->
-> On Shikra, different BAM pipe pairs (for example 0x84/0x94 and
-> 0x86/0x96) may still resolve to the same resulting SID due SMMU-side
-> optimization. They are still distinct pipe pairs and therefore require
-> separate DT IOMMU entries.
->
-> Signed-off-by: Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>
-> ---
+On 6/11/26 7:16 AM, Herbert Xu wrote:
+> On Mon, Jun 01, 2026 at 03:19:13PM +0200, Thomas Richard (TI) wrote:
+>>
+>> @@ -538,8 +539,9 @@ static int hwrng_fillfn(void *unused)
+>>  		}
+>>  
+>>  		mutex_lock(&reading_mutex);
+>> -		rc = rng_get_data(rng, rng_fillbuf,
+>> -				  rng_buffer_size(), 1);
+>> +		if (!pm_sleep_transition_in_progress())
+>> +			rc = rng_get_data(rng, rng_fillbuf,
+>> +					  rng_buffer_size(), 1);
+> 
+> Sashiko asks how this can be safe given that there is no locking
+> at all.  That's exactly what I was going to ask :)
 
-Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
+Yes indeed, you are right. I dug again the topic (including the freeze
+solution I implemented in a first time), and I may have found the right
+solution. The only way is to stop the hwrng_fillfn() kthread before
+suspend and restart it after resume. Fortunately there is a mechanism to
+do this: pm_notifier. I'll send a patch soon.
+
+Best Regards,
+Thomas
 
