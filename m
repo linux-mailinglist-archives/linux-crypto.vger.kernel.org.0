@@ -1,129 +1,110 @@
-Return-Path: <linux-crypto+bounces-25578-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25579-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Zv+1Nf/0R2pkiAAAu9opvQ
-	(envelope-from <linux-crypto+bounces-25578-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 19:44:31 +0200
+	id +BBvOopWSGrCpAAAu9opvQ
+	(envelope-from <linux-crypto+bounces-25579-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 04 Jul 2026 02:40:42 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24F50704B2C
-	for <lists+linux-crypto@lfdr.de>; Fri, 03 Jul 2026 19:44:31 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86B387064B8
+	for <lists+linux-crypto@lfdr.de>; Sat, 04 Jul 2026 02:40:42 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=fail ("body hash did not verify") header.d=alien8.de header.s=alien8 header.b=AER26POh;
-	dmarc=fail reason="SPF not aligned (strict)" header.from=alien8.de (policy=none);
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25578-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25578-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=linux-foundation.org header.s=korg header.b=D55dS1Nj;
+	dmarc=none;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25579-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25579-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 586673028815
-	for <lists+linux-crypto@lfdr.de>; Fri,  3 Jul 2026 17:44:21 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D4A603023DBA
+	for <lists+linux-crypto@lfdr.de>; Sat,  4 Jul 2026 00:40:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D0230C14B;
-	Fri,  3 Jul 2026 17:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56C631F4631;
+	Sat,  4 Jul 2026 00:40:40 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FA0130ACF0;
-	Fri,  3 Jul 2026 17:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92C218AE3;
+	Sat,  4 Jul 2026 00:40:38 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783100660; cv=none; b=MzQq/71zGE09RZsnHp8qIrlkV/C/Rei2kUlL5ErUQfusW/0dn9lztjZ4ZQN2Sm7h2ziI3cSMk7peSCEFtI0KJNbora4yNZZA6FoHlrupwwk/SJVylnQgQ6pSqZYeZWfegIZAKwUkcnV5YwZzy+0zgYybso6SLReSsRbz3YBT/Ww=
+	t=1783125640; cv=none; b=XwO7c6UEvtfX+j6F91EeckTGbVbM2tkRBo0reX8MZJHMR3MWSP7Pg7lW5VrXw1lIYXoZkRKu0mU7pWLeQPtyqx8aXLIEz7smfFPThvP/yYqCjHn3XUqC/+GY/fnaD7Qkwf7C6PvYkU91c0V/rtehY9VHbR3Q8LP7G0D8SgtYyh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783100660; c=relaxed/simple;
-	bh=gFIukhiVqdc2oGHTdI29xB+FBZ50F4expIT8PIJDGpY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RMzIOu5OR/si0bpXFcODjxNugWy3JYj+N/dZ0mzog0Zar25XEPUpiiPHv8B9GVDpL9aoIMTeMPmuZLsK2x0KWkuECSxIynoflcQeI5yYJirOJk4NVhiGs9yRand3KPBFvb/a7SixM1Ehjc+rPIc9yNZ56ErkFytMiP4ew1t5OvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=AER26POh reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 368BA40E016E;
-	Fri,  3 Jul 2026 17:44:16 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id tYAsjIcOe3SX; Fri,  3 Jul 2026 17:44:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1783100642; bh=baoM9LmL+yNRwup1m9/MkDZrWOzJs0V9dZ8uysWghkM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AER26POhMaJr0VZ5Lv/pbdWQwsLK0khO7YbzkL8vbhNv1flQ+g2spYFPR9L6Z8G+6
-	 0c6yTd3HQmx6+NDDBuN3EDLWDFEaZsfqCGg9+LPvTJtcGM+zZy8FpdgO5ppmhNQtY5
-	 bWY9c3Ed+3IA72RjU4cFNjb3U0n2HkOYhhh5XKIc1fNwTMgVfTQfwYj/ceDnU/S6Hx
-	 DF2nes/JGeTTVZZNv+qkEzPNUcfl2SN6uNPHGda0ysyNFJfH+tdu59yKsPg/+aN8tn
-	 Axpeozl1O2ZF8tz/JT2CKSOV3DREs+aCU8RYDXYHRmpY4N541nBwwHW49aB3bV11bJ
-	 6xSho97WsFoHDtmOduM2Kjujl55SjFUxVb/LNSiRPkqSPGS64hrzO/CX7mMgWXw1pB
-	 w9D6C9AWrkTC5G1Ro+RHS2NFPMIlR+q8/YBTxqA/k1RotlF4BWIGwOTAcHWiRRlwGG
-	 Cq3S8t0ehZ1hp7GBoiDAUojoFAHDCLUj5cymjp8ZipCHPVq/GGiOR1LF++M2HEp6ym
-	 EL1SgEk8r19k3RnOtaeEvpiHKh2orbgoH7gVLHiRpc9dSj8jeQFRkwgSIIwxmz6rVX
-	 mX8FTredRh1ZuinpHgRaeYLADaEbwz88XzFvDKuv0gHTGEzKZb6jRK5rZo7hSFO1BT
-	 zF1KndBi2XnjE+wjW9XpGPzQ=
-Received: from stx.tnic (unknown [IPv6:2600:1700:38ca:c00::e])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 479CA40E01D8;
-	Fri,  3 Jul 2026 17:43:49 +0000 (UTC)
-Date: Fri, 3 Jul 2026 10:43:46 -0700
-From: Borislav Petkov <bp@alien8.de>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <ukleinek@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Mark Gross <markgross@kernel.org>,
-	Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-	linux-edac@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-crypto@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1783125640; c=relaxed/simple;
+	bh=gBI3Zs4ek2eYMGiLZswJFa3WoIBsKoZAyHs/qlK83Kc=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=ir89IzvVeGXVdVV5unZmi/L5qqoomqMh0PUNLkLK3616RPib1CFroU36lwkbsHPxIEdxur4hDZ0tQwtrTNfkOfgld0M4LXIpT7N2vZDPeCxOUEMQvLPGi15CWpRY4HNe53LVZQdnAkP9pzVeX8GzRH85g/q6jlC+KcNakJE1ml8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=D55dS1Nj; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14DAA1F000E9;
+	Sat,  4 Jul 2026 00:40:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux-foundation.org; s=korg; t=1783125638;
+	bh=dK9o71yrpEUNlGSVfJCX9fcW6yA3yYMits5n7r1NLzE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=D55dS1NjfGgE1Q3hi7Iwlqz7ZqJwmv/ins/CGf56Y5HA/p898N+Z9kse6xuyhjCoa
+	 WLzVsydQbMieBNw7fZ51V2RurzWxLLMe6ObkX4wKluRwpnxTcaUQvz4adwcCdhxGZd
+	 unLSKWbx2e3HKigrTOYyXB/lpMRVOiUL4ujZh2fg=
+Date: Fri, 3 Jul 2026 17:40:37 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <ukleinek@kernel.org>
+Cc: Mark Gross <markgross@kernel.org>, Konstantin Ryabitsev
+ <konstantin@linuxfoundation.org>, linux-edac@vger.kernel.org, Borislav
+ Petkov <bp@alien8.de>, Tony Luck <tony.luck@intel.com>, Herbert Xu
+ <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>,
+ linux-crypto@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Subject: Re: [PATCH v3] MAINTAINERS: Drop Mark Gross
-Message-ID: <20260703174346.GEakf00gE1PzqA7fwA@fat_crate.local>
+Message-Id: <20260703174037.b0065a1700ccf814b8a5d760@linux-foundation.org>
+In-Reply-To: <20260703173803.3589003-2-ukleinek@kernel.org>
 References: <20260703173803.3589003-2-ukleinek@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20260703173803.3589003-2-ukleinek@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.36 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_REJECT(1.00)[alien8.de:s=alien8];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MV_CASE(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
+	R_DKIM_ALLOW(-0.20)[linux-foundation.org:s=korg];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[alien8.de : SPF not aligned (strict),none];
 	HAS_LIST_UNSUB(-0.01)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25578-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:ukleinek@kernel.org,m:akpm@linux-foundation.org,m:markgross@kernel.org,m:konstantin@linuxfoundation.org,m:linux-edac@vger.kernel.org,m:tony.luck@intel.com,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:linux-crypto@vger.kernel.org,m:arnd@arndb.de,m:gregkh@linuxfoundation.org,m:linux-kernel@vger.kernel.org,m:andriy.shevchenko@linux.intel.com,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:ukleinek@kernel.org,m:markgross@kernel.org,m:konstantin@linuxfoundation.org,m:linux-edac@vger.kernel.org,m:bp@alien8.de,m:tony.luck@intel.com,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:linux-crypto@vger.kernel.org,m:arnd@arndb.de,m:gregkh@linuxfoundation.org,m:linux-kernel@vger.kernel.org,m:andriy.shevchenko@linux.intel.com,s:lists@lfdr.de];
+	DMARC_NA(0.00)[linux-foundation.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[13];
-	FORGED_SENDER(0.00)[bp@alien8.de,linux-crypto@vger.kernel.org];
+	FORGED_SENDER(0.00)[akpm@linux-foundation.org,linux-crypto@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[alien8.de:-];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[bp@alien8.de,linux-crypto@vger.kernel.org];
-	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-25579-lists,linux-crypto=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[akpm@linux-foundation.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux-foundation.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[alien8.de:from_mime,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp,linux-foundation.org:from_mime,linux-foundation.org:dkim,linux-foundation.org:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 24F50704B2C
+X-Rspamd-Queue-Id: 86B387064B8
 
-On Fri, Jul 03, 2026 at 07:38:03PM +0200, Uwe Kleine-K=C3=B6nig wrote:
+On Fri,  3 Jul 2026 19:38:03 +0200 Uwe Kleine-K=F6nig <ukleinek@kernel.org>=
+ wrote:
+
 > Sending mail to Mark's Intel address results in the intel mail
 > server rejecting the mail. Dave Hansen confirmed he left Intel.
 > The kernel.org address seems to work, but there was no reply from Mark
@@ -131,36 +112,20 @@ On Fri, Jul 03, 2026 at 07:38:03PM +0200, Uwe Kleine-K=C3=B6nig wrote:
 > entries.
 >=20
 > So drop him from all maintainer entries.
->=20
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <ukleinek@kernel.org>
-> ---
-> Hello,
->=20
-> this patch was already send end of May (v1 @
-> https://lore.kernel.org/all/20260526173806.3227828-2-ukleinek@kernel.or=
-g).
-> Konstantin then suggested to change the maintainer contacts to the
-> kernel.org address as at least one of the forward-addresses for the
-> kernel.org account didn't bounce. This v2
-> (https://lore.kernel.org/all/20260526193238.3622176-2-ukleinek@kernel.o=
-rg)
-> wasn't picked up yet, but given the continued silence I think removing
-> Mark completely is the saner choice now.
->=20
-> If someone has a better contact, please make him react. If he returns
-> later, the entries can easily get restored.
->=20
-> Best regards
-> Uwe
->=20
->  MAINTAINERS | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
 
-Applied, thanks.
+These seem good grounds for altering MAINTAINERS.  It happens.
 
---=20
-Regards/Gruss,
-    Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+But
+
+hp2:/usr/src/25> egrep "(Author|Acked|Reviewed).*Mark Gross" ../gitlog|wc -l
+52
+
+all gone poof?
+
+Please send a v2 with the subject
+
+	MAINTAINERS: move Mark Gross to CREDITS
+
+Thanks.
 
