@@ -1,61 +1,66 @@
-Return-Path: <linux-crypto+bounces-25602-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25603-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Yp6XOQsXSmrq+AAAu9opvQ
-	(envelope-from <linux-crypto+bounces-25602-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sun, 05 Jul 2026 10:34:19 +0200
+	id F21tHgMYSmoL+QAAu9opvQ
+	(envelope-from <linux-crypto+bounces-25603-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sun, 05 Jul 2026 10:38:27 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28D06709779
-	for <lists+linux-crypto@lfdr.de>; Sun, 05 Jul 2026 10:34:19 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D2727097B2
+	for <lists+linux-crypto@lfdr.de>; Sun, 05 Jul 2026 10:38:26 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gondor.apana.org.au header.s=h01 header.b=WJciYFPF;
+	dkim=pass header.d=gondor.apana.org.au header.s=h01 header.b=P5tpVYVL;
 	dmarc=pass (policy=quarantine) header.from=apana.org.au;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25602-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25602-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25603-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25603-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B3DC8300C83D
-	for <lists+linux-crypto@lfdr.de>; Sun,  5 Jul 2026 08:34:17 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8723430166DA
+	for <lists+linux-crypto@lfdr.de>; Sun,  5 Jul 2026 08:38:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E71635DA53;
-	Sun,  5 Jul 2026 08:34:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71FC5369D67;
+	Sun,  5 Jul 2026 08:37:57 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D54378F2B;
-	Sun,  5 Jul 2026 08:34:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C07280035;
+	Sun,  5 Jul 2026 08:37:55 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783240454; cv=none; b=RN+PKeiPKVdTp7f1THmaz0HatNMotPFV6OWAGnPwZlq7QNiS5pTYQd2JsS3uXcf//NMwsAs9odPuNaC3eBZnF0IwnT0zusbaHJTnpKpDf8oikBXEm+lVn1C36RNlEqQn9po8fKYV1P+bO5DGzkOUtI1GEzlLuXwu6bU9Cem9bhQ=
+	t=1783240677; cv=none; b=ZSiSjhU6+A79eRx4qxUdGs0mLQm2hlZSJ+ej8JeM93SGvHKZhEa1YkTHqyZOlBWnVI4PUj4Uid6LmfmrrDFVOrSci6wx1y2fTWR6dNc+U0zsYvO4p1G+TptdP1G3kHPZvw4QUpgX9sLSSwA+x2WdUrWO3BnrBjh6QQLCEBT8X9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783240454; c=relaxed/simple;
-	bh=VNMqrPebhYo1TUmQOCvI+AIH8ierPt9EuUl0Itns1W0=;
+	s=arc-20240116; t=1783240677; c=relaxed/simple;
+	bh=wgwP3H3qz/nuE04obGIGsfkJJfWThh/Ml9MDo46Gkis=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pS9PuM17hTSm8uzEBznrW5bkEuNz37lWN0u/rfpKfz3EW0/mnnkIg/HmLTCe8bjODwC3+Eif9zHIfFn8PIZUfDux8+iZr4UzVeIhyQRdB/PJp2EI57Wsm/NnTjpdty97wvl3/kUOd5wkLe9vaTEdHz0CJk1YxK6U5IiQcyDwJjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=WJciYFPF; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=pfRKsUd3r7YbdLYWOCs3NHYaPohRWnsx0nGyMjAzjhX8nTS3J21881Y1hbArus1QbJgsaprNx0oUxawNzZIIJgJOsf1xIjPe7zPBzq/5Ci0mqQz3tMDBXv8+FiUcXMZGeoIQsVZZ50qajgQUqzsv09xRwavg+P5siaX5XubqzPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=P5tpVYVL; arc=none smtp.client-ip=180.181.231.80
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=hUKgVK5gaikwzZjAylQyUAO13KCC2gNFLqO89Rj1WhA=; 
-	b=WJciYFPFvgjyAbFXwl/8rUYlCIZZzVG7fI3ShHOIQ7phyHNKfixvFIdte0sAEAdPVXgP4MD+yZW
-	tyfnMBkVRdtcKU12KGlosavKe7ZtgaYVXcHJeyvrCq0ETeaq+USGXiSUcaJhKILl6LTCukZ62Bx6J
-	gNJw+J40LAHQydtzsOgkJLLb9S/bzyNoN4M+1t/2Xeps7xBY1cG569RvqEBlQKa9v/3a8kWtl1+50
-	tGhA0IO1OndAMP72U5hPtLVpA8P1uKF9eMOB2TjZ1bYQm5KxnCIkxwsyqvxFfsNheA2lhRakk8KhT
-	8UBtT7k56iWkbjzF5zsAE43g/F+TXRZ/pqmg==;
+	from:content-type:reply-to; bh=G3JkHKn7CYnIQUIHAEnygms5epVvFw1YEAPwLWruV2k=; 
+	b=P5tpVYVL7QJAYSVvr12KGJdoAQCrQaDLcXkP7hPBi1Jm+R8YbaYXcyMXjrtwQUDwdWoLz/JcFtC
+	Js8XsE/rbKykCddxK6jqX1jpcZ22BJaKnGsdMe1xV9uiUokY6m5u78XpewEnlpEYcxbbVcMX3hU3J
+	5BR4UdkyC/PIEg3KGd6a8FFPCoz0+J5mQtcvUjWew4vZIt9RIv+uDUXTGwpEFhfiHpJRF+OHyEhaF
+	JyKpGON3/BTK96db4RZ96lDPQk8i8kTqtGjPmTPD8t2E2duAYJvkAmYDAVoSFRbWPOulTK3qo1qhT
+	6dFE4i0DASPGm8J4Xe6soqcMtecdBm5ziC5g==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.98.2 #2 (Debian))
-	id 1wgIIi-0000000Al2L-0n0a;
-	Sun, 05 Jul 2026 16:34:09 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 05 Jul 2026 16:34:08 +0800
-Date: Sun, 5 Jul 2026 16:34:08 +0800
+	id 1wgIMD-0000000Al4S-41ay;
+	Sun, 05 Jul 2026 16:37:47 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 05 Jul 2026 16:37:45 +0800
+Date: Sun, 5 Jul 2026 16:37:45 +0800
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Pengpeng Hou <pengpeng@iscas.ac.cn>
-Cc: "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: "David S. Miller" <davem@davemloft.net>, Frank Li <Frank.Li@nxp.com>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, Marek Vasut <marex@denx.de>,
+	stable@vger.kernel.org, linux-crypto@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: sa2ul: stop probe if context pool creation fails
-Message-ID: <akoXAO15Z1af8Vqd@gondor.apana.org.au>
-References: <20260616004627.947-1-pengpeng@iscas.ac.cn>
+Subject: Re: [PATCH] crypto: mxs-dcp - fix source scatterlist length access
+Message-ID: <akoX2XUWuBezygdK@gondor.apana.org.au>
+References: <20260621192615.277957-2-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -64,55 +69,58 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260616004627.947-1-pengpeng@iscas.ac.cn>
+In-Reply-To: <20260621192615.277957-2-thorsten.blum@linux.dev>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-25603-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25602-lists,linux-crypto=lfdr.de];
+	FREEMAIL_CC(0.00)[davemloft.net,nxp.com,pengutronix.de,gmail.com,denx.de,vger.kernel.org,lists.linux.dev,lists.infradead.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	FORGED_RECIPIENTS(0.00)[m:thorsten.blum@linux.dev,m:davem@davemloft.net,m:Frank.Li@nxp.com,m:s.hauer@pengutronix.de,m:kernel@pengutronix.de,m:festevam@gmail.com,m:marex@denx.de,m:stable@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:imx@lists.linux.dev,m:linux-arm-kernel@lists.infradead.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS(0.00)[m:pengpeng@iscas.ac.cn,m:davem@davemloft.net,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
 	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,gondor.apana.org.au:from_mime,gondor.apana.org.au:dkim,gondor.apana.org.au:mid,vger.kernel.org:from_smtp,apana.org.au:url,apana.org.au:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,gondor.apana.org.au:from_mime,gondor.apana.org.au:dkim,gondor.apana.org.au:mid,apana.org.au:url,apana.org.au:email,linux.dev:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 28D06709779
+X-Rspamd-Queue-Id: 0D2727097B2
 
-On Tue, Jun 16, 2026 at 08:46:27AM +0800, Pengpeng Hou wrote:
-> sa_ul_probe() calls sa_init_mem() to create the DMA pool used for
-> security context buffers, but ignores its return value. If pool creation
-> fails, probe still continues with DMA setup, algorithm registration and
-> child population even though later request setup depends on that pool.
+On Sun, Jun 21, 2026 at 09:26:16PM +0200, Thorsten Blum wrote:
+> mxs_dcp_aes_block_crypt() uses sg_dma_len() without mapping the source
+> scatterlist with dma_map_sg() first. Therefore, sg_dma_len() is invalid
+> and could return zero or a stale DMA length, causing encryption and
+> decryption to process the wrong number of bytes when
+> CONFIG_NEED_SG_DMA_LENGTH=y.
 > 
-> Stop probing when sa_init_mem() fails, and route that failure to the PM
-> cleanup path without attempting to destroy an uncreated DMA pool.
+> Use the original scatterlist length instead.
 > 
-> Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
+> Fixes: 15b59e7c3733 ("crypto: mxs - Add Freescale MXS DCP driver")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
 > ---
->  drivers/crypto/sa2ul.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+>  drivers/crypto/mxs-dcp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Patch applied.  Thanks.
 -- 
