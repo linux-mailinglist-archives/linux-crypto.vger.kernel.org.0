@@ -1,58 +1,58 @@
-Return-Path: <linux-crypto+bounces-25667-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25668-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id E940OgqRTGpBmQEAu9opvQ
-	(envelope-from <linux-crypto+bounces-25667-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:39:22 +0200
+	id pSf4ORKRTGpFmQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-25668-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:39:30 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FE8F717830
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:39:22 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DABE71783A
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:39:30 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=nKHLRvr1;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b="a9dt/VBJ";
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25667-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25667-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25668-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25668-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 47C973055E83
+	by sea.lore.kernel.org (Postfix) with ESMTP id B7EA330582AF
 	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 05:37:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 121FE3955CD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E0FF396D1C;
 	Tue,  7 Jul 2026 05:37:22 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C756138642C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E6D386566;
 	Tue,  7 Jul 2026 05:37:19 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783402641; cv=none; b=EW8oZC6jbmix6diaK+Qb9xfrxAQfdFj4pZe0N0ueGnlKmVD0BTt/bBvLlCN1Hg6hqxwHxl+2mDEz0udGrnDKMzAt+PVBvcat/McAxixc/a+sUu7BhrUk48fioPh0hiifavWEeAusoM5oc99Sp7XOttPpO5ZobtOF5kvtGDuSDCk=
+	t=1783402641; cv=none; b=PMLamiiuqoG2k3/ipHtvS6Ry3rXUcE97BoOs09BOFfSne9H6Vhow8Kqspnav7Vc6De6wSRp6kcTudFuXKDoOLKAc3j4gEhX0azLAbjKQJss8sTi9yKP5nw0jXOA9X+KKucu/tQHr2JJA/9+IshHpLtYHHDEuOSbnhlVK5V7Aoh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1783402641; c=relaxed/simple;
-	bh=14Gk1sWQHzExmI0twHkO6rnnxHPtVIhWOmuvXiC4fwo=;
+	bh=3idooVUCpOfF8MGF2lFYw/ZKmOwhbHb53B2ZDW3DBS4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MwdhuHbO9stKrwr0j2iPrSKPfsMNCt46LZVccya6FK2IDZDYk+J1cgD3VoydbHuezb0NkjAe5DWBzexs3QxStU3T7s4Xf0ruXn9YOwpKruiumKluUCAM850dfHxabpChq5kzwNypx31xxufdQ9bUUt2A/OfkhOANeDbTp9792mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nKHLRvr1; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72F611F00A3A;
+	 MIME-Version; b=eulcwMTBC5giTWMFEw3+72L4ityM1VM1socT7/UsGCmQClBh58PF/8L9lYBv92TXBWs0JTLgg4Ttw7F9A7j33iVpHwRijVh1DXuceChW1JpZZd6OWZUctB8yfexANW9HJZ4CSlkSNmDvxqZMkniaYirrpBA625pKD/X7Jmyclao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a9dt/VBJ; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B021D1F00AC4;
 	Tue,  7 Jul 2026 05:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1783402639;
-	bh=X2M+RyFDqCUA2n98mox1bOgzcCubo3CplXYD0iNG9P8=;
+	bh=EuYQXEpkWtlXYRPUu98zordFTYnkO5UG3gNDEIwTAzg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=nKHLRvr1IVuoFjBwcGM3+9s+RhpNqclJ/M9auawTnI7pvyDAn5GgPC0f61aJqprh+
-	 gEBFjh3vGmQLX10Aedij2IGik+uw5MRf9cuX3x44xK3FipQ0i97NkguBoJb0Gpz/QA
-	 yiHCCyR9n8Iq9Z1iC74UHqa8QOsI8W/VOMNk11Nzn4QLGzd5yJmAazcuGmZF4cQNEN
-	 E6VlFgTUirixod3AXCz7di4PYPq0YA58gSWL/PB6NElGXpZm6Mgz2XORx9YlMiRz0w
-	 HqcNyfH7A5YFBoM7LosNA9jC2eNw9HjaNpxi8Qoo8DQx2ZZaXkNLjO16O4jUevYLzF
-	 penHKFgXWua9g==
+	b=a9dt/VBJTEdlZ3m4vyAgE4p821yQb2X52kiTF7lgY0qVkapIhjTHm4Igde+7J/TUL
+	 bv/U7CoLcloFGKYT4haD2VrpgCx6Y95KpQi48YeMvI/diQgJPJirJLSvzXDpwmV4cY
+	 6v0qkTTLPBtzXaj57cKZmYFPBnmnZjKDnweJCKJi+7sypaI3mLp2KESvq9G01xcAnE
+	 roR+T3oiXEUaph7mYzGeBaw7MQ09Z4S2m6EOs8IEMwloFrJAL6ol6oUAXKr3FhN65n
+	 WaKdXKCF2/p2CIm/IetNdfvBbR20nlGbIQHNC+x2wWOfDMgUe51V0AxhIbgZ0WuRPA
+	 DSIMSLoZQjRLg==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 12/33] crypto: aes - Add GCM support using library
-Date: Mon,  6 Jul 2026 22:34:42 -0700
-Message-ID: <20260707053503.209874-13-ebiggers@kernel.org>
+Subject: [PATCH 13/33] crypto: aes - Add CCM support using library
+Date: Mon,  6 Jul 2026 22:34:43 -0700
+Message-ID: <20260707053503.209874-14-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260707053503.209874-1-ebiggers@kernel.org>
 References: <20260707053503.209874-1-ebiggers@kernel.org>
@@ -70,13 +70,13 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_RECIPIENTS(0.00)[m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:ebiggers@kernel.org,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-25667-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25668-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
@@ -94,327 +94,213 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 4FE8F717830
+X-Rspamd-Queue-Id: 4DABE71783A
 
-Implement the "gcm(aes)" and "rfc4106(gcm(aes))" crypto_aead algorithms
-using the corresponding library functions.
+Implement the "ccm(aes)" crypto_aead algorithm using the corresponding
+library functions.
 
-Among other benefits, this allows the architecture-optimized AES-GCM
+Among other benefits, this allows the architecture-optimized AES-CCM
 code to be migrated into the library while still leaving it accessible
 via crypto_aead, eliminating lots of boilerplate code.
 
 For now the cra_priority is set to just 110, since the
-architecture-optimized implementations of these algorithms haven't yet
+architecture-optimized implementations of this algorithm haven't yet
 been migrated into the library.  It will be boosted once that happens.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- crypto/Kconfig |   2 +
- crypto/aes.c   | 237 +++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 239 insertions(+)
+ crypto/Kconfig |   3 +-
+ crypto/aes.c   | 138 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 140 insertions(+), 1 deletion(-)
 
 diff --git a/crypto/Kconfig b/crypto/Kconfig
-index 5e573051c903..74dfe969216d 100644
+index 74dfe969216d..e6b894dc784a 100644
 --- a/crypto/Kconfig
 +++ b/crypto/Kconfig
-@@ -362,7 +362,9 @@ config CRYPTO_AES
+@@ -360,11 +360,12 @@ config CRYPTO_AES
+ 	select CRYPTO_LIB_AES
+ 	select CRYPTO_LIB_AES_CBC if CRYPTO_CBC || CRYPTO_CTS
  	select CRYPTO_LIB_AES_CBC_MACS if CRYPTO_CMAC || CRYPTO_XCBC || CRYPTO_CCM
++	select CRYPTO_LIB_AES_CCM if CRYPTO_CCM
  	select CRYPTO_LIB_AES_CTR if CRYPTO_CTR || CRYPTO_XCTR
  	select CRYPTO_LIB_AES_ECB if CRYPTO_ECB
-+	select CRYPTO_LIB_AES_GCM if CRYPTO_GCM
+ 	select CRYPTO_LIB_AES_GCM if CRYPTO_GCM
  	select CRYPTO_LIB_AES_XTS if CRYPTO_XTS
-+	select CRYPTO_AEAD if CRYPTO_GCM
+-	select CRYPTO_AEAD if CRYPTO_GCM
++	select CRYPTO_AEAD if CRYPTO_GCM || CRYPTO_CCM
  	select CRYPTO_HASH if CRYPTO_CMAC || CRYPTO_XCBC || CRYPTO_CCM
  	# CRYPTO_SKCIPHER should be selected only if a mode that needs it is
  	# enabled, but that doesn't work due to a recursive dependency caused by
 diff --git a/crypto/aes.c b/crypto/aes.c
-index a59eb57c86de..621ceed3d587 100644
+index 621ceed3d587..ac5190292b3c 100644
 --- a/crypto/aes.c
 +++ b/crypto/aes.c
-@@ -9,9 +9,11 @@
+@@ -7,6 +7,7 @@
+ 
+ #include <crypto/aes-cbc-macs.h>
  #include <crypto/aes-cbc.h>
++#include <crypto/aes-ccm.h>
  #include <crypto/aes-ctr.h>
  #include <crypto/aes-ecb.h>
-+#include <crypto/aes-gcm.h>
- #include <crypto/aes-xts.h>
- #include <crypto/aes.h>
- #include <crypto/algapi.h>
-+#include <crypto/internal/aead.h>
- #include <crypto/internal/hash.h>
- #include <crypto/internal/skcipher.h>
- #include <crypto/scatterwalk.h>
-@@ -305,6 +307,29 @@ crypto_aes_skcipher_setenckey(struct crypto_skcipher *tfm, const u8 *in_key,
- 		}                                                              \
- 	})
+ #include <crypto/aes-gcm.h>
+@@ -861,6 +862,122 @@ static __maybe_unused int crypto_aes_rfc4106_decrypt(struct aead_request *req)
+ 					     req->assoclen - 8);
+ }
  
-+/*
-+ * Call ad_func() as needed to process the associated data in the first
-+ * 'assoclen' bytes of the scatterlist 'src'.
-+ */
-+#define AES_PROCESS_ASSOC_DATA(ad_func, src, assoclen, ctx)                 \
-+	({                                                                  \
-+		unsigned int remaining = (assoclen);                        \
-+                                                                            \
-+		if (remaining != 0) {                                       \
-+			struct scatter_walk walk;                           \
-+                                                                            \
-+			scatterwalk_start(&walk, (src));                    \
-+			do {                                                \
-+				unsigned int n =                            \
-+					scatterwalk_next(&walk, remaining); \
-+                                                                            \
-+				ad_func((ctx), walk.addr, n);               \
-+				scatterwalk_done_src(&walk, n);             \
-+				remaining -= n;                             \
-+			} while (remaining);                                \
-+		}                                                           \
-+	})
++/* AES-CCM */
 +
- /* AES-ECB */
- 
- static __maybe_unused int crypto_aes_ecb_encrypt(struct skcipher_request *req)
-@@ -677,6 +702,200 @@ static struct skcipher_alg skcipher_algs[] = {
- #endif
- };
- 
-+/* AES-GCM */
-+
-+static __maybe_unused int crypto_aes_gcm_setkey(struct crypto_aead *tfm,
++static __maybe_unused int crypto_aes_ccm_setkey(struct crypto_aead *tfm,
 +						const u8 *in_key,
 +						unsigned int key_len)
 +{
-+	struct aes_gcm_key *key = crypto_aead_ctx(tfm);
++	struct aes_ccm_key *key = crypto_aead_ctx(tfm);
 +
-+	return aes_gcm_preparekey(key, in_key, key_len,
++	return aes_ccm_preparekey(key, in_key, key_len,
 +				  crypto_aead_authsize(tfm));
 +}
 +
-+static __maybe_unused int crypto_aes_gcm_setauthsize(struct crypto_aead *tfm,
++static __maybe_unused int crypto_aes_ccm_setauthsize(struct crypto_aead *tfm,
 +						     unsigned int authsize)
 +{
-+	struct aes_gcm_key *key = crypto_aead_ctx(tfm);
++	struct aes_ccm_key *key = crypto_aead_ctx(tfm);
 +
-+	if (crypto_gcm_check_authsize(authsize) != 0)
++	if (authsize < 4 || authsize > 16 || authsize % 2)
 +		return -EINVAL;
-+	/* Synchronize the tag length to the struct aes_gcm_key. */
++	/* Synchronize the tag length to the struct aes_ccm_key. */
 +	key->authtag_len = authsize;
 +	return 0;
 +}
 +
-+static void aes_gcm_encrypt_update_helper(u8 *dst, const u8 *src,
++static void aes_ccm_encrypt_update_helper(u8 *dst, const u8 *src,
 +					  unsigned int len,
-+					  struct aes_gcm_ctx *ctx)
++					  struct aes_ccm_ctx *ctx)
 +{
-+	aes_gcm_encrypt_update(ctx, dst, src, len);
++	aes_ccm_encrypt_update(ctx, dst, src, len);
 +}
 +
-+static void aes_gcm_decrypt_update_helper(u8 *dst, const u8 *src,
++static void aes_ccm_decrypt_update_helper(u8 *dst, const u8 *src,
 +					  unsigned int len,
-+					  struct aes_gcm_ctx *ctx)
++					  struct aes_ccm_ctx *ctx)
 +{
-+	aes_gcm_decrypt_update(ctx, dst, src, len);
++	aes_ccm_decrypt_update(ctx, dst, src, len);
 +}
 +
-+static int crypto_aes_gcm_encrypt_common(struct aead_request *req,
-+					 const struct aes_gcm_key *key,
-+					 u8 iv[12], unsigned int assoclen)
++/*
++ * CCM accepts a variable-length nonce between 7 and 13 bytes inclusively, while
++ * crypto_aead assumes a fixed-length nonce.  This is worked around by storing
++ * '14 - nonce_len' in the first byte.
++ */
++static inline bool crypto_aes_ccm_extract_nonce(struct aead_request *req,
++						const u8 **nonce_ret,
++						size_t *nonce_len_ret)
 +{
-+	struct aes_gcm_ctx ctx;
++	int nonce_len = 14 - req->iv[0];
++
++	if (unlikely(nonce_len < 7 || nonce_len > 13))
++		return false;
++	*nonce_ret = &req->iv[1];
++	*nonce_len_ret = nonce_len;
++	return true;
++}
++
++static __maybe_unused int crypto_aes_ccm_encrypt(struct aead_request *req)
++{
++	struct crypto_aead *tfm = crypto_aead_reqtfm(req);
++	const struct aes_ccm_key *key = crypto_aead_ctx(tfm);
++	struct aes_ccm_ctx ctx;
++	const u8 *nonce;
++	size_t nonce_len;
 +	u8 authtag[16];
++	int err;
 +
-+	aes_gcm_init(&ctx, iv, key);
-+	AES_PROCESS_ASSOC_DATA(aes_gcm_auth_update, req->src, assoclen, &ctx);
-+	AES_CRYPT_SG(aes_gcm_encrypt_update_helper, req->dst, req->src,
++	if (!crypto_aes_ccm_extract_nonce(req, &nonce, &nonce_len))
++		return -EINVAL;
++
++	err = aes_ccm_init(&ctx, nonce, nonce_len, req->assoclen, req->cryptlen,
++			   key);
++	if (err)
++		return err;
++	AES_PROCESS_ASSOC_DATA(aes_ccm_auth_update, req->src, req->assoclen,
++			       &ctx);
++	AES_CRYPT_SG(aes_ccm_encrypt_update_helper, req->dst, req->src,
 +		     req->cryptlen, req->assoclen, &ctx);
-+	aes_gcm_encrypt_final(&ctx, authtag);
++	aes_ccm_encrypt_final(&ctx, authtag);
 +	memcpy_to_sglist(req->dst, req->assoclen + req->cryptlen, authtag,
 +			 key->authtag_len);
 +	memzero_explicit(authtag, sizeof(authtag));
 +	return 0;
 +}
 +
-+static int crypto_aes_gcm_decrypt_common(struct aead_request *req,
-+					 const struct aes_gcm_key *key,
-+					 u8 iv[12], unsigned int assoclen)
++static __maybe_unused int crypto_aes_ccm_decrypt(struct aead_request *req)
 +{
-+	struct aes_gcm_ctx ctx;
++	struct crypto_aead *tfm = crypto_aead_reqtfm(req);
++	const struct aes_ccm_key *key = crypto_aead_ctx(tfm);
++	struct aes_ccm_ctx ctx;
++	const u8 *nonce;
++	size_t nonce_len;
 +	unsigned int data_len;
 +	u8 authtag[16];
 +	int err;
 +
++	if (!crypto_aes_ccm_extract_nonce(req, &nonce, &nonce_len))
++		return -EINVAL;
++
 +	/* crypto_aead_decrypt() already checked cryptlen >= authsize. */
 +	data_len = req->cryptlen - key->authtag_len;
 +
-+	aes_gcm_init(&ctx, iv, key);
-+	AES_PROCESS_ASSOC_DATA(aes_gcm_auth_update, req->src, assoclen, &ctx);
-+	AES_CRYPT_SG(aes_gcm_decrypt_update_helper, req->dst, req->src,
++	err = aes_ccm_init(&ctx, nonce, nonce_len, req->assoclen, data_len,
++			   key);
++	if (err)
++		return err;
++	AES_PROCESS_ASSOC_DATA(aes_ccm_auth_update, req->src, req->assoclen,
++			       &ctx);
++	AES_CRYPT_SG(aes_ccm_decrypt_update_helper, req->dst, req->src,
 +		     data_len, req->assoclen, &ctx);
 +	memcpy_from_sglist(authtag, req->src, req->assoclen + data_len,
 +			   key->authtag_len);
-+	err = aes_gcm_decrypt_final(&ctx, authtag);
++	err = aes_ccm_decrypt_final(&ctx, authtag);
 +	memzero_explicit(authtag, sizeof(authtag));
 +	return err;
 +}
 +
-+static __maybe_unused int crypto_aes_gcm_encrypt(struct aead_request *req)
-+{
-+	struct crypto_aead *tfm = crypto_aead_reqtfm(req);
-+	const struct aes_gcm_key *key = crypto_aead_ctx(tfm);
-+
-+	return crypto_aes_gcm_encrypt_common(req, key, req->iv, req->assoclen);
-+}
-+
-+static __maybe_unused int crypto_aes_gcm_decrypt(struct aead_request *req)
-+{
-+	struct crypto_aead *tfm = crypto_aead_reqtfm(req);
-+	const struct aes_gcm_key *key = crypto_aead_ctx(tfm);
-+
-+	return crypto_aes_gcm_decrypt_common(req, key, req->iv, req->assoclen);
-+}
-+
-+struct aes_rfc4106_key {
-+	struct aes_gcm_key gcm;
-+	u8 nonce[4];
-+};
-+
-+static __maybe_unused int crypto_aes_rfc4106_setkey(struct crypto_aead *tfm,
-+						    const u8 *in_key,
-+						    unsigned int key_len)
-+{
-+	struct aes_rfc4106_key *key = crypto_aead_ctx(tfm);
-+
-+	if (key_len < 4)
-+		return -EINVAL;
-+
-+	key_len -= 4;
-+	memcpy(key->nonce, in_key + key_len, 4);
-+
-+	return aes_gcm_preparekey(&key->gcm, in_key, key_len,
-+				  crypto_aead_authsize(tfm));
-+}
-+
-+static __maybe_unused int
-+crypto_aes_rfc4106_setauthsize(struct crypto_aead *tfm, unsigned int authsize)
-+{
-+	struct aes_rfc4106_key *key = crypto_aead_ctx(tfm);
-+
-+	if (crypto_rfc4106_check_authsize(authsize) != 0)
-+		return -EINVAL;
-+
-+	/* Synchronize the tag length to the struct aes_gcm_key. */
-+	key->gcm.authtag_len = authsize;
-+	return 0;
-+}
-+
-+static __maybe_unused int crypto_aes_rfc4106_encrypt(struct aead_request *req)
-+{
-+	struct crypto_aead *tfm = crypto_aead_reqtfm(req);
-+	const struct aes_rfc4106_key *key = crypto_aead_ctx(tfm);
-+	u8 iv[12];
-+
-+	if (crypto_ipsec_check_assoclen(req->assoclen) != 0)
-+		return -EINVAL;
-+	memcpy(iv, key->nonce, 4);
-+	memcpy(&iv[4], req->iv, 8);
-+
-+	return crypto_aes_gcm_encrypt_common(req, &key->gcm, iv,
-+					     req->assoclen - 8);
-+}
-+
-+static __maybe_unused int crypto_aes_rfc4106_decrypt(struct aead_request *req)
-+{
-+	struct crypto_aead *tfm = crypto_aead_reqtfm(req);
-+	const struct aes_rfc4106_key *key = crypto_aead_ctx(tfm);
-+	u8 iv[12];
-+
-+	if (crypto_ipsec_check_assoclen(req->assoclen) != 0)
-+		return -EINVAL;
-+	memcpy(iv, key->nonce, 4);
-+	memcpy(&iv[4], req->iv, 8);
-+
-+	return crypto_aes_gcm_decrypt_common(req, &key->gcm, iv,
-+					     req->assoclen - 8);
-+}
-+
-+static struct aead_alg aead_algs[] = {
-+#if IS_ENABLED(CONFIG_CRYPTO_GCM)
+ static struct aead_alg aead_algs[] = {
+ #if IS_ENABLED(CONFIG_CRYPTO_GCM)
+ 	{
+@@ -894,6 +1011,23 @@ static struct aead_alg aead_algs[] = {
+ 		.chunksize = AES_BLOCK_SIZE,
+ 	},
+ #endif /* CONFIG_CRYPTO_GCM */
++#if IS_ENABLED(CONFIG_CRYPTO_CCM)
 +	{
-+		.base.cra_name = "gcm(aes)",
-+		.base.cra_driver_name = "gcm-aes-lib",
++		.base.cra_name = "ccm(aes)",
++		.base.cra_driver_name = "ccm-aes-lib",
 +		.base.cra_priority = 110,
 +		.base.cra_blocksize = 1,
-+		.base.cra_ctxsize = sizeof(struct aes_gcm_key),
++		.base.cra_ctxsize = sizeof(struct aes_ccm_key),
 +		.base.cra_module = THIS_MODULE,
-+		.setkey = crypto_aes_gcm_setkey,
-+		.setauthsize = crypto_aes_gcm_setauthsize,
-+		.encrypt = crypto_aes_gcm_encrypt,
-+		.decrypt = crypto_aes_gcm_decrypt,
-+		.ivsize = GCM_AES_IV_SIZE,
-+		.maxauthsize = AES_BLOCK_SIZE,
++		.setkey = crypto_aes_ccm_setkey,
++		.setauthsize = crypto_aes_ccm_setauthsize,
++		.encrypt = crypto_aes_ccm_encrypt,
++		.decrypt = crypto_aes_ccm_decrypt,
++		.ivsize = 16,
++		.maxauthsize = 16,
 +		.chunksize = AES_BLOCK_SIZE,
 +	},
-+	{
-+		.base.cra_name = "rfc4106(gcm(aes))",
-+		.base.cra_driver_name = "rfc4106-gcm-aes-lib",
-+		.base.cra_priority = 110,
-+		.base.cra_blocksize = 1,
-+		.base.cra_ctxsize = sizeof(struct aes_rfc4106_key),
-+		.base.cra_module = THIS_MODULE,
-+		.setkey = crypto_aes_rfc4106_setkey,
-+		.setauthsize = crypto_aes_rfc4106_setauthsize,
-+		.encrypt = crypto_aes_rfc4106_encrypt,
-+		.decrypt = crypto_aes_rfc4106_decrypt,
-+		.ivsize = GCM_RFC4106_IV_SIZE,
-+		.maxauthsize = AES_BLOCK_SIZE,
-+		.chunksize = AES_BLOCK_SIZE,
-+	},
-+#endif /* CONFIG_CRYPTO_GCM */
-+};
-+
++#endif /* CONFIG_CRYPTO_CCM */
+ };
+ 
  static int __init crypto_aes_mod_init(void)
- {
- 	int err = crypto_register_alg(&alg);
-@@ -696,8 +915,18 @@ static int __init crypto_aes_mod_init(void)
- 		if (err)
- 			goto err_unregister_macs;
- 	}
-+
-+	if (ARRAY_SIZE(aead_algs) > 0) {
-+		err = crypto_register_aeads(aead_algs, ARRAY_SIZE(aead_algs));
-+		if (err)
-+			goto err_unregister_skciphers;
-+	} /* Else, CONFIG_CRYPTO_AEAD might not be enabled. */
- 	return 0;
- 
-+err_unregister_skciphers:
-+	if (ARRAY_SIZE(skcipher_algs) > 0)
-+		crypto_unregister_skciphers(skcipher_algs,
-+					    ARRAY_SIZE(skcipher_algs));
- err_unregister_macs:
- 	if (ARRAY_SIZE(mac_algs) > 0)
- 		crypto_unregister_shashes(mac_algs, ARRAY_SIZE(mac_algs));
-@@ -709,6 +938,8 @@ module_init(crypto_aes_mod_init);
- 
- static void __exit crypto_aes_mod_exit(void)
- {
-+	if (ARRAY_SIZE(aead_algs) > 0)
-+		crypto_unregister_aeads(aead_algs, ARRAY_SIZE(aead_algs));
- 	if (ARRAY_SIZE(skcipher_algs) > 0)
- 		crypto_unregister_skciphers(skcipher_algs,
- 					    ARRAY_SIZE(skcipher_algs));
-@@ -759,3 +990,9 @@ MODULE_ALIAS_CRYPTO("xctr-aes-lib");
- MODULE_ALIAS_CRYPTO("xts(aes)");
- MODULE_ALIAS_CRYPTO("xts-aes-lib");
+@@ -996,3 +1130,7 @@ MODULE_ALIAS_CRYPTO("gcm-aes-lib");
+ MODULE_ALIAS_CRYPTO("rfc4106(gcm(aes))");
+ MODULE_ALIAS_CRYPTO("rfc4106-gcm-aes-lib");
  #endif
-+#if IS_ENABLED(CONFIG_CRYPTO_GCM)
-+MODULE_ALIAS_CRYPTO("gcm(aes)");
-+MODULE_ALIAS_CRYPTO("gcm-aes-lib");
-+MODULE_ALIAS_CRYPTO("rfc4106(gcm(aes))");
-+MODULE_ALIAS_CRYPTO("rfc4106-gcm-aes-lib");
++#if IS_ENABLED(CONFIG_CRYPTO_CCM)
++MODULE_ALIAS_CRYPTO("ccm(aes)");
++MODULE_ALIAS_CRYPTO("ccm-aes-lib");
 +#endif
 -- 
 2.54.0
