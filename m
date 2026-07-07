@@ -1,58 +1,58 @@
-Return-Path: <linux-crypto+bounces-25663-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25665-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id hBheMemQTGo3mQEAu9opvQ
-	(envelope-from <linux-crypto+bounces-25663-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:38:49 +0200
+	id f1JHNfeQTGo8mQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-25665-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:39:03 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 340E1717814
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:38:49 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34CDD71781C
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:39:03 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=mHUruHzd;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=VxvSc79M;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25663-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25663-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25665-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25665-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4D0E0304636A
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 05:37:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 38561304D701
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 05:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53F9338E113;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A05FF391E5F;
 	Tue,  7 Jul 2026 05:37:21 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 483D6385D97;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A72438655C;
 	Tue,  7 Jul 2026 05:37:18 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783402640; cv=none; b=PfQ6fjbf857OVKIAZwM3vbT6JW8QpCpIfG9MNO5TMk75Hh3vLrz+pnk5T9dbw8ucOYG7HXiJUG1ZFfflpJ8EBxb8jEVM1C5WIfdLCwFfCwvzwfGk2UFWrd887UoQscwoO3gHYCBLR4LM1hQvahPUpShwDH4SJZbf1rsRv26b8KM=
+	t=1783402641; cv=none; b=mZqanTo36WV5pVJnwqVJT8p7KUv1mVcxOnYTO218FsZb25XDNwNUKPREBjnAkr/4xytEvwwGEBLK9ftxk09UR+HTHq1nipuwr10/plMCMyV9gNbGzLdp779t0wa0gPzmWLTpnOVJipv6wEyD30Bg6PgNJ5s81jihCj14785wW5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783402640; c=relaxed/simple;
-	bh=RKNt2ZB6LbDY2VEXry5eE49gG5mpApeBtoUhx+goNVk=;
+	s=arc-20240116; t=1783402641; c=relaxed/simple;
+	bh=8FPTAhCH9BVy8VfsLxLrsRaPyFtm1+jA8dUHm3WW4O4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UxDZ9NBfQ4r/9nYXWSUDt7rpLpBahcLXZp04L1ltHJaoUDLT/NZZm3M7TqGGBsxUbkjoXHI+tolN2O6Mp5VO6efLpMCNQuzU0C5IZ6AFUVe+CgwocO/xXy4yr0Oq7yAf2lVuUs1JjoIvf3u6hbM3P2q2ettiRCGxhXiH5plh23g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mHUruHzd; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5FB51F00ADB;
-	Tue,  7 Jul 2026 05:37:17 +0000 (UTC)
+	 MIME-Version; b=IUYBPoYyi7CYnB4DG+uOvtcIN5rWOJHwBJ0i3fGClJufFtYVsI2Sj+LREG0VgVIlLeekHlaisj+vywVNLcB2NRvtOe/awBqGTbioRcyuaa8prOts0FLVrpRCUdnEjD1Sx55Qc906cHiLOHY8WtlYhl1bjMDC559pwe526+KgV8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VxvSc79M; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35C4C1F00A3F;
+	Tue,  7 Jul 2026 05:37:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1783402638;
-	bh=UwxW6fGP4kvfrZkPhDCiEY85RQcXPDubGFyvVJ/mHVo=;
+	bh=UODIKJddzBZE+EoXv8DKhQ8eAdDFv1bI5onErhyoFtA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=mHUruHzdQSUizfNF9hPl83/gMlzxX/pQpD1WEDoTNIfAR0goApE4JWFRAJe9ifONv
-	 ADIWqCicEO/t4FQt0X+GzKKvNgitUvELkixAOfurmIB2ByazF2g1HgJ4cZY1g5z6LZ
-	 lT0AU2De09V0zhoN2UjhWuGjM+XvjlWlkVDOxARgAHenj+kbRvPScAb6N0nepz/QTY
-	 uFvk2lEVxNluWH2Wt6Tw1BL2hjf5hCIZf6YH5cBMAlpsJYbEM630gVTwoMZvADoCd0
-	 gjgWSGK53hl+NEPWxMizesry96w++7aNjr3h2p6VS9PnJH1J6U31/gHBtJ8ifS30De
-	 exuvrz8BzLCPw==
+	b=VxvSc79MpClY2GAzvX+RR9b8uoneAfrsqMHPsc5h70EDCNKV2ie1bPnUu1SL68qBu
+	 fCeQsIszWkWSvtijADUuzVit6DosiM0oKcvW9DptBACnzrr4tZbMWM3E1n/whZC8Ru
+	 rOGHKkdSwDS31N366ohD/p+vzjkGMI4+t1ixC5SbbJ9sdqbjN41xoKKR4sd/uR1Q8h
+	 rZrd8yplhETlN5UU+TrlL57bTz6kKKEuzFOv6J4O0AnfyMs7OA5h+DWus8qn1GuwhX
+	 HA35tXGlPLFJKNMAaZmz1gSGrnTG53NWaSrlcD1eobWbAuuQxFnlgDpTnpScR/aZEX
+	 Ilr1EF1mduaXg==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 06/33] lib/crypto: aes: Add GCM support
-Date: Mon,  6 Jul 2026 22:34:36 -0700
-Message-ID: <20260707053503.209874-7-ebiggers@kernel.org>
+Subject: [PATCH 07/33] lib/crypto: aes: Add CCM support
+Date: Mon,  6 Jul 2026 22:34:37 -0700
+Message-ID: <20260707053503.209874-8-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260707053503.209874-1-ebiggers@kernel.org>
 References: <20260707053503.209874-1-ebiggers@kernel.org>
@@ -70,13 +70,13 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_RECIPIENTS(0.00)[m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:ebiggers@kernel.org,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-25663-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25665-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
@@ -94,197 +94,133 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 340E1717814
+X-Rspamd-Queue-Id: 34CDD71781C
 
-Add support for AES-GCM to the crypto library.
+Add support for AES-CCM to the crypto library.
 
-This will be used to provide streamlined implementations of the
-"gcm(aes)" and "rfc4106(gcm(aes))" crypto_aead algorithms.  Most users
-of these will also be able to switch to the library, which as usual will
-be faster and simpler, e.g.:
+This will be used to provide a streamlined implementation of the
+"ccm(aes)" crypto_aead algorithm.  Most users of "ccm(aes)" will also be
+able to switch to the library, which as usual will be faster and
+simpler, e.g.:
 
-  - drivers/net/macsec.c
-  - fs/smb/client/
-  - fs/smb/server/
-  - net/ceph/messenger_v2.c
-  - net/mac80211/ (for both GMAC and GCMP)
-  - net/tipc/crypto.c
-  - security/keys/trusted-keys/trusted_dcp.c
+   - fs/smb/client/
+   - fs/smb/server/
+   - net/mac80211/
+   - net/mac802154/
 
 (I've already written proof-of-concept patches for all the above, and
 they helped inform the API design.)
 
-As usual, the architecture-optimized AES-GCM code will be migrated into
-the library as well (using the hooks provided in this commit as well as
-the GHASH ones), eliminating lots of repetitive boilerplate code.
+As in the AES-GCM API, incremental operation is supported.  It has to be
+used carefully, especially when decrypting, but it makes the API general
+enough to work well for all users.
 
-Incremental en/decryption is supported.  Incremental operation is a bit
-controversial in AEAD APIs because users have to be careful not to
-consume any decrypted data that hasn't been authenticated yet.  But I do
-think it's the right choice here.  It's not fundamentally different from
-the existing incremental MAC APIs, and it's the only approach that's
-general enough to work well for all users in the kernel:
-
-  - An array of virtually-addressed buffers (like that used by
-    BoringSSL's EVP_AEAD_CTX_sealv() and EVP_AEAD_CTX_openv()) doesn't
-    work in the kernel in general, since in some cases the data for a
-    single AES-GCM message is contained in a large number of highmem
-    pages that each need to be mapped into memory individually.  That
-    can be done efficiently only by using CPU-local mappings, but there
-    is a limited number of those.
-
-    Ceph messenger v2 is a great example, as it can send or receive up
-    to 32 MiB in a single AES-GCM message.  And it needs the
-    en/decrypted data to go into a (potentially large) number of bvecs
-    provided by a custom iterator, as well as into four
-    virtually-addressed buffers, two of which can be large buffers in
-    the vmalloc region.
-
-    Even just allocating an array big enough to store all the pointers
-    can be problematic in the kernel.  There are cases in which
-    decryption runs in GFP_NOIO context or even in softirq context,
-    where memory allocations are not as reliable as they normally are.
-
-  - Meanwhile, 'struct scatterlist' (the choice of crypto_aead) has
-    turned out to be really inconvenient for anyone who *does* just have
-    virtually-addressed buffers.  This is especially true if they can be
-    in the vmalloc region, including the stack, as in that case the
-    conversion to a scatterlist has to be done page-by-page.
-
-    And even for users who have all of their data in bare 'struct page',
-    none of them actually use 'struct scatterlist' as their native data
-    structure anyway.  They actually use skbs, bvecs, or other formats.
-
-  - iov_iter is attractive, but ultimately not general enough either
-    (considering the Ceph case for example), but also too general in
-    some ways (like having support for userspace addresses).  Additional
-    iter types like ITER_SKB would help a bit, but bloating iov_iter
-    with more types would reduce performance elsewhere in the kernel.
+The AES-CCM library code calls aes_cbcmac_blocks() directly, bypassing
+the higher-level aes_cbcmac_init(), aes_cbcmac_update(), and
+aes_cbcmac_final().  The latter set of functions is useful only for
+AES-CCM, so they don't make sense to keep around and will be removed
+once the "ccm(aes)" crypto_aead starts using the AES-CCM library.
 
 Initial test coverage is provided by the crypto_aead support added in a
 later commit.  I'm planning a KUnit test suite as well.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- .../crypto/libcrypto-auth-encryption.rst      |  13 +
- Documentation/crypto/libcrypto.rst            |   1 +
- include/crypto/aes-gcm.h                      | 249 ++++++++++++++++
- include/crypto/gcm.h                          |   2 +-
+ .../crypto/libcrypto-auth-encryption.rst      |   7 +
+ include/crypto/aes-ccm.h                      | 244 +++++++++++++++
  lib/crypto/Kconfig                            |   8 +
- lib/crypto/aes.c                              | 269 ++++++++++++++++++
+ lib/crypto/aes.c                              | 287 ++++++++++++++++++
  lib/crypto/tests/Kconfig                      |   1 +
- 7 files changed, 542 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/crypto/libcrypto-auth-encryption.rst
- create mode 100644 include/crypto/aes-gcm.h
+ 5 files changed, 547 insertions(+)
+ create mode 100644 include/crypto/aes-ccm.h
 
 diff --git a/Documentation/crypto/libcrypto-auth-encryption.rst b/Documentation/crypto/libcrypto-auth-encryption.rst
-new file mode 100644
-index 000000000000..17412b7bd7bb
---- /dev/null
+index 17412b7bd7bb..f3fa5b5305eb 100644
+--- a/Documentation/crypto/libcrypto-auth-encryption.rst
 +++ b/Documentation/crypto/libcrypto-auth-encryption.rst
-@@ -0,0 +1,13 @@
-+.. SPDX-License-Identifier: GPL-2.0-or-later
-+
-+Authenticated encryption
-+========================
-+
-+Support for authenticated encryption and decryption.
-+
-+AES-GCM
+@@ -5,6 +5,13 @@ Authenticated encryption
+ 
+ Support for authenticated encryption and decryption.
+ 
++AES-CCM
 +-------
 +
-+Support for AES in the GCM mode of operation.
++Support for AES in the CCM mode of operation.
 +
-+.. kernel-doc:: include/crypto/aes-gcm.h
-diff --git a/Documentation/crypto/libcrypto.rst b/Documentation/crypto/libcrypto.rst
-index bbf5ca137910..b8a57e62f0fa 100644
---- a/Documentation/crypto/libcrypto.rst
-+++ b/Documentation/crypto/libcrypto.rst
-@@ -158,6 +158,7 @@ API documentation
- .. toctree::
-    :maxdepth: 2
++.. kernel-doc:: include/crypto/aes-ccm.h
++
+ AES-GCM
+ -------
  
-+   libcrypto-auth-encryption
-    libcrypto-blockcipher
-    libcrypto-hash
-    libcrypto-signature
-diff --git a/include/crypto/aes-gcm.h b/include/crypto/aes-gcm.h
+diff --git a/include/crypto/aes-ccm.h b/include/crypto/aes-ccm.h
 new file mode 100644
-index 000000000000..c3549470ce65
+index 000000000000..9c179944a2ed
 --- /dev/null
-+++ b/include/crypto/aes-gcm.h
-@@ -0,0 +1,249 @@
++++ b/include/crypto/aes-ccm.h
+@@ -0,0 +1,244 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * AES-GCM authenticated encryption and decryption
++ * AES-CCM authenticated encryption and decryption
 + *
 + * Copyright 2026 Google LLC
 + */
-+#ifndef _CRYPTO_AES_GCM_H
-+#define _CRYPTO_AES_GCM_H
++#ifndef _CRYPTO_AES_CCM_H
++#define _CRYPTO_AES_CCM_H
 +
 +#include <crypto/aes.h>
-+#include <crypto/gcm.h>
-+#include <crypto/gf128hash.h>
 +
 +/**
-+ * struct aes_gcm_key - Prepared key for AES-GCM
++ * struct aes_ccm_key - Prepared key for AES-CCM
 + */
-+struct aes_gcm_key {
++struct aes_ccm_key {
 +	/* private: */
 +	struct aes_enckey aes;
-+	struct ghash_key ghash;
 +	size_t authtag_len; /* Length of authentication tags in bytes */
 +};
 +
 +/**
-+ * struct aes_gcm_ctx - Context for incrementally en/decrypting a message
++ * struct aes_ccm_ctx - Context for incrementally en/decrypting a message
 + */
-+struct aes_gcm_ctx {
++struct aes_ccm_ctx {
 +	/* private: */
 +	/*
 +	 * Pointer to the key, which is assumed to live at least as long as this
 +	 * struct.
 +	 */
-+	const struct aes_gcm_key *key;
-+	/* The current GHASH context */
-+	struct ghash_ctx ghash;
++	const struct aes_ccm_key *key;
 +	/*
-+	 * The current counter.  This can be viewed as either a 128-bit big
-+	 * endian counter, or as a 96-bit nonce followed by a 32-bit big endian
-+	 * counter; it doesn't matter, since the last 32-bit word starts at 1,
-+	 * and AES-GCM is undefined for messages that would overflow that part.
-+	 * In practice this means that code optimized for AES-GCM can just
-+	 * increment the last 32-bit word (wrapping at 2^32), but when needed it
-+	 * can still call AES-CTR code that does a 128-bit increment.
-+	 *
-+	 * 'long' alignment is for crypto_xor() to work more efficiently.
++	 * The current CBC-MAC chaining value.  When not on a block boundary,
++	 * the partial block has been XOR'ed into this.  The number of partial
++	 * bytes is 'partial_len'.
 +	 */
-+	union {
-+		u8 ctr[AES_BLOCK_SIZE];
-+		__be32 ctr32[AES_BLOCK_SIZE / 4];
-+	} __aligned(__alignof__(long));
++	u8 mac[AES_BLOCK_SIZE] __aligned(__alignof__(__be64));
++	/* The current counter, a 128-bit big endian value */
++	u8 ctr[AES_BLOCK_SIZE] __aligned(__alignof__(__be64));
 +	/* Buffered keystream for partial block updates */
 +	u8 keystream[AES_BLOCK_SIZE] __aligned(__alignof__(long));
-+	/* Encrypted counter of 1.  This gets XOR'ed with the tag at the end. */
-+	u8 j0_enc[AES_BLOCK_SIZE] __aligned(__alignof__(long));
-+	/* Number of associated data bytes processed so far */
-+	u64 ad_len;
-+	/* Number of en/decrypted bytes processed so far */
-+	u64 data_len;
++	/* Encrypted counter of 0.  This gets XOR'ed with the tag at the end */
++	u8 s0[AES_BLOCK_SIZE] __aligned(__alignof__(long));
++	/* Current partial block length, 0 <= partial_len < AES_BLOCK_SIZE */
++	u32 partial_len;
++	/* True if associated data padding has been done */
++	bool ad_padded;
++	/* Number of associated data bytes remaining to be provided */
++	s64 ad_remaining;
++	/* Number of en/decrypted data bytes remaining to be provided */
++	s64 data_remaining;
 +};
 +
 +/**
-+ * aes_gcm_preparekey() - Prepare an AES-GCM key
++ * aes_ccm_preparekey() - Prepare an AES-CCM key
 + * @key: (output) The key structure to initialize
-+ * @in_key: The raw AES-GCM key
++ * @in_key: The raw AES-CCM key
 + * @key_len: Length of the raw key in bytes: 16, 24, or 32
 + * @authtag_len: Length of the authentication tag in bytes:
-+ *		 4, 8, 12, 13, 14, 15, or 16.  16 is recommended.
++ *		 4, 6, 8, 10, 12, 14, or 16 (16 is recommended)
 + *
 + * Users should use memzero_explicit() to zeroize the key at the end of its
 + * lifetime.  (But if this function fails, zeroization is unnecessary.)
@@ -294,482 +230,491 @@ index 000000000000..c3549470ce65
 + * * 0 on success
 + * * -EINVAL if either of the lengths is invalid
 + */
-+int __must_check aes_gcm_preparekey(struct aes_gcm_key *key, const u8 *in_key,
++int __must_check aes_ccm_preparekey(struct aes_ccm_key *key, const u8 *in_key,
 +				    size_t key_len, size_t authtag_len);
 +
 +/**
-+ * aes_gcm_encrypt() - Encrypt a message with AES-GCM
++ * aes_ccm_encrypt() - Encrypt a message with AES-CCM
 + * @dst: The destination ciphertext data.  Can be in-place or out-of-place.
 + *	 For other overlaps the behavior is unspecified.
 + * @authtag: The output authentication tag.  Length is the authtag_len that was
-+ *	     passed to aes_gcm_preparekey().  Usually protocols using AES-GCM
++ *	     passed to aes_ccm_preparekey().  Usually protocols using AES-CCM
 + *	     put the tag at the end of the ciphertext, in which case this should
 + *	     be set to @dst + @data_len and @dst must have room for the tag.
 + * @src: The source plaintext data
 + * @data_len: Length of plaintext in bytes (and ciphertext excluding the tag)
 + * @ad: The associated data
 + * @ad_len: Length of associated data in bytes
-+ * @nonce: The 96-bit nonce
++ * @nonce: The nonce
++ * @nonce_len: Length of the nonce in bytes: between 7 and 13 inclusive
 + * @key: The key
 + *
-+ * For AES-GMAC (i.e., AES-GCM without any data en/decrypted), use dst=NULL,
-+ * src=NULL, and data_len=0.
-+ *
 + * Context: Any context.
++ * Return:
++ * * 0 on success
++ * * -EINVAL if nonce_len is invalid
++ * * -EOVERFLOW if data_len is too large for the selected nonce_len
++ *   or if ad_len exceeds U32_MAX
 + */
-+void aes_gcm_encrypt(u8 *dst, u8 *authtag, const u8 *src, size_t data_len,
-+		     const u8 *ad, size_t ad_len, const u8 nonce[at_least 12],
-+		     const struct aes_gcm_key *key);
++int __must_check aes_ccm_encrypt(u8 *dst, u8 *authtag, const u8 *src,
++				 size_t data_len, const u8 *ad, size_t ad_len,
++				 const u8 *nonce, size_t nonce_len,
++				 const struct aes_ccm_key *key);
 +
 +/**
-+ * aes_gcm_decrypt() - Decrypt a message with AES-GCM
++ * aes_ccm_decrypt() - Decrypt a message with AES-CCM
 + * @dst: The destination plaintext data.  Can be in-place or out-of-place.
 + *	 For other overlaps the behavior is unspecified.
 + * @src: The source ciphertext data
 + * @authtag: The stored authentication tag.  Length is the authtag_len that was
-+ *	     passed to aes_gcm_preparekey().  Usually protocols using AES-GCM
++ *	     passed to aes_ccm_preparekey().  Usually protocols using AES-CCM
 + *	     put the tag at the end of the ciphertext, in which case this should
 + *	     be set to @src + @data_len and @src must have room for the tag.
 + * @data_len: Length of plaintext in bytes (and ciphertext excluding the tag)
 + * @ad: The associated data
 + * @ad_len: Length of associated data in bytes
-+ * @nonce: The 96-bit nonce
++ * @nonce: The nonce
++ * @nonce_len: Length of the nonce in bytes: between 7 and 13 inclusive
 + * @key: The key
 + *
-+ * For AES-GMAC (i.e., AES-GCM without any data en/decrypted), use dst=NULL,
-+ * src=NULL, and data_len=0.
++ * Context: Any context.
++ * Return:
++ * * 0 on success.  This is the only case where any decrypted data can be used.
++ * * -EBADMSG if the message is inauthentic
++ * * -EINVAL if nonce_len is invalid
++ * * -EOVERFLOW if data_len is too large for the selected nonce_len
++ *   or if ad_len exceeds U32_MAX
++ */
++int __must_check aes_ccm_decrypt(u8 *dst, const u8 *src, const u8 *authtag,
++				 size_t data_len, const u8 *ad, size_t ad_len,
++				 const u8 *nonce, size_t nonce_len,
++				 const struct aes_ccm_key *key);
++
++/**
++ * aes_ccm_init() - Initialize context for incremental AES-CCM encryption or
++ *		    decryption
++ * @ctx: The context to initialize
++ * @nonce: The nonce
++ * @nonce_len: Length of the nonce in bytes: between 7 and 13 inclusive
++ * @ad_len: Length of the associated data that will be provided in bytes
++ * @data_len: Length of the plaintext that will be provided in bytes
++ * @key: The key.  Note that a pointer to the key is saved in the context, so
++ *	 the key must live at least as long as the context.
++ *
++ * Unlike AES-GCM, AES-CCM requires the total lengths of the associated data and
++ * plaintext to be known during initialization.  Callers MUST ensure that these
++ * lengths are correct.
++ *
++ * IMPORTANT: Callers that are decrypting MUST NOT assume that any decrypted or
++ * associated data is authentic until the authentication tag has been verified.
++ * This incremental API is provided solely to support callers that can't
++ * efficiently use the one-shot functions due to using a nonlinear data layout.
++ *
++ * For incremental AES-CCM encryption, use:
++ *
++ * 1. aes_ccm_init()
++ * 2. aes_ccm_auth_update() (any number of times)
++ * 3. aes_ccm_encrypt_update() (any number of times)
++ * 4. aes_ccm_encrypt_final()
++ *
++ * For incremental AES-CCM decryption, use:
++ *
++ * 1. aes_ccm_init()
++ * 2. aes_ccm_auth_update() (any number of times)
++ * 3. aes_ccm_decrypt_update() (any number of times)
++ * 4. aes_ccm_decrypt_final()
++ *
++ * Context: Any context.
++ * Return:
++ * * 0 on success
++ * * -EINVAL if nonce_len is invalid
++ * * -EOVERFLOW if data_len is too large for the selected nonce_len
++ *   or if ad_len exceeds U32_MAX
++ */
++int __must_check aes_ccm_init(struct aes_ccm_ctx *ctx, const u8 *nonce,
++			      size_t nonce_len, u64 ad_len, u64 data_len,
++			      const struct aes_ccm_key *key);
++
++/**
++ * aes_ccm_auth_update() - Incrementally update AES-CCM associated data
++ * @ctx: An AES-CCM context
++ * @ad: The associated data
++ * @len: Length of the associated data in bytes
++ *
++ * IMPORTANT: Callers MUST NOT assume that any decrypted or associated data is
++ * authentic until the authentication tag has been verified.
++ *
++ * Context: Any context.
++ */
++void aes_ccm_auth_update(struct aes_ccm_ctx *ctx, const u8 *ad, size_t len);
++
++/**
++ * aes_ccm_encrypt_update() - Incrementally encrypt data with AES-CCM
++ * @ctx: An AES-CCM context
++ * @dst: The destination buffer.  Can be in-place or out-of-place.  For other
++ *	 overlaps the behavior is unspecified.
++ * @src: The source plaintext data
++ * @len: Number of bytes to encrypt
++ *
++ * Context: Any context.
++ */
++void aes_ccm_encrypt_update(struct aes_ccm_ctx *ctx, u8 *dst, const u8 *src,
++			    size_t len);
++
++/**
++ * aes_ccm_decrypt_update() - Incrementally decrypt data with AES-CCM
++ * @ctx: An AES-CCM context
++ * @dst: The destination buffer.  Can be in-place or out-of-place.  For other
++ *	 overlaps the behavior is unspecified.
++ * @src: The source ciphertext data (not including auth tag)
++ * @len: Number of bytes to decrypt
++ *
++ * IMPORTANT: Callers MUST NOT assume that any decrypted or associated data is
++ * authentic until the authentication tag has been verified.
++ *
++ * Context: Any context.
++ */
++void aes_ccm_decrypt_update(struct aes_ccm_ctx *ctx, u8 *dst, const u8 *src,
++			    size_t len);
++
++/**
++ * aes_ccm_encrypt_final() - Finish encrypting a message with AES-CCM
++ * @ctx: An AES-CCM context
++ * @authtag: The output authentication tag.  Length is the authtag_len that was
++ *	     passed to aes_ccm_preparekey().
++ *
++ * This also zeroizes @ctx, so the caller doesn't need to do it.
++ *
++ * Context: Any context.
++ */
++void aes_ccm_encrypt_final(struct aes_ccm_ctx *ctx, u8 *authtag);
++
++/**
++ * aes_ccm_decrypt_final() - Finish decrypting a message with AES-CCM
++ * @ctx: An AES-CCM context
++ * @authtag: The stored authentication tag.  Length is the authtag_len that was
++ *	     passed to aes_ccm_preparekey().
++ *
++ * This also zeroizes @ctx, so the caller doesn't need to do it.
 + *
 + * Context: Any context.
 + * Return:
 + * * 0 on success.  This is the only case where any decrypted data can be used.
 + * * -EBADMSG if the message is inauthentic
 + */
-+int __must_check aes_gcm_decrypt(u8 *dst, const u8 *src, const u8 *authtag,
-+				 size_t data_len, const u8 *ad, size_t ad_len,
-+				 const u8 nonce[at_least 12],
-+				 const struct aes_gcm_key *key);
-+
-+/**
-+ * aes_gcm_init() - Initialize context for incremental AES-GCM encryption or
-+ *		    decryption, or AES-GMAC computation
-+ * @ctx: The context to initialize
-+ * @nonce: The 96-bit nonce
-+ * @key: The key.  Note that a pointer to the key is saved in the context, so
-+ *	 the key must live at least as long as the context.
-+ *
-+ * IMPORTANT: Callers that are decrypting or computing a GMAC value for
-+ * verification MUST NOT assume that any decrypted or associated data is
-+ * authentic until the authentication tag has been verified.  This incremental
-+ * API is provided solely to support callers that can't efficiently use the
-+ * one-shot functions due to using a nonlinear data layout.
-+ *
-+ * For incremental AES-GCM encryption, use:
-+ *
-+ * 1. aes_gcm_init()
-+ * 2. aes_gcm_auth_update() (any number of times)
-+ * 3. aes_gcm_encrypt_update() (any number of times)
-+ * 4. aes_gcm_encrypt_final()
-+ *
-+ * For incremental AES-GCM decryption, use:
-+ *
-+ * 1. aes_gcm_init()
-+ * 2. aes_gcm_auth_update() (any number of times)
-+ * 3. aes_gcm_decrypt_update() (any number of times)
-+ * 4. aes_gcm_decrypt_final()
-+ *
-+ * AES-GMAC is just AES-GCM with zero bytes en/decrypted.  For incremental
-+ * AES-GMAC computation, use:
-+ *
-+ * 1. aes_gcm_init()
-+ * 2. aes_gcm_auth_update() (any number of times)
-+ * 3. aes_gcm_encrypt_final() to return the computed tag to the caller, or
-+ *    aes_gcm_decrypt_final() to directly verify the computed tag.
-+ *
-+ * Context: Any context.
-+ */
-+void aes_gcm_init(struct aes_gcm_ctx *ctx, const u8 nonce[at_least 12],
-+		  const struct aes_gcm_key *key);
-+
-+/**
-+ * aes_gcm_auth_update() - Incrementally update AES-GCM associated data
-+ * @ctx: An AES-GCM context
-+ * @ad: The associated data
-+ * @len: Length of the associated data in bytes
-+ *
-+ * IMPORTANT: Callers that are decrypting or computing a GMAC value for
-+ * verification MUST NOT assume that any decrypted or associated data is
-+ * authentic until the authentication tag has been verified.
-+ *
-+ * Context: Any context.
-+ */
-+void aes_gcm_auth_update(struct aes_gcm_ctx *ctx, const u8 *ad, size_t len);
-+
-+/**
-+ * aes_gcm_encrypt_update() - Incrementally encrypt data with AES-GCM
-+ * @ctx: An AES-GCM context
-+ * @dst: The destination buffer.  Can be in-place or out-of-place.  For other
-+ *	 overlaps the behavior is unspecified.
-+ * @src: The source plaintext data (not including auth tag)
-+ * @len: Number of bytes to encrypt
-+ *
-+ * This can be called only after all associated data has been processed.
-+ *
-+ * Context: Any context.
-+ */
-+void aes_gcm_encrypt_update(struct aes_gcm_ctx *ctx, u8 *dst, const u8 *src,
-+			    size_t len);
-+
-+/**
-+ * aes_gcm_decrypt_update() - Incrementally decrypt data with AES-GCM
-+ * @ctx: An AES-GCM context
-+ * @dst: The destination buffer.  Can be in-place or out-of-place.  For other
-+ *	 overlaps the behavior is unspecified.
-+ * @src: The source ciphertext data
-+ * @len: Number of bytes to decrypt
-+ *
-+ * This can be called only after all associated data has been processed.
-+ *
-+ * IMPORTANT: Callers that are decrypting or computing a GMAC value for
-+ * verification MUST NOT assume that any decrypted or associated data is
-+ * authentic until the authentication tag has been verified.
-+ *
-+ * Context: Any context.
-+ */
-+void aes_gcm_decrypt_update(struct aes_gcm_ctx *ctx, u8 *dst, const u8 *src,
-+			    size_t len);
-+
-+/**
-+ * aes_gcm_encrypt_final() - Finish encrypting a message with AES-GCM
-+ * @ctx: An AES-GCM context
-+ * @authtag: The output authentication tag.  Length is the authtag_len that was
-+ *	     passed to aes_gcm_preparekey().
-+ *
-+ * This also zeroizes @ctx, so the caller doesn't need to do it.
-+ *
-+ * Context: Any context.
-+ */
-+void aes_gcm_encrypt_final(struct aes_gcm_ctx *ctx, u8 *authtag);
-+
-+/**
-+ * aes_gcm_decrypt_final() - Finish decrypting a message with AES-GCM
-+ * @ctx: An AES-GCM context
-+ * @authtag: The stored authentication tag.  Length is the authtag_len that was
-+ *	     passed to aes_gcm_preparekey().
-+ *
-+ * This also zeroizes @ctx, so the caller doesn't need to do it.
-+ *
-+ * Context: Any context.
-+ * Return:
-+ * * 0 on success
-+ * * -EBADMSG if the message is inauthentic
-+ */
-+int __must_check aes_gcm_decrypt_final(struct aes_gcm_ctx *ctx,
++int __must_check aes_ccm_decrypt_final(struct aes_ccm_ctx *ctx,
 +				       const u8 *authtag);
 +
-+#endif /* _CRYPTO_AES_GCM_H */
-diff --git a/include/crypto/gcm.h b/include/crypto/gcm.h
-index 1d5f39ff1dc4..eb91d5603b74 100644
---- a/include/crypto/gcm.h
-+++ b/include/crypto/gcm.h
-@@ -13,7 +13,7 @@
- /*
-  * validate authentication tag for GCM
-  */
--static inline int crypto_gcm_check_authsize(unsigned int authsize)
-+static inline int crypto_gcm_check_authsize(size_t authsize)
- {
- 	switch (authsize) {
- 	case 4:
++#endif /* _CRYPTO_AES_CCM_H */
 diff --git a/lib/crypto/Kconfig b/lib/crypto/Kconfig
-index 9af44cf743a7..5d313c78b9fa 100644
+index 5d313c78b9fa..4066427017bc 100644
 --- a/lib/crypto/Kconfig
 +++ b/lib/crypto/Kconfig
-@@ -53,6 +53,14 @@ config CRYPTO_LIB_AES_CTR
+@@ -47,6 +47,14 @@ config CRYPTO_LIB_AES_ECB
  	help
- 	  The AES-CTR and AES-XCTR library functions.
+ 	  The AES-ECB library functions.
  
-+config CRYPTO_LIB_AES_GCM
++config CRYPTO_LIB_AES_CCM
 +	tristate
 +	select CRYPTO_LIB_AES
++	select CRYPTO_LIB_AES_CBC_MACS
 +	select CRYPTO_LIB_AES_CTR
-+	select CRYPTO_LIB_GF128HASH
 +	help
-+	  The AES-GCM library functions.
++	  The AES-CCM library functions.
 +
- config CRYPTO_LIB_AES_XTS
+ config CRYPTO_LIB_AES_CTR
  	tristate
  	select CRYPTO_LIB_AES
 diff --git a/lib/crypto/aes.c b/lib/crypto/aes.c
-index 630702a4228c..50f82437a5d8 100644
+index 50f82437a5d8..1a1b32e41ac1 100644
 --- a/lib/crypto/aes.c
 +++ b/lib/crypto/aes.c
-@@ -8,6 +8,7 @@
+@@ -6,6 +6,7 @@
+ 
+ #include <crypto/aes-cbc-macs.h>
  #include <crypto/aes-cbc.h>
++#include <crypto/aes-ccm.h>
  #include <crypto/aes-ctr.h>
  #include <crypto/aes-ecb.h>
-+#include <crypto/aes-gcm.h>
- #include <crypto/aes-xts.h>
- #include <crypto/aes.h>
- #include <crypto/gf128mul.h>
-@@ -1284,6 +1285,274 @@ void aes_xts_decrypt(u8 *dst, const u8 *src, size_t len,
- EXPORT_SYMBOL_GPL(aes_xts_decrypt);
- #endif /* CONFIG_CRYPTO_LIB_AES_XTS */
+ #include <crypto/aes-gcm.h>
+@@ -1553,6 +1554,292 @@ EXPORT_SYMBOL_GPL(aes_gcm_decrypt);
  
-+#if IS_ENABLED(CONFIG_CRYPTO_LIB_AES_GCM)
-+/*
-+ * Hooks for optimized AES-GCM implementations, overridable by the architecture.
-+ * They are called with len > 0 && len % AES_BLOCK_SIZE == 0.  I.e. they aren't
-+ * expected to handle empty inputs or partial blocks, as those cases are handled
-+ * by non-arch-specific code instead.
-+ *
-+ * The GHASH accumulator is provided in POLYVAL format.  The counter is provided
-+ * in big endian format, and it's read-only, as the caller handles updating it.
-+ *
-+ * Returning false causes the fallback implementation to be used instead.
-+ *
-+ * These hooks are used only for en/decrypted data.  For the associated data the
-+ * GHASH functions are called instead, so those should be implemented too.
-+ */
-+#ifndef aes_gcm_encrypt_update_arch
-+static bool aes_gcm_encrypt_update_arch(u8 *dst, const u8 *src, size_t len,
-+					struct polyval_elem *ghash_acc,
-+					const __be32 ctr32[4],
-+					const struct aes_enckey *aes_key,
-+					const struct ghash_key *ghash_key)
-+{
-+	return false;
-+}
-+#endif
-+#ifndef aes_gcm_decrypt_update_arch
-+static bool aes_gcm_decrypt_update_arch(u8 *dst, const u8 *src, size_t len,
-+					struct polyval_elem *ghash_acc,
-+					const __be32 ctr32[4],
-+					const struct aes_enckey *aes_key,
-+					const struct ghash_key *ghash_key)
-+{
-+	return false;
-+}
-+#endif
-+
-+int aes_gcm_preparekey(struct aes_gcm_key *key, const u8 *in_key,
+ #endif /* CONFIG_CRYPTO_LIB_AES_GCM */
+ 
++#if IS_ENABLED(CONFIG_CRYPTO_LIB_AES_CCM)
++int aes_ccm_preparekey(struct aes_ccm_key *key, const u8 *in_key,
 +		       size_t key_len, size_t authtag_len)
 +{
-+	u8 h[AES_BLOCK_SIZE] = { 0 };
 +	int err;
 +
-+	err = crypto_gcm_check_authsize(authtag_len);
-+	if (unlikely(err))
-+		return err;
++	if (authtag_len < 4 || authtag_len > 16 || authtag_len % 2)
++		return -EINVAL;
 +
 +	err = aes_prepareenckey(&key->aes, in_key, key_len);
-+	if (unlikely(err))
++	if (err)
 +		return err;
 +
-+	aes_encrypt(&key->aes, h, h);
-+	ghash_preparekey(&key->ghash, h);
-+
 +	key->authtag_len = authtag_len;
-+
-+	memzero_explicit(h, sizeof(h));
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(aes_gcm_preparekey);
++EXPORT_SYMBOL_GPL(aes_ccm_preparekey);
 +
-+void aes_gcm_init(struct aes_gcm_ctx *ctx, const u8 nonce[12],
-+		  const struct aes_gcm_key *key)
++int aes_ccm_init(struct aes_ccm_ctx *ctx, const u8 *nonce, size_t nonce_len,
++		 u64 ad_len, u64 data_len, const struct aes_ccm_key *key)
 +{
++	/*
++	 * This is the value L defined in the CCM specification.  It determines
++	 * the maximum allowed message length, and it is itself determined by
++	 * the nonce length.  They are inversely related, i.e. the longer the
++	 * nonce the smaller the maximum message length is.
++	 */
++	unsigned int l = 15 - nonce_len;
++
++	if (unlikely(nonce_len < 7 || nonce_len > 13))
++		return -EINVAL;
++	/* Thus 2 <= l <= 8. */
++
++	if (unlikely(l < 8 && data_len >= (1ULL << (8 * l))))
++		return -EOVERFLOW;
++
++	if (unlikely(ad_len > U32_MAX))
++		return -EOVERFLOW;
++
 +	ctx->key = key;
-+	ctx->ad_len = 0;
-+	ctx->data_len = 0;
-+	ghash_init(&ctx->ghash, &key->ghash);
-+	memset(ctx->keystream, 0, sizeof(ctx->keystream));
++	ctx->ad_remaining = ad_len;
++	ctx->data_remaining = data_len;
++	ctx->ad_padded = false;
 +
-+	memcpy(ctx->ctr32, nonce, 12);
-+	ctx->ctr32[3] = cpu_to_be32(1);
++	/*
++	 * Initialize the zero-th counter block to:
++	 *
++	 *	L - 1 || nonce || 0
++	 *
++	 * ... and the zero-th CBC-MAC block to:
++	 *
++	 *	Flags || nonce || data_len
++	 */
++	*(__be64 *)&ctx->ctr[8] = 0;
++	*(__be64 *)&ctx->mac[8] = cpu_to_be64(data_len);
++	ctx->ctr[0] = l - 1;
++	ctx->mac[0] = (ad_len ? 0x40 : 0) |
++		      (((key->authtag_len - 2) / 2) << 3) | (l - 1);
++	memcpy(&ctx->ctr[1], nonce, nonce_len); /* Overlapping store */
++	memcpy(&ctx->mac[1], nonce, nonce_len); /* Overlapping store */
 +
-+	aes_encrypt(&key->aes, ctx->j0_enc, ctx->ctr);
-+	ctx->ctr32[3] = cpu_to_be32(2);
-+}
-+EXPORT_SYMBOL_GPL(aes_gcm_init);
++	/*
++	 * Generate S_0 by encrypting the counter (this is used to encrypt the
++	 * auth tag later), and encrypt the zero-th CBC-MAC block.
++	 */
++	aes_encrypt(&key->aes, ctx->s0, ctx->ctr);
++	aes_encrypt(&key->aes, ctx->mac, ctx->mac);
 +
-+void aes_gcm_auth_update(struct aes_gcm_ctx *ctx, const u8 *ad, size_t len)
-+{
-+	WARN_ON_ONCE(ctx->data_len != 0);
-+	if (len) {
-+		ghash_update(&ctx->ghash, ad, len);
-+		ctx->ad_len += len;
++	/* Increment the counter from 0 to 1. */
++	ctx->ctr[15] = 1;
++
++	if (ad_len) {
++		/*
++		 * Update CBC-MAC with the associated data length, represented
++		 * using either 2 or 6 bytes depending on the length.
++		 */
++		if (likely(ad_len < 0xff00)) {
++			*(__be16 *)&ctx->mac[0] ^= cpu_to_be16(ad_len);
++			ctx->partial_len = 2;
++		} else {
++			*(__be16 *)&ctx->mac[0] ^= cpu_to_be16(0xfffe);
++			*(__be32 *)&ctx->mac[2] ^= cpu_to_be32(ad_len);
++			ctx->partial_len = 6;
++		}
++	} else {
++		ctx->partial_len = 0;
 +	}
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(aes_gcm_auth_update);
++EXPORT_SYMBOL_GPL(aes_ccm_init);
 +
-+static const u8 gcm_zeroes[AES_BLOCK_SIZE];
-+
-+static __always_inline void ghash_pad(struct ghash_ctx *ghash, u64 len)
++void aes_ccm_auth_update(struct aes_ccm_ctx *ctx, const u8 *ad, size_t len)
 +{
-+	if (len % AES_BLOCK_SIZE)
-+		ghash_update(ghash, gcm_zeroes, -len % AES_BLOCK_SIZE);
-+}
++	size_t partial_len = ctx->partial_len;
++	bool enc_before = false;
++	size_t nblocks;
 +
-+static __always_inline void aes_gcm_crypt_update(struct aes_gcm_ctx *ctx,
++	ctx->ad_remaining -= len;
++
++	if (partial_len) {
++		size_t n = min(len, AES_BLOCK_SIZE - partial_len);
++
++		crypto_xor(&ctx->mac[partial_len], ad, n);
++		ad += n;
++		len -= n;
++		partial_len += n;
++		if (partial_len < AES_BLOCK_SIZE) {
++			ctx->partial_len = partial_len;
++			return;
++		}
++		enc_before = true;
++	}
++
++	nblocks = len / AES_BLOCK_SIZE;
++	len %= AES_BLOCK_SIZE;
++	if (nblocks == 0) {
++		if (enc_before)
++			aes_encrypt(&ctx->key->aes, ctx->mac, ctx->mac);
++	} else {
++		aes_cbcmac_blocks(ctx->mac, &ctx->key->aes, ad, nblocks,
++				  enc_before, /* enc_after= */ true);
++		ad += nblocks * AES_BLOCK_SIZE;
++	}
++	crypto_xor(ctx->mac, ad, len);
++	ctx->partial_len = len;
++}
++EXPORT_SYMBOL_GPL(aes_ccm_auth_update);
++
++static __always_inline void aes_ccm_crypt_update(struct aes_ccm_ctx *ctx,
 +						 u8 *dst, const u8 *src,
 +						 size_t len, bool enc)
 +{
-+	size_t partial_len, n;
++	size_t partial_len = ctx->partial_len;
++	size_t n;
 +
 +	if (unlikely(len == 0))
 +		return;
 +
-+	partial_len = ctx->data_len % AES_BLOCK_SIZE;
-+	if (ctx->data_len == 0)
-+		ghash_pad(&ctx->ghash, ctx->ad_len);
-+	ctx->data_len += len;
++	WARN_ON_ONCE(ctx->ad_remaining != 0);
++	ctx->data_remaining -= len;
 +
-+	if (unlikely(partial_len != 0)) {
++	if (!ctx->ad_padded) {
++		ctx->ad_padded = true;
++		if (partial_len)
++			aes_encrypt(&ctx->key->aes, ctx->mac, ctx->mac);
++	} else if (partial_len) {
 +		/*
 +		 * The previous call ended on a non-block-aligned data_len, so
 +		 * continue using a previously-generated keystream block.
 +		 */
 +		n = min(len, AES_BLOCK_SIZE - partial_len);
-+		if (enc) {
-+			crypto_xor_cpy(dst, src, &ctx->keystream[partial_len],
-+				       n);
-+			ghash_update(&ctx->ghash, dst, n);
-+		} else {
-+			ghash_update(&ctx->ghash, src, n);
-+			crypto_xor_cpy(dst, src, &ctx->keystream[partial_len],
-+				       n);
-+		}
++		if (enc)
++			crypto_xor(&ctx->mac[partial_len], src, n);
++		crypto_xor_cpy(dst, src, &ctx->keystream[partial_len], n);
++		if (!enc)
++			crypto_xor(&ctx->mac[partial_len], dst, n);
 +		dst += n;
 +		src += n;
 +		len -= n;
++		partial_len += n;
++		if (partial_len < AES_BLOCK_SIZE) {
++			ctx->partial_len = partial_len;
++			return;
++		}
++		aes_encrypt(&ctx->key->aes, ctx->mac, ctx->mac);
 +	}
 +
 +	if (len >= AES_BLOCK_SIZE) {
 +		n = round_down(len, AES_BLOCK_SIZE);
-+		if (enc) {
-+			if (likely(aes_gcm_encrypt_update_arch(
-+				    dst, src, n, &ctx->ghash.acc, ctx->ctr32,
-+				    &ctx->key->aes, &ctx->key->ghash))) {
-+				be32_add_cpu(&ctx->ctr32[3],
-+					     n / AES_BLOCK_SIZE);
-+			} else {
-+				aes_ctr(dst, src, n, ctx->ctr, &ctx->key->aes);
-+				ghash_update(&ctx->ghash, dst, n);
-+			}
-+		} else {
-+			if (likely(aes_gcm_decrypt_update_arch(
-+				    dst, src, n, &ctx->ghash.acc, ctx->ctr32,
-+				    &ctx->key->aes, &ctx->key->ghash))) {
-+				be32_add_cpu(&ctx->ctr32[3],
-+					     n / AES_BLOCK_SIZE);
-+			} else {
-+				ghash_update(&ctx->ghash, src, n);
-+				aes_ctr(dst, src, n, ctx->ctr, &ctx->key->aes);
-+			}
-+		}
++		if (enc)
++			aes_cbcmac_blocks(ctx->mac, &ctx->key->aes, src,
++					  len / AES_BLOCK_SIZE,
++					  /* enc_before= */ false,
++					  /* enc_after= */ true);
++		aes_ctr(dst, src, n, ctx->ctr, &ctx->key->aes);
++		if (!enc)
++			aes_cbcmac_blocks(ctx->mac, &ctx->key->aes, dst,
++					  len / AES_BLOCK_SIZE,
++					  /* enc_before= */ false,
++					  /* enc_after= */ true);
 +		dst += n;
 +		src += n;
 +		len -= n;
 +	}
 +
-+	if (len != 0) {
++	if (len) {
 +		/*
 +		 * Ending on a non-block aligned data_len.  Generate the next
 +		 * keystream block, use the needed portion of it, and leave it
 +		 * cached in ctx->keystream in case this isn't the final call.
 +		 */
 +		aes_encrypt(&ctx->key->aes, ctx->keystream, ctx->ctr);
-+		be32_add_cpu(&ctx->ctr32[3], 1);
-+		if (enc) {
-+			crypto_xor_cpy(dst, src, ctx->keystream, len);
-+			ghash_update(&ctx->ghash, dst, len);
-+		} else {
-+			ghash_update(&ctx->ghash, src, len);
-+			crypto_xor_cpy(dst, src, ctx->keystream, len);
-+		}
++		inc_be128_ctr(ctx->ctr);
++		if (enc)
++			crypto_xor(ctx->mac, src, len);
++		crypto_xor_cpy(dst, src, ctx->keystream, len);
++		if (!enc)
++			crypto_xor(ctx->mac, dst, len);
 +	}
++	ctx->partial_len = len;
 +}
 +
-+void aes_gcm_encrypt_update(struct aes_gcm_ctx *ctx, u8 *dst, const u8 *src,
++void aes_ccm_encrypt_update(struct aes_ccm_ctx *ctx, u8 *dst, const u8 *src,
 +			    size_t len)
 +{
-+	aes_gcm_crypt_update(ctx, dst, src, len, /* enc= */ true);
++	aes_ccm_crypt_update(ctx, dst, src, len, /* enc= */ true);
 +}
-+EXPORT_SYMBOL_GPL(aes_gcm_encrypt_update);
++EXPORT_SYMBOL_GPL(aes_ccm_encrypt_update);
 +
-+void aes_gcm_decrypt_update(struct aes_gcm_ctx *ctx, u8 *dst, const u8 *src,
++void aes_ccm_decrypt_update(struct aes_ccm_ctx *ctx, u8 *dst, const u8 *src,
 +			    size_t len)
 +{
-+	aes_gcm_crypt_update(ctx, dst, src, len, /* enc= */ false);
++	aes_ccm_crypt_update(ctx, dst, src, len, /* enc= */ false);
 +}
-+EXPORT_SYMBOL_GPL(aes_gcm_decrypt_update);
++EXPORT_SYMBOL_GPL(aes_ccm_decrypt_update);
 +
-+void aes_gcm_encrypt_final(struct aes_gcm_ctx *ctx, u8 *authtag)
++void aes_ccm_encrypt_final(struct aes_ccm_ctx *ctx, u8 *authtag)
 +{
-+	__be64 tail[2];
-+
-+	WARN_ON_ONCE(ctx->data_len > (1ULL << 36) - 32);
-+
-+	ghash_pad(&ctx->ghash,
-+		  ctx->data_len == 0 ? ctx->ad_len : ctx->data_len);
-+
-+	tail[0] = cpu_to_be64(ctx->ad_len * 8);
-+	tail[1] = cpu_to_be64(ctx->data_len * 8);
-+	ghash_update(&ctx->ghash, (const u8 *)tail, 16);
-+	ghash_final(&ctx->ghash, ctx->ctr); /* Use ctr as temp buffer */
-+
-+	crypto_xor_cpy(authtag, ctx->ctr, ctx->j0_enc, ctx->key->authtag_len);
++	WARN_ON_ONCE(ctx->ad_remaining != 0);
++	WARN_ON_ONCE(ctx->data_remaining != 0);
++	if (ctx->partial_len)
++		aes_encrypt(&ctx->key->aes, ctx->mac, ctx->mac);
++	crypto_xor_cpy(authtag, ctx->mac, ctx->s0, ctx->key->authtag_len);
 +	memzero_explicit(ctx, sizeof(*ctx));
 +}
-+EXPORT_SYMBOL_GPL(aes_gcm_encrypt_final);
++EXPORT_SYMBOL_GPL(aes_ccm_encrypt_final);
 +
-+int aes_gcm_decrypt_final(struct aes_gcm_ctx *ctx, const u8 *authtag)
++int aes_ccm_decrypt_final(struct aes_ccm_ctx *ctx, const u8 *authtag)
 +{
-+	__be64 tail[2];
 +	int err;
 +
-+	WARN_ON_ONCE(ctx->data_len > (1ULL << 36) - 32);
-+
-+	ghash_pad(&ctx->ghash,
-+		  ctx->data_len == 0 ? ctx->ad_len : ctx->data_len);
-+
-+	tail[0] = cpu_to_be64(ctx->ad_len * 8);
-+	tail[1] = cpu_to_be64(ctx->data_len * 8);
-+	ghash_update(&ctx->ghash, (const u8 *)tail, 16);
-+	ghash_final(&ctx->ghash, ctx->ctr); /* Use ctr as temp buffer */
-+	crypto_xor(ctx->ctr, ctx->j0_enc, ctx->key->authtag_len);
-+	err = crypto_memneq(ctx->ctr, authtag, ctx->key->authtag_len) ?
++	WARN_ON_ONCE(ctx->ad_remaining != 0);
++	WARN_ON_ONCE(ctx->data_remaining != 0);
++	if (ctx->partial_len)
++		aes_encrypt(&ctx->key->aes, ctx->mac, ctx->mac);
++	crypto_xor(ctx->mac, ctx->s0, ctx->key->authtag_len);
++	err = crypto_memneq(ctx->mac, authtag, ctx->key->authtag_len) ?
 +		      -EBADMSG :
 +		      0;
 +	memzero_explicit(ctx, sizeof(*ctx));
 +	return err;
 +}
-+EXPORT_SYMBOL_GPL(aes_gcm_decrypt_final);
++EXPORT_SYMBOL_GPL(aes_ccm_decrypt_final);
 +
-+void aes_gcm_encrypt(u8 *dst, u8 *authtag, const u8 *src, size_t data_len,
-+		     const u8 *ad, size_t ad_len, const u8 nonce[12],
-+		     const struct aes_gcm_key *key)
++int aes_ccm_encrypt(u8 *dst, u8 *authtag, const u8 *src, size_t data_len,
++		    const u8 *ad, size_t ad_len, const u8 *nonce,
++		    size_t nonce_len, const struct aes_ccm_key *key)
 +{
-+	struct aes_gcm_ctx ctx;
-+
-+	aes_gcm_init(&ctx, nonce, key);
-+	aes_gcm_auth_update(&ctx, ad, ad_len);
-+	aes_gcm_encrypt_update(&ctx, dst, src, data_len);
-+	aes_gcm_encrypt_final(&ctx, authtag);
-+}
-+EXPORT_SYMBOL_GPL(aes_gcm_encrypt);
-+
-+int aes_gcm_decrypt(u8 *dst, const u8 *src, const u8 *authtag, size_t data_len,
-+		    const u8 *ad, size_t ad_len, const u8 nonce[12],
-+		    const struct aes_gcm_key *key)
-+{
-+	struct aes_gcm_ctx ctx;
++	struct aes_ccm_ctx ctx;
 +	int err;
 +
-+	aes_gcm_init(&ctx, nonce, key);
-+	aes_gcm_auth_update(&ctx, ad, ad_len);
-+	aes_gcm_decrypt_update(&ctx, dst, src, data_len);
-+	err = aes_gcm_decrypt_final(&ctx, authtag);
++	err = aes_ccm_init(&ctx, nonce, nonce_len, ad_len, data_len, key);
++	if (unlikely(err))
++		return err;
++	aes_ccm_auth_update(&ctx, ad, ad_len);
++	aes_ccm_encrypt_update(&ctx, dst, src, data_len);
++	aes_ccm_encrypt_final(&ctx, authtag);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(aes_ccm_encrypt);
++
++int aes_ccm_decrypt(u8 *dst, const u8 *src, const u8 *authtag, size_t data_len,
++		    const u8 *ad, size_t ad_len, const u8 *nonce,
++		    size_t nonce_len, const struct aes_ccm_key *key)
++{
++	struct aes_ccm_ctx ctx;
++	int err;
++
++	err = aes_ccm_init(&ctx, nonce, nonce_len, ad_len, data_len, key);
++	if (unlikely(err))
++		return err;
++	aes_ccm_auth_update(&ctx, ad, ad_len);
++	aes_ccm_decrypt_update(&ctx, dst, src, data_len);
++	err = aes_ccm_decrypt_final(&ctx, authtag);
 +	if (unlikely(err)) {
 +		/*
 +		 * Clear the inauthentic decrypted data so that callers won't
@@ -779,25 +724,24 @@ index 630702a4228c..50f82437a5d8 100644
 +	}
 +	return err;
 +}
-+EXPORT_SYMBOL_GPL(aes_gcm_decrypt);
-+
-+#endif /* CONFIG_CRYPTO_LIB_AES_GCM */
++EXPORT_SYMBOL_GPL(aes_ccm_decrypt);
++#endif /* CONFIG_CRYPTO_LIB_AES_CCM */
 +
  static int __init aes_mod_init(void)
  {
  #ifdef aes_mod_init_arch
 diff --git a/lib/crypto/tests/Kconfig b/lib/crypto/tests/Kconfig
-index b559e7c79e76..51183ffabbef 100644
+index 51183ffabbef..bc084dde424f 100644
 --- a/lib/crypto/tests/Kconfig
 +++ b/lib/crypto/tests/Kconfig
-@@ -148,6 +148,7 @@ config CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT
+@@ -146,6 +146,7 @@ config CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT
+ 	depends on KUNIT
+ 	select CRYPTO_LIB_AES_CBC
  	select CRYPTO_LIB_AES_CBC_MACS
++	select CRYPTO_LIB_AES_CCM
  	select CRYPTO_LIB_AES_CTR
  	select CRYPTO_LIB_AES_ECB
-+	select CRYPTO_LIB_AES_GCM
- 	select CRYPTO_LIB_AES_XTS
- 	select CRYPTO_LIB_BLAKE2B
- 	select CRYPTO_LIB_CHACHA20POLY1305
+ 	select CRYPTO_LIB_AES_GCM
 -- 
 2.54.0
 
