@@ -1,58 +1,58 @@
-Return-Path: <linux-crypto+bounces-25670-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25672-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id NOlrBLiQTGoXmQEAu9opvQ
-	(envelope-from <linux-crypto+bounces-25670-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:38:00 +0200
+	id 3IMXGbuQTGoZmQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-25672-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:38:03 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E3987177D6
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA76B7177DA
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:38:02 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=njl4289U;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=RYZITeYP;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25670-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25670-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25672-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25672-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 668ED3035167
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 05:37:42 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 66BAA3036090
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 05:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF5339E6F1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC6C3A168B;
 	Tue,  7 Jul 2026 05:37:23 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8C7B389E07;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D7938AC8C;
 	Tue,  7 Jul 2026 05:37:20 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783402642; cv=none; b=qqagQyBhaTsOuOy+ajsbPjq+iq04MPJerD6s4jJf2zDZYB2/ntqeEr1anhlgYJrux190OqSM0rMpcJupbsHvJNTKNfM0PAlU2Egkp1tT1vL3EKl9jrrZsQIxCrZhtiePl51q+p7lXazdz7CmEan38WterkqbwOIZfuxvHMqgIgg=
+	t=1783402643; cv=none; b=WHyUL1COSPCrmoxcOfHvkLPTMhqYONiyNjaaCEMvuGXqSzQvUal6dhXAfp4tUw1W0aBeJNWNn8ZpMmvyd7G4qhkQjLcaK+G7hDctGxN2E2V7y1THCFecIC7WuVT/jtWM4vU2TxU18r23DYY+6Vx70blwDLQahRGQ0qKktKNE50U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783402642; c=relaxed/simple;
-	bh=JUvxLnL9vpa1qoGMo/a2pWEPEBy/aCKnlVR2i8ABYMc=;
+	s=arc-20240116; t=1783402643; c=relaxed/simple;
+	bh=yrbKVhe3VXAay4TDhNOuz0sbhfW7X5+ZrtZWtRQjORs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NlKbj31CTc3lgUj/91IRzK1jlG1kXlhh3OUTSO7yTlv8turqpEyoX3deIOalEOVQhJbW6n1tXUAXGUiAqhHb8eCY6gUGkB6zU966rDX2DoWjK1fpUieMffc7Y+6xW0JmnLdqOa4jmfb114MxBiezGjTqWfQ6QZ6P//0GoZFgCTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=njl4289U; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 731A01F01559;
+	 MIME-Version; b=czLiHOo2RHIoT2KefctiTtdtnARhfBELFlJ32qBe9a/owr0SMmaLFPZki2IbZHuGJw1PT2CNcU2z4Pio6nhQIsN163ZNutLoaNTmK9inweiXSwUilbygs1sZEkuiM+9Kd0GqZ1+Jrc7NfY50yyCU9jSV3QAuGXUeuRA+1Sz4cYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RYZITeYP; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B03CE1F00ACF;
 	Tue,  7 Jul 2026 05:37:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1783402640;
-	bh=LbNafXAY5xfOmZmZ537LeD5hPSYzOYozluS3k1H6r8w=;
+	bh=VA2RzTHA5LTqo/2Lcs1YbHaNRs0VEpMdFLPSxQizc6w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=njl4289UX0+Lx2Uf/1RtupR10DRfjK2S2wrJxgORsI9av/p1/C58tGOV7LeRdvLbm
-	 AupC0dE+lcNmghkBnK1qQhyOe0JgYKSfiS3viY594cWQMW7PLcAuhZWv2ILgn8h+b1
-	 0HwUatkzjKoKXF4ByHFcF+vrDu+qB13NAr4s4T+xk0FyMZr4KYcspewqJ3mncelfFB
-	 8b+X5j+em9T565XVuZ1b7oDOcbyGVa/WTegwHlW59RzGjFMFWMJ8YJznuwHWtJsGXK
-	 BNfWSUF5Le9N0g2I/HnPEmf/SIXQW5AYrOQpp1VRWbN0Z/Ed7qrYq78TrlMqLBO96E
-	 Fe4Mwq1ZYc5iw==
+	b=RYZITeYP3gzlr8dCO4D6YJxsstbqvvqgY4PxrSvEpAbp/caOAczaDVcGQ54gwgSCo
+	 cBGocPlL3FsFNV721o2WWFXtKdf1WcVHN9DV/oKT+Nn2Nk7Etuf+n8/0QTG+3SA0yH
+	 mT5/SA4bDMYfbJZ7+sa8e0Z0VOCdKycU8SNLlgbGZAR1RssiXxI/eC8yYR+F2UQ0h+
+	 g9LQeohGCibq/gwPzt1OKfDfIIPtNlFujzUtUjp21dPBGnJqkEhIcCB5+Et/llyjkj
+	 Nce80wqzbHQoGVb+A49mc7qKUYc90sN96aYY9YNvnmSjHAtlhG7bM9PtjYY/7N8qVs
+	 5yuIKsg/HTrJQ==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 16/33] crypto: aes - Remove AES-CBC-MAC support
-Date: Mon,  6 Jul 2026 22:34:46 -0700
-Message-ID: <20260707053503.209874-17-ebiggers@kernel.org>
+Subject: [PATCH 17/33] lib/crypto: aes: Remove aes_cbcmac_* functions
+Date: Mon,  6 Jul 2026 22:34:47 -0700
+Message-ID: <20260707053503.209874-18-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260707053503.209874-1-ebiggers@kernel.org>
 References: <20260707053503.209874-1-ebiggers@kernel.org>
@@ -76,7 +76,7 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_RECIPIENTS(0.00)[m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:ebiggers@kernel.org,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-25670-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25672-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
@@ -98,174 +98,201 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6E3987177D6
+X-Rspamd-Queue-Id: EA76B7177DA
 
-"cbcmac(aes)" is used only by the "ccm" template when instantiated as
-"ccm(aes)".  Since native "ccm(aes)" support has been added to
-crypto/aes.c, the "cbcmac(aes)" crypto_shash is no longer needed.
+The aes_cbcmac_* functions are no longer used, except by their KUnit
+test, since their functionality was folded directly into the AES-CCM
+library code.  Remove them.
 
-Note that "cmac(aes)" and "xcbc(aes)" remain supported.
+Note that the aes_cmac_* and aes_xcbcmac_* functions remain unchanged.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- crypto/Kconfig                       |  4 +-
- crypto/aes.c                         | 62 ----------------------------
- crypto/testmgr.c                     |  6 +--
- drivers/crypto/starfive/jh7110-aes.c |  2 +-
- 4 files changed, 6 insertions(+), 68 deletions(-)
+ include/crypto/aes-cbc-macs.h         | 22 +--------
+ lib/crypto/aes.c                      | 43 -----------------
+ lib/crypto/tests/aes_cbc_macs_kunit.c | 68 +--------------------------
+ 3 files changed, 2 insertions(+), 131 deletions(-)
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index e6b894dc784a..83adbd54d725 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -359,14 +359,14 @@ config CRYPTO_AES
- 	select CRYPTO_ALGAPI
- 	select CRYPTO_LIB_AES
- 	select CRYPTO_LIB_AES_CBC if CRYPTO_CBC || CRYPTO_CTS
--	select CRYPTO_LIB_AES_CBC_MACS if CRYPTO_CMAC || CRYPTO_XCBC || CRYPTO_CCM
-+	select CRYPTO_LIB_AES_CBC_MACS if CRYPTO_CMAC || CRYPTO_XCBC
- 	select CRYPTO_LIB_AES_CCM if CRYPTO_CCM
- 	select CRYPTO_LIB_AES_CTR if CRYPTO_CTR || CRYPTO_XCTR
- 	select CRYPTO_LIB_AES_ECB if CRYPTO_ECB
- 	select CRYPTO_LIB_AES_GCM if CRYPTO_GCM
- 	select CRYPTO_LIB_AES_XTS if CRYPTO_XTS
- 	select CRYPTO_AEAD if CRYPTO_GCM || CRYPTO_CCM
--	select CRYPTO_HASH if CRYPTO_CMAC || CRYPTO_XCBC || CRYPTO_CCM
-+	select CRYPTO_HASH if CRYPTO_CMAC || CRYPTO_XCBC
- 	# CRYPTO_SKCIPHER should be selected only if a mode that needs it is
- 	# enabled, but that doesn't work due to a recursive dependency caused by
- 	# CRYPTO_SKCIPHER selecting CRYPTO_ECB.  So just always select it.
-diff --git a/crypto/aes.c b/crypto/aes.c
-index ac5190292b3c..5f9c8eab67b4 100644
---- a/crypto/aes.c
-+++ b/crypto/aes.c
-@@ -95,47 +95,6 @@ static int __maybe_unused crypto_aes_cmac_digest(struct shash_desc *desc,
- 	return 0;
+diff --git a/include/crypto/aes-cbc-macs.h b/include/crypto/aes-cbc-macs.h
+index e61df108b926..95bbb8603420 100644
+--- a/include/crypto/aes-cbc-macs.h
++++ b/include/crypto/aes-cbc-macs.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ /*
+- * Support for AES-CMAC, AES-XCBC-MAC, and AES-CBC-MAC
++ * Support for AES-CMAC and AES-XCBC-MAC
+  *
+  * Copyright 2026 Google LLC
+  */
+@@ -131,24 +131,4 @@ static inline void aes_cmac(const struct aes_cmac_key *key, const u8 *data,
+ 	aes_cmac_final(&ctx, out);
  }
  
--#define AES_CBCMAC_KEY(tfm) ((struct aes_enckey *)crypto_shash_ctx(tfm))
--#define AES_CBCMAC_CTX(desc) ((struct aes_cbcmac_ctx *)shash_desc_ctx(desc))
--
--static int __maybe_unused crypto_aes_cbcmac_setkey(struct crypto_shash *tfm,
--						   const u8 *in_key,
--						   unsigned int key_len)
+-/*
+- * AES-CBC-MAC support.  This is provided only for use by the implementation of
+- * AES-CCM.  It should have no other users.  Warning: unlike AES-CMAC and
+- * AES-XCBC-MAC, AES-CBC-MAC isn't a secure MAC for variable-length messages.
+- */
+-struct aes_cbcmac_ctx {
+-	const struct aes_enckey *key;
+-	size_t partial_len;
+-	u8 h[AES_BLOCK_SIZE];
+-};
+-static inline void aes_cbcmac_init(struct aes_cbcmac_ctx *ctx,
+-				   const struct aes_enckey *key)
 -{
--	return aes_prepareenckey(AES_CBCMAC_KEY(tfm), in_key, key_len);
+-	*ctx = (struct aes_cbcmac_ctx){ .key = key };
+-}
+-void aes_cbcmac_update(struct aes_cbcmac_ctx *ctx, const u8 *data,
+-		       size_t data_len);
+-void aes_cbcmac_final(struct aes_cbcmac_ctx *ctx,
+-		      u8 out[at_least AES_BLOCK_SIZE]);
+-
+ #endif /* _CRYPTO_AES_CBC_MACS_H */
+diff --git a/lib/crypto/aes.c b/lib/crypto/aes.c
+index 1a1b32e41ac1..aeefd55eacaa 100644
+--- a/lib/crypto/aes.c
++++ b/lib/crypto/aes.c
+@@ -674,49 +674,6 @@ void aes_cmac_final(struct aes_cmac_ctx *ctx, u8 out[AES_BLOCK_SIZE])
+ }
+ EXPORT_SYMBOL_GPL(aes_cmac_final);
+ 
+-void aes_cbcmac_update(struct aes_cbcmac_ctx *ctx, const u8 *data,
+-		       size_t data_len)
+-{
+-	bool enc_before = false;
+-	size_t nblocks;
+-
+-	if (ctx->partial_len) {
+-		size_t l = min(data_len, AES_BLOCK_SIZE - ctx->partial_len);
+-
+-		crypto_xor(&ctx->h[ctx->partial_len], data, l);
+-		data += l;
+-		data_len -= l;
+-		ctx->partial_len += l;
+-		if (ctx->partial_len < AES_BLOCK_SIZE)
+-			return;
+-		enc_before = true;
+-	}
+-
+-	nblocks = data_len / AES_BLOCK_SIZE;
+-	data_len %= AES_BLOCK_SIZE;
+-	if (nblocks == 0) {
+-		if (enc_before)
+-			aes_encrypt(ctx->key, ctx->h, ctx->h);
+-	} else {
+-		aes_cbcmac_blocks(ctx->h, ctx->key, data, nblocks, enc_before,
+-				  /* enc_after= */ true);
+-		data += nblocks * AES_BLOCK_SIZE;
+-	}
+-	crypto_xor(ctx->h, data, data_len);
+-	ctx->partial_len = data_len;
+-}
+-EXPORT_SYMBOL_NS_GPL(aes_cbcmac_update, "CRYPTO_INTERNAL");
+-
+-void aes_cbcmac_final(struct aes_cbcmac_ctx *ctx, u8 out[AES_BLOCK_SIZE])
+-{
+-	if (ctx->partial_len)
+-		aes_encrypt(ctx->key, out, ctx->h);
+-	else
+-		memcpy(out, ctx->h, AES_BLOCK_SIZE);
+-	memzero_explicit(ctx, sizeof(*ctx));
+-}
+-EXPORT_SYMBOL_NS_GPL(aes_cbcmac_final, "CRYPTO_INTERNAL");
+-
+ /*
+  * FIPS cryptographic algorithm self-test for AES-CMAC.  As per the FIPS 140-3
+  * Implementation Guidance, a cryptographic algorithm self-test for at least one
+diff --git a/lib/crypto/tests/aes_cbc_macs_kunit.c b/lib/crypto/tests/aes_cbc_macs_kunit.c
+index ae3745212f03..97a4594895c2 100644
+--- a/lib/crypto/tests/aes_cbc_macs_kunit.c
++++ b/lib/crypto/tests/aes_cbc_macs_kunit.c
+@@ -141,75 +141,10 @@ static void test_aes_xcbcmac_rfc3566(struct kunit *test)
+ 	KUNIT_ASSERT_MEMEQ(test, actual_mac, expected_mac, AES_BLOCK_SIZE);
+ }
+ 
+-static void test_aes_cbcmac_rfc3610(struct kunit *test)
+-{
+-	/*
+-	 * The following AES-CBC-MAC test vector is extracted from RFC 3610
+-	 * Packet Vector #11.  It required some rearrangement to get the actual
+-	 * input to AES-CBC-MAC from the values given.
+-	 */
+-	static const u8 raw_key[AES_KEYSIZE_128] = {
+-		0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7,
+-		0xc8, 0xc9, 0xca, 0xcb, 0xcc, 0xcd, 0xce, 0xcf,
+-	};
+-	const size_t unpadded_data_len = 52;
+-	static const u8 data[64] = {
+-		/* clang-format off */
+-		/* CCM header */
+-		0x61, 0x00, 0x00, 0x00, 0x0d, 0x0c, 0x0b, 0x0a,
+-		0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0x00, 0x14,
+-		/* CCM additional authentication blocks */
+-		0x00, 0x0c, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05,
+-		0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x00, 0x00,
+-		/* CCM message blocks */
+-		0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13,
+-		0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b,
+-		0x1c, 0x1d, 0x1e, 0x1f, 0x00, 0x00, 0x00, 0x00,
+-		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+-		/* clang-format on */
+-	};
+-	static const u8 expected_mac[AES_BLOCK_SIZE] = {
+-		0x6b, 0x5e, 0x24, 0x34, 0x12, 0xcc, 0xc2, 0xad,
+-		0x6f, 0x1b, 0x11, 0xc3, 0xa1, 0xa9, 0xd8, 0xbc,
+-	};
+-	struct aes_enckey key;
+-	struct aes_cbcmac_ctx ctx;
+-	u8 actual_mac[AES_BLOCK_SIZE];
+-	int err;
+-
+-	err = aes_prepareenckey(&key, raw_key, sizeof(raw_key));
+-	KUNIT_ASSERT_EQ(test, err, 0);
+-
+-	/*
+-	 * Trailing zeroes should not affect the CBC-MAC value, up to the next
+-	 * AES block boundary.
+-	 */
+-	for (size_t data_len = unpadded_data_len; data_len <= sizeof(data);
+-	     data_len++) {
+-		aes_cbcmac_init(&ctx, &key);
+-		aes_cbcmac_update(&ctx, data, data_len);
+-		aes_cbcmac_final(&ctx, actual_mac);
+-		KUNIT_ASSERT_MEMEQ(test, actual_mac, expected_mac,
+-				   AES_BLOCK_SIZE);
+-
+-		/* Incremental computations should produce the same result. */
+-		for (size_t part1_len = 0; part1_len <= data_len; part1_len++) {
+-			aes_cbcmac_init(&ctx, &key);
+-			aes_cbcmac_update(&ctx, data, part1_len);
+-			aes_cbcmac_update(&ctx, &data[part1_len],
+-					  data_len - part1_len);
+-			aes_cbcmac_final(&ctx, actual_mac);
+-			KUNIT_ASSERT_MEMEQ(test, actual_mac, expected_mac,
+-					   AES_BLOCK_SIZE);
+-		}
+-	}
 -}
 -
--static int __maybe_unused crypto_aes_cbcmac_init(struct shash_desc *desc)
--{
--	aes_cbcmac_init(AES_CBCMAC_CTX(desc), AES_CBCMAC_KEY(desc->tfm));
--	return 0;
--}
--
--static int __maybe_unused crypto_aes_cbcmac_update(struct shash_desc *desc,
--						   const u8 *data,
--						   unsigned int len)
--{
--	aes_cbcmac_update(AES_CBCMAC_CTX(desc), data, len);
--	return 0;
--}
--
--static int __maybe_unused crypto_aes_cbcmac_final(struct shash_desc *desc,
--						  u8 *out)
--{
--	aes_cbcmac_final(AES_CBCMAC_CTX(desc), out);
--	return 0;
--}
--
--static int __maybe_unused crypto_aes_cbcmac_digest(struct shash_desc *desc,
--						   const u8 *data,
--						   unsigned int len, u8 *out)
--{
--	aes_cbcmac_init(AES_CBCMAC_CTX(desc), AES_CBCMAC_KEY(desc->tfm));
--	aes_cbcmac_update(AES_CBCMAC_CTX(desc), data, len);
--	aes_cbcmac_final(AES_CBCMAC_CTX(desc), out);
--	return 0;
--}
--
- static struct crypto_alg alg = {
- 	.cra_name = "aes",
- 	.cra_driver_name = "aes-lib",
-@@ -190,23 +149,6 @@ static struct shash_alg mac_algs[] = {
- 		.descsize = sizeof(struct aes_cmac_ctx),
- 	},
- #endif
--#if IS_ENABLED(CONFIG_CRYPTO_CCM)
--	{
--		.base.cra_name = "cbcmac(aes)",
--		.base.cra_driver_name = "cbcmac-aes-lib",
--		.base.cra_priority = 300,
--		.base.cra_blocksize = AES_BLOCK_SIZE,
--		.base.cra_ctxsize = sizeof(struct aes_enckey),
--		.base.cra_module = THIS_MODULE,
--		.digestsize = AES_BLOCK_SIZE,
--		.setkey = crypto_aes_cbcmac_setkey,
--		.init = crypto_aes_cbcmac_init,
--		.update = crypto_aes_cbcmac_update,
--		.final = crypto_aes_cbcmac_final,
--		.digest = crypto_aes_cbcmac_digest,
--		.descsize = sizeof(struct aes_cbcmac_ctx),
--	},
--#endif
+ static struct kunit_case aes_cbc_macs_test_cases[] = {
+ 	HASH_KUNIT_CASES,
+ 	KUNIT_CASE(test_aes_cmac_rfc4493),
+ 	KUNIT_CASE(test_aes_xcbcmac_rfc3566),
+-	KUNIT_CASE(test_aes_cbcmac_rfc3610),
+ 	KUNIT_CASE(benchmark_hash),
+ 	{},
  };
+@@ -222,7 +157,6 @@ static struct kunit_suite aes_cbc_macs_test_suite = {
+ };
+ kunit_test_suite(aes_cbc_macs_test_suite);
  
- static __maybe_unused int
-@@ -1096,10 +1038,6 @@ MODULE_ALIAS_CRYPTO("cmac-aes-lib");
- MODULE_ALIAS_CRYPTO("xcbc(aes)");
- MODULE_ALIAS_CRYPTO("xcbc-aes-lib");
- #endif
--#if IS_ENABLED(CONFIG_CRYPTO_CCM)
--MODULE_ALIAS_CRYPTO("cbcmac(aes)");
--MODULE_ALIAS_CRYPTO("cbcmac-aes-lib");
--#endif
- #if IS_ENABLED(CONFIG_CRYPTO_ECB)
- MODULE_ALIAS_CRYPTO("ecb(aes)");
- MODULE_ALIAS_CRYPTO("ecb-aes-lib");
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 4958211fbfa9..b25c15173c76 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -4421,7 +4421,7 @@ static const struct alg_test_desc alg_test_descs[] = {
- 	}, {
- #endif
- 		.alg = "cbcmac(aes)",
--		.generic_driver = "cbcmac-aes-lib",
-+		.generic_driver = "cbcmac(aes-lib)",
- 		.test = alg_test_hash,
- 		.suite = {
- 			.hash = __VECS(aes_cbcmac_tv_template)
-@@ -4434,7 +4434,7 @@ static const struct alg_test_desc alg_test_descs[] = {
- 		}
- 	}, {
- 		.alg = "ccm(aes)",
--		.generic_driver = "ccm_base(ctr(aes-lib),cbcmac-aes-lib)",
-+		.generic_driver = "ccm_base(ctr(aes-lib),cbcmac(aes-lib))",
- 		.test = alg_test_aead,
- 		.fips_allowed = 1,
- 		.suite = {
-@@ -5239,7 +5239,7 @@ static const struct alg_test_desc alg_test_descs[] = {
- 		}
- 	}, {
- 		.alg = "rfc4309(ccm(aes))",
--		.generic_driver = "rfc4309(ccm_base(ctr(aes-lib),cbcmac-aes-lib))",
-+		.generic_driver = "rfc4309(ccm_base(ctr(aes-lib),cbcmac(aes-lib)))",
- 		.test = alg_test_aead,
- 		.fips_allowed = 1,
- 		.suite = {
-diff --git a/drivers/crypto/starfive/jh7110-aes.c b/drivers/crypto/starfive/jh7110-aes.c
-index a0713aa21250..c591a850f093 100644
---- a/drivers/crypto/starfive/jh7110-aes.c
-+++ b/drivers/crypto/starfive/jh7110-aes.c
-@@ -1003,7 +1003,7 @@ static int starfive_aes_ctr_init_tfm(struct crypto_skcipher *tfm)
- 
- static int starfive_aes_ccm_init_tfm(struct crypto_aead *tfm)
- {
--	return starfive_aes_aead_init_tfm(tfm, "ccm_base(ctr(aes-lib),cbcmac-aes-lib)");
-+	return starfive_aes_aead_init_tfm(tfm, "ccm_base(ctr(aes-lib),cbcmac(aes-lib))");
- }
- 
- static int starfive_aes_gcm_init_tfm(struct crypto_aead *tfm)
+-MODULE_DESCRIPTION(
+-	"KUnit tests and benchmark for AES-CMAC, AES-XCBC-MAC, and AES-CBC-MAC");
++MODULE_DESCRIPTION("KUnit tests and benchmark for AES-CMAC and AES-XCBC-MAC");
+ MODULE_IMPORT_NS("CRYPTO_INTERNAL");
+ MODULE_LICENSE("GPL");
 -- 
 2.54.0
 
