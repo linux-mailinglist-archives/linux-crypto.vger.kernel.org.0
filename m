@@ -1,58 +1,58 @@
-Return-Path: <linux-crypto+bounces-25678-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25681-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id saWuIaiRTGp7mQEAu9opvQ
-	(envelope-from <linux-crypto+bounces-25678-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:42:00 +0200
+	id Aiu0ONeQTGormQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-25681-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:38:31 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D499E717898
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:41:59 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F1F57177FF
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:38:31 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=ieZTTq+H;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=Q4+EMJYg;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25678-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25678-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25681-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25681-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B8B1830984A2
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 05:37:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D1895303BB8B
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 05:37:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DBDA3A75BB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEE1E3A8746;
 	Tue,  7 Jul 2026 05:37:26 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBB6B39D3FD;
-	Tue,  7 Jul 2026 05:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FCED39EF1F;
+	Tue,  7 Jul 2026 05:37:23 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783402645; cv=none; b=d9hBFnfHIogd3NZUVKOPp2ySToLnmMIHtNB+0LtrY63p20O0HwLBKnxaIuLbHJK0cgc5nA51Muwkc3FZkFiAy17OWL3wYZidvakBE3qQM1/OVIaD5GfymSpxVqQRbKRXSIj2eSs0hLkN5l/4hlfDNEGEeF4BMxREFIGE/NzWLA8=
+	t=1783402646; cv=none; b=I99iKVQX00e9kcmkTJ0nqxF00catA09h0XBl45Miuq//reQtTjknIkGAkr8WaaGmiD59IdRyQYJJfBvWGmsCmlrc9OXA9BN4nVsDLnHfr3de3UMWFwApvGDOqn0ru2/8YweGODVgLJ7yXl5W/vSfX0b4IuYgZnZzDcHaI23bEK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783402645; c=relaxed/simple;
-	bh=l3j4pSy3S/BpwJM75f6uUvEbQ/N02745UutOqGu9ryI=;
+	s=arc-20240116; t=1783402646; c=relaxed/simple;
+	bh=UvcBn62SD8vakqjWyUCHmVRephIHZGNOwd3mdLdw6Bw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FFr4gyHZK37LRDQE+eF58qcNZg6dDgaZzWrMLrRqvQ7af38eaHeUO9WO9aLX+6RrfmxFZ1Ps12XJng+nPaAXla1zsm80milc/txmoPPqbmUGTHE181kA7xc+MI1+8cU/WSLbEwD+hyWIRgbXNJOOFk6V20ck30NUyv5alOWsOPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ieZTTq+H; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B10A71F00A3F;
+	 MIME-Version; b=r+58UAfp8Dt5J+llhlqWaF36McUMoMG4Ve5GA+RhzWKzt3++dHDw0R3Xm9JS6ZHBR9UUvzV1LZH9JFUbkWiQrsLwOySXzaeRWYM8/nqdc36pjKmSEf84Zyvc/+VOca9lwtgonKfl0OkOPHA9dc21hWKAFnuCLzpzAojgHRLBm30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q4+EMJYg; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDDEE1F00ADE;
 	Tue,  7 Jul 2026 05:37:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783402642;
-	bh=rEYnScAUX3cf0uH1kOuenh+JKSqVYZOK5DL91ioYZ2Y=;
+	s=k20260515; t=1783402643;
+	bh=79FTno7cmzts1TIfmzvidsMNWTqpX8oOYqsqgisTO1Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ieZTTq+H2WIFoaa0wrk+ZuhFidfULOjGTLj2PiNYMgmMHh2u3RbnvZQ24FVMwkl74
-	 cfZY8Cb/tu2Vk+QK97xNA2SV2Cg2GSJ8THeJ23VDQljB/grpH9pAL/jXQo8FNLkofz
-	 SU5/F4hBhbcHIjdCv/f3Tn0OQrgpd6MaoivWXMvK3YuJKW22qZObOwKO3gWkpL2e8N
-	 sCZHAJ3ACueylixqrUCzcv9xj9XRcrSXdgE6vNDedauDWdTl9jgKVUKEqdFiHp53/h
-	 BVHBNiRe8qKxtZJWvN0ZNVACyYQbLuuzT361jasXZvRBGx/w3jr09tvJYM25bGvUpH
-	 Ifm7XItqZclnw==
+	b=Q4+EMJYgHHA8LLI7a9suDJc2BMIEutnzLomPwAkPUOpnb72GMgI0b6pTQ4ropgon4
+	 kIQ4POflzH2dxKHnzeBD+JkSCTzGMwbgci+iuyAzXRTxZd+J5kEs8mxbQ/uXgUo+cg
+	 438tHUY0YFz9PfXWVAvMbkw3JTakusTtLyKjL27vTdavGZPMwR4hnNr3KCDhI0xzM2
+	 1jl0pRgVHyUxgzuoI9erOMUerM+fgjgARcas38NQM+rIxRkIC+Ls2bAwObWH42LRyC
+	 jNbjwdAsX4Vv2vnTH8vBiw3OIjzcTmYMsTmQzvuokx172w8KpcjsslwUF+APkA8pVP
+	 CQb3syu4tEFIg==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 25/33] wifi: mac80211: Use crypto libraries for GCMP and CCMP suites
-Date: Mon,  6 Jul 2026 22:34:55 -0700
-Message-ID: <20260707053503.209874-26-ebiggers@kernel.org>
+Subject: [PATCH 26/33] macsec: Use AES-GCM library instead of crypto_aead
+Date: Mon,  6 Jul 2026 22:34:56 -0700
+Message-ID: <20260707053503.209874-27-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260707053503.209874-1-ebiggers@kernel.org>
 References: <20260707053503.209874-1-ebiggers@kernel.org>
@@ -70,13 +70,13 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_RECIPIENTS(0.00)[m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:ebiggers@kernel.org,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-25678-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25681-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
@@ -94,461 +94,580 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linaro.org:email,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D499E717898
+X-Rspamd-Queue-Id: 8F1F57177FF
 
-Now that there are library APIs for AES-GCM and AES-CCM, for the GCMP
-and CCMP cipher suites use them instead of "gcm(aes)" and "ccm(aes)"
-crypto_aeads.  This significantly simplifies the code and eliminates
-per-skb heap allocations.
+Now that there's a library API for AES-GCM, use it instead of a
+"gcm(aes)" crypto_aead.  This significantly simplifies the code.
+
+Notably, per-skb dynamic memory allocations and conversions to
+scatterlists are eliminated.  We now just iterate through the skb's data
+and process it directly.
+
+Asynchronous en/decryption operations are no longer supported, as that
+execution model has been found to not be beneficial.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- net/mac80211/Kconfig    |   5 +-
- net/mac80211/Makefile   |   1 -
- net/mac80211/aead_api.c | 113 ----------------------------------------
- net/mac80211/aead_api.h |  23 --------
- net/mac80211/aes_ccm.h  |  39 +++++---------
- net/mac80211/aes_gcm.h  |  38 +++++---------
- net/mac80211/key.c      |  31 ++++-------
- net/mac80211/key.h      |   5 +-
- net/mac80211/wpa.c      |  11 ++--
- 9 files changed, 45 insertions(+), 221 deletions(-)
- delete mode 100644 net/mac80211/aead_api.c
- delete mode 100644 net/mac80211/aead_api.h
+ drivers/net/Kconfig  |   4 +-
+ drivers/net/macsec.c | 327 ++++++++++++++-----------------------------
+ include/net/macsec.h |   5 +-
+ 3 files changed, 106 insertions(+), 230 deletions(-)
 
-diff --git a/net/mac80211/Kconfig b/net/mac80211/Kconfig
-index 32808c5de0fb..5658f089d915 100644
---- a/net/mac80211/Kconfig
-+++ b/net/mac80211/Kconfig
-@@ -2,14 +2,11 @@
- config MAC80211
- 	tristate "Generic IEEE 802.11 Networking Stack (mac80211)"
- 	depends on CFG80211
+diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+index ff79c466712d..e7322d5a1164 100644
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -317,9 +317,7 @@ config AMT
+ 
+ config MACSEC
+ 	tristate "IEEE 802.1AE MAC-level encryption (MACsec)"
 -	select CRYPTO
- 	select CRYPTO_LIB_AES_CBC_MACS
-+	select CRYPTO_LIB_AES_CCM
- 	select CRYPTO_LIB_AES_CTR
- 	select CRYPTO_LIB_AES_GCM
- 	select CRYPTO_LIB_ARC4
 -	select CRYPTO_AES
--	select CRYPTO_CCM
 -	select CRYPTO_GCM
- 	select CRC32
++	select CRYPTO_LIB_AES_GCM
+ 	select GRO_CELLS
  	help
- 	  This option enables the hardware independent IEEE 802.11
-diff --git a/net/mac80211/Makefile b/net/mac80211/Makefile
-index 36f1e3e2222b..2ae7a57565cd 100644
---- a/net/mac80211/Makefile
-+++ b/net/mac80211/Makefile
-@@ -7,7 +7,6 @@ mac80211-y := \
- 	driver-ops.o \
- 	sta_info.o \
- 	wep.o \
--	aead_api.o \
- 	wpa.o \
- 	scan.o offchannel.o \
- 	ht.o agg-tx.o agg-rx.o \
-diff --git a/net/mac80211/aead_api.c b/net/mac80211/aead_api.c
-deleted file mode 100644
-index b00d6f5b33f4..000000000000
---- a/net/mac80211/aead_api.c
-+++ /dev/null
-@@ -1,113 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * Copyright 2003-2004, Instant802 Networks, Inc.
-- * Copyright 2005-2006, Devicescape Software, Inc.
-- * Copyright 2014-2015, Qualcomm Atheros, Inc.
-- *
-- * Rewrite: Copyright (C) 2013 Linaro Ltd <ard.biesheuvel@linaro.org>
-- */
--
--#include <linux/kernel.h>
--#include <linux/types.h>
--#include <linux/err.h>
--#include <linux/scatterlist.h>
+ 	   MACsec is an encryption standard for Ethernet.
+diff --git a/drivers/net/macsec.c b/drivers/net/macsec.c
+index fb009120a924..ce32dae77a60 100644
+--- a/drivers/net/macsec.c
++++ b/drivers/net/macsec.c
+@@ -9,7 +9,7 @@
+ #include <linux/skbuff.h>
+ #include <linux/socket.h>
+ #include <linux/module.h>
 -#include <crypto/aead.h>
++#include <crypto/aes-gcm.h>
+ #include <linux/etherdevice.h>
+ #include <linux/netdevice.h>
+ #include <linux/rtnetlink.h>
+@@ -134,7 +134,6 @@ static struct macsec_rxh_data *macsec_data_rtnl(const struct net_device *dev)
+ }
+ 
+ struct macsec_cb {
+-	struct aead_request *req;
+ 	union {
+ 		struct macsec_tx_sa *tx_sa;
+ 		struct macsec_rx_sa *rx_sa;
+@@ -181,9 +180,8 @@ static void free_rxsa_work(struct work_struct *work)
+ 	struct macsec_rx_sa *sa =
+ 		container_of(to_rcu_work(work), struct macsec_rx_sa, destroy_work);
+ 
+-	crypto_free_aead(sa->key.tfm);
+ 	free_percpu(sa->stats);
+-	kfree(sa);
++	kfree_sensitive(sa);
+ }
+ 
+ static void macsec_rxsa_put(struct macsec_rx_sa *sa)
+@@ -210,9 +208,8 @@ static void free_txsa_work(struct work_struct *work)
+ 	struct macsec_tx_sa *sa =
+ 		container_of(to_rcu_work(work), struct macsec_tx_sa, destroy_work);
+ 
+-	crypto_free_aead(sa->key.tfm);
+ 	free_percpu(sa->stats);
+-	kfree(sa);
++	kfree_sensitive(sa);
+ }
+ 
+ static void macsec_txsa_put(struct macsec_tx_sa *sa)
+@@ -541,70 +538,72 @@ static void count_tx(struct net_device *dev, int ret, int len)
+ 		dev_sw_netstats_tx_add(dev, 1, len);
+ }
+ 
+-static void macsec_encrypt_done(void *data, int err)
++static void macsec_crypt_chunk(struct aes_gcm_ctx *ctx, u8 *data, size_t avail,
++			       size_t *assoc_len, size_t *crypt_len,
++			       bool encrypt)
+ {
+-	struct sk_buff *skb = data;
+-	struct net_device *dev = skb->dev;
+-	struct macsec_dev *macsec = macsec_priv(dev);
+-	struct macsec_tx_sa *sa = macsec_skb_cb(skb)->tx_sa;
+-	int len, ret;
++	size_t n;
+ 
+-	aead_request_free(macsec_skb_cb(skb)->req);
 -
--#include "aead_api.h"
+-	rcu_read_lock_bh();
+-	macsec_count_tx(skb, &macsec->secy.tx_sc, macsec_skb_cb(skb)->tx_sa);
+-	/* packet is encrypted/protected so tx_bytes must be calculated */
+-	len = macsec_msdu_len(skb) + 2 * ETH_ALEN;
+-	macsec_encrypt_finish(skb, dev);
+-	ret = dev_queue_xmit(skb);
+-	count_tx(dev, ret, len);
+-	rcu_read_unlock_bh();
++	if (*assoc_len && avail) {
++		/* Associated data */
++		n = min(avail, *assoc_len);
++		aes_gcm_auth_update(ctx, data, n);
++		data += n;
++		avail -= n;
++		*assoc_len -= n;
++	}
+ 
+-	macsec_txsa_put(sa);
+-	dev_put(dev);
++	if (*crypt_len && avail) {
++		/* En/decrypted data */
++		n = min(avail, *crypt_len);
++		if (encrypt)
++			aes_gcm_encrypt_update(ctx, data, data, n);
++		else
++			aes_gcm_decrypt_update(ctx, data, data, n);
++		*crypt_len -= n;
++	}
+ }
+ 
+-static struct aead_request *macsec_alloc_req(struct crypto_aead *tfm,
+-					     unsigned char **iv,
+-					     struct scatterlist **sg,
+-					     int num_frags)
++/**
++ * macsec_crypt_skb() - Encrypt or decrypt an skb in-place using AES-GCM
++ * @ctx: An AES-GCM context
++ * @skb: The socket buffer to process
++ * @assoc_len: Length of associated data
++ * @crypt_len: Length of payload data to encrypt or decrypt
++ * @encrypt: True for encryption, false for decryption
++ *
++ * Updates the given AES-GCM context with @assoc_len bytes of associated data
++ * from the skb, then encrypts or decrypts @crypt_len bytes in-place.  Context
++ * initialization and finalization are handled by the caller.
++ *
++ * The data (both associated and en/decrypted) is taken from the linear head and
++ * frag_list.  It is assumed that the @skb was processed by skb_cow_data(),
++ * meaning it has no page fragments (nr_frags == 0) and is writable.
++ */
++static void macsec_crypt_skb(struct aes_gcm_ctx *ctx, struct sk_buff *skb,
++			     size_t assoc_len, size_t crypt_len, bool encrypt)
+ {
+-	size_t size, iv_offset, sg_offset;
+-	struct aead_request *req;
+-	void *tmp;
++	struct sk_buff *frag_iter;
+ 
+-	size = sizeof(struct aead_request) + crypto_aead_reqsize(tfm);
+-	iv_offset = size;
+-	size += GCM_AES_IV_LEN;
 -
--int aead_encrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad, size_t aad_len,
--		 u8 *data, size_t data_len, u8 *mic)
+-	size = ALIGN(size, __alignof__(struct scatterlist));
+-	sg_offset = size;
+-	size += sizeof(struct scatterlist) * num_frags;
+-
+-	tmp = kmalloc(size, GFP_ATOMIC);
+-	if (!tmp)
+-		return NULL;
+-
+-	*iv = (unsigned char *)(tmp + iv_offset);
+-	*sg = (struct scatterlist *)(tmp + sg_offset);
+-	req = tmp;
+-
+-	aead_request_set_tfm(req, tfm);
+-
+-	return req;
++	WARN_ON_ONCE(skb_shinfo(skb)->nr_frags);
++	macsec_crypt_chunk(ctx, skb->data, skb_headlen(skb), &assoc_len,
++			   &crypt_len, encrypt);
++	skb_walk_frags(skb, frag_iter)
++		macsec_crypt_chunk(ctx, frag_iter->data, frag_iter->len,
++				   &assoc_len, &crypt_len, encrypt);
+ }
+ 
+ static struct sk_buff *macsec_encrypt(struct sk_buff *skb,
+ 				      struct net_device *dev)
+ {
+ 	int ret;
+-	struct scatterlist *sg;
+ 	struct sk_buff *trailer;
+-	unsigned char *iv;
++	u8 iv[GCM_AES_IV_LEN];
+ 	struct ethhdr *eth;
+ 	struct macsec_eth_header *hh;
+-	size_t unprotected_len;
+-	struct aead_request *req;
++	size_t unprotected_len, assoc_len, crypt_len;
++	struct aes_gcm_ctx ctx;
++	u8 icv[MACSEC_DEFAULT_ICV_LEN];
+ 	struct macsec_secy *secy;
+ 	struct macsec_tx_sc *tx_sc;
+ 	struct macsec_tx_sa *tx_sa;
+@@ -681,56 +680,32 @@ static struct sk_buff *macsec_encrypt(struct sk_buff *skb,
+ 		return ERR_PTR(ret);
+ 	}
+ 
+-	req = macsec_alloc_req(tx_sa->key.tfm, &iv, &sg, ret);
+-	if (!req) {
+-		macsec_txsa_put(tx_sa);
+-		kfree_skb(skb);
+-		return ERR_PTR(-ENOMEM);
+-	}
+-
+ 	if (secy->xpn)
+ 		macsec_fill_iv_xpn(iv, tx_sa->ssci, pn.full64, tx_sa->key.salt);
+ 	else
+ 		macsec_fill_iv(iv, secy->sci, pn.lower);
+ 
+-	sg_init_table(sg, ret);
+-	ret = skb_to_sgvec(skb, sg, 0, skb->len);
+-	if (unlikely(ret < 0)) {
+-		aead_request_free(req);
+-		macsec_txsa_put(tx_sa);
+-		kfree_skb(skb);
+-		return ERR_PTR(ret);
+-	}
+-
+ 	if (tx_sc->encrypt) {
+-		int len = skb->len - macsec_hdr_len(sci_present) -
+-			  secy->icv_len;
+-		aead_request_set_crypt(req, sg, sg, len, iv);
+-		aead_request_set_ad(req, macsec_hdr_len(sci_present));
++		assoc_len = macsec_hdr_len(sci_present);
++		crypt_len = skb->len - assoc_len - secy->icv_len;
+ 	} else {
+-		aead_request_set_crypt(req, sg, sg, 0, iv);
+-		aead_request_set_ad(req, skb->len - secy->icv_len);
++		assoc_len = skb->len - secy->icv_len;
++		crypt_len = 0;
+ 	}
+ 
+-	macsec_skb_cb(skb)->req = req;
+-	macsec_skb_cb(skb)->tx_sa = tx_sa;
+-	macsec_skb_cb(skb)->has_sci = sci_present;
+-	aead_request_set_callback(req, 0, macsec_encrypt_done, skb);
++	aes_gcm_init(&ctx, iv, &tx_sa->key.gcm_key);
++	macsec_crypt_skb(&ctx, skb, assoc_len, crypt_len, true);
++	aes_gcm_encrypt_final(&ctx, icv);
+ 
+-	dev_hold(skb->dev);
+-	ret = crypto_aead_encrypt(req);
+-	if (ret == -EINPROGRESS) {
+-		return ERR_PTR(ret);
+-	} else if (ret != 0) {
+-		dev_put(skb->dev);
+-		kfree_skb(skb);
+-		aead_request_free(req);
++	ret = skb_store_bits(skb, skb->len - secy->icv_len, icv, secy->icv_len);
++	if (unlikely(ret < 0)) {
+ 		macsec_txsa_put(tx_sa);
+-		return ERR_PTR(-EINVAL);
++		kfree_skb(skb);
++		return ERR_PTR(ret);
+ 	}
+ 
+-	dev_put(skb->dev);
+-	aead_request_free(req);
++	macsec_skb_cb(skb)->tx_sa = tx_sa;
++	macsec_skb_cb(skb)->has_sci = sci_present;
+ 	macsec_txsa_put(tx_sa);
+ 
+ 	return skb;
+@@ -844,45 +819,6 @@ static void count_rx(struct net_device *dev, int len)
+ 	dev_sw_netstats_rx_add(dev, len);
+ }
+ 
+-static void macsec_decrypt_done(void *data, int err)
 -{
--	size_t mic_len = crypto_aead_authsize(tfm);
--	struct scatterlist sg[3];
--	struct aead_request *aead_req;
--	int reqsize = sizeof(*aead_req) + crypto_aead_reqsize(tfm);
--	u8 *__aad;
--	int ret;
+-	struct sk_buff *skb = data;
+-	struct net_device *dev = skb->dev;
+-	struct macsec_dev *macsec = macsec_priv(dev);
+-	struct macsec_rx_sa *rx_sa = macsec_skb_cb(skb)->rx_sa;
+-	struct macsec_rx_sc *rx_sc = rx_sa->sc;
+-	int len;
+-	u32 pn;
 -
--	aead_req = kzalloc(reqsize + aad_len, GFP_ATOMIC);
--	if (!aead_req)
--		return -ENOMEM;
+-	aead_request_free(macsec_skb_cb(skb)->req);
 -
--	__aad = (u8 *)aead_req + reqsize;
--	memcpy(__aad, aad, aad_len);
+-	if (!err)
+-		macsec_skb_cb(skb)->valid = true;
 -
--	sg_init_table(sg, 3);
--	sg_set_buf(&sg[0], __aad, aad_len);
--	sg_set_buf(&sg[1], data, data_len);
--	sg_set_buf(&sg[2], mic, mic_len);
+-	rcu_read_lock_bh();
+-	pn = ntohl(macsec_ethhdr(skb)->packet_number);
+-	if (!macsec_post_decrypt(skb, &macsec->secy, pn)) {
+-		rcu_read_unlock_bh();
+-		kfree_skb(skb);
+-		goto out;
+-	}
 -
--	aead_request_set_tfm(aead_req, tfm);
--	aead_request_set_crypt(aead_req, sg, sg, data_len, b_0);
--	aead_request_set_ad(aead_req, sg[0].length);
+-	macsec_finalize_skb(skb, macsec->secy.icv_len,
+-			    macsec_extra_len(macsec_skb_cb(skb)->has_sci));
+-	len = skb->len;
+-	macsec_reset_skb(skb, macsec->secy.netdev);
 -
--	ret = crypto_aead_encrypt(aead_req);
--	kfree_sensitive(aead_req);
+-	if (gro_cells_receive(&macsec->gro_cells, skb) == NET_RX_SUCCESS)
+-		count_rx(dev, len);
 -
--	return ret;
+-	rcu_read_unlock_bh();
+-
+-out:
+-	macsec_rxsa_put(rx_sa);
+-	macsec_rxsc_put(rx_sc);
+-	dev_put(dev);
 -}
 -
--int aead_decrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad, size_t aad_len,
--		 u8 *data, size_t data_len, u8 *mic)
--{
--	size_t mic_len = crypto_aead_authsize(tfm);
--	struct scatterlist sg[3];
--	struct aead_request *aead_req;
--	int reqsize = sizeof(*aead_req) + crypto_aead_reqsize(tfm);
--	u8 *__aad;
--	int err;
+ static struct sk_buff *macsec_decrypt(struct sk_buff *skb,
+ 				      struct net_device *dev,
+ 				      struct macsec_rx_sa *rx_sa,
+@@ -890,12 +826,13 @@ static struct sk_buff *macsec_decrypt(struct sk_buff *skb,
+ 				      struct macsec_secy *secy)
+ {
+ 	int ret;
+-	struct scatterlist *sg;
+ 	struct sk_buff *trailer;
+-	unsigned char *iv;
+-	struct aead_request *req;
++	u8 iv[GCM_AES_IV_LEN];
++	size_t assoc_len, crypt_len;
++	struct aes_gcm_ctx ctx;
+ 	struct macsec_eth_header *hdr;
+ 	u32 hdr_pn;
++	u8 icv[MACSEC_DEFAULT_ICV_LEN];
+ 	u16 icv_len = secy->icv_len;
+ 
+ 	macsec_skb_cb(skb)->valid = false;
+@@ -908,11 +845,6 @@ static struct sk_buff *macsec_decrypt(struct sk_buff *skb,
+ 		kfree_skb(skb);
+ 		return ERR_PTR(ret);
+ 	}
+-	req = macsec_alloc_req(rx_sa->key.tfm, &iv, &sg, ret);
+-	if (!req) {
+-		kfree_skb(skb);
+-		return ERR_PTR(-ENOMEM);
+-	}
+ 
+ 	hdr = (struct macsec_eth_header *)skb->data;
+ 	hdr_pn = ntohl(hdr->packet_number);
+@@ -931,55 +863,33 @@ static struct sk_buff *macsec_decrypt(struct sk_buff *skb,
+ 		macsec_fill_iv(iv, sci, hdr_pn);
+ 	}
+ 
+-	sg_init_table(sg, ret);
+-	ret = skb_to_sgvec(skb, sg, 0, skb->len);
+-	if (unlikely(ret < 0)) {
+-		aead_request_free(req);
+-		kfree_skb(skb);
+-		return ERR_PTR(ret);
+-	}
 -
--	if (data_len == 0)
--		return -EINVAL;
+ 	if (hdr->tci_an & MACSEC_TCI_E) {
+ 		/* confidentiality: ethernet + macsec header
+ 		 * authenticated, encrypted payload
+ 		 */
+-		int len = skb->len - macsec_hdr_len(macsec_skb_cb(skb)->has_sci);
 -
--	aead_req = kzalloc(reqsize + aad_len, GFP_ATOMIC);
--	if (!aead_req)
--		return -ENOMEM;
--
--	__aad = (u8 *)aead_req + reqsize;
--	memcpy(__aad, aad, aad_len);
--
--	sg_init_table(sg, 3);
--	sg_set_buf(&sg[0], __aad, aad_len);
--	sg_set_buf(&sg[1], data, data_len);
--	sg_set_buf(&sg[2], mic, mic_len);
--
--	aead_request_set_tfm(aead_req, tfm);
--	aead_request_set_crypt(aead_req, sg, sg, data_len + mic_len, b_0);
--	aead_request_set_ad(aead_req, sg[0].length);
--
--	err = crypto_aead_decrypt(aead_req);
--	kfree_sensitive(aead_req);
--
--	return err;
--}
--
--struct crypto_aead *
--aead_key_setup_encrypt(const char *alg, const u8 key[],
--		       size_t key_len, size_t mic_len)
+-		aead_request_set_crypt(req, sg, sg, len, iv);
+-		aead_request_set_ad(req, macsec_hdr_len(macsec_skb_cb(skb)->has_sci));
+-		skb = skb_unshare(skb, GFP_ATOMIC);
+-		if (!skb) {
+-			aead_request_free(req);
+-			return ERR_PTR(-ENOMEM);
+-		}
++		assoc_len = macsec_hdr_len(macsec_skb_cb(skb)->has_sci);
++		crypt_len = skb->len - assoc_len - icv_len;
+ 	} else {
+ 		/* integrity only: all headers + data authenticated */
+-		aead_request_set_crypt(req, sg, sg, icv_len, iv);
+-		aead_request_set_ad(req, skb->len - icv_len);
++		assoc_len = skb->len - icv_len;
++		crypt_len = 0;
+ 	}
+ 
+-	macsec_skb_cb(skb)->req = req;
+-	skb->dev = dev;
+-	aead_request_set_callback(req, 0, macsec_decrypt_done, skb);
++	aes_gcm_init(&ctx, iv, &rx_sa->key.gcm_key);
++	macsec_crypt_skb(&ctx, skb, assoc_len, crypt_len, false);
+ 
+-	dev_hold(dev);
+-	ret = crypto_aead_decrypt(req);
+-	if (ret == -EINPROGRESS) {
++	ret = skb_copy_bits(skb, skb->len - icv_len, icv, icv_len);
++	if (unlikely(ret < 0)) {
++		memzero_explicit(&ctx, sizeof(ctx));
++		kfree_skb(skb);
+ 		return ERR_PTR(ret);
+-	} else if (ret != 0) {
+-		/* decryption/authentication failed
+-		 * 10.6 if validateFrames is disabled, deliver anyway
+-		 */
+-		if (ret != -EBADMSG) {
+-			kfree_skb(skb);
+-			skb = ERR_PTR(ret);
+-		}
+-	} else {
+-		macsec_skb_cb(skb)->valid = true;
+ 	}
+-	dev_put(dev);
+ 
+-	aead_request_free(req);
++	if (aes_gcm_decrypt_final(&ctx, icv) == 0)
++		macsec_skb_cb(skb)->valid = true;
++	/* else, decryption/authentication failed
++	 * 10.6 if validateFrames is disabled, deliver anyway
++	 */
+ 
+ 	return skb;
+ }
+@@ -1276,11 +1186,8 @@ static rx_handler_result_t macsec_handle_frame(struct sk_buff **pskb)
+ 		skb = macsec_decrypt(skb, dev, rx_sa, sci, secy);
+ 
+ 	if (IS_ERR(skb)) {
+-		/* the decrypt callback needs the reference */
+-		if (PTR_ERR(skb) != -EINPROGRESS) {
+-			macsec_rxsa_put(rx_sa);
+-			macsec_rxsc_put(rx_sc);
+-		}
++		macsec_rxsa_put(rx_sa);
++		macsec_rxsc_put(rx_sc);
+ 		rcu_read_unlock();
+ 		*pskb = NULL;
+ 		return RX_HANDLER_CONSUMED;
+@@ -1370,41 +1277,19 @@ static rx_handler_result_t macsec_handle_frame(struct sk_buff **pskb)
+ 	return RX_HANDLER_PASS;
+ }
+ 
+-static struct crypto_aead *macsec_alloc_tfm(char *key, int key_len, int icv_len)
 -{
 -	struct crypto_aead *tfm;
--	int err;
+-	int ret;
 -
--	tfm = crypto_alloc_aead(alg, 0, CRYPTO_ALG_ASYNC);
+-	tfm = crypto_alloc_aead("gcm(aes)", 0, 0);
+-
 -	if (IS_ERR(tfm))
 -		return tfm;
 -
--	err = crypto_aead_setkey(tfm, key, key_len);
--	if (err)
--		goto free_aead;
--	err = crypto_aead_setauthsize(tfm, mic_len);
--	if (err)
--		goto free_aead;
+-	ret = crypto_aead_setkey(tfm, key, key_len);
+-	if (ret < 0)
+-		goto fail;
+-
+-	ret = crypto_aead_setauthsize(tfm, icv_len);
+-	if (ret < 0)
+-		goto fail;
 -
 -	return tfm;
--
--free_aead:
+-fail:
 -	crypto_free_aead(tfm);
--	return ERR_PTR(err);
+-	return ERR_PTR(ret);
 -}
 -
--void aead_key_free(struct crypto_aead *tfm)
--{
--	crypto_free_aead(tfm);
--}
-diff --git a/net/mac80211/aead_api.h b/net/mac80211/aead_api.h
-deleted file mode 100644
-index 7d463b80926a..000000000000
---- a/net/mac80211/aead_api.h
-+++ /dev/null
-@@ -1,23 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--
--#ifndef _AEAD_API_H
--#define _AEAD_API_H
--
--#include <crypto/aead.h>
--#include <linux/crypto.h>
--
--struct crypto_aead *
--aead_key_setup_encrypt(const char *alg, const u8 key[],
--		       size_t key_len, size_t mic_len);
--
--int aead_encrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad,
--		 size_t aad_len, u8 *data,
--		 size_t data_len, u8 *mic);
--
--int aead_decrypt(struct crypto_aead *tfm, u8 *b_0, u8 *aad,
--		 size_t aad_len, u8 *data,
--		 size_t data_len, u8 *mic);
--
--void aead_key_free(struct crypto_aead *tfm);
--
--#endif /* _AEAD_API_H */
-diff --git a/net/mac80211/aes_ccm.h b/net/mac80211/aes_ccm.h
-index 96256193cf49..f8d5e9cbf0dc 100644
---- a/net/mac80211/aes_ccm.h
-+++ b/net/mac80211/aes_ccm.h
-@@ -7,39 +7,26 @@
- #ifndef AES_CCM_H
- #define AES_CCM_H
- 
--#include "aead_api.h"
-+#include <asm/byteorder.h>
-+#include <crypto/aes-ccm.h>
- 
- #define CCM_AAD_LEN	32
- 
--static inline struct crypto_aead *
--ieee80211_aes_key_setup_encrypt(const u8 key[], size_t key_len, size_t mic_len)
-+static inline int ieee80211_aes_ccm_encrypt(const struct aes_ccm_key *key,
-+					    const u8 *b_0, const u8 *aad,
-+					    u8 *data, size_t data_len, u8 *mic)
+ static int init_rx_sa(struct macsec_rx_sa *rx_sa, char *sak, int key_len,
+ 		      int icv_len)
  {
--	return aead_key_setup_encrypt("ccm(aes)", key, key_len, mic_len);
-+	return aes_ccm_encrypt(data, mic, data, data_len, aad + 2,
-+			       be16_to_cpup((__be16 *)aad), b_0 + 1, 13, key);
- }
++	int err;
++
+ 	rx_sa->stats = alloc_percpu(struct macsec_rx_sa_stats);
+ 	if (!rx_sa->stats)
+ 		return -ENOMEM;
  
--static inline int
--ieee80211_aes_ccm_encrypt(struct crypto_aead *tfm,
--			  u8 *b_0, u8 *aad, u8 *data,
--			  size_t data_len, u8 *mic)
-+static inline int ieee80211_aes_ccm_decrypt(const struct aes_ccm_key *key,
-+					    const u8 *b_0, const u8 *aad,
-+					    u8 *data, size_t data_len,
-+					    const u8 *mic)
+-	rx_sa->key.tfm = macsec_alloc_tfm(sak, key_len, icv_len);
+-	if (IS_ERR(rx_sa->key.tfm)) {
++	err = aes_gcm_preparekey(&rx_sa->key.gcm_key, sak, key_len, icv_len);
++	if (err) {
+ 		free_percpu(rx_sa->stats);
+-		return PTR_ERR(rx_sa->key.tfm);
++		return err;
+ 	}
+ 
+ 	rx_sa->ssci = MACSEC_UNDEF_SSCI;
+@@ -1498,14 +1383,16 @@ static struct macsec_rx_sc *create_rx_sc(struct net_device *dev, sci_t sci,
+ static int init_tx_sa(struct macsec_tx_sa *tx_sa, char *sak, int key_len,
+ 		      int icv_len)
  {
--	return aead_encrypt(tfm, b_0, aad + 2,
--			    be16_to_cpup((__be16 *)aad),
--			    data, data_len, mic);
--}
--
--static inline int
--ieee80211_aes_ccm_decrypt(struct crypto_aead *tfm,
--			  u8 *b_0, u8 *aad, u8 *data,
--			  size_t data_len, u8 *mic)
--{
--	return aead_decrypt(tfm, b_0, aad + 2,
--			    be16_to_cpup((__be16 *)aad),
--			    data, data_len, mic);
--}
--
--static inline void ieee80211_aes_key_free(struct crypto_aead *tfm)
--{
--	return aead_key_free(tfm);
-+	return aes_ccm_decrypt(data, data, mic, data_len, aad + 2,
-+			       be16_to_cpup((__be16 *)aad), b_0 + 1, 13, key);
- }
++	int err;
++
+ 	tx_sa->stats = alloc_percpu(struct macsec_tx_sa_stats);
+ 	if (!tx_sa->stats)
+ 		return -ENOMEM;
  
- #endif /* AES_CCM_H */
-diff --git a/net/mac80211/aes_gcm.h b/net/mac80211/aes_gcm.h
-index b14093b2f7a9..ba13617aeb75 100644
---- a/net/mac80211/aes_gcm.h
-+++ b/net/mac80211/aes_gcm.h
-@@ -6,38 +6,26 @@
- #ifndef AES_GCM_H
- #define AES_GCM_H
+-	tx_sa->key.tfm = macsec_alloc_tfm(sak, key_len, icv_len);
+-	if (IS_ERR(tx_sa->key.tfm)) {
++	err = aes_gcm_preparekey(&tx_sa->key.gcm_key, sak, key_len, icv_len);
++	if (err) {
+ 		free_percpu(tx_sa->stats);
+-		return PTR_ERR(tx_sa->key.tfm);
++		return err;
+ 	}
  
--#include "aead_api.h"
-+#include <asm/byteorder.h>
+ 	tx_sa->ssci = MACSEC_UNDEF_SSCI;
+@@ -1813,7 +1700,7 @@ static int macsec_add_rxsa(struct sk_buff *skb, struct genl_info *info)
+ 	err = init_rx_sa(rx_sa, nla_data(tb_sa[MACSEC_SA_ATTR_KEY]),
+ 			 secy->key_len, secy->icv_len);
+ 	if (err < 0) {
+-		kfree(rx_sa);
++		kfree_sensitive(rx_sa);
+ 		rtnl_unlock();
+ 		return err;
+ 	}
+@@ -2021,7 +1908,7 @@ static int macsec_add_txsa(struct sk_buff *skb, struct genl_info *info)
+ 	err = init_tx_sa(tx_sa, nla_data(tb_sa[MACSEC_SA_ATTR_KEY]),
+ 			 secy->key_len, secy->icv_len);
+ 	if (err < 0) {
+-		kfree(tx_sa);
++		kfree_sensitive(tx_sa);
+ 		rtnl_unlock();
+ 		return err;
+ 	}
+@@ -3508,8 +3395,7 @@ static netdev_tx_t macsec_start_xmit(struct sk_buff *skb,
+ 	len = skb->len;
+ 	skb = macsec_encrypt(skb, dev);
+ 	if (IS_ERR(skb)) {
+-		if (PTR_ERR(skb) != -EINPROGRESS)
+-			DEV_STATS_INC(dev, tx_dropped);
++		DEV_STATS_INC(dev, tx_dropped);
+ 		return NETDEV_TX_OK;
+ 	}
+ 
+@@ -4316,17 +4202,8 @@ static int macsec_validate_attr(struct nlattr *tb[], struct nlattr *data[],
+ 
+ 	if (data[IFLA_MACSEC_ICV_LEN]) {
+ 		icv_len = nla_get_u8(data[IFLA_MACSEC_ICV_LEN]);
+-		if (icv_len != MACSEC_DEFAULT_ICV_LEN) {
+-			char dummy_key[DEFAULT_SAK_LEN] = { 0 };
+-			struct crypto_aead *dummy_tfm;
+-
+-			dummy_tfm = macsec_alloc_tfm(dummy_key,
+-						     DEFAULT_SAK_LEN,
+-						     icv_len);
+-			if (IS_ERR(dummy_tfm))
+-				return PTR_ERR(dummy_tfm);
+-			crypto_free_aead(dummy_tfm);
+-		}
++		if (crypto_gcm_check_authsize(icv_len) != 0)
++			return -EINVAL;
+ 	}
+ 
+ 	es  = nla_get_u8_default(data[IFLA_MACSEC_ES], false);
+diff --git a/include/net/macsec.h b/include/net/macsec.h
+index d962093ee923..a315a33b3ac3 100644
+--- a/include/net/macsec.h
++++ b/include/net/macsec.h
+@@ -7,6 +7,7 @@
+ #ifndef _NET_MACSEC_H_
+ #define _NET_MACSEC_H_
+ 
 +#include <crypto/aes-gcm.h>
+ #include <linux/u64_stats_sync.h>
+ #include <linux/if_vlan.h>
+ #include <linux/workqueue.h>
+@@ -63,12 +64,12 @@ typedef union pn {
+ /**
+  * struct macsec_key - SA key
+  * @id: user-provided key identifier
+- * @tfm: crypto struct, key storage
++ * @gcm_key: the AES-GCM key
+  * @salt: salt used to generate IV in XPN cipher suites
+  */
+ struct macsec_key {
+ 	u8 id[MACSEC_KEYID_LEN];
+-	struct crypto_aead *tfm;
++	struct aes_gcm_key gcm_key;
+ 	salt_t salt;
+ };
  
- #define GCM_AAD_LEN	32
- 
--static inline int ieee80211_aes_gcm_encrypt(struct crypto_aead *tfm,
--					    u8 *j_0, u8 *aad,  u8 *data,
--					    size_t data_len, u8 *mic)
-+static inline void ieee80211_aes_gcm_encrypt(const struct aes_gcm_key *key,
-+					     const u8 *j_0, const u8 *aad,
-+					     u8 *data, size_t data_len, u8 *mic)
- {
--	return aead_encrypt(tfm, j_0, aad + 2,
--			    be16_to_cpup((__be16 *)aad),
--			    data, data_len, mic);
-+	aes_gcm_encrypt(data, mic, data, data_len, aad + 2,
-+			be16_to_cpup((__be16 *)aad), j_0, key);
- }
- 
--static inline int ieee80211_aes_gcm_decrypt(struct crypto_aead *tfm,
--					    u8 *j_0, u8 *aad, u8 *data,
--					    size_t data_len, u8 *mic)
-+static inline int ieee80211_aes_gcm_decrypt(const struct aes_gcm_key *key,
-+					    const u8 *j_0, const u8 *aad,
-+					    u8 *data, size_t data_len,
-+					    const u8 *mic)
- {
--	return aead_decrypt(tfm, j_0, aad + 2,
--			    be16_to_cpup((__be16 *)aad),
--			    data, data_len, mic);
--}
--
--static inline struct crypto_aead *
--ieee80211_aes_gcm_key_setup_encrypt(const u8 key[], size_t key_len)
--{
--	return aead_key_setup_encrypt("gcm(aes)", key,
--				      key_len, IEEE80211_GCMP_MIC_LEN);
--}
--
--static inline void ieee80211_aes_gcm_key_free(struct crypto_aead *tfm)
--{
--	return aead_key_free(tfm);
-+	return aes_gcm_decrypt(data, data, mic, data_len, aad + 2,
-+			       be16_to_cpup((__be16 *)aad), j_0, key);
- }
- 
- #endif /* AES_GCM_H */
-diff --git a/net/mac80211/key.c b/net/mac80211/key.c
-index 48404097e4f1..8c8a82d91bf2 100644
---- a/net/mac80211/key.c
-+++ b/net/mac80211/key.c
-@@ -652,10 +652,9 @@ ieee80211_key_alloc(u32 cipher, int idx, size_t key_len,
- 		 * Initialize AES key state here as an optimization so that
- 		 * it does not need to be initialized for every packet.
- 		 */
--		key->u.ccmp.tfm = ieee80211_aes_key_setup_encrypt(
--			key_data, key_len, IEEE80211_CCMP_MIC_LEN);
--		if (IS_ERR(key->u.ccmp.tfm)) {
--			err = PTR_ERR(key->u.ccmp.tfm);
-+		err = aes_ccm_preparekey(&key->u.ccmp.key, key_data, key_len,
-+					 IEEE80211_CCMP_MIC_LEN);
-+		if (err) {
- 			kfree(key);
- 			return ERR_PTR(err);
- 		}
-@@ -670,10 +669,9 @@ ieee80211_key_alloc(u32 cipher, int idx, size_t key_len,
- 		/* Initialize AES key state here as an optimization so that
- 		 * it does not need to be initialized for every packet.
- 		 */
--		key->u.ccmp.tfm = ieee80211_aes_key_setup_encrypt(
--			key_data, key_len, IEEE80211_CCMP_256_MIC_LEN);
--		if (IS_ERR(key->u.ccmp.tfm)) {
--			err = PTR_ERR(key->u.ccmp.tfm);
-+		err = aes_ccm_preparekey(&key->u.ccmp.key, key_data, key_len,
-+					 IEEE80211_CCMP_256_MIC_LEN);
-+		if (err) {
- 			kfree(key);
- 			return ERR_PTR(err);
- 		}
-@@ -729,10 +727,9 @@ ieee80211_key_alloc(u32 cipher, int idx, size_t key_len,
- 		/* Initialize AES key state here as an optimization so that
- 		 * it does not need to be initialized for every packet.
- 		 */
--		key->u.gcmp.tfm = ieee80211_aes_gcm_key_setup_encrypt(key_data,
--								      key_len);
--		if (IS_ERR(key->u.gcmp.tfm)) {
--			err = PTR_ERR(key->u.gcmp.tfm);
-+		err = aes_gcm_preparekey(&key->u.gcmp.key, key_data, key_len,
-+					 IEEE80211_GCMP_MIC_LEN);
-+		if (err) {
- 			kfree(key);
- 			return ERR_PTR(err);
- 		}
-@@ -746,16 +743,6 @@ ieee80211_key_alloc(u32 cipher, int idx, size_t key_len,
- 
- static void ieee80211_key_free_common(struct ieee80211_key *key)
- {
--	switch (key->conf.cipher) {
--	case WLAN_CIPHER_SUITE_CCMP:
--	case WLAN_CIPHER_SUITE_CCMP_256:
--		ieee80211_aes_key_free(key->u.ccmp.tfm);
--		break;
--	case WLAN_CIPHER_SUITE_GCMP:
--	case WLAN_CIPHER_SUITE_GCMP_256:
--		ieee80211_aes_gcm_key_free(key->u.gcmp.tfm);
--		break;
--	}
- 	kfree_sensitive(key);
- }
- 
-diff --git a/net/mac80211/key.h b/net/mac80211/key.h
-index d2dd2a76fa25..a43db120f61c 100644
---- a/net/mac80211/key.h
-+++ b/net/mac80211/key.h
-@@ -13,6 +13,7 @@
- #include <linux/crypto.h>
- #include <linux/rcupdate.h>
- #include <crypto/aes-cbc-macs.h>
-+#include <crypto/aes-ccm.h>
- #include <crypto/aes-gcm.h>
- #include <crypto/arc4.h>
- #include <net/mac80211.h>
-@@ -90,7 +91,7 @@ struct ieee80211_key {
- 			 * Management frames.
- 			 */
- 			u8 rx_pn[IEEE80211_NUM_TIDS + 1][IEEE80211_CCMP_PN_LEN];
--			struct crypto_aead *tfm;
-+			struct aes_ccm_key key;
- 			u32 replays; /* dot11RSNAStatsCCMPReplays */
- 		} ccmp;
- 		struct {
-@@ -112,7 +113,7 @@ struct ieee80211_key {
- 			 * Management frames.
- 			 */
- 			u8 rx_pn[IEEE80211_NUM_TIDS + 1][IEEE80211_GCMP_PN_LEN];
--			struct crypto_aead *tfm;
-+			struct aes_gcm_key key;
- 			u32 replays; /* dot11RSNAStatsGCMPReplays */
- 		} gcmp;
- 		struct {
-diff --git a/net/mac80211/wpa.c b/net/mac80211/wpa.c
-index eb4a98537395..db57d383606f 100644
---- a/net/mac80211/wpa.c
-+++ b/net/mac80211/wpa.c
-@@ -492,7 +492,7 @@ static int ccmp_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb,
- 	ccmp_special_blocks(skb, pn, b_0, aad,
- 			    key->conf.flags & IEEE80211_KEY_FLAG_SPP_AMSDU,
- 			    false);
--	return ieee80211_aes_ccm_encrypt(key->u.ccmp.tfm, b_0, aad, pos, len,
-+	return ieee80211_aes_ccm_encrypt(&key->u.ccmp.key, b_0, aad, pos, len,
- 					 skb_put(skb, mic_len));
- }
- 
-@@ -587,7 +587,7 @@ ieee80211_crypto_ccmp_decrypt(struct ieee80211_rx_data *rx,
- 					    aad_nonce_computed);
- 
- 			if (ieee80211_aes_ccm_decrypt(
--				    key->u.ccmp.tfm, b_0, aad,
-+				    &key->u.ccmp.key, b_0, aad,
- 				    skb->data + hdrlen + IEEE80211_CCMP_HDR_LEN,
- 				    data_len,
- 				    skb->data + skb->len - mic_len))
-@@ -709,8 +709,9 @@ static int gcmp_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb)
- 	gcmp_special_blocks(skb, pn, j_0, aad,
- 			    key->conf.flags & IEEE80211_KEY_FLAG_SPP_AMSDU,
- 			    false);
--	return ieee80211_aes_gcm_encrypt(key->u.gcmp.tfm, j_0, aad, pos, len,
--					 skb_put(skb, IEEE80211_GCMP_MIC_LEN));
-+	ieee80211_aes_gcm_encrypt(&key->u.gcmp.key, j_0, aad, pos, len,
-+				  skb_put(skb, IEEE80211_GCMP_MIC_LEN));
-+	return 0;
- }
- 
- ieee80211_tx_result
-@@ -798,7 +799,7 @@ ieee80211_crypto_gcmp_decrypt(struct ieee80211_rx_data *rx)
- 					    aad_nonce_computed);
- 
- 			if (ieee80211_aes_gcm_decrypt(
--				    key->u.gcmp.tfm, j_0, aad,
-+				    &key->u.gcmp.key, j_0, aad,
- 				    skb->data + hdrlen + IEEE80211_GCMP_HDR_LEN,
- 				    data_len,
- 				    skb->data + skb->len -
 -- 
 2.54.0
 
