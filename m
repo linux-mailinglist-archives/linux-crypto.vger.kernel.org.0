@@ -1,221 +1,278 @@
-Return-Path: <linux-crypto+bounces-25653-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25656-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id BQ7BAXGETGrGlgEAu9opvQ
-	(envelope-from <linux-crypto+bounces-25653-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 06:45:37 +0200
+	id 0Fs6JJmQTGoImQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-25656-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:37:29 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DBB5717470
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 06:45:36 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 294B77177BB
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:37:29 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=qualcomm.com header.s=qcppdkim1 header.b=Y2F3xtTf;
-	dkim=pass header.d=oss.qualcomm.com header.s=google header.b=Mfi3pp1t;
-	dmarc=pass (policy=reject) header.from=qualcomm.com;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25653-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25653-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=USh7KgSg;
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25656-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25656-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id DFD57300789E
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 04:45:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 67FF0301DE03
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 05:37:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9B3C36CDF8;
-	Tue,  7 Jul 2026 04:45:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B958386571;
+	Tue,  7 Jul 2026 05:37:18 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60C2629D265
-	for <linux-crypto@vger.kernel.org>; Tue,  7 Jul 2026 04:45:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC9B835F184;
+	Tue,  7 Jul 2026 05:37:16 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783399533; cv=none; b=YiQ/4H/ZBOsZC8STAmYmM0RuliiLvRnzej1BtoXmP/IJRk2oZ9btJhRfL3Nf0x1sHIRzM/ZB3n2S12q7l4TXDWM6tkhIyyZSYb+HapuP9UxmQiJoeji/knUVGNRuDV9nNip2uAqvy6o8drs0+Gwvi0i1vs3usjGVU7Jx1dmkJzM=
+	t=1783402638; cv=none; b=F1H4ueccpoCQFserDySggbEQReb1unCOeY6Up713fDC+7SAWs8QIMV39O0+3VoBvJJrB5/kNdfh0F9yI3XTj6tQQZftIFZIP1+MGB1lF2T9Um2d1zXyDpyPW2latGMg9zFDVqZCW6Tn00c8JEkXzvLhwY1CNaqrRU01hK5G0obw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783399533; c=relaxed/simple;
-	bh=bOaen4HQBqLDxgRE5hyhkg9PTG8dtkmNvWLObiWeEAc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G6ax9WID8dULMqqVJ0KGi1SwQNGaMizH4ADBoYUXvUN1LsMu6Bknoj5L++4wlGqsU/dlncGFoHgZdg1X7x/Mdy/BRqPpZU6xKm8nbRm95+IHw1rHDom8OyR8TAyEthNmTQC+JqgPPkswJ9hFys1Qbz9lbIEwtbRtWp1VOh+JzsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=Y2F3xtTf; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=Mfi3pp1t; arc=none smtp.client-ip=205.220.180.131
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66748s3f2629803
-	for <linux-crypto@vger.kernel.org>; Tue, 7 Jul 2026 04:45:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	q+k3HncfY880D3KURL9SNiHOlxwrlnkZIkiKMuzSj2I=; b=Y2F3xtTfyd6BLRRk
-	BgpGOZOoWOxO0apoZ9nms/Xu0fgEoUlTTi9kW/4wYx9kzSi96rZd5en0OnaFkwHQ
-	oay/Rdi+ZtPda9+o/7PpY7NoNgsTaNV9Z4LMG+LkBALufCDA6GF8NfxnpGu+8AU1
-	4+KxpMvt57w2yZBl6HCGwVMcnvXUrQsh2GBdbsofVYMkUSzrHmFw/LzD3AP+VLVV
-	KoEVOy/SYJyrQ+4GsPKBFS4YZG5EjevP99aAkDP8FsVqhYODsgKzSDvToIjHcCGC
-	besq1ArKplIlKmIKnrETi1a+KT3YYzIrYVog1ZFTUcdXmq3wVfPb4gnlNUx5lAPV
-	VuQ5Vw==
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4f88h54h9q-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-crypto@vger.kernel.org>; Tue, 07 Jul 2026 04:45:31 +0000 (GMT)
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-37fca5f21b1so357280a91.0
-        for <linux-crypto@vger.kernel.org>; Mon, 06 Jul 2026 21:45:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1783399530; x=1784004330; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=q+k3HncfY880D3KURL9SNiHOlxwrlnkZIkiKMuzSj2I=;
-        b=Mfi3pp1teW11+axrC+bBScKRZLUxs8pynUEWG3/cNFv+oPs2fZENe282B/Ddd1+s3r
-         bG2rBdXnQWdlNYPuQZyrIejjX4Kls+aGBODS0Md6RvhkCvTzpiJWCKo+z3j8ia6ykV2s
-         PrR5Q8clfTwW2Mdss2qdG57GqjoIQHxwxRQsjEXg5H8w7qILwakL+36CFNXt96JPgXtF
-         xRLH9V3ZslLwNDvRsAcGX33mxN+TSAIWqBjO1O2l8OGgZYn2p9eOV7o0nDnpJa8EZlsK
-         R0V2pjc7QfYVkVkRdUyw9qngW9wIe80WR523hHLCfUH29MvmQ1jxOeWWIVXl8TRlzULS
-         Uz+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783399530; x=1784004330;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=q+k3HncfY880D3KURL9SNiHOlxwrlnkZIkiKMuzSj2I=;
-        b=Fl7ixY3veXFoGGIg7Ta6JVsfJyRaNi9/rhwe7qj7PW3rgSZOttxg5hhkuUUpAJYIWH
-         XETmkjcYBtiEYaJeamOSNZrPGFV1/aR08eBZv81xuDgphKN/xD7gJuSvsly8U453Us0B
-         LIZYmzZv23nWyNS+4Aoi+M67jTzzFQLMTSpsoKgGp+lBmVvtlccjJbUuGrCf5tPlNoGV
-         8VAl5tSRUIONPWYsKIZkg4cQAWiXZW3JukZEvUQt3P5GrtAFGg3/Htjmcr4IKhH3X10T
-         Jhij1BXnahz439xOEFE1K/VDL6m0RlSLVSUW4wa3YJZ1J/9ncszdcRavfM1M3TiMBwD5
-         /eog==
-X-Forwarded-Encrypted: i=1; AHgh+RoIfw5wjGyp8Qfb4LOCQQkCR91EsjMZ5vMLcrG68jHfCgDrYf0rePKm8AQPqkja4CPb22+z0/DnY474ixc=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZVu+jAMpsrPzOvW2G5gS8N5A0kW/ikOUd2OGCM/SAgsQEQJza
-	v2vhSnEoAo5PvpMkxq4MGMnITGf/WP+65fyTE6zo6I3CcCSETl3UjBMTNLuz1gon8Ut6va52wuM
-	tH6blhVeOwnmYD518728tLmI65SsoBiqrpqyvzAyMjWieAgNSzLc3C4BqI6fe+BodEeg=
-X-Gm-Gg: AfdE7clKcpClMOh1w7e3SgmL+f+pfuxB0/CsVVzvVg0gBXlQBwt4IotWuyM3/WOOiDF
-	7UXsNmoC1TiLhqtduMEcxgY2g9Z444O3UB2twIzXXfvz91/uID1Pu8XmaAivpg6bT7+1WbgoGO7
-	/ecJFJ5aryV+hOTHBOK9+pWUirk/99KkKkZ8rrN2/oVebZISrNF2+ysNf44sk7acrhG2cAbHh2L
-	xVhxnUkup7B0Bs59DqZHeZ83RxbDOK50/ESXwr/IHmC5Ji+cEBlNisKg5B2zdtGmASLcX8Z+nxf
-	6pNhoK67if/otDuKqUamk5+as5YHIhuNuUHjpaguY2yGG8HC9ZlgwFCPp7jjz4JhZ8isCdFD9Uj
-	uD1yFuLtgLHvUVQhQIN9owiOf91D007VBvrFIs23AkPo=
-X-Received: by 2002:a17:90b:1801:b0:387:d9cc:7dc1 with SMTP id 98e67ed59e1d1-387d9cc8dd9mr1414270a91.19.1783399530382;
-        Mon, 06 Jul 2026 21:45:30 -0700 (PDT)
-X-Received: by 2002:a17:90b:1801:b0:387:d9cc:7dc1 with SMTP id 98e67ed59e1d1-387d9cc8dd9mr1414224a91.19.1783399529894;
-        Mon, 06 Jul 2026 21:45:29 -0700 (PDT)
-Received: from [10.217.222.146] ([202.46.22.19])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3117483ddd1sm3586885eec.9.2026.07.06.21.45.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Jul 2026 21:45:29 -0700 (PDT)
-Message-ID: <44d4c55c-bf8c-4baf-aebd-49ad35350909@oss.qualcomm.com>
-Date: Tue, 7 Jul 2026 10:15:22 +0530
+	s=arc-20240116; t=1783402638; c=relaxed/simple;
+	bh=kdYB5HIZ8XxwCPSNqTMnOdXSssECCaVCdvIOyP/NW0k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=F6eNyPe55TNLA9JvRR3kjA0XEaRkf+QbfHcAp1MS4DHYXcJhcAp9cCaGWaeKPEe7cQ126iejao0e24JOAl2SHn4LS7R8EolifLmP8M1XK6hLbDCCSxfHpGQgTlGHHVYLpTpXxHcPUnKDRvzU34h19jDtwwmCs6Mj52Okq6eUWmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=USh7KgSg; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69F141F000E9;
+	Tue,  7 Jul 2026 05:37:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783402636;
+	bh=m5P5buTEZLHTajtq565EH+TFnWS7XHOenGsKfPMwJHU=;
+	h=From:To:Cc:Subject:Date;
+	b=USh7KgSg1iEiXcZnoSgCBOnTjDUOJYMDbZ7fGS4FwG6ohtJSCIKshw843pDw0C02D
+	 frlrGbOTSbFGNEaS1pchiyT8BBmHGqiFqQaKCzBH0ComP5FvCGjkUBrG/m6v/r3P5t
+	 jLVuRravAPwg+AoBzufh3x3KLo3wAi0Z7Itxw2JMQVxbPUhC+4wnVV3MLcHUBqF/i1
+	 FNNyh9dCfdE4r1WNykJhWUOzZoIh8+HjbUlQYyQFu1bqetjc4/lL+vog1H9wX640MP
+	 LZ7Hq9r94G+CZJcG0wpL6vLc8ORli5dVRjmqRyoCZWQXeLfUTXZ+fE1P8bcUZRpUYX
+	 i4astjyI42fSA==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH 00/33] Library APIs for AES encryption modes
+Date: Mon,  6 Jul 2026 22:34:30 -0700
+Message-ID: <20260707053503.209874-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.54.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/6] Shikra: Add DT support for ICE, RNG and QCE
-To: Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley
- <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Harshal Dev <harshal.dev@oss.qualcomm.com>,
-        Vinod Koul <vkoul@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>,
-        Konrad Dybcio
- <konradybcio@kernel.org>,
-        Frank Li <Frank.Li@kernel.org>, Andy Gross <agross@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
-        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dmaengine@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>
-References: <20260706-b4-shikra_crypto_changse-v3-0-23b4c2054227@oss.qualcomm.com>
-Content-Language: en-US
-From: Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>
-In-Reply-To: <20260706-b4-shikra_crypto_changse-v3-0-23b4c2054227@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-GUID: CMmJbQpv2Gb8xzjB251eRm_jDtPcl7gT
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzA3MDA0MiBTYWx0ZWRfX7UWd6KW2VRK1
- vdAVeDFq+i3CdMP7MTzDGfSgh7w2u9aN7PoYSgo8CeznwJO4s2NMnUzsFI99c3cjvPDPOYWKRnC
- 2ScoZ0C/C7Ok/Zir21hxlnlD81LJGO8=
-X-Authority-Analysis: v=2.4 cv=EPU2FVZC c=1 sm=1 tr=0 ts=6a4c846b cx=c_pps
- a=vVfyC5vLCtgYJKYeQD43oA==:117 a=fChuTYTh2wq5r3m49p7fHw==:17
- a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=gowsoOTTUOVcmtlkKump:22
- a=VwQbUJbxAAAA:8 a=EUspDBNiAAAA:8 a=pGLkceISAAAA:8 a=hD90gCo8i-7HE4vOkn4A:9
- a=QEXdDO2ut3YA:10 a=rl5im9kqc5Lf4LNbBjHf:22
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzA3MDA0MiBTYWx0ZWRfXxxlgfJLqJOUV
- HZMb6l1+zfeEqt+qMVy2wKyQdkOT2R6Wa2RAJtNBMBGgGz9irTDfU/kW/JNTX6wGlWzdB52tl0x
- L5EVdNEMYP/0irK7m3CEyD5nR/0p1KuxN3scNWattZHzVZdRsmALFG/UdNsVQeb+1jTghpx0XXQ
- wIasmcjBtR+2sUFxcQuCyH6ZDMMB1LolsG9Hc8FeQccDISYirBk5JjIAM/4LhG0r1GSxPf6prkf
- 7C67z+NPrez+RI4Z1rvkEZrVaIXAIB2iV+o8F8kxxQtMj/3XONt9S04Zv82+ogoLEuR8yOzQ/1Q
- aPEYu0JBxlAjW4NKb/IIeyd8Qcz0gwqTaunfScBvvXILz/ociK34OWx4LDacpV4zaeIx2lnWOC0
- QxnMZ+f8B4PxjNJo1+ZFCUHVYFzH1De8uN4/GxM0F0UNpyI4uGza4YIQeqB6SxZLhjrdFgTsXMz
- 2XZ9VCSWls9522tXiXw==
-X-Proofpoint-ORIG-GUID: CMmJbQpv2Gb8xzjB251eRm_jDtPcl7gT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-07-07_01,2026-07-06_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- clxscore=1015 priorityscore=1501 lowpriorityscore=0 malwarescore=0
- spamscore=0 adultscore=0 suspectscore=0 phishscore=0 bulkscore=0
- impostorscore=0 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
- definitions=main-2607070042
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[qualcomm.com,reject];
-	R_DKIM_ALLOW(-0.20)[qualcomm.com:s=qcppdkim1,oss.qualcomm.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-25653-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[oss.qualcomm.com:from_mime,oss.qualcomm.com:dkim,oss.qualcomm.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,vger.kernel.org:from_smtp,qualcomm.com:dkim];
-	FORGED_SENDER(0.00)[kuldeep.singh@oss.qualcomm.com,linux-crypto@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	FORGED_RECIPIENTS(0.00)[m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:robh@kernel.org,m:krzk+dt@kernel.org,m:conor+dt@kernel.org,m:andersson@kernel.org,m:harshal.dev@oss.qualcomm.com,m:vkoul@kernel.org,m:brgl@kernel.org,m:konradybcio@kernel.org,m:Frank.Li@kernel.org,m:agross@kernel.org,m:krzysztof.kozlowski@oss.qualcomm.com,m:linux-arm-msm@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:devicetree@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:dmaengine@vger.kernel.org,m:bartosz.golaszewski@oss.qualcomm.com,m:krzk@kernel.org,m:conor@kernel.org,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:ebiggers@kernel.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25656-lists,linux-crypto=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[qualcomm.com:+,oss.qualcomm.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_THREE(0.00)[3];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[kuldeep.singh@oss.qualcomm.com,linux-crypto@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 8DBB5717470
+X-Rspamd-Queue-Id: 294B77177BB
 
-On 06-07-2026 17:01, Kuldeep Singh wrote:
-> This patch series enables SDHC ICE, RNG and QCE support on Shikra,
-> aligned with how similar support is modeled on other Qualcomm platforms.
-> 
-> These DT and dt-bindings updates were previously posted as three
-> separate series. Based on review feedback, they are grouped here as one
-> crypto-focused series.
-> 
-> Previous threads:
-> QCE: https://lore.kernel.org/lkml/20260515-shikra_qcrypto-v1-0-80f07b345c29@oss.qualcomm.com/
-> RNG: https://lore.kernel.org/lkml/20260514-shikra_rng-v1-0-4ea721a1429a@oss.qualcomm.com/
-> ICE: https://lore.kernel.org/lkml/20260515-shikra_ice_ufs-v2-0-2724a54339db@oss.qualcomm.com/
-> 
-> Prerequisite series:
-> - https://lore.kernel.org/all/20260612-shikra-dt-v6-0-6b6cb58db477@oss.qualcomm.com/
-> - https://lore.kernel.org/lkml/20260629-ice_emmc_support-v8-0-1a26e1717b85@oss.qualcomm.com/
+This series applies to v7.2-rc2.  It can also be retrieved from:
 
-Above prerequisite is no longer a dependency, as sdhci-msm bindings for
-defining qcom,ice property are picked for -next by Ulf.
-https://lore.kernel.org/lkml/CAPx+jO8t_kQ5q4XmNJoJ1nR4Kro-2M1s_Xj93qxuFUW7VPQpTw@mail.gmail.com/
+    git fetch https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git aes-modes-v1
 
+This series adds library APIs for all the AES encryption modes that are
+used in the kernel, both authenticated and unauthenticated: AES-ECB,
+AES-CBC, AES-CBC-CTS, AES-CTR, AES-XCTR, AES-XTS, AES-GCM, and AES-CCM.
+
+Patches 2-7 add the library APIs, and patches 8-13 wire them up to the
+traditional crypto API (with just priority 110 for now).  These are
+intended to be taken through libcrypto-next for 7.3.
+
+The remaining patches (14-33) convert users of the traditional crypto
+API to use the new library APIs instead.  Most of these will be for 7.4
+or later.  For now please consider these to be proof-of-concept patches
+for helping inform the API design.  Most of them I haven't tested, and
+their performance also won't be optimal yet (since the arch-optimized
+code for these AES modes needs to be migrated into the library first).
+Nevertheless I think they do make it very clear that (as usual) the
+library is much easier to use than the traditional crypto API, and we
+can expect performance improvements once everything is wired up as well.
+
+Apologies for the large patch series, but it ended up being easiest to
+handle all the AES modes at once rather than try to do them one by one.
+This ensures a consistent design for them, which is really important.
+Additionally, the arch-optimized AES code tends to intermingle different
+modes, and many depend on each other anyway.
+
+But as a result, to keep this series manageable it doesn't include the
+usual KUnit tests or the integration of the architecture-optimized code.
+Those will be sent separately in follow-up series.
+
+Feedback is appreciated, especially on patches 2-7 and the library APIs
+they add.
+
+Eric Biggers (33):
+  crypto: xts - Split out __xts_verify_key() helper
+  lib/crypto: aes: Add ECB support
+  lib/crypto: aes: Add CBC and CBC-CTS support
+  lib/crypto: aes: Add CTR and XCTR support
+  lib/crypto: aes: Add XTS support
+  lib/crypto: aes: Add GCM support
+  lib/crypto: aes: Add CCM support
+  crypto: aes - Add ECB support using library
+  crypto: aes - Add CBC and CBC-CTS support using library
+  crypto: aes - Add CTR and XCTR support using library
+  crypto: aes - Add XTS support using library
+  crypto: aes - Add GCM support using library
+  crypto: aes - Add CCM support using library
+  x86/sev: Use new AES-GCM library
+  lib/crypto: aesgcm: Remove old AES-GCM library
+  crypto: aes - Remove AES-CBC-MAC support
+  lib/crypto: aes: Remove aes_cbcmac_* functions
+  fscrypt: Use aes_ecb_encrypt() for v1 key derivation
+  KEYS: encrypted: Use AES-CBC library instead of crypto_skcipher
+  KEYS: trusted: dcp: Use AES-GCM library instead of crypto_aead
+  libceph: Use AES-CBC library in ceph_aes_crypt()
+  libceph: Reimplement messenger v2 encryption using AES-GCM library
+  wifi: mac80211: Use AES-CTR library in fils_aead.c
+  wifi: mac80211: Use AES-GCM library for GMAC suite
+  wifi: mac80211: Use crypto libraries for GCMP and CCMP suites
+  macsec: Use AES-GCM library instead of crypto_aead
+  wifi: ipw2x00: Use AES-CCM library
+  mac802154: Use AES-CCM and AES-CTR libraries
+  bpf: crypto: Use AES-CBC and AES-ECB libraries
+  bpf: crypto: Add AES-GCM support
+  smb: client: Use AES-GCM and AES-CCM libraries
+  ksmbd: Use AES-GCM and AES-CCM libraries
+  net: tipc: Use AES-GCM library instead of crypto_aead
+
+ .../crypto/libcrypto-auth-encryption.rst      |   20 +
+ .../crypto/libcrypto-unauth-encryption.rst    |   49 +
+ Documentation/crypto/libcrypto.rst            |    2 +
+ MAINTAINERS                                   |    2 -
+ arch/x86/Kconfig                              |    2 +-
+ arch/x86/coco/sev/core.c                      |   44 +-
+ arch/x86/include/asm/sev.h                    |    2 +-
+ crypto/Kconfig                                |   15 +-
+ crypto/Makefile                               |    3 -
+ crypto/aes.c                                  |  937 +++++++++++++-
+ crypto/bpf_crypto_skcipher.c                  |   83 --
+ crypto/testmgr.c                              |    6 +-
+ drivers/crypto/starfive/jh7110-aes.c          |    2 +-
+ drivers/net/Kconfig                           |    4 +-
+ drivers/net/macsec.c                          |  327 ++---
+ drivers/net/wireless/intel/ipw2x00/Kconfig    |    2 +-
+ .../intel/ipw2x00/libipw_crypto_ccmp.c        |  117 +-
+ drivers/virt/coco/sev-guest/sev-guest.c       |    7 +-
+ fs/crypto/Kconfig                             |    2 +-
+ fs/crypto/keysetup_v1.c                       |    5 +-
+ fs/smb/client/Kconfig                         |    7 +-
+ fs/smb/client/cifsencrypt.c                   |   14 -
+ fs/smb/client/cifsfs.c                        |    4 -
+ fs/smb/client/cifsglob.h                      |    8 -
+ fs/smb/client/cifsproto.h                     |   89 --
+ fs/smb/client/connect.c                       |   14 +-
+ fs/smb/client/smb2ops.c                       |  275 ++--
+ fs/smb/client/smb2pdu.c                       |    2 -
+ fs/smb/client/smb2proto.h                     |    1 -
+ fs/smb/client/smb2transport.c                 |   39 -
+ fs/smb/server/Kconfig                         |    6 +-
+ fs/smb/server/Makefile                        |    2 +-
+ fs/smb/server/auth.c                          |  227 ----
+ fs/smb/server/auth.h                          |    2 -
+ fs/smb/server/crypto_ctx.c                    |  176 ---
+ fs/smb/server/crypto_ctx.h                    |   32 -
+ fs/smb/server/server.c                        |   14 +-
+ fs/smb/server/smb2pdu.c                       |  133 +-
+ include/crypto/aes-cbc-macs.h                 |   22 +-
+ include/crypto/aes-cbc.h                      |   77 ++
+ include/crypto/aes-ccm.h                      |  244 ++++
+ include/crypto/aes-ctr.h                      |   56 +
+ include/crypto/aes-ecb.h                      |   49 +
+ include/crypto/aes-gcm.h                      |  249 ++++
+ include/crypto/aes-xts.h                      |   87 ++
+ include/crypto/gcm.h                          |   23 +-
+ include/crypto/xts.h                          |   18 +-
+ include/linux/bpf_crypto.h                    |   24 -
+ include/linux/ceph/messenger.h                |   22 +-
+ include/net/macsec.h                          |    5 +-
+ kernel/bpf/Kconfig                            |   14 +
+ kernel/bpf/Makefile                           |    4 +-
+ kernel/bpf/crypto.c                           |  302 ++---
+ lib/crypto/Kconfig                            |   41 +-
+ lib/crypto/Makefile                           |    3 -
+ lib/crypto/aes.c                              | 1146 ++++++++++++++++-
+ lib/crypto/aesgcm.c                           |  721 -----------
+ lib/crypto/tests/Kconfig                      |    6 +
+ lib/crypto/tests/aes_cbc_macs_kunit.c         |   68 +-
+ net/ceph/Kconfig                              |    5 +-
+ net/ceph/crypto.c                             |   66 +-
+ net/ceph/crypto.h                             |    3 +-
+ net/ceph/messenger_v2.c                       |  963 +++++---------
+ net/mac80211/Kconfig                          |    7 +-
+ net/mac80211/Makefile                         |    1 -
+ net/mac80211/aead_api.c                       |  113 --
+ net/mac80211/aead_api.h                       |   23 -
+ net/mac80211/aes_ccm.h                        |   39 +-
+ net/mac80211/aes_gcm.h                        |   38 +-
+ net/mac80211/aes_gmac.c                       |   85 +-
+ net/mac80211/aes_gmac.h                       |   10 +-
+ net/mac80211/fils_aead.c                      |   90 +-
+ net/mac80211/key.c                            |   42 +-
+ net/mac80211/key.h                            |    8 +-
+ net/mac80211/wpa.c                            |   23 +-
+ net/mac802154/Kconfig                         |    6 +-
+ net/mac802154/llsec.c                         |  158 +--
+ net/mac802154/llsec.h                         |    8 +-
+ net/tipc/Kconfig                              |    4 +-
+ net/tipc/crypto.c                             |  467 ++-----
+ net/tipc/msg.h                                |    3 -
+ net/tipc/sysctl.c                             |    6 +
+ security/keys/Kconfig                         |    4 +-
+ security/keys/encrypted-keys/encrypted.c      |  194 +--
+ security/keys/trusted-keys/Kconfig            |    1 +
+ security/keys/trusted-keys/trusted_dcp.c      |   69 +-
+ 86 files changed, 4167 insertions(+), 4126 deletions(-)
+ create mode 100644 Documentation/crypto/libcrypto-auth-encryption.rst
+ create mode 100644 Documentation/crypto/libcrypto-unauth-encryption.rst
+ delete mode 100644 crypto/bpf_crypto_skcipher.c
+ delete mode 100644 fs/smb/server/crypto_ctx.c
+ delete mode 100644 fs/smb/server/crypto_ctx.h
+ create mode 100644 include/crypto/aes-cbc.h
+ create mode 100644 include/crypto/aes-ccm.h
+ create mode 100644 include/crypto/aes-ctr.h
+ create mode 100644 include/crypto/aes-ecb.h
+ create mode 100644 include/crypto/aes-gcm.h
+ create mode 100644 include/crypto/aes-xts.h
+ delete mode 100644 include/linux/bpf_crypto.h
+ delete mode 100644 lib/crypto/aesgcm.c
+ delete mode 100644 net/mac80211/aead_api.c
+ delete mode 100644 net/mac80211/aead_api.h
+
+
+base-commit: 8cdeaa50eae8dad34885515f62559ee83e7e8dda
 -- 
-Regards
-Kuldeep
+2.54.0
 
 
