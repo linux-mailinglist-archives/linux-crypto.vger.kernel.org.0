@@ -1,103 +1,105 @@
-Return-Path: <linux-crypto+bounces-25698-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25700-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id IzDtEYL+TGq/tAEAu9opvQ
-	(envelope-from <linux-crypto+bounces-25698-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 15:26:26 +0200
+	id Vxf4MhkKTWoXuAEAu9opvQ
+	(envelope-from <linux-crypto+bounces-25700-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 16:15:53 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9233E71BE1C
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 15:26:25 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41B7D71C70F
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 16:15:53 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=d9+prLCP;
-	dkim=pass header.d=redhat.com header.s=google header.b=ekIRXoR8;
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=fr30qjZv;
+	dkim=pass header.d=redhat.com header.s=google header.b=hl9tbIop;
 	dmarc=pass (policy=quarantine) header.from=redhat.com;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25698-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25698-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25700-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25700-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 92D343029ADB
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 13:21:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A554F3191C2B
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 13:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33FBA414DEC;
-	Tue,  7 Jul 2026 13:21:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E923422558;
+	Tue,  7 Jul 2026 13:59:33 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFCC02F7EE4
-	for <linux-crypto@vger.kernel.org>; Tue,  7 Jul 2026 13:21:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FA3442254B
+	for <linux-crypto@vger.kernel.org>; Tue,  7 Jul 2026 13:59:31 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783430464; cv=none; b=bwAAaaEyw7ZJ/3hQqcGIoa2oq37sh7innAJW5l8FxEAd1aOH4MoqJHaBmak29DaqwOOBQoNkCJ17G3TVhVoILjcgBrRS769HUKhTu79Ylno9/AQkIi6kWJLAF6uugcVDGOmFPQthJ6nzaw3rxEVQ33z6/hL87LLqNKyi1290Jx0=
+	t=1783432773; cv=none; b=LRBi9rE4AZskOD+BduLDzNq/KzqVbDfLXYBQk7R0S6iQYPQOQnysWLhEVf/493P+d8aBqDK34fpohDw4DtgFVzavHI9t3JBMQ0685W+0Hz4iGVKoIcswGKGAUg/IFam/TbNA6lNQayLpEWrSKFEuKcUaVH5/MfdFnSUlBVzfkwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783430464; c=relaxed/simple;
-	bh=xg5hsY7PfaZz7tmomblJ706RMfq/d/rrxkObrmo2auc=;
+	s=arc-20240116; t=1783432773; c=relaxed/simple;
+	bh=SNwNEvR3B4X+HSQ0xfwY01jo5aUtKjVKytIhYPj8+O4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lQlooxVDiNeWNMZ5D4Q55jrQ4qY4XAmXk9FEOdbfPdT2OVhzTvGD0WIE6AeNcgOhkUDvTUY6vyH65bglmcy6+Z+9AAqzpOjDmJzWEqyqYXqAXFozs9Zu7MHpbHs+K07DA9gxmsE94xEXPmjY8qtuHmlhKk10Ar9svUvBg7U+yMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=d9+prLCP; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=ekIRXoR8; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=F/jvADsIoMYG/Jr4a8+PSs58VCPzhTugMak+UhAviDkenBJhWFA7tnjSXp821oscB3ZeCZ9Z36sn85lzaWa6qHIxLyreG7QeujqyBSSAVRYAAtLHRBCyXi7VXI2Nbu644uLKwea/R6WUqqyW5E9zBiQkjhTh2/sYhDmx9yq82gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fr30qjZv; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=hl9tbIop; arc=none smtp.client-ip=170.10.133.124
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1783430461;
+	s=mimecast20190719; t=1783432770;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=thP5aj3x3fmC56uJZPEDVBx/SACxtUKRw32asI5LSP4=;
-	b=d9+prLCPr6prfvDqQ63rpbN2Llyn2M610JNWJr1vf2HYhFXs5k1Ch1xZ+eP1ZeW686PwhE
-	08OVQ3fLxL7zCFTsCwXOp15R8DSwTXxIv/o5IswC53OT/yHQjlzPeaWh/Zwm8I0vlFHA7q
-	Kr3vvwB/jBPNjL66lyiVc778UsIa5b8=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=LOhI92gO2abWc6onwVewcjchzMElVC19g3LkYaM5jTo=;
+	b=fr30qjZvc8Df/aavquYUPkXOgWJvrJXazXcg4/xT3GJJLz105wMuTg7dMgaD9OOW1bbakY
+	+njpo06DKrfZXACLxRYbFJirbU7AmhL75Nmg1yA76lr5UZ6SGiht3yhaJO/ikJPON30vN2
+	CnQSBfpiRr/E4U+L7SV90069PoZLPRE=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-255-W4fF5AVRNem5KKt37KgYMw-1; Tue, 07 Jul 2026 09:21:00 -0400
-X-MC-Unique: W4fF5AVRNem5KKt37KgYMw-1
-X-Mimecast-MFC-AGG-ID: W4fF5AVRNem5KKt37KgYMw_1783430459
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-493bf840a69so30881465e9.3
-        for <linux-crypto@vger.kernel.org>; Tue, 07 Jul 2026 06:21:00 -0700 (PDT)
+ us-mta-376-J9fAA5rwNEmXEx1_Nizsew-1; Tue, 07 Jul 2026 09:59:29 -0400
+X-MC-Unique: J9fAA5rwNEmXEx1_Nizsew-1
+X-Mimecast-MFC-AGG-ID: J9fAA5rwNEmXEx1_Nizsew_1783432768
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-493c20d0468so57411735e9.1
+        for <linux-crypto@vger.kernel.org>; Tue, 07 Jul 2026 06:59:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1783430459; x=1784035259; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=thP5aj3x3fmC56uJZPEDVBx/SACxtUKRw32asI5LSP4=;
-        b=ekIRXoR8ExG8hYlPCGFJrAo1nv2zFxspFydkyZYTd7kNLTmp+rZ6lZJDDo/STT7vXU
-         GBdZz0BQ8kD7hbhTfZcT2h7kv/qFV1jOPkC04gSZeQI/Wy9njo6npLnZzxmrX2vMeYkb
-         TxJbjT+OEBXp95IBcpuLZIfLz7bw08a3BUzdOsbEN3NVSz/eMydbX0s40OM+qTe2ZCT0
-         LUW4hI0ZG5QHYIc/vdw/P8P95p6fb1ABa3qDDops/cQTWXj/4zkBNT5cmrdVQMgUC5jJ
-         e77x4Y7puAw9YQ2uwkOuaYikfcRVrE7fjF64StXTr4rBhYL4AYUvcqhX4Dayh2T+t9Hg
-         t9eQ==
+        d=redhat.com; s=google; t=1783432768; x=1784037568; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=LOhI92gO2abWc6onwVewcjchzMElVC19g3LkYaM5jTo=;
+        b=hl9tbIopTSSjSKX6TgXhPO/WWYSEtytC4OKr0/MlbfJpeh+ZSNuYocyz0q9VwpLRWj
+         q+ZzJLo2wN6fFj/GoZdjseGSqLZmq4LHPnLq7qFKeocchCUzQUMjIjBJy4ZGxMFso03B
+         idNetr20nHP6+nOMuSs35lj6n6FCfcFB0JYBTiR6eWc8y5Z8lLgBfNz+t/QBKGzg5z/H
+         VFG4A4bftjrAIAa6ic8uhvw8m9WaqHb4Pt8ZTBmUnWfAKtutKyIioTy6l6CquVEVWcwx
+         +IgvGanLY7WSA7YEIFQkFcFxsx6kSO3CX/fYx9TY8Y75CzfVU8K8AuB07li1ys35wXbc
+         55eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783430459; x=1784035259;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :from:references:cc:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=thP5aj3x3fmC56uJZPEDVBx/SACxtUKRw32asI5LSP4=;
-        b=nofsB7VTYp18RMWQ53mlTfkn8QI7KHtPLccW+z3xcMHwbEubPNpRpyBawVyVIBh0yK
-         ximStyOVntcmVIxYPqSS/m93lGyWhZWADWY/zX0NUTf3up98aanTtYz+4zVDyOEcCkSU
-         IJCHfGwguCrK6Mbcqj6lCpcunibQPM4a3v9r5uPfau+6J6XKEA+zUK1LD8tFjSwWD7iI
-         icWW9xwXS/34AuNb63hxZuA0gc0kcz5vz9tewrGjG/kyeaoPcWlpsi5GbmbLSACAh5SW
-         bxC0wqpS/cPBYNVW86euXX3QStUYg02Qc+d6kj7JlfPqpg45FeG2MDxEYuXHmwYRdcZt
-         3XPg==
-X-Forwarded-Encrypted: i=1; AHgh+RondWYQNlqA8eeTTyjQb8SPwQ3RTNjVUkN88G88H+1UvJF6Fris++UvmV/ftPKZiNCR0v4W+silb4a3y0o=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxkswnwQ1Xd26JB7jScqn2wQ1PcagCBQW7BK759tXSRejyFVkx9
-	Umg4TC+r2R4VnhzlJFOmm3Gk0ZupriseHdEKgH3xbM5X6+ESeWWqTb/tDDcPZGjnTpe8cKGeN6L
-	4rWIYstH+oEKRD5gaQFwxA3IlbT23h86KXdmuUVkm/b1J/UPVcGqFnA4BwCRJrdU2kg==
-X-Gm-Gg: AfdE7ckAJ3497aLILmo1fz7fUNHv0aHx8z4PMhtznfF3qy6PaE4FAaCEa3LIPGHWkGh
-	R6xF1oVcDFOwr2k7MLsvILgWHFx32ixUKK/wcisWyg9VlZLMKnhfpTwREFuvT/nR5Km9tkq/9dp
-	WwePmKF57fFGuH5kcgZVfqkV3c8kyxSrFiisLaIEHkVSAkBYevTOruD9k5WaHy5ZLLEq2WDDBmg
-	mscmoWWp9RzkGE4PkhqKKds46HXEHxpKHVmncHZdgmLrdM/EShCe+J1IAhBSRLrwI9nzvXdJqX2
-	EjyA1+8MACqeBZlYZZjI6LyG7BCUTHPz7p6XDViwQkuZZtRNm6uEBS3w7Twf1NQ2ZiSJA3Vm2ZK
-	SrRvK2g==
-X-Received: by 2002:a05:600c:8011:b0:492:6113:d4fc with SMTP id 5b1f17b1804b1-493df048928mr58962155e9.17.1783430459065;
-        Tue, 07 Jul 2026 06:20:59 -0700 (PDT)
-X-Received: by 2002:a05:600c:8011:b0:492:6113:d4fc with SMTP id 5b1f17b1804b1-493df048928mr58961625e9.17.1783430458560;
-        Tue, 07 Jul 2026 06:20:58 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1783432768; x=1784037568;
+        h=content-transfer-encoding:content-type:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=LOhI92gO2abWc6onwVewcjchzMElVC19g3LkYaM5jTo=;
+        b=SqWqrJENwCIAidDLPc+X9fseYMgcFNY0H/4B3xYJOYndD+FWV3kZqghH9/SxUMezpR
+         gYi4slH32g2HFx8STonNGL2LiJz8O5wLJ0TQ55F4Ww1RJb8O16DkDg5GTzl/i4p5mvvU
+         vS/m3f52GZkS4ht9Sb+BsqurDQ01EXirXf9u7eEPa523n8qfnmfBKwW89Xuax0/qdp+2
+         PjvasRQ5RUPbsxtgp4oxsyMu/pgmXqUvAwkWTPQo5XPSyhP/5EPvF1EgEWCuV7Vt20dN
+         EPYnpYIFNn4FBdJA7o1CzCGjpnPqsz0EgJpiN6kdRTapSke1gxnUWyYwXAn1jpAtvqHS
+         GL0Q==
+X-Forwarded-Encrypted: i=1; AHgh+Rr7OTVK3GH8sd3H6Fnc7JKppn4mHnwUVLL4EwT5Old8+VetkrMFlMNr++2kGffMzvo2BPV4BisfF1jqOnY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwLbrPEoqa20UyimgTfLEijSCtmFuxQGVJ5VftglIsZKbOVdsds
+	OjopBrH2FjMkROBYCSVtQgzw2iPUsYa7bEQz2N2w0wZCaHLUeIEJpYl0XRzvzWthuE09T48kLdZ
+	IYn7F8F/ur7B3mkzAbb0LhjDfyVPzINlUX7xDRUcdCrRTH7nnJuP46kigI6r4ArJoIsa+dxfzxA
+	==
+X-Gm-Gg: AfdE7cn8RlfAlZdtq2WHqU0lnctrI7KLEd0ONACfF2rhnfuFoAYfj4daBchZrsOYaH2
+	IvpjCGFItGM8XWD0DzYbKqSlBgI3u0vtAeqOQ4r3hsFNVVCQ/v4nF1JBgCxXH25fiM++/3mDO4Y
+	7PoK9Qa1ly3O61TO5Mt5F93IZWDpNiQQ8qwXYxmWAQ4bLYyA+GX/rrCM7HvaLqSedHjWmvpD2Nb
+	GTdzvotTLSr5OTalNp41dRvccENHMIvt10u8Mr8GcR0jhaAbiX4fF7yySTiqbwYQeE713mR2bI1
+	ayjX5Y72XqeK2J8NY2Lkhpf39c9x1UJXVblw6CTnJ7qieoWpgUK30iO/oqWDF/UMigykonyiNbL
+	e4XUdlQ==
+X-Received: by 2002:a05:600c:474a:b0:493:c062:a533 with SMTP id 5b1f17b1804b1-493df0673f8mr64717535e9.17.1783432767990;
+        Tue, 07 Jul 2026 06:59:27 -0700 (PDT)
+X-Received: by 2002:a05:600c:474a:b0:493:c062:a533 with SMTP id 5b1f17b1804b1-493df0673f8mr64717195e9.17.1783432767384;
+        Tue, 07 Jul 2026 06:59:27 -0700 (PDT)
 Received: from [10.22.2.34] ([91.26.127.10])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493e01d21eesm52585715e9.2.2026.07.07.06.20.57
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493e0fccf2dsm60380145e9.15.2026.07.07.06.59.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Jul 2026 06:20:58 -0700 (PDT)
-Message-ID: <0f703207-ab66-43da-a9b8-fc8b043bdd34@redhat.com>
-Date: Tue, 7 Jul 2026 15:20:55 +0200
+        Tue, 07 Jul 2026 06:59:26 -0700 (PDT)
+Message-ID: <f41f7217-c444-41da-84b9-1592dcd9b58d@redhat.com>
+Date: Tue, 7 Jul 2026 15:59:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -105,13 +107,13 @@ List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/33] crypto: xts - Split out __xts_verify_key() helper
+Subject: Re: [PATCH 02/33] lib/crypto: aes: Add ECB support
 To: Eric Biggers <ebiggers@kernel.org>, linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 References: <20260707053503.209874-1-ebiggers@kernel.org>
- <20260707053503.209874-2-ebiggers@kernel.org>
-From: Thomas Huth <thuth@redhat.com>
+ <20260707053503.209874-3-ebiggers@kernel.org>
 Content-Language: en-US
+From: Thomas Huth <thuth@redhat.com>
 Autocrypt: addr=thuth@redhat.com; keydata=
  xsFNBFH7eUwBEACzyOXKU+5Pcs6wNpKzrlJwzRl3VGZt95VCdb+FgoU9g11m7FWcOafrVRwU
  yYkTm9+7zBUc0sW5AuPGR/dp3pSLX/yFWsA/UB4nJsHqgDvDU7BImSeiTrnpMOTXb7Arw2a2
@@ -154,14 +156,14 @@ Autocrypt: addr=thuth@redhat.com; keydata=
  oiT+z+/E59qj/EKfyce3sbC9XLjXv3mHMrq1tKX4G7IJGnS989E/fg6crv6NHae9Ckm7+lSs
  IQu4bBP2GxiRQ+NV3iV/KU3ebMRzqIC//DCOxzQNFNJAKldPe/bKZMCxEqtVoRkuJtNdp/5a
  yXFZ6TfE1hGKrDBYAm4vrnZ4CXFSBDllL59cFFOJCkn4Xboj/aVxxJxF30bn
-In-Reply-To: <20260707053503.209874-2-ebiggers@kernel.org>
+In-Reply-To: <20260707053503.209874-3-ebiggers@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -169,7 +171,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-25698-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25700-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_SENDER(0.00)[thuth@redhat.com,linux-crypto@vger.kernel.org];
@@ -182,24 +184,157 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[thuth@redhat.com,linux-crypto@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 9233E71BE1C
+X-Rspamd-Queue-Id: 41B7D71C70F
 
 On 07/07/2026 07.34, Eric Biggers wrote:
-> Make the AES-XTS key verification code callable by the crypto library by
-> splitting out a helper function that doesn't use crypto_skcipher.
+> Add support for AES-ECB to the crypto library.
+> 
+> This will be used to provide a streamlined implementation of the
+> "ecb(aes)" crypto_skcipher algorithm.  fs/crypto/keysetup_v1.c will also
+> use aes_ecb_encrypt() directly.
+> 
+> As usual, the architecture-optimized AES-ECB code will be migrated into
+> the library as well (using the hooks provided in this commit),
+> eliminating lots of repetitive boilerplate code.
+> 
+> ECB is obsolete of course, but we need this for parity with the
+> traditional API and to support some odd users of ECB in the kernel.
+> 
+> Initial test coverage is provided by the crypto_skcipher support added
+> in a later commit.  I'm planning a KUnit test suite as well.
+> 
+> Create a documentation file libcrypto-unauth-encryption.rst to hold the
+> documentation for this and other unauthenticated encryption modes.
 > 
 > Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 > ---
->   include/crypto/xts.h | 18 ++++++++++++++----
->   1 file changed, 14 insertions(+), 4 deletions(-)
-Reviewed-by: Thomas Huth <thuth@redhat.com>
+>   .../crypto/libcrypto-unauth-encryption.rst    | 28 ++++++++++
+>   Documentation/crypto/libcrypto.rst            |  1 +
+>   include/crypto/aes-ecb.h                      | 49 ++++++++++++++++
+>   lib/crypto/Kconfig                            |  9 ++-
+>   lib/crypto/aes.c                              | 56 +++++++++++++++++++
+>   lib/crypto/tests/Kconfig                      |  1 +
+>   6 files changed, 142 insertions(+), 2 deletions(-)
+>   create mode 100644 Documentation/crypto/libcrypto-unauth-encryption.rst
+>   create mode 100644 include/crypto/aes-ecb.h
+> 
+> diff --git a/Documentation/crypto/libcrypto-unauth-encryption.rst b/Documentation/crypto/libcrypto-unauth-encryption.rst
+> new file mode 100644
+> index 000000000000..891c15279749
+> --- /dev/null
+> +++ b/Documentation/crypto/libcrypto-unauth-encryption.rst
+> @@ -0,0 +1,28 @@
+> +.. SPDX-License-Identifier: GPL-2.0-or-later
+> +
+> +Unauthenticated encryption
+> +==========================
+> +
+> +Support for unauthenticated encryption and decryption, including bare stream
+> +ciphers and other length-preserving algorithms such as block ciphers in XTS
+> +mode.
+
+This sentence no verb?
+
+> +
+> +- Support for legacy protocols that really should have chosen an authenticated
+> +  mode (or even another primitive entirely) but didn't.
+> +
+> +- Internal components of authenticated modes.  For example, AES-CTR is used by
+> +  AES-GCM and AES-CCM internally.
+> +
+> +- Storage encryption that cannot accommodate ciphertext expansion.  Usually
+> +  AES-XTS is used for this.
+> +
+> +- Stream ciphers for key derivation and random number generation.
+> +
+> +Besides the above, these shouldn't be used.
+> +
+> +AES-ECB
+> +-------
+> +
+> +Support for AES in the ECB mode of operation.
+> +
+> +.. kernel-doc:: include/crypto/aes-ecb.h
+> diff --git a/Documentation/crypto/libcrypto.rst b/Documentation/crypto/libcrypto.rst
+> index a1557d45b0e5..bbf5ca137910 100644
+> --- a/Documentation/crypto/libcrypto.rst
+> +++ b/Documentation/crypto/libcrypto.rst
+> @@ -161,5 +161,6 @@ API documentation
+>      libcrypto-blockcipher
+>      libcrypto-hash
+>      libcrypto-signature
+> +   libcrypto-unauth-encryption
+>      libcrypto-utils
+>      sha3
+> diff --git a/include/crypto/aes-ecb.h b/include/crypto/aes-ecb.h
+> new file mode 100644
+> index 000000000000..bfc56bdb082c
+> --- /dev/null
+> +++ b/include/crypto/aes-ecb.h
+> @@ -0,0 +1,49 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * AES-ECB unauthenticated encryption and decryption
+> + *
+> + * Copyright 2026 Google LLC
+> + */
+> +#ifndef _CRYPTO_AES_ECB_H
+> +#define _CRYPTO_AES_ECB_H
+> +
+> +#include <crypto/aes.h>
+> +
+> +/**
+> + * aes_ecb_encrypt() - Encrypt data using AES-ECB
+> + * @dst: The destination buffer.  Can be in-place or out-of-place.  For other
+> + *	 overlaps the behavior is unspecified.
+> + * @src: The source data
+> + * @len: Number of bytes to encrypt.  Must be a multiple of AES_BLOCK_SIZE.
+> + * @key: The key
+> + *
+> + * ECB mode is insecure by itself.  This function exists only for compatibility
+> + * with legacy protocols and for internal use by other modes.
+> + *
+> + * This supports incremental encryption, but the length of each chunk must be a
+> + * multiple of AES_BLOCK_SIZE.
+> + *
+> + * Context: Any context.
+> + */
+> +void aes_ecb_encrypt(u8 *dst, const u8 *src, size_t len, aes_encrypt_arg key);
+
+Other similar functions like aes_encrypt() use the key as first argument ... 
+so maybe do the same here, too, for consistency?
+
+> +/**
+> + * aes_ecb_decrypt() - Decrypt data using AES-ECB
+> + * @dst: The destination buffer.  Can be in-place or out-of-place.  For other
+> + *	 overlaps the behavior is unspecified.
+> + * @src: The source data
+> + * @len: Number of bytes to decrypt.  Must be a multiple of AES_BLOCK_SIZE.
+> + * @key: The key
+> + *
+> + * ECB mode is insecure by itself.  This function exists only for compatibility
+> + * with legacy protocols and for internal use by other modes.
+> + *
+> + * This supports incremental decryption, but the length of each chunk must be a
+> + * multiple of AES_BLOCK_SIZE.
+> + *
+> + * Context: Any context.
+> + */
+> +void aes_ecb_decrypt(u8 *dst, const u8 *src, size_t len,
+> +		     const struct aes_key *key);
+
+dito
+
+Apart from that, patch looks fine to me.
+
+  Thomas
 
 
