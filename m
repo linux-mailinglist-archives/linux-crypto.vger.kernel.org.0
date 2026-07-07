@@ -1,260 +1,512 @@
-Return-Path: <linux-crypto+bounces-25654-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25660-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id +rf5FfmPTGrtmAEAu9opvQ
-	(envelope-from <linux-crypto+bounces-25654-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:34:49 +0200
+	id 5kI8JdCQTGohmQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-25660-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:38:24 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D235717791
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E08E77177F2
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:38:23 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=qualcomm.com header.s=qcppdkim1 header.b=goKEBfAs;
-	dkim=pass header.d=oss.qualcomm.com header.s=google header.b=BIHnlfEq;
-	dmarc=pass (policy=reject) header.from=qualcomm.com;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25654-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25654-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=Ytyl0Qqz;
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25660-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25660-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3FF9E3016C9D
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 05:34:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9B78930363A1
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 05:37:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D1B385D97;
-	Tue,  7 Jul 2026 05:34:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8C1386C31;
+	Tue,  7 Jul 2026 05:37:20 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F375376A02
-	for <linux-crypto@vger.kernel.org>; Tue,  7 Jul 2026 05:34:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DBC8385D8F;
+	Tue,  7 Jul 2026 05:37:18 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783402484; cv=none; b=BLqqv2aPQ3YAjgHaicoFJl8LmXx0b88LOmMX7DAPvoJ9cuQXkywzuYr5pW/FkeLz+H6FhaE6GYOsReZs/SygIJqkmFPBlVuI2OIrgQi/hzOi9ycAleldlDU9Bw9FrV76vHMjF4m1NX7mMcJ9pQRXJwT42vSiA7kOY3c9bNOu6Mo=
+	t=1783402640; cv=none; b=HRF1XTNaTKGv3U0Hft2WxHenPiKG2MZ7vj3o10Jsf1OCDseKvoc8PHaL9GQ19DP/4jHvu/ZhlMoep9k71mDjWxg8E/awneZsAg3vCBFOTUfEa3uHslhTVetHQwh3qBdjHKcjJXm2WVrEwS/feaEtdM+cP9YKqKWnYIAFTFlRIBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783402484; c=relaxed/simple;
-	bh=6gUJmEQ7gh2OVod4PlGCDo2UYQU2TxUMTLZmwW4INZQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Gw1tDQgTFNg+an6m/atyG1apN7xwSQeon+EQT0TQdDMuCNchLlEDFV95SSgbUA+o2rEyWmJ2bwJAzeLCrRSdeo613Xz5HohalRW5J2yHXnV40roUAsVhvhoyVmkJNSIAf4gWDknLjPxZu7BNjnuzgFG28Xqy7nLtdkvk8xBvAnw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=goKEBfAs; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=BIHnlfEq; arc=none smtp.client-ip=205.220.180.131
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 66749GZd2658259
-	for <linux-crypto@vger.kernel.org>; Tue, 7 Jul 2026 05:34:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	J5y61QSWVlQeeop/0EzUtwGiLotqpcy/KmZCwpdQ1Jw=; b=goKEBfAsewj0Z2Cy
-	UGR1y5P3xcYq7gCpS0Owxr6dGO+uI1+0NmVs2aQ4qQ1azCJn79x28aNGe9xUAtVS
-	ot+dTVw55poQ0RfvHkvhyV5Xoa2pxqcbZF6+gBKN/nB+WMqDfG9HLLzFmPMbsiyH
-	OfJ2EBdrE7HVwD8ttZzsw2VcYR7UhBmcTNVSDV4tnTkBsa0/I6pKqCEKKxJmpnIs
-	b5KLFUHwqI6Wv8dVn7+y5L4eTJN76rUlkd2HOqmjVu3HS+Kfy5dM+MgQHb/bzMCD
-	JfHIeirUnsTXwPE0tzD5EKp516daVqJiz2BGvz/xc+2XKMCRneSXIMQk5aFSKYYV
-	wlNdtg==
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4f8a3r47sf-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-crypto@vger.kernel.org>; Tue, 07 Jul 2026 05:34:42 +0000 (GMT)
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-c88fc985a65so6500145a12.2
-        for <linux-crypto@vger.kernel.org>; Mon, 06 Jul 2026 22:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1783402481; x=1784007281; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=J5y61QSWVlQeeop/0EzUtwGiLotqpcy/KmZCwpdQ1Jw=;
-        b=BIHnlfEqDSAfhCTzHDFfekQXEkoHNzZm0pGt+DCZae3xC65P+3zrdFiNSjJwDrzeaY
-         qjqlFKRkPKHGCdfylhoQJ7R5nIFdz/6xQ2huhpNKzUD/apN0tmOKE9BBAKBMQ0fhdl8C
-         TM325qzAbFRPgbAgOYdo1Z51oBZpIEuR4BbmF5SaCROTh4qxbqjaugKvp3EMXjqcQdAa
-         BIwwLO4BRHggpLPFapOReFUsY/BgP9ZSRF2QaxwR553I0NJyTw7f6EU/cb/yCV3fInbk
-         cQG1DXaRxjcf1Bukmau9GWjm5psGAblB4Td/sqcKC8Rlz1N3QIwEXIoKxhKuzkxzBGpv
-         p03Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783402481; x=1784007281;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J5y61QSWVlQeeop/0EzUtwGiLotqpcy/KmZCwpdQ1Jw=;
-        b=jHCrc06G2deQm3UYzveGEahSOLsiC7/uJAAzRPUzoL6sTo1UQRQyyBvlZt0onKGSro
-         M7RgLu17sCiBxt4ZA4BglwabrOs+1s1jNPT25adkwpLSwV4bP1RFp/MhkOqHFNYy8ncl
-         GFuDhbGHIEfRT2+Qvrz24hJur74yLeRUxQy8q6hl9XKCdg+zGerB4uVnVrFrFgnO3VpF
-         GrZw9+xgeperoFx5ACJBZbJZQchw3hMcBQwuxgmufYNyqgPdUx8uE1CaJww4L27vRbOA
-         QUEt2RSKmoisf868x5vrPEFsITyzuokHeeeferMy70i1SPs+gCixSieS6VGYUV88DS86
-         0ZFw==
-X-Forwarded-Encrypted: i=1; AHgh+RoLUqCWHwSV030HmyG9n4T0ctJVRCxSc/G3Wd43G8GpCSmIadVb0YfL8OWoL19WoDyCyG4URCT8jKjkYVo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxLqYAlHdvdv1VVfjZm4nh0x628243sVR8bIGXwO68X/lzk+rX1
-	JIhb4DYgZ41VktAryzLekFgoPzHOMye/NMHJ6ec2v7WPXG2LIagfq49HjY2VLQNgoSygNRF6fqE
-	CQVrvaw3OzcGOKfoQb3WrKXM9CCcJoZLCs6mwqtvofkxsGyA5vd2L36Px33rlc5bACU4=
-X-Gm-Gg: AfdE7clait8w2RodJ1shFlZEg0F+EODzSeYr5FbkFbEA7iufuaYMJt1AKMEICIqVcX7
-	FElLx/yJVR5fNrglKqRRLMfzUZKMZitM6iCLMnuNl27fZdvztKe7ncReZ8MdACMweI4P85JiRhz
-	axA/DPkDVSTRsnci2i3jQewivdAWX6xTSCfzZQ4xLh7faHRvQ9vh8HsBUq7ZHoYUDeI/AVupoWw
-	oW7ZebRPrb37WkGvEm2UBHSAJRORVYcNTaGpxA8WqpNpTc2ovMjNKLMI0BvhGyn8fGJt1pN1mWp
-	JTZzOQReccd1JdXSQAaEVgmnlduHKQ9Sany08f+vNNsctkNZKh+45RsYES2FSBf1hrWaQa1HYVo
-	lbyhKAUxAuhr3wmzgKlLzyJpnuQ8y3s/cS2spLvxa
-X-Received: by 2002:a05:6a21:648a:b0:3bf:a9cb:b799 with SMTP id adf61e73a8af0-3c08ef902e9mr4691637637.54.1783402481075;
-        Mon, 06 Jul 2026 22:34:41 -0700 (PDT)
-X-Received: by 2002:a05:6a21:648a:b0:3bf:a9cb:b799 with SMTP id adf61e73a8af0-3c08ef902e9mr4691604637.54.1783402480647;
-        Mon, 06 Jul 2026 22:34:40 -0700 (PDT)
-Received: from [10.217.223.121] ([202.46.22.19])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-ca5afeb060bsm398917a12.14.2026.07.06.22.34.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Jul 2026 22:34:40 -0700 (PDT)
-Message-ID: <cb8f0ebf-8afa-45dd-b2fe-724af7e0b73f@oss.qualcomm.com>
-Date: Tue, 7 Jul 2026 11:04:34 +0530
+	s=arc-20240116; t=1783402640; c=relaxed/simple;
+	bh=jOgIiVD7Mn8gzoffnE6V3C17CLLNZD6il6P6m28k/7g=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=T2hI29fAHsSzCXh4Enx7khjt1UyVelj0KAMJliSCd0ysnfmmzJpVs/4NiTDanw2vtttFHecNInJ64tECTCLlxSzzUJwIhcP4B5t77z89z7q5JFtJCRanZp/F3uh9NKM1WUc+u/B3hgR+lhWFFtBnYsBl4pcmV6BZJO8wNfb5hEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ytyl0Qqz; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8BBB1F00ACA;
+	Tue,  7 Jul 2026 05:37:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783402637;
+	bh=VptQ97cdXDaY+elAg+U/IfYlsYOqfzsoozECAUR1eD8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=Ytyl0Qqz1CZ015iRlKA6D7C63yhv1FYEGHtBsFZzKm51nTb+v85FeySh9r3TUm1Kj
+	 zaIHXmHO26u5H0Jtp0S56bt9kxMY0xnqV9XbiP4o2UrWkYg2V0IexMo9ieYns+zuqn
+	 9iva3zq7As4Hvyl+QWvVskEirwswKzfQN5gaW8zBEU1P2jQDJ2wq3hJcQbE+8cnm+o
+	 qcot//Jdm6LrQoMNxjgwTftu7SExPAl3lTGk3Fmw0hGEg/dvXHIeKnadZGDlJp0PsV
+	 QEbGM+UQ35foRg/27qnPP2cJizQZUEAAPUmEwjvxOL9CSP4Qs4MDjXPcXiILtB593Q
+	 DQseF2xMb/PRg==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH 05/33] lib/crypto: aes: Add XTS support
+Date: Mon,  6 Jul 2026 22:34:35 -0700
+Message-ID: <20260707053503.209874-6-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.54.0
+In-Reply-To: <20260707053503.209874-1-ebiggers@kernel.org>
+References: <20260707053503.209874-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: glymur: add TRNG node
-To: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc: Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>,
-        linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley
- <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@oss.qualcomm.com>
-References: <20260424-glymur_trng_enablement-v2-0-0603cbe68440@oss.qualcomm.com>
- <20260424-glymur_trng_enablement-v2-2-0603cbe68440@oss.qualcomm.com>
- <814cff7c-fc03-42a0-93e6-852598943ac4@oss.qualcomm.com>
- <0debc1fb-f6ae-44c6-aa87-d5ef3e39b47d@oss.qualcomm.com>
- <b4794e93-0fd3-4559-9ecd-02d679bd06b5@oss.qualcomm.com>
- <b5287c07-24b1-4011-9805-529f6f51c22f@oss.qualcomm.com>
-Content-Language: en-US
-From: Harshal Dev <harshal.dev@oss.qualcomm.com>
-In-Reply-To: <b5287c07-24b1-4011-9805-529f6f51c22f@oss.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNzA3MDA1MCBTYWx0ZWRfXwouhmg570zu4
- +xhDhLsxp5BkNQHwILfpcZN+/f1qIoDXfMjfpOaMwN0ou+LIz/ouwXVwO+3JDSulm30Mm0UlCe4
- WhkEcSL7JhVXas8Cmx0k0FBIzSudnJTt52JbxPnH+uiy+nfRsw2gnMAq/4NBD3kA+1Sun7hExK3
- oYNPcWWhW1jIn4VoifL40ChlNuyu1PhejLrDqgK38wYDuDTTDTqdccyfAxfUBJGUoJuaGydKYT7
- Vwxk2CwV0NlSB9+Km39M1JAsCscmXrEk6+lAcP4gL4lxLMBP1q6lZ7Z1uuCqUeIwSt2JF4CL20+
- fDGTF9bSanp85b3zwwEoa0zxc9RDtBHeYB50Digq4I8peoqrztwb16YEZ6fla1ip/mDzJVsGRv8
- MnoFo958WiT9fc+fg+m9MvU0Be6ljJBCDq4TiWmjqFqcW3n4VY4dRpqubhdPXD1K+uaEwk1vj+J
- WX0CrBnrOH5j823u4CA==
-X-Proofpoint-Spam-Info: AW1haW4tMjYwNzA3MDA1MCBTYWx0ZWRfX2/upv4fcX7S1
- wW72izHZHiZ/Hs00Kc+eiWPDT8uYHHFPSV8tzKHbMLhkQXZ1DdG0Ea1H0/jnFZFgA4P6IZ/m05a
- 5Ur0JzohnFNNU3C7XetztWXDmidjjg0=
-X-Proofpoint-GUID: gT0uzrt25QXaF2V6Lj8S7R3WG9hxQdyK
-X-Proofpoint-ORIG-GUID: gT0uzrt25QXaF2V6Lj8S7R3WG9hxQdyK
-X-Authority-Analysis: v=2.4 cv=OKcXGyaB c=1 sm=1 tr=0 ts=6a4c8ff2 cx=c_pps
- a=oF/VQ+ItUULfLr/lQ2/icg==:117 a=fChuTYTh2wq5r3m49p7fHw==:17
- a=IkcTkHD0fZMA:10 a=RAioF0-LDSMA:10 a=s4-Qcg_JpJYA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=u7WPNUs3qKkmUXheDGA7:22 a=3WHJM1ZQz_JShphwDgj5:22
- a=EUspDBNiAAAA:8 a=FNHKQYERf4qwuPYjk0kA:9 a=QEXdDO2ut3YA:10
- a=3WC7DwWrALyhR5TkjVHa:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-07-07_01,2026-07-06_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0 adultscore=0 malwarescore=0 clxscore=1011 suspectscore=0
- spamscore=0 phishscore=0 priorityscore=1501 impostorscore=0 bulkscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2606150000 definitions=main-2607070050
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-3.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[qualcomm.com,reject];
-	R_DKIM_ALLOW(-0.20)[qualcomm.com:s=qcppdkim1,oss.qualcomm.com:s=google];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-25654-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[qualcomm.com:email,qualcomm.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,oss.qualcomm.com:from_mime,oss.qualcomm.com:dkim,oss.qualcomm.com:mid];
-	FORGED_SENDER(0.00)[harshal.dev@oss.qualcomm.com,linux-crypto@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	FORGED_RECIPIENTS(0.00)[m:konrad.dybcio@oss.qualcomm.com,m:andersson@kernel.org,m:kuldeep.singh@oss.qualcomm.com,m:linux-arm-msm@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:devicetree@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:robh@kernel.org,m:krzk+dt@kernel.org,m:conor+dt@kernel.org,m:vkoul@kernel.org,m:konradybcio@kernel.org,m:dmitry.baryshkov@oss.qualcomm.com,m:krzk@kernel.org,m:conor@kernel.org,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:ebiggers@kernel.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25660-lists,linux-crypto=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[qualcomm.com:+,oss.qualcomm.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_THREE(0.00)[3];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[harshal.dev@oss.qualcomm.com,linux-crypto@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	ALIAS_RESOLVED(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7D235717791
+X-Rspamd-Queue-Id: E08E77177F2
 
-Hi Konrad, Bjorn
+Add support for AES-XTS to the crypto library.
 
-On 6/18/2026 5:50 PM, Konrad Dybcio wrote:
-> On 6/18/26 1:58 PM, Harshal Dev wrote:
->> Hi Bjorn,
->>
->> On 6/9/2026 12:06 PM, Harshal Dev wrote:
->>> Hello Bjorn,
->>>
->>> On 5/18/2026 2:06 PM, Harshal Dev wrote:
->>>> Hi Bjorn,
->>>>
->>>> On 4/24/2026 2:05 PM, Harshal Dev wrote:
->>>>> Glymur has a True Random Number Generator, add the node with the correct
->>>>> compatible set.
->>>>>
->>>>> Reviewed-by: Konrad Dybcio <konrad.dybcio@oss.qualcomm.com>
->>>>> Signed-off-by: Harshal Dev <harshal.dev@oss.qualcomm.com>
->>>>> ---
->>>>>  arch/arm64/boot/dts/qcom/glymur.dtsi | 5 +++++
->>>>>  1 file changed, 5 insertions(+)
->>>>>
->>>>> diff --git a/arch/arm64/boot/dts/qcom/glymur.dtsi b/arch/arm64/boot/dts/qcom/glymur.dtsi
->>>>> index f23cf81ddb77..64bbd5691229 100644
->>>>> --- a/arch/arm64/boot/dts/qcom/glymur.dtsi
->>>>> +++ b/arch/arm64/boot/dts/qcom/glymur.dtsi
->>>>> @@ -3675,6 +3675,11 @@ pcie3b_phy: phy@f10000 {
->>>>>  			status = "disabled";
->>>>>  		};
->>>>>  
->>>>> +		rng: rng@10c3000 {
->>>>> +			compatible = "qcom,glymur-trng", "qcom,trng";
->>>>> +			reg = <0x0 0x010c3000 0x0 0x1000>;
->>>>> +		};
->>>>> +
->>>>>  		tcsr_mutex: hwlock@1f40000 {
->>>>>  			compatible = "qcom,tcsr-mutex";
->>>>>  			reg = <0x0 0x01f40000 0x0 0x20000>;
->>>>>
->>>>
->>>> A gentle reminder to pick this patch for the 7.2 merge window.
->>>>
->>>
->>> Another reminder to pick this patch up in-case you've missed it.
->>>
->>
->> Gentle reminder.
-> 
-> Bjorn and I were both out at the time, after we returned it was too
-> late to accept new patches.
-> 
-> Currently we're halfway through the merge window (where Torvalds
-> receives pull requests to create 7.2-rc1 out of), during which
-> contributions are not accepted. They will resume in ~1.5wk after
-> 7.2-rc1 is tagged, targetting 7.3
->
+This will be used to provide a streamlined implementation of the
+"xts(aes)" crypto_skcipher algorithm.  I'm also planning to use this
+directly in fscrypt and blk-crypto-fallback.
 
-I believe we can pick this up for 7.3 merge window now.
-A gentle reminder to pick this up.
+As usual, the architecture-optimized AES-XTS code will be migrated into
+the library as well (using the hooks provided in this commit),
+eliminating lots of repetitive boilerplate code.  Compared to direct
+implementation of "xts(aes)", I've also eliminated the requirement for
+architectures to implement ciphertext stealing, as the library just
+handles it portably instead.  That will simplify things considerably.
 
-Thanks a lot!
-Harshal 
-> Konrad
+Initial test coverage is provided by the crypto_skcipher support added
+in a later commit.  I'm planning a KUnit test suite as well.
+
+Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+---
+ .../crypto/libcrypto-unauth-encryption.rst    |   7 +
+ include/crypto/aes-xts.h                      |  87 +++++++
+ lib/crypto/Kconfig                            |   6 +
+ lib/crypto/aes.c                              | 224 ++++++++++++++++++
+ lib/crypto/tests/Kconfig                      |   1 +
+ 5 files changed, 325 insertions(+)
+ create mode 100644 include/crypto/aes-xts.h
+
+diff --git a/Documentation/crypto/libcrypto-unauth-encryption.rst b/Documentation/crypto/libcrypto-unauth-encryption.rst
+index 6aca01d715da..15deba7e53e8 100644
+--- a/Documentation/crypto/libcrypto-unauth-encryption.rst
++++ b/Documentation/crypto/libcrypto-unauth-encryption.rst
+@@ -40,3 +40,10 @@ AES-ECB
+ Support for AES in the ECB mode of operation.
+ 
+ .. kernel-doc:: include/crypto/aes-ecb.h
++
++AES-XTS
++-------
++
++Support for AES in the XTS mode of operation.
++
++.. kernel-doc:: include/crypto/aes-xts.h
+diff --git a/include/crypto/aes-xts.h b/include/crypto/aes-xts.h
+new file mode 100644
+index 000000000000..226ac38d54ac
+--- /dev/null
++++ b/include/crypto/aes-xts.h
+@@ -0,0 +1,87 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * AES-XTS unauthenticated encryption and decryption
++ *
++ * Copyright 2026 Google LLC
++ */
++#ifndef _CRYPTO_AES_XTS_H
++#define _CRYPTO_AES_XTS_H
++
++#include <crypto/aes.h>
++#include <crypto/xts.h>
++
++/**
++ * struct aes_xts_key - A key prepared for AES-XTS encryption and decryption
++ *
++ * Note that (depending on the architecture) this typically is around 768 bytes,
++ * which makes it a bit too large to allocate on the stack in most cases.
++ */
++struct aes_xts_key {
++	/* private: */
++	struct aes_key main_key;
++	struct aes_enckey tweak_key;
++};
++
++/**
++ * aes_xts_preparekey() - Prepare an AES-XTS key
++ * @key: (output) The key structure to initialize
++ * @in_key: The raw AES-XTS key
++ * @key_len: Length of the raw key in bytes
++ * @flags: Optional flag XTS_FORBID_WEAK_KEYS to forbid keys whose two halves
++ *	   are the same.
++ *
++ * Context: Any context.
++ * Return:
++ * * 0 on success
++ * * -EINVAL if the key is rejected because its length isn't 32, 64, or (when
++ *   FIPS mode isn't enabled) 48; or because its two halves are the same and
++ *   either XTS_FORBID_WEAK_KEYS is given or FIPS mode is enabled.
++ */
++int __must_check aes_xts_preparekey(struct aes_xts_key *key, const u8 *in_key,
++				    size_t key_len, int flags);
++
++/**
++ * aes_xts_encrypt() - Encrypt data using AES-XTS
++ * @dst: The destination buffer.  Can be in-place or out-of-place.  For other
++ *	 overlaps the behavior is unspecified.
++ * @src: The source data
++ * @len: Number of bytes to encrypt.  Must be >= AES_BLOCK_SIZE.  On non-last
++ *	 calls it also must be a multiple of AES_BLOCK_SIZE.
++ * @tweak: The tweak.  It is updated with the next value, unless @len isn't a
++ *	   multiple of AES_BLOCK_SIZE in which case the value is unspecified.
++ * @key: The key
++ * @cont: %true to continue same message (skip tweak encryption)
++ *
++ * This supports both one-shot and incremental encryption.  For incremental
++ * encryption, all non-last calls require @len aligned to AES_BLOCK_SIZE, and
++ * all non-first calls require @cont = %true.
++ *
++ * Context: Any context.
++ */
++void aes_xts_encrypt(u8 *dst, const u8 *src, size_t len,
++		     u8 tweak[at_least AES_BLOCK_SIZE],
++		     const struct aes_xts_key *key, bool cont);
++
++/**
++ * aes_xts_decrypt() - Decrypt data using AES-XTS
++ * @dst: The destination buffer.  Can be in-place or out-of-place.  For other
++ *	 overlaps the behavior is unspecified.
++ * @src: The source data
++ * @len: Number of bytes to decrypt.  Must be >= AES_BLOCK_SIZE.  On non-last
++ *	 calls it also must be a multiple of AES_BLOCK_SIZE.
++ * @tweak: The tweak.  It is updated with the next value, unless @len isn't a
++ *	   multiple of AES_BLOCK_SIZE in which case the value is unspecified.
++ * @key: The key
++ * @cont: %true to continue same message (skip tweak encryption)
++ *
++ * This supports both one-shot and incremental decryption.  For incremental
++ * decryption, all non-last calls require @len aligned to AES_BLOCK_SIZE, and
++ * all non-first calls require @cont = %true.
++ *
++ * Context: Any context.
++ */
++void aes_xts_decrypt(u8 *dst, const u8 *src, size_t len,
++		     u8 tweak[at_least AES_BLOCK_SIZE],
++		     const struct aes_xts_key *key, bool cont);
++
++#endif /* _CRYPTO_AES_XTS_H */
+diff --git a/lib/crypto/Kconfig b/lib/crypto/Kconfig
+index 96febc3df6d6..9af44cf743a7 100644
+--- a/lib/crypto/Kconfig
++++ b/lib/crypto/Kconfig
+@@ -53,6 +53,12 @@ config CRYPTO_LIB_AES_CTR
+ 	help
+ 	  The AES-CTR and AES-XCTR library functions.
+ 
++config CRYPTO_LIB_AES_XTS
++	tristate
++	select CRYPTO_LIB_AES
++	help
++	  The AES-XTS library functions.
++
+ config CRYPTO_LIB_AESGCM
+ 	tristate
+ 	select CRYPTO_LIB_AES
+diff --git a/lib/crypto/aes.c b/lib/crypto/aes.c
+index 9da274a72221..630702a4228c 100644
+--- a/lib/crypto/aes.c
++++ b/lib/crypto/aes.c
+@@ -8,7 +8,9 @@
+ #include <crypto/aes-cbc.h>
+ #include <crypto/aes-ctr.h>
+ #include <crypto/aes-ecb.h>
++#include <crypto/aes-xts.h>
+ #include <crypto/aes.h>
++#include <crypto/gf128mul.h>
+ #include <crypto/utils.h>
+ #include <linux/cache.h>
+ #include <linux/crypto.h>
+@@ -1060,6 +1062,228 @@ void aes_xctr(u8 *dst, const u8 *src, size_t len, u64 *ctr,
+ EXPORT_SYMBOL_GPL(aes_xctr);
+ #endif /* CONFIG_CRYPTO_LIB_AES_CTR */
+ 
++#if IS_ENABLED(CONFIG_CRYPTO_LIB_AES_XTS)
++int aes_xts_preparekey(struct aes_xts_key *key, const u8 *in_key,
++		       size_t key_len, int flags)
++{
++	int err;
++
++	err = __xts_verify_key(in_key, key_len, flags);
++	if (err)
++		return err;
++	/* First half of XTS key is the main key */
++	err = aes_preparekey(&key->main_key, in_key, key_len / 2);
++	if (err)
++		return err;
++	/* Second half of XTS key is the tweak key */
++	return aes_prepareenckey(&key->tweak_key, &in_key[key_len / 2],
++				 key_len / 2);
++}
++EXPORT_SYMBOL_GPL(aes_xts_preparekey);
++
++/*
++ * Hooks for optimized AES-XTS implementations, overridable by the architecture.
++ * They are called with len > 0 && len % AES_BLOCK_SIZE == 0.  In other words,
++ * they aren't expected to handle ciphertext stealing or empty inputs.
++ * Returning false causes the fallback implementation to be used instead.
++ *
++ * (Currently, all users of AES-XTS in the kernel seem to en/decrypt whole
++ * numbers of blocks anyway, with len >= 512.  So there's no need to heavily
++ * optimize ciphertext stealing for short messages.)
++ */
++#ifndef aes_xts_encrypt_arch
++static bool aes_xts_encrypt_arch(u8 *dst, const u8 *src, size_t len,
++				 u8 tweak[AES_BLOCK_SIZE],
++				 const struct aes_xts_key *key, bool cont)
++{
++	return false;
++}
++#endif
++#ifndef aes_xts_decrypt_arch
++static bool aes_xts_decrypt_arch(u8 *dst, const u8 *src, size_t len,
++				 u8 tweak[AES_BLOCK_SIZE],
++				 const struct aes_xts_key *key, bool cont)
++{
++	return false;
++}
++#endif
++
++static noinline void aes_xts_crypt_nocts_blockbyblock(
++	u8 *dst, const u8 *src, size_t len, u8 tweak[AES_BLOCK_SIZE],
++	const struct aes_xts_key *key, bool cont, bool enc)
++{
++	le128 t;
++
++	if (cont)
++		memcpy(&t, tweak, sizeof(t));
++	else
++		aes_encrypt(&key->tweak_key, (u8 *)&t, tweak);
++	do {
++		crypto_xor_cpy(dst, src, (const u8 *)&t, AES_BLOCK_SIZE);
++		if (enc)
++			aes_encrypt(&key->main_key, dst, dst);
++		else
++			aes_decrypt(&key->main_key, dst, dst);
++		crypto_xor(dst, (const u8 *)&t, AES_BLOCK_SIZE);
++		gf128mul_x_ble(&t, &t);
++		dst += AES_BLOCK_SIZE;
++		src += AES_BLOCK_SIZE;
++		len -= AES_BLOCK_SIZE;
++	} while (len);
++	memcpy(tweak, &t, sizeof(t));
++	memzero_explicit(&t, sizeof(t));
++}
++
++/* Requires len > 0 && len % AES_BLOCK_SIZE == 0 */
++static __always_inline void aes_xts_encrypt_nocts(u8 *dst, const u8 *src,
++						  size_t len,
++						  u8 tweak[AES_BLOCK_SIZE],
++						  const struct aes_xts_key *key,
++						  bool cont)
++{
++	if (likely(aes_xts_encrypt_arch(dst, src, len, tweak, key, cont)))
++		return;
++
++	/*
++	 * For the fallback, just go block-by-block.  It could be implemented on
++	 * top of AES-ECB, which could be significantly faster than this if the
++	 * arch has optimized AES-ECB code but not AES-XTS.  However, AES-XTS
++	 * performance is important enough that it needs to be (and has been)
++	 * implemented directly by every non-obsolete arch anyway.
++	 */
++	aes_xts_crypt_nocts_blockbyblock(dst, src, len, tweak, key, cont,
++					 /* enc= */ true);
++}
++
++/* Requires len > 0 && len % AES_BLOCK_SIZE == 0 */
++static __always_inline void aes_xts_decrypt_nocts(u8 *dst, const u8 *src,
++						  size_t len,
++						  u8 tweak[AES_BLOCK_SIZE],
++						  const struct aes_xts_key *key,
++						  bool cont)
++{
++	if (likely(aes_xts_decrypt_arch(dst, src, len, tweak, key, cont)))
++		return;
++
++	/* Just go block-by-block.  See comment in aes_xts_encrypt_nocts(). */
++	aes_xts_crypt_nocts_blockbyblock(dst, src, len, tweak, key, cont,
++					 /* enc= */ false);
++}
++
++static noinline void aes_xts_encrypt_cts(u8 *dst, const u8 *src, size_t len,
++					 u8 tweak[AES_BLOCK_SIZE],
++					 const struct aes_xts_key *key,
++					 bool cont)
++{
++	size_t partial_len = len % AES_BLOCK_SIZE; /* Length of partial block */
++	size_t nocts_len = round_down(len, AES_BLOCK_SIZE);
++	u8 tmp_block[AES_BLOCK_SIZE] __aligned(__alignof__(long));
++
++	/* Encrypt all full blocks. */
++	aes_xts_encrypt_nocts(dst, src, nocts_len, tweak, key, cont);
++	dst += nocts_len - AES_BLOCK_SIZE;
++	src += nocts_len - AES_BLOCK_SIZE;
++
++	/*
++	 * Swap the partial block with the first 'partial_len' bytes of the
++	 * encrypted last full block.  Note that a temporary buffer is needed to
++	 * support in-place encryption.
++	 */
++	memcpy(tmp_block, src + AES_BLOCK_SIZE, partial_len);
++	memcpy(dst + AES_BLOCK_SIZE, dst, partial_len);
++	memcpy(dst, tmp_block, partial_len);
++
++	/* Encrypt the last full block again. */
++	crypto_xor(dst, tweak, AES_BLOCK_SIZE);
++	aes_encrypt(&key->main_key, dst, dst);
++	crypto_xor(dst, tweak, AES_BLOCK_SIZE);
++	memzero_explicit(tmp_block, sizeof(tmp_block));
++}
++
++static noinline void aes_xts_decrypt_cts(u8 *dst, const u8 *src, size_t len,
++					 u8 tweak[AES_BLOCK_SIZE],
++					 const struct aes_xts_key *key,
++					 bool cont)
++{
++	size_t partial_len = len % AES_BLOCK_SIZE; /* Length of partial block */
++	size_t nocts_len = round_down(len, AES_BLOCK_SIZE) - AES_BLOCK_SIZE;
++	union {
++		u8 block[AES_BLOCK_SIZE];
++		le128 tweak;
++	} tmp __aligned(__alignof__(long));
++
++	/*
++	 * Decrypt all blocks except the last full block and the partial block.
++	 * The last full block has to be handled specially because decryption
++	 * ciphertext stealing uses the last two tweaks in reverse order.
++	 *
++	 * nocts_len == 0 is possible here, which aes_xts_decrypt_nocts()
++	 * doesn't handle (so that the length doesn't get checked redundantly in
++	 * the fast path).  So handle that case specially as well.
++	 */
++	if (nocts_len)
++		aes_xts_decrypt_nocts(dst, src, nocts_len, tweak, key, cont);
++	else if (!cont)
++		aes_encrypt(&key->tweak_key, tweak, tweak);
++	dst += nocts_len;
++	src += nocts_len;
++
++	/* Copy the tweak, advance it again, then decrypt last full block. */
++	memcpy(&tmp.tweak, tweak, AES_BLOCK_SIZE);
++	gf128mul_x_ble(&tmp.tweak, &tmp.tweak);
++	crypto_xor_cpy(dst, src, tmp.block, AES_BLOCK_SIZE);
++	aes_decrypt(&key->main_key, dst, dst);
++	crypto_xor(dst, tmp.block, AES_BLOCK_SIZE);
++
++	/*
++	 * Swap the partial block with the first 'partial_len' bytes of the
++	 * decrypted last full block.  Note that a temporary buffer is needed to
++	 * support in-place decryption.
++	 */
++	memcpy(tmp.block, src + AES_BLOCK_SIZE, partial_len);
++	memcpy(dst + AES_BLOCK_SIZE, dst, partial_len);
++	memcpy(dst, tmp.block, partial_len);
++
++	/* Decrypt the last full block again. */
++	crypto_xor(dst, tweak, AES_BLOCK_SIZE);
++	aes_decrypt(&key->main_key, dst, dst);
++	crypto_xor(dst, tweak, AES_BLOCK_SIZE);
++	memzero_explicit(&tmp, sizeof(tmp));
++}
++
++void aes_xts_encrypt(u8 *dst, const u8 *src, size_t len,
++		     u8 tweak[AES_BLOCK_SIZE], const struct aes_xts_key *key,
++		     bool cont)
++{
++	if (WARN_ON_ONCE(len < AES_BLOCK_SIZE))
++		return;
++
++	if (unlikely(len % AES_BLOCK_SIZE)) {
++		aes_xts_encrypt_cts(dst, src, len, tweak, key, cont);
++		return;
++	}
++
++	aes_xts_encrypt_nocts(dst, src, len, tweak, key, cont);
++}
++EXPORT_SYMBOL_GPL(aes_xts_encrypt);
++
++void aes_xts_decrypt(u8 *dst, const u8 *src, size_t len,
++		     u8 tweak[AES_BLOCK_SIZE], const struct aes_xts_key *key,
++		     bool cont)
++{
++	if (WARN_ON_ONCE(len < AES_BLOCK_SIZE))
++		return;
++
++	if (unlikely(len % AES_BLOCK_SIZE)) {
++		aes_xts_decrypt_cts(dst, src, len, tweak, key, cont);
++		return;
++	}
++
++	aes_xts_decrypt_nocts(dst, src, len, tweak, key, cont);
++}
++EXPORT_SYMBOL_GPL(aes_xts_decrypt);
++#endif /* CONFIG_CRYPTO_LIB_AES_XTS */
++
+ static int __init aes_mod_init(void)
+ {
+ #ifdef aes_mod_init_arch
+diff --git a/lib/crypto/tests/Kconfig b/lib/crypto/tests/Kconfig
+index 9284d0134d77..b559e7c79e76 100644
+--- a/lib/crypto/tests/Kconfig
++++ b/lib/crypto/tests/Kconfig
+@@ -148,6 +148,7 @@ config CRYPTO_LIB_ENABLE_ALL_FOR_KUNIT
+ 	select CRYPTO_LIB_AES_CBC_MACS
+ 	select CRYPTO_LIB_AES_CTR
+ 	select CRYPTO_LIB_AES_ECB
++	select CRYPTO_LIB_AES_XTS
+ 	select CRYPTO_LIB_BLAKE2B
+ 	select CRYPTO_LIB_CHACHA20POLY1305
+ 	select CRYPTO_LIB_CURVE25519
+-- 
+2.54.0
 
 
