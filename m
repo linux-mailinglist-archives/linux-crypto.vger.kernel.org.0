@@ -1,58 +1,58 @@
-Return-Path: <linux-crypto+bounces-25679-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25688-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id wOQBKdGQTGokmQEAu9opvQ
-	(envelope-from <linux-crypto+bounces-25679-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:38:25 +0200
+	id mBDHMYKRTGpwmQEAu9opvQ
+	(envelope-from <linux-crypto+bounces-25688-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:41:22 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4219E7177F6
-	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 17391717875
+	for <lists+linux-crypto@lfdr.de>; Tue, 07 Jul 2026 07:41:22 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b="KUWU/NN3";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=Ht7V4LjL;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25679-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25679-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25688-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25688-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5B342303AF27
-	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 05:37:49 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8C831303B5A2
+	for <lists+linux-crypto@lfdr.de>; Tue,  7 Jul 2026 05:38:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0313A7D78;
-	Tue,  7 Jul 2026 05:37:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789D93AEB32;
+	Tue,  7 Jul 2026 05:37:30 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 712F13A0E80;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B98C63A1690;
 	Tue,  7 Jul 2026 05:37:23 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783402645; cv=none; b=G6kKO2ovAkaEfbMXHbHTX7Fi+nl+E5xYE8z9Y6ugGpwn9SQiB/KZoXSB+WlbNOrZn2xQNSLjaobxSPgvfgfFoFQMm096Rnhz3yE6JKebW0z/mMvt5A+xqQzbTr1BaGbCyHUW8wdf8hz6Hpc32he13/BS66jyFf82rG9zWy6aXCM=
+	t=1783402650; cv=none; b=S/DyAc4Ybr456exEVJQagxFIBvd5GZM/YWohjljirX50vW/1TmNYsROHnbu63Nwp1ID3MlR8zSpWo73yn6ojpZOImdzoVmBO0ExlS/WfASF7CIIpjMAHb8sG1EZF0RDtgvutP29CS1/feLsSY0zL9cNT1Auo1C/KHHPhbAUgtvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783402645; c=relaxed/simple;
-	bh=dITPzCXNXrJ4vZl5OhTOQT86SaFx7ZHlTkbzfFCwBUM=;
+	s=arc-20240116; t=1783402650; c=relaxed/simple;
+	bh=COaolMznU2vbzPB6UKUrk5NU/whlh1FCxP9okMXHrIY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XcgXVXo0zLLC4YE48/1fOV16TN/esQj03UIHVrW/rN6oAzN1UmjruP7umqsjLjPW3Npg6iPTZLJsRWp/wNYbELAg5Q2lC8I9D4wWMHK3wLHjRkpSQmLohXDabq/hDXIXJvSuM5LWQ+5YPcl9J6ZgMqkxDOI3dGLPegoK79toX3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KUWU/NN3; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36A8F1F00ACA;
+	 MIME-Version; b=kr5BVjgNRhIHJKKqp3bWR+92zOuJNhRBe2sKMf2ZBZz/JdF8iWRpC+rPDEHdVIhnuJkC16P2RLRy9zfJ5x6i2TUdWb1bUzG8V5Z8L01fRIuMFaku0c7NCmm9Nyrh1sPNQErdIFx9pYlVLmCXJiqwmoQHhVuw9JaREozwu+1vCbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ht7V4LjL; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7381E1F00ACF;
 	Tue,  7 Jul 2026 05:37:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1783402643;
-	bh=XMzpF89IIQhd7C85S/chYiiKI4PoFEDPrRzDNCXOfhs=;
+	bh=pjGerO/6BxsMVvbq3oOqOH0MT/qj9ZRiXYE5JrzdFvk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=KUWU/NN38g4YvcCaKwz5h0siUT1kxuHlqte+1hU3aEuHUkFDIxbuzO0IPQWhFKdnk
-	 cvkjlV/OLaOpHWIRNtCR2mCAU8v5wW5sRoZrMTWXpstpqJXINHmYHcy4rk9ZvzDRX3
-	 Z6kFdMRgTWGG5KdXZZnaWA4zSK7kPEk3+gVADYGhVcQiA3ZBE3uqVbb0FB4KpHlFFc
-	 vPwyRYGzoX703Pcx0HDkdpoFZMs9iGGrP+ToJsB767N6rTZUdXZjt+XYcORgZT5N7o
-	 QiBsD2PoMhkSnQk/ZRBVCnmb2oKcO+PC5ys82B+JrWWOVhyjKIVBTd+EhN6hzdZ5ca
-	 uP2SKT+nsIUhg==
+	b=Ht7V4LjLQOpx0mj9bqcDS7AO3fNZLwTE2dsLVXW9NQoJIRf5oaw6ehkCNC67yBiPL
+	 NuhPtmFzr2NrkXPc5VmOguQINw5+g2uBR0D0hdt/ONg8Nxn2Ovsw0ImtaFHG0cRlEt
+	 91T63pzGNDPPhIt+6EgtdD6YwGfNMAXvAVremES9jK+3KWQzblCpV+0JqfDxc5Emg3
+	 U3UEN+ubaQ0ZGr1IFHThoZZ4XM2OlVrtNZutvHJsTIRd0HrmkhXGKDTuEUN3uk5L5Z
+	 lvj+4DbmA3GUyQhbieGFCeqP1rqxE+tT5FPKhmJq7hswRa544aGEMFBEedXvWMkytJ
+	 wZXr3l0lJzzRw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH 27/33] wifi: ipw2x00: Use AES-CCM library
-Date: Mon,  6 Jul 2026 22:34:57 -0700
-Message-ID: <20260707053503.209874-28-ebiggers@kernel.org>
+Subject: [PATCH 28/33] mac802154: Use AES-CCM and AES-CTR libraries
+Date: Mon,  6 Jul 2026 22:34:58 -0700
+Message-ID: <20260707053503.209874-29-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260707053503.209874-1-ebiggers@kernel.org>
 References: <20260707053503.209874-1-ebiggers@kernel.org>
@@ -76,7 +76,7 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_RECIPIENTS(0.00)[m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:ebiggers@kernel.org,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-25679-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25688-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
@@ -96,262 +96,348 @@ X-Spamd-Result: default: False [-3.66 / 15.00];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,fraunhofer.de:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 4219E7177F6
+X-Rspamd-Queue-Id: 17391717875
 
-Now that there's a library API for AES-CCM, use it instead of a
-"ccm(aes)" crypto_aead.
+Now that there are library APIs for AES-CCM and AES-CTR, use these
+instead of "ccm(aes)" crypto_aeads and a "ctr(aes)" crypto_skcipher.
 
-This significantly simplifies the code:
+This significantly simplifies the code, especially considering that the
+existing code already supported only linear skbs anyway.
 
-- Dynamic memory allocations go away, including ones during Tx and Rx.
-
-- The additional authenticated data is now just constructed on the
-  stack, as it no longer needs to be representable in a scatterlist.
-
-- The AES-CCM library supports variable-length nonces via the
-  self-explanatory nonce_len parameter, so for the needed 13-byte nonce
-  just use that instead of the odd workaround used by "ccm(aes)" where
-  the nonce was prefixed with a byte containing '14 - nonce_len'.
+Note that as before, 'struct mac802154_llsec_key' contains four copies
+of the same key prepared in different ways: one for AES-CTR, and one for
+each AES-CCM authentication tag length 4, 8, and 16 bytes.  That
+continues to be wasteful; however, the crypto APIs are very much working
+as intended in tying the key to the algorithm and authentication tag
+length.  It shows this driver is doing something wrong by reusing the
+same key for multiple purposes.  At some point this driver will need to
+be fixed to allow keys with only one algorithm and tag length at a time,
+but that's outside the scope of this cleanup.
 
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- drivers/net/wireless/intel/ipw2x00/Kconfig    |   2 +-
- .../intel/ipw2x00/libipw_crypto_ccmp.c        | 117 +++++-------------
- 2 files changed, 29 insertions(+), 90 deletions(-)
+ net/mac802154/Kconfig |   6 +-
+ net/mac802154/llsec.c | 158 +++++++++++++-----------------------------
+ net/mac802154/llsec.h |   8 ++-
+ 3 files changed, 55 insertions(+), 117 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/ipw2x00/Kconfig b/drivers/net/wireless/intel/ipw2x00/Kconfig
-index b508f14542d5..a1073d34f634 100644
---- a/drivers/net/wireless/intel/ipw2x00/Kconfig
-+++ b/drivers/net/wireless/intel/ipw2x00/Kconfig
-@@ -153,8 +153,8 @@ config LIBIPW
- 	tristate
- 	depends on PCI && CFG80211
- 	select WIRELESS_EXT
+diff --git a/net/mac802154/Kconfig b/net/mac802154/Kconfig
+index 901167b1e6f5..5195556670fa 100644
+--- a/net/mac802154/Kconfig
++++ b/net/mac802154/Kconfig
+@@ -3,11 +3,7 @@ config MAC802154
+ 	tristate "Generic IEEE 802.15.4 Soft Networking Stack (mac802154)"
+ 	depends on IEEE802154
+ 	select CRC_CCITT
 -	select CRYPTO
- 	select CRYPTO_LIB_ARC4
+-	select CRYPTO_AUTHENC
+-	select CRYPTO_CCM
+-	select CRYPTO_CTR
+-	select CRYPTO_AES
 +	select CRYPTO_LIB_AES_CCM
- 	select CRC32
  	help
- 	This option enables the hardware independent IEEE 802.11
-diff --git a/drivers/net/wireless/intel/ipw2x00/libipw_crypto_ccmp.c b/drivers/net/wireless/intel/ipw2x00/libipw_crypto_ccmp.c
-index 631a4dd86cab..aa6dce7acba1 100644
---- a/drivers/net/wireless/intel/ipw2x00/libipw_crypto_ccmp.c
-+++ b/drivers/net/wireless/intel/ipw2x00/libipw_crypto_ccmp.c
-@@ -19,15 +19,14 @@
- #include <asm/string.h>
- #include <linux/wireless.h>
- #include <linux/ieee80211.h>
--#include <linux/crypto.h>
+ 	  This option enables the hardware independent IEEE 802.15.4
+ 	  networking stack for SoftMAC devices (the ones implementing
+diff --git a/net/mac802154/llsec.c b/net/mac802154/llsec.c
+index 5e7cc11fab3a..367e98c48864 100644
+--- a/net/mac802154/llsec.c
++++ b/net/mac802154/llsec.c
+@@ -6,14 +6,12 @@
+  * Phoebe Buckheister <phoebe.buckheister@itwm.fraunhofer.de>
+  */
+ 
+-#include <linux/err.h>
+ #include <linux/bug.h>
+-#include <linux/completion.h>
+ #include <linux/ieee802154.h>
+ #include <linux/rculist.h>
+ 
 -#include <crypto/aead.h>
+-#include <crypto/skcipher.h>
 +#include <crypto/aes-ccm.h>
- #include "libipw.h"
++#include <crypto/aes-ctr.h>
  
--#define AES_BLOCK_LEN 16
- #define CCMP_HDR_LEN 8
- #define CCMP_MIC_LEN 8
- #define CCMP_TK_LEN 16
- #define CCMP_PN_LEN 6
-+#define CCMP_NONCE_LEN 13
+ #include "ieee802154_i.h"
+ #include "llsec.h"
+@@ -110,11 +108,13 @@ int mac802154_llsec_set_params(struct mac802154_llsec *sec,
+ 	return 0;
+ }
  
- struct libipw_ccmp_data {
- 	u8 key[CCMP_TK_LEN];
-@@ -42,11 +41,7 @@ struct libipw_ccmp_data {
++static const int authsizes[3] = { 4, 8, 16 };
++
+ static struct mac802154_llsec_key*
+ llsec_key_alloc(const struct ieee802154_llsec_key *template)
+ {
+-	const int authsizes[3] = { 4, 8, 16 };
+ 	struct mac802154_llsec_key *key;
++	int err;
+ 	int i;
  
- 	int key_idx;
+ 	key = kzalloc_obj(*key);
+@@ -124,37 +124,21 @@ llsec_key_alloc(const struct ieee802154_llsec_key *template)
+ 	kref_init(&key->ref);
+ 	key->key = *template;
  
--	struct crypto_aead *tfm;
+-	BUILD_BUG_ON(ARRAY_SIZE(authsizes) != ARRAY_SIZE(key->tfm));
 -
--	/* scratch buffers for virt_to_page() (crypto API) */
--	u8 tx_aad[2 * AES_BLOCK_LEN];
--	u8 rx_aad[2 * AES_BLOCK_LEN];
-+	struct aes_ccm_key ccm_key;
+-	for (i = 0; i < ARRAY_SIZE(key->tfm); i++) {
+-		key->tfm[i] = crypto_alloc_aead("ccm(aes)", 0,
+-						CRYPTO_ALG_ASYNC);
+-		if (IS_ERR(key->tfm[i]))
+-			goto err_tfm;
+-		if (crypto_aead_setkey(key->tfm[i], template->key,
+-				       IEEE802154_LLSEC_KEY_SIZE))
+-			goto err_tfm;
+-		if (crypto_aead_setauthsize(key->tfm[i], authsizes[i]))
+-			goto err_tfm;
++	BUILD_BUG_ON(ARRAY_SIZE(authsizes) != ARRAY_SIZE(key->ccm_keys));
++	for (i = 0; i < ARRAY_SIZE(key->ccm_keys); i++) {
++		err = aes_ccm_preparekey(&key->ccm_keys[i], template->key,
++					 IEEE802154_LLSEC_KEY_SIZE,
++					 authsizes[i]);
++		if (err)
++			goto err_free;
+ 	}
+-
+-	key->tfm0 = crypto_alloc_sync_skcipher("ctr(aes)", 0, 0);
+-	if (IS_ERR(key->tfm0))
+-		goto err_tfm;
+-
+-	if (crypto_sync_skcipher_setkey(key->tfm0, template->key,
+-				   IEEE802154_LLSEC_KEY_SIZE))
+-		goto err_tfm0;
+-
++	err = aes_prepareenckey(&key->ctr_key, template->key,
++				IEEE802154_LLSEC_KEY_SIZE);
++	if (err)
++		goto err_free;
+ 	return key;
+ 
+-err_tfm0:
+-	crypto_free_sync_skcipher(key->tfm0);
+-err_tfm:
+-	for (i = 0; i < ARRAY_SIZE(key->tfm); i++)
+-		if (!IS_ERR_OR_NULL(key->tfm[i]))
+-			crypto_free_aead(key->tfm[i]);
+-
++err_free:
+ 	kfree_sensitive(key);
+ 	return NULL;
+ }
+@@ -162,14 +146,8 @@ llsec_key_alloc(const struct ieee802154_llsec_key *template)
+ static void llsec_key_release(struct kref *ref)
+ {
+ 	struct mac802154_llsec_key *key;
+-	int i;
+ 
+ 	key = container_of(ref, struct mac802154_llsec_key, ref);
+-
+-	for (i = 0; i < ARRAY_SIZE(key->tfm); i++)
+-		crypto_free_aead(key->tfm[i]);
+-
+-	crypto_free_sync_skcipher(key->tfm0);
+ 	kfree_sensitive(key);
+ }
+ 
+@@ -621,34 +599,24 @@ llsec_do_encrypt_unauth(struct sk_buff *skb, const struct mac802154_llsec *sec,
+ 			struct mac802154_llsec_key *key)
+ {
+ 	u8 iv[16];
+-	struct scatterlist src;
+-	SYNC_SKCIPHER_REQUEST_ON_STACK(req, key->tfm0);
+-	int err, datalen;
++	int datalen;
+ 	unsigned char *data;
+ 
+ 	llsec_geniv(iv, sec->params.hwaddr, &hdr->sec);
+ 	/* Compute data payload offset and data length */
+ 	data = skb_mac_header(skb) + skb->mac_len;
+ 	datalen = skb_tail_pointer(skb) - data;
+-	sg_init_one(&src, data, datalen);
+ 
+-	skcipher_request_set_sync_tfm(req, key->tfm0);
+-	skcipher_request_set_callback(req, 0, NULL, NULL);
+-	skcipher_request_set_crypt(req, &src, &src, datalen, iv);
+-	err = crypto_skcipher_encrypt(req);
+-	skcipher_request_zero(req);
+-	return err;
++	aes_ctr(data, data, datalen, iv, &key->ctr_key);
++	return 0;
+ }
+ 
+-static struct crypto_aead*
+-llsec_tfm_by_len(struct mac802154_llsec_key *key, int authlen)
++static const struct aes_ccm_key *
++llsec_ccm_key_by_authlen(const struct mac802154_llsec_key *key, int authlen)
+ {
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(key->tfm); i++)
+-		if (crypto_aead_authsize(key->tfm[i]) == authlen)
+-			return key->tfm[i];
+-
++	for (int i = 0; i < ARRAY_SIZE(authsizes); i++)
++		if (authsizes[i] == authlen)
++			return &key->ccm_keys[i];
+ 	BUG();
+ }
+ 
+@@ -658,41 +626,29 @@ llsec_do_encrypt_auth(struct sk_buff *skb, const struct mac802154_llsec *sec,
+ 		      struct mac802154_llsec_key *key)
+ {
+ 	u8 iv[16];
+-	unsigned char *data;
+-	int authlen, assoclen, datalen, rc;
+-	struct scatterlist sg;
+-	struct aead_request *req;
++	u8 *authtag, *assoc, *data;
++	int authlen, assoclen, datalen;
+ 
+ 	authlen = ieee802154_sechdr_authtag_len(&hdr->sec);
+ 	llsec_geniv(iv, sec->params.hwaddr, &hdr->sec);
+ 
+-	req = aead_request_alloc(llsec_tfm_by_len(key, authlen), GFP_ATOMIC);
+-	if (!req)
+-		return -ENOMEM;
+-
++	assoc = skb_mac_header(skb);
+ 	assoclen = skb->mac_len;
+-
+-	data = skb_mac_header(skb) + skb->mac_len;
++	data = assoc + assoclen;
+ 	datalen = skb_tail_pointer(skb) - data;
++	authtag = &data[datalen];
+ 
+ 	skb_put(skb, authlen);
+ 
+-	sg_init_one(&sg, skb_mac_header(skb), assoclen + datalen + authlen);
+-
+ 	if (!(hdr->sec.level & IEEE802154_SCF_SECLEVEL_ENC)) {
+ 		assoclen += datalen;
+ 		datalen = 0;
+ 	}
+ 
+-	aead_request_set_callback(req, 0, NULL, NULL);
+-	aead_request_set_crypt(req, &sg, &sg, datalen, iv);
+-	aead_request_set_ad(req, assoclen);
+-
+-	rc = crypto_aead_encrypt(req);
+-
+-	kfree_sensitive(req);
+-
+-	return rc;
++	return aes_ccm_encrypt(data, authtag, data, datalen, assoc, assoclen,
++			       /* This just takes the nonce directly. */
++			       &iv[1], 13,
++			       llsec_ccm_key_by_authlen(key, authlen));
+ }
+ 
+ static int llsec_do_encrypt(struct sk_buff *skb,
+@@ -849,23 +805,13 @@ llsec_do_decrypt_unauth(struct sk_buff *skb, const struct mac802154_llsec *sec,
+ 	u8 iv[16];
+ 	unsigned char *data;
+ 	int datalen;
+-	struct scatterlist src;
+-	SYNC_SKCIPHER_REQUEST_ON_STACK(req, key->tfm0);
+-	int err;
+ 
+ 	llsec_geniv(iv, dev_addr, &hdr->sec);
+ 	data = skb_mac_header(skb) + skb->mac_len;
+ 	datalen = skb_tail_pointer(skb) - data;
+ 
+-	sg_init_one(&src, data, datalen);
+-
+-	skcipher_request_set_sync_tfm(req, key->tfm0);
+-	skcipher_request_set_callback(req, 0, NULL, NULL);
+-	skcipher_request_set_crypt(req, &src, &src, datalen, iv);
+-
+-	err = crypto_skcipher_decrypt(req);
+-	skcipher_request_zero(req);
+-	return err;
++	aes_ctr(data, data, datalen, iv, &key->ctr_key);
++	return 0;
+ }
+ 
+ static int
+@@ -874,37 +820,31 @@ llsec_do_decrypt_auth(struct sk_buff *skb, const struct mac802154_llsec *sec,
+ 		      struct mac802154_llsec_key *key, __le64 dev_addr)
+ {
+ 	u8 iv[16];
+-	unsigned char *data;
++	u8 *authtag, *assoc, *data;
+ 	int authlen, datalen, assoclen, rc;
+-	struct scatterlist sg;
+-	struct aead_request *req;
+ 
+ 	authlen = ieee802154_sechdr_authtag_len(&hdr->sec);
+ 	llsec_geniv(iv, dev_addr, &hdr->sec);
+ 
+-	req = aead_request_alloc(llsec_tfm_by_len(key, authlen), GFP_ATOMIC);
+-	if (!req)
+-		return -ENOMEM;
+-
++	assoc = skb_mac_header(skb);
+ 	assoclen = skb->mac_len;
+-
+-	data = skb_mac_header(skb) + skb->mac_len;
++	data = assoc + assoclen;
+ 	datalen = skb_tail_pointer(skb) - data;
+ 
+-	sg_init_one(&sg, skb_mac_header(skb), assoclen + datalen);
++	if (datalen < authlen)
++		return -EBADMSG;
++	datalen -= authlen;
++	authtag = &data[datalen];
+ 
+ 	if (!(hdr->sec.level & IEEE802154_SCF_SECLEVEL_ENC)) {
+-		assoclen += datalen - authlen;
+-		datalen = authlen;
++		assoclen += datalen;
++		datalen = 0;
+ 	}
+ 
+-	aead_request_set_callback(req, 0, NULL, NULL);
+-	aead_request_set_crypt(req, &sg, &sg, datalen, iv);
+-	aead_request_set_ad(req, assoclen);
+-
+-	rc = crypto_aead_decrypt(req);
+-
+-	kfree_sensitive(req);
++	rc = aes_ccm_decrypt(data, data, authtag, datalen, assoc, assoclen,
++			     /* This just takes the nonce directly. */
++			     &iv[1], 13,
++			     llsec_ccm_key_by_authlen(key, authlen));
+ 	skb_trim(skb, skb->len - authlen);
+ 
+ 	return rc;
+diff --git a/net/mac802154/llsec.h b/net/mac802154/llsec.h
+index ddeb79228204..2b9815dbe38f 100644
+--- a/net/mac802154/llsec.h
++++ b/net/mac802154/llsec.h
+@@ -9,6 +9,8 @@
+ #ifndef MAC802154_LLSEC_H
+ #define MAC802154_LLSEC_H
+ 
++#include <crypto/aes-ccm.h>
++#include <crypto/aes-ctr.h>
+ #include <linux/slab.h>
+ #include <linux/hashtable.h>
+ #include <linux/kref.h>
+@@ -19,9 +21,9 @@
+ struct mac802154_llsec_key {
+ 	struct ieee802154_llsec_key key;
+ 
+-	/* one tfm for each authsize (4/8/16) */
+-	struct crypto_aead *tfm[3];
+-	struct crypto_sync_skcipher *tfm0;
++	/* one for each authsize (4/8/16) */
++	struct aes_ccm_key ccm_keys[3];
++	struct aes_enckey ctr_key;
+ 
+ 	struct kref ref;
  };
- 
- static void *libipw_ccmp_init(int key_idx)
-@@ -55,37 +50,20 @@ static void *libipw_ccmp_init(int key_idx)
- 
- 	priv = kzalloc_obj(*priv, GFP_ATOMIC);
- 	if (priv == NULL)
--		goto fail;
-+		return NULL;
- 	priv->key_idx = key_idx;
- 
--	priv->tfm = crypto_alloc_aead("ccm(aes)", 0, CRYPTO_ALG_ASYNC);
--	if (IS_ERR(priv->tfm)) {
--		priv->tfm = NULL;
--		goto fail;
--	}
--
- 	return priv;
--
--      fail:
--	if (priv) {
--		if (priv->tfm)
--			crypto_free_aead(priv->tfm);
--		kfree(priv);
--	}
--
--	return NULL;
- }
- 
- static void libipw_ccmp_deinit(void *priv)
- {
--	struct libipw_ccmp_data *_priv = priv;
--	if (_priv && _priv->tfm)
--		crypto_free_aead(_priv->tfm);
--	kfree(priv);
-+	kfree_sensitive(priv);
- }
- 
--static int ccmp_init_iv_and_aad(const struct ieee80211_hdr *hdr,
--				const u8 *pn, u8 *iv, u8 *aad)
-+static int ccmp_init_nonce_and_aad(const struct ieee80211_hdr *hdr,
-+				   const u8 *pn, u8 nonce[CCMP_NONCE_LEN],
-+				   u8 *aad)
- {
- 	u8 *pos, qc = 0;
- 	size_t aad_len;
-@@ -105,19 +83,11 @@ static int ccmp_init_iv_and_aad(const struct ieee80211_hdr *hdr,
- 		aad_len += 2;
- 	}
- 
--	/* In CCM, the initial vectors (IV) used for CTR mode encryption and CBC
--	 * mode authentication are not allowed to collide, yet both are derived
--	 * from the same vector. We only set L := 1 here to indicate that the
--	 * data size can be represented in (L+1) bytes. The CCM layer will take
--	 * care of storing the data length in the top (L+1) bytes and setting
--	 * and clearing the other bits as is required to derive the two IVs.
--	 */
--	iv[0] = 0x1;
--
- 	/* Nonce: QC | A2 | PN */
--	iv[1] = qc;
--	memcpy(iv + 2, hdr->addr2, ETH_ALEN);
--	memcpy(iv + 8, pn, CCMP_PN_LEN);
-+	nonce[0] = qc;
-+	memcpy(nonce + 1, hdr->addr2, ETH_ALEN);
-+	memcpy(nonce + 7, pn, CCMP_PN_LEN);
-+	static_assert(7 + CCMP_PN_LEN == CCMP_NONCE_LEN);
- 
- 	/* AAD:
- 	 * FC with bits 4..6 and 11..13 masked to zero; 14 is always one
-@@ -184,12 +154,9 @@ static int libipw_ccmp_encrypt(struct sk_buff *skb, int hdr_len, void *priv)
- {
- 	struct libipw_ccmp_data *key = priv;
- 	struct ieee80211_hdr *hdr;
--	struct aead_request *req;
--	struct scatterlist sg[2];
--	u8 *aad = key->tx_aad;
--	u8 iv[AES_BLOCK_LEN];
-+	u8 aad[2 * AES_BLOCK_SIZE];
-+	u8 nonce[CCMP_NONCE_LEN];
- 	int len, data_len, aad_len;
--	int ret;
- 
- 	if (skb_tailroom(skb) < CCMP_MIC_LEN || skb->len < hdr_len)
- 		return -1;
-@@ -199,28 +166,16 @@ static int libipw_ccmp_encrypt(struct sk_buff *skb, int hdr_len, void *priv)
- 	if (len < 0)
- 		return -1;
- 
--	req = aead_request_alloc(key->tfm, GFP_ATOMIC);
--	if (!req)
--		return -ENOMEM;
--
- 	hdr = (struct ieee80211_hdr *)skb->data;
--	aad_len = ccmp_init_iv_and_aad(hdr, key->tx_pn, iv, aad);
-+	aad_len = ccmp_init_nonce_and_aad(hdr, key->tx_pn, nonce, aad);
- 
- 	skb_put(skb, CCMP_MIC_LEN);
- 
--	sg_init_table(sg, 2);
--	sg_set_buf(&sg[0], aad, aad_len);
--	sg_set_buf(&sg[1], skb->data + hdr_len + CCMP_HDR_LEN,
--		   data_len + CCMP_MIC_LEN);
--
--	aead_request_set_callback(req, 0, NULL, NULL);
--	aead_request_set_ad(req, aad_len);
--	aead_request_set_crypt(req, sg, sg, data_len, iv);
--
--	ret = crypto_aead_encrypt(req);
--	aead_request_free(req);
--
--	return ret;
-+	return aes_ccm_encrypt(skb->data + hdr_len + CCMP_HDR_LEN,
-+			       skb->data + hdr_len + CCMP_HDR_LEN + data_len,
-+			       skb->data + hdr_len + CCMP_HDR_LEN, data_len,
-+			       aad, aad_len, nonce, CCMP_NONCE_LEN,
-+			       &key->ccm_key);
- }
- 
- /*
-@@ -249,10 +204,8 @@ static int libipw_ccmp_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
- 	struct libipw_ccmp_data *key = priv;
- 	u8 keyidx, *pos;
- 	struct ieee80211_hdr *hdr;
--	struct aead_request *req;
--	struct scatterlist sg[2];
--	u8 *aad = key->rx_aad;
--	u8 iv[AES_BLOCK_LEN];
-+	u8 aad[2 * AES_BLOCK_SIZE];
-+	u8 nonce[CCMP_NONCE_LEN];
- 	u8 pn[6];
- 	int aad_len, ret;
- 	size_t data_len = skb->len - hdr_len - CCMP_HDR_LEN;
-@@ -303,23 +256,11 @@ static int libipw_ccmp_decrypt(struct sk_buff *skb, int hdr_len, void *priv)
- 		return -4;
- 	}
- 
--	req = aead_request_alloc(key->tfm, GFP_ATOMIC);
--	if (!req)
--		return -ENOMEM;
--
--	aad_len = ccmp_init_iv_and_aad(hdr, pn, iv, aad);
--
--	sg_init_table(sg, 2);
--	sg_set_buf(&sg[0], aad, aad_len);
--	sg_set_buf(&sg[1], pos, data_len);
--
--	aead_request_set_callback(req, 0, NULL, NULL);
--	aead_request_set_ad(req, aad_len);
--	aead_request_set_crypt(req, sg, sg, data_len, iv);
--
--	ret = crypto_aead_decrypt(req);
--	aead_request_free(req);
-+	aad_len = ccmp_init_nonce_and_aad(hdr, pn, nonce, aad);
- 
-+	ret = aes_ccm_decrypt(pos, pos, pos + data_len - CCMP_MIC_LEN,
-+			      data_len - CCMP_MIC_LEN, aad, aad_len, nonce,
-+			      CCMP_NONCE_LEN, &key->ccm_key);
- 	if (ret) {
- 		net_dbg_ratelimited("CCMP: decrypt failed: STA=%pM (%d)\n",
- 				    hdr->addr2, ret);
-@@ -341,12 +282,10 @@ static int libipw_ccmp_set_key(void *key, int len, u8 * seq, void *priv)
- {
- 	struct libipw_ccmp_data *data = priv;
- 	int keyidx;
--	struct crypto_aead *tfm = data->tfm;
- 
- 	keyidx = data->key_idx;
- 	memset(data, 0, sizeof(*data));
- 	data->key_idx = keyidx;
--	data->tfm = tfm;
- 	if (len == CCMP_TK_LEN) {
- 		memcpy(data->key, key, CCMP_TK_LEN);
- 		data->key_set = 1;
-@@ -358,8 +297,8 @@ static int libipw_ccmp_set_key(void *key, int len, u8 * seq, void *priv)
- 			data->rx_pn[4] = seq[1];
- 			data->rx_pn[5] = seq[0];
- 		}
--		if (crypto_aead_setauthsize(data->tfm, CCMP_MIC_LEN) ||
--		    crypto_aead_setkey(data->tfm, data->key, CCMP_TK_LEN))
-+		if (aes_ccm_preparekey(&data->ccm_key, data->key, CCMP_TK_LEN,
-+				       CCMP_MIC_LEN))
- 			return -1;
- 	} else if (len == 0)
- 		data->key_set = 0;
 -- 
 2.54.0
 
