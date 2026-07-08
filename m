@@ -1,229 +1,179 @@
-Return-Path: <linux-crypto+bounces-25721-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25717-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id kaUFNK79TWo/BQIAu9opvQ
-	(envelope-from <linux-crypto+bounces-25721-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 08 Jul 2026 09:35:10 +0200
+	id CfL4MRO+TWq19gEAu9opvQ
+	(envelope-from <linux-crypto+bounces-25717-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 08 Jul 2026 05:03:47 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B74C722AEE
-	for <lists+linux-crypto@lfdr.de>; Wed, 08 Jul 2026 09:35:10 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B60D72147C
+	for <lists+linux-crypto@lfdr.de>; Wed, 08 Jul 2026 05:03:47 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25721-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25721-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=Aq+oTsO2;
+	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25717-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25717-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9745030D6E5C
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jul 2026 07:25:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CCC613019532
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jul 2026 03:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20D923E5A05;
-	Wed,  8 Jul 2026 07:24:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F189F1C5F39;
+	Wed,  8 Jul 2026 03:03:44 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from cyan.elm.relay.mailchannels.net (cyan.elm.relay.mailchannels.net [23.83.212.47])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE4913EB7FB
-	for <linux-crypto@vger.kernel.org>; Wed,  8 Jul 2026 07:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B688726ADC
+	for <linux-crypto@vger.kernel.org>; Wed,  8 Jul 2026 03:03:43 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783495471; cv=none; b=MExmK3KoueA9tn9+0MT75uLetJIw1kbTIRcrHJcVRncGqK7RJuqe0aBPCL1VH1m0Dj8zo8NfZ5Jxf1cGiptpLisb/9M7nTqOZjcubgh8N+U3KL7WCYUXsBJUuInlJQxDJnHxDMumesNniLRrmUH/qGZwYmM7ldul1y093awcbFg=
+	t=1783479824; cv=none; b=M46oLc2UUOl5p6eaZ6jCn8gCkZpLteGyD2ZZkFcPkTADTu8YWiefs/2cm9cCE9ZaaYJMVvcAh7+z1FkL2WDdM8UW+CoUdlTimgRn2/lJ/kF8zkElZ+AZ1B2fGHwAl4Vx8zLkjqGfsaw9Hpur2a5r2a5SIMZ5ReBzFkvQndxCLGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783495471; c=relaxed/simple;
-	bh=S4XWIfKff1hniR8Hh+JkjY1cmMqYsrdCWVctmmjwwLc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=FQsGyqNpy8ThnQGe9lOrTVs6fkuAeDWXY6CfKGB4RfQeypJwAIJHc0Su8ppzQmHYN0QGFxxJEKdwt2F7hxH5ADyTJisfJZD6jyyvIj44P1xSNEPehJfHSdsXDoox1ZsuIc6Z9vN7onnX/iWpVHqsQt6x0w/sDPJP2AkOKvY9Tqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=none smtp.client-ip=23.83.212.47
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id BD0274E1580;
-	Wed, 08 Jul 2026 02:14:08 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (100-99-175-78.trex-nlb.outbound.svc.cluster.local [100.99.175.78])
-	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id A60BD4E1756;
-	Wed, 08 Jul 2026 02:14:07 +0000 (UTC)
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MC-Relay: Neutral
-X-MC-Copy: stored-urls
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Towering-Hysterical: 1abbe8d73161fa88_1783476848668_1443487694
-X-MC-Loop-Signature: 1783476848668:3127782482
-X-MC-Ingress-Time: 1783476848668
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.99.175.78 (trex/8.0.2);
-	Wed, 08 Jul 2026 02:14:08 +0000
-Received: from p5b0ed87c.dip0.t-ipconnect.de ([91.14.216.124]:62194 helo=heisenberg.fritz.box)
-	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.99.4)
-	(envelope-from <calestyo@scientia.org>)
-	id 1whHna-0000000F1yd-2Ylk;
-	Wed, 08 Jul 2026 02:14:06 +0000
-Message-ID: <04fbbc8611699e469f44edbccdf3cf1ac65075d3.camel@scientia.org>
+	s=arc-20240116; t=1783479824; c=relaxed/simple;
+	bh=sDnbCYS6Z9ZOxNFgHgGnv695m/8z+6kcWLGoxYnTnnc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pfLd3LgFodjrV73cKpqjyQXojSlbUYiDDMz3PP0NIvlg/uoT4fpbs3bL5tdanZEgrTLX/izz1HPNg0qKGVfRJO62rKz7zkQ5iohXORMp3b5V9S653hNLCOe95J12u0x0YVBcrvdBmwl9bZ52qZckZ274E0RpaGfQWSFvcYIET64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Aq+oTsO2; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 458071F000E9;
+	Wed,  8 Jul 2026 03:03:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1783479823;
+	bh=CB8pQGkG6Qaw+/RUsh+AKXbwpn49Y+Oo2JFWa/dmNtQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Aq+oTsO2SojGRi1aTV5M5HuPQKRP1Sqp8DB7TBKtDU6JFyfIGUx2AMyUHwxZOFSM0
+	 mu2ls/Ez0wWi+MFAn6pUtXHUHOwswOVyND3J/nJKtXlR4qlVMZFGS53LcmAvjf7+Pa
+	 UlA5CyIjvZIV7aMtmm6bMG8tU8TgHrGWVm1lFlbUQvll9TmzzKdyewl4islVBdKwpY
+	 muFsmBuyfVEPP4Ue5wYKb7/7eRooGkWVbKsVrotndBtzqPhAnDzFpeMU6pJpTv1lEi
+	 WOkWjmGC9N7GzeK9Poj+ms2XUD20jgND0ETnZ8IhGlxZXnIwRbLs/FgiVvgJyJsuEb
+	 TvgAh8wpH74rA==
+Date: Tue, 7 Jul 2026 20:01:53 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Christoph Anton Mitterer <calestyo@scientia.org>
+Cc: linux-crypto@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+	Milan Broz <gmazyland@gmail.com>
 Subject: Re: AF_ALG deprecation fallout
-From: Christoph Anton Mitterer <calestyo@scientia.org>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-crypto@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>, 
- Milan Broz <gmazyland@gmail.com>
-Date: Wed, 08 Jul 2026 04:14:04 +0200
-In-Reply-To: <20260708011112.GA3890@sol>
+Message-ID: <20260708030153.GA14700@sol>
 References: <27816cc353731e8e5484adad7d0fc447777727d8.camel@scientia.org>
-	 <20260708011112.GA3890@sol>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2-10 
+ <20260708011112.GA3890@sol>
+ <04fbbc8611699e469f44edbccdf3cf1ac65075d3.camel@scientia.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-AuthUser: calestyo@scientia.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <04fbbc8611699e469f44edbccdf3cf1ac65075d3.camel@scientia.org>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-4.66 / 15.00];
+	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-25721-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gondor.apana.org.au,gmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[scientia.org];
-	FORGED_RECIPIENTS(0.00)[m:ebiggers@kernel.org,m:linux-crypto@vger.kernel.org,m:herbert@gondor.apana.org.au,m:gmazyland@gmail.com,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_THREE(0.00)[4];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[calestyo@scientia.org,linux-crypto@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[calestyo@scientia.org,linux-crypto@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-25717-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:calestyo@scientia.org,m:linux-crypto@vger.kernel.org,m:herbert@gondor.apana.org.au,m:gmazyland@gmail.com,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	FREEMAIL_CC(0.00)[vger.kernel.org,gondor.apana.org.au,gmail.com];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gitlab.com:url,vger.kernel.org:from_smtp,ernel.org:url]
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,sol:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 2B74C722AEE
+X-Rspamd-Queue-Id: 1B60D72147C
 
-Hey Eric.
+On Wed, Jul 08, 2026 at 04:14:04AM +0200, Christoph Anton Mitterer wrote:
+> Hey Eric.
+> 
+> Thanks for your fast reply :-)
+> 
+> On Tue, 2026-07-07 at 18:11 -0700, Eric Biggers wrote:
+> > In 7.3 we'll indeed be introducing an algorithm allowlist for AF_ALG.
+> > But I already proposed including "xts(serpent)", "xts(twofish)", and
+> > "xts(camellia)" on it
+> > (
+> > https://lore.kernel.org/linux-crypto/20260705184419.40762-1-ebiggers@k
+> > ernel.org/)
+> > based on their mention in various online documentation for
+> > cryptsetup,
+> > which suggests they indeed likely have some (rare) real-world use.
+> 
+> Good :-)
+> 
+> 
+> 
+> > I'm interested in allowing any other algorithms that still have
+> > real-world use via AF_ALG, if any exist.  If you're aware of any,
+> > please
+> > speak up.
+> 
+> [X]Chacha, IIRC, would anyway be used without XTS...
 
-Thanks for your fast reply :-)
+It's possible that some of the "aead" ciphers will need to continue to
+be supported in AF_ALG too (in addition to privileged use of "ccm(aes)",
+which already is on the list since bluez uses it).
 
-On Tue, 2026-07-07 at 18:11 -0700, Eric Biggers wrote:
-> In 7.3 we'll indeed be introducing an algorithm allowlist for AF_ALG.
-> But I already proposed including "xts(serpent)", "xts(twofish)", and
-> "xts(camellia)" on it
-> (
-> https://lore.kernel.org/linux-crypto/20260705184419.40762-1-ebiggers@k
-> ernel.org/)
-> based on their mention in various online documentation for
-> cryptsetup,
-> which suggests they indeed likely have some (rare) real-world use.
+But we need a specific list.
 
-Good :-)
+> Well, I personally don't use any others, but of course other might.
+> What about all these legacy modes that were used for years in examples,
+> like cast5-cbc-essiv, aes-cbc-essiv, etc.?
 
+First, the essiv component is not relevant, as far as I can tell.
+algif_skcipher actually does have essiv support, but it's a relatively
+recent addition and cryptsetup doesn't use it.
 
+So the potential AF_ALG uses there would be "cbc(cast5)" and "cbc(aes)".
 
-> I'm interested in allowing any other algorithms that still have
-> real-world use via AF_ALG, if any exist.=C2=A0 If you're aware of any,
-> please
-> speak up.
+> Does your list have any effects on things like chained algos (which I
+> think cryptsetup allows to use for tcrypt).
 
-[X]Chacha, IIRC, would anyway be used without XTS...
+AF_ALG has never supported cipher cascades itself.
 
-Well, I personally don't use any others, but of course other might.
-What about all these legacy modes that were used for years in examples,
-like cast5-cbc-essiv, aes-cbc-essiv, etc.?
+> I've wrote just before on the cryptsetup mailing list, that we have the
+> nice integrity support in cryptsetup for quite some years now, but I
+> guess only few people actually use it because all the available
+> algorithms/modes were kinda recommended against[0].
+> 
+> I think XChacha20+Poly1305 might be in reach (but still not actually
+> usable?), having finally a large enough nonce (192bits?).
 
-Does your list have any effects on things like chained algos (which I
-think cryptsetup allows to use for tcrypt).
+The kernel has had XChaCha20Poly1305 support internally since 2019, but
+support for it hasn't been added to dm-crypt yet.
 
+> So any chances that the kernel provides a usable AEAD mode for AES (or
+> maybe even Serpent ;-P)? 
+> 
+> Like with GCM but a larger nonce?
 
-> =C2=A0 In particular, if you could confirm that the "xts(serpent)"
-> and "xts(twofish)" allowlist entries are necessary and sufficient for
-> you, that would be helpful.
+We probably should add XAES-256-GCM support at some point, which takes
+192-bit nonces.  Historically it hasn't been feasible to do anything
+that uses per-request AES keys in the kernel, since the kernel's crypto
+API wasn't designed for that.  But we're now moving to a simpler API
+where the algorithms including AES-GCM are implemented using regular
+functions.  We can build XAES-256-GCM support on top of that.
 
-For me they are. Actually I would want to replace my use of twofish by
-something xchacha based (see * below), but I would want to keep xts-
-serpent in the long term.
-
-
-> Note that cryptsetup 2.8.7 will further reduce the cases in which it
-> even needs AF_ALG at all.=C2=A0 So just because you are using a particula=
-r
-> algorithm doesn't necessarily mean you need it in AF_ALG.
-
-I see. Well at least 2.8.6 still needed it for opening a dm-crypt
-device that used serpent-xts-plain64.
-
-
-> No algorithms have been proposed to be dropped from dm-crypt (which
-> is
-> *not* the same thing as AF_ALG), by the way.=C2=A0 Given that dm-crypt
-> allows
-> some "interesting" algorithms like RC4, DES-ECB, and even the null
-> cipher, I do think we can expect an allowlist for it at some point as
-> well.=C2=A0 But that would be separate.
-
-While these cases won't affect me, legacy users should be kept in mind.
-
-Perhaps waiting a few years where opening such dm-crypt mapping merely
-gives a warning that this is about to go away, then - if possible - for
-a few years allowing read-only mappings.
-
-
-> I'd indeed like to remove AF_ALG entirely eventually.=C2=A0 But that's a
-> long
-> term thing that would be many years from now and would occur only
-> after
-> iwd, bluez, cryptsetup etc. have all fully migrated to userspace
-> crypto.
-
-Good to hear that you guys have it already on your radar, that some
-people may use these non-AES algos and may want to continue doing so
-even in the long term.
-So please keep this in mind. :-)
-
-
-Thanks,
-Chris.
-
-
-* A bit off topic, but since some of the relevant people are already in
-CC:
-
-I've wrote just before on the cryptsetup mailing list, that we have the
-nice integrity support in cryptsetup for quite some years now, but I
-guess only few people actually use it because all the available
-algorithms/modes were kinda recommended against[0].
-
-I think XChacha20+Poly1305 might be in reach (but still not actually
-usable?), having finally a large enough nonce (192bits?).
-
-Now I'm not a crypt export, so don't really know which of [X]Chacha20
-vs. AES256 is considered stronger.
-At least AES has probably received far more scrutiny than any other
-crypto algo ever.
-
-So any chances that the kernel provides a usable AEAD mode for AES (or
-maybe even Serpent ;-P)?=C2=A0
-
-Like with GCM but a larger nonce?
-Or what about EAX, OCB? I blindly assume, that the patents have all
-expired, given that OpenPGP now uses them since RFC 9580.
-
-
-[0] https://gitlab.com/cryptsetup/cryptsetup/-/blob/5723601af5e5c14ccdf3cda=
-0b13756e3ea1b511b/docs/v2.0.0-ReleaseNotes#L259-274
+- Eric
 
