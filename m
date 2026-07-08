@@ -1,127 +1,241 @@
-Return-Path: <linux-crypto+bounces-25720-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25722-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Kh52JlLyTWrVAQIAu9opvQ
-	(envelope-from <linux-crypto+bounces-25720-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 08 Jul 2026 08:46:42 +0200
+	id qNvyGcUYTmqaDAIAu9opvQ
+	(envelope-from <linux-crypto+bounces-25722-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 08 Jul 2026 11:30:45 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48F0C7224C9
-	for <lists+linux-crypto@lfdr.de>; Wed, 08 Jul 2026 08:46:42 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDCF9723C09
+	for <lists+linux-crypto@lfdr.de>; Wed, 08 Jul 2026 11:30:44 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b="OO4Lu/dK";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25720-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25720-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=oiAX3HRW;
+	dmarc=pass (policy=none) header.from=gmail.com;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25722-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25722-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 3F8E0300898D
-	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jul 2026 06:46:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7F4B730AE02E
+	for <lists+linux-crypto@lfdr.de>; Wed,  8 Jul 2026 09:23:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131523E4510;
-	Wed,  8 Jul 2026 06:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC34409604;
+	Wed,  8 Jul 2026 09:22:58 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB3C3C379F;
-	Wed,  8 Jul 2026 06:46:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD2737C929
+	for <linux-crypto@vger.kernel.org>; Wed,  8 Jul 2026 09:22:56 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783493195; cv=none; b=m5ySYQwQj8ZAUCVbFuiqEAhE+UA0mwGUUxDetLx5cffuzZQpxP83fUCwiOz5DrfBBGxpMfAsUF9CpryKoIVsdFpPEynig+mcYvhh4XPfkL/KGWA4nmaaWK4XRh0Zx8VR/46gPbPFcmRod5Ggit7pVhT7C2ctvTSsxu38KWyrKNQ=
+	t=1783502578; cv=none; b=LlGYTK89P4B7LB+AuTMKUsVt6qNDnJTZq6N0W2M/00PtKv6g8L3lGOV0i0bwlrz1kRx5PnXvf6QSVz0RYeKgou+lHaeBJTMxW1sh5NHwZufgxyluh20L/F+VKGbpi7dAdH9CQfXK7Blfu/T6An9bR3ddHXYLpRlahrj1yfe+Uf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783493195; c=relaxed/simple;
-	bh=HFxUDoP6Ex7YM2OMJMeS5Y0WZJn/ZyvL5L53UAwwuZ8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KdL2LxyJQOZvz4S0i9Vi9GCcRHWCFOZmQhH210F8e7gUzz2N/7ARXBKEih43XVnKUr4qwSw7PzHkyTa711z45Oo84MXNhYHftgtYxpyTtei9hGF1g73WeT3Qk16hwiQo4aB6brkXMAP6EcGzre4mBawHrVhQweGp5d4WL1nC7G4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OO4Lu/dK; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30FEC1F000E9;
-	Wed,  8 Jul 2026 06:46:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783493191;
-	bh=f5iDONaBp7PwW4JhBqAoWBz19tuSVl08JtaCV0icvb4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=OO4Lu/dKbJfUWfzf5g4o/1B117+RUF/zI34kIgMlVs4Luzda0dW2U7WnRiKZoMOu+
-	 KNn6qGDJIdeSFsr2jMhGWFgqm3ajRcJxyW8l0o3zdo+s1H+tXpdq8quECScpoYdfrS
-	 xXj+IjYy3poliTQaKnZQCbdz/kt0dRzx7TsRw5pRqMRiLqf5S+GgYJ8kzCrArB8/46
-	 GNlD4sQAw2HbH+iOt3zfQdzGovHMC0D7LeD0kyOAbeKdmKk317E+ZUegQaXR3k8au/
-	 REjjd1fyY9P3L+MaZGKgl4KbbZDk0FloK5FVOGpWeXJg13FF2n/d4kGqthbhmGLdrn
-	 8uLe7GMIdaqtA==
-Date: Wed, 8 Jul 2026 08:46:27 +0200
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, 
-	"David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Harshal Dev <harshal.dev@oss.qualcomm.com>, 
-	Vinod Koul <vkoul@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>, 
-	Konrad Dybcio <konradybcio@kernel.org>, Frank Li <Frank.Li@kernel.org>, Andy Gross <agross@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] dt-bindings: dma: qcom,bam-dma: Increase iommus
- maxItems to 7
-Message-ID: <20260708-benevolent-congenial-waxbill-6bdee0@quoll>
-References: <20260706-b4-shikra_crypto_changse-v3-0-23b4c2054227@oss.qualcomm.com>
- <20260706-b4-shikra_crypto_changse-v3-5-23b4c2054227@oss.qualcomm.com>
+	s=arc-20240116; t=1783502578; c=relaxed/simple;
+	bh=71IPpVxSL6rELSFV3RscCJl7aym1gXBpQyo2V285sW4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QAjzgU/gu8jWESuGBhI3ma3WMvKtLX/V9aulYgus4QYKVPcVA7vQM8461GVBTuTnQWrX/kiNtnYnL8ZN5YNheBiiSE1ATuRiRzmLFpqiMNjTZ6soshPUHs+9dw8BqzPvmxR+zKMrDIjhEpWfw5XXqMdKw3m+IkH1ooc+ZwXnMLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=oiAX3HRW; arc=none smtp.client-ip=209.85.216.42
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-381216921aaso477787a91.1
+        for <linux-crypto@vger.kernel.org>; Wed, 08 Jul 2026 02:22:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1783502576; x=1784107376; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bESlo7lvNwhdiVElYDSnZy0QW9Bj+WsccRVrVGGNJng=;
+        b=oiAX3HRWBGooIDPulrZn1l987zJdstH6BPbfN05ASw4hB35iJdMBZ0YS8nsNTs7ePL
+         j3IRes2PnwojXzYU9NApKi2RPH1kFghEsvJNjad8A6lt6NAlQaacFDggaaA2t0aOzkeP
+         f7v0sXq0y/aGroJ8n16OTv5EUFZztalq3WLGn5J9wrYco9f2DIqB03K/KNJ7u25p35WY
+         Q5ClouECdVbbyz0uZqQM0Se4l21yINh6j2LzNPH+4Zf12OWh6bK0ZFma4b2+btlDju8u
+         b43opC16xq8o0VFCk0hr9hp3uu29bs14ZReLVRqPFZ3K2hFvatl1D2nBqAZyadRfMo3k
+         zxZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783502576; x=1784107376;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bESlo7lvNwhdiVElYDSnZy0QW9Bj+WsccRVrVGGNJng=;
+        b=J4k9uIUUl/IQYhDq7zNHXy7yg+GI5gLNGH5bKK6TS/DIwZ4Gi6k5ugJ3lhrvuJ+PNv
+         toLcH4iB0+zvinI1ISAS41Y+h/hSLSgzYYs/c6bvKIMk5mzBPh+J9qrMt4FTMTAGtPMS
+         0+DenJB5yhpRsPbGfbWyrBmcy6uth59/wazYwJwwgqY59f/dPhr6r3ZxfE5Eyev1Tigm
+         XkvPOnaDicc3cNDwF7S2XQL0vhqXC0u5v99irsDqdZlINgvXAZ/8sEh/t5oPtRYUZgde
+         ijc59um4a2dtMb8p+nnhdHq7i6wp7IohWZg5qwFOcuvspw1EkZdIDXZt4f7Ez9VCW1n0
+         I2LQ==
+X-Forwarded-Encrypted: i=1; AHgh+Rpx/Ade8/jWNVN9/i8MdfUPq0AgOT9u4JHoMv4y9AsOcRDLjttR2fBCufvL5K964S65Atx/LLOUvgYl0Sk=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yza8O8XiF3bfAraTMrWtZ3MqicHX7nl+63d2ZhsuW7Sd+l4UKGm
+	yxRuBPJKiHc7Gx6O/tfZLbXrL2NPPrRqAC/nu4lEj5s/pt+R/dBaCdJoTPmv+A==
+X-Gm-Gg: AfdE7ckoAeRdPUrZi3e/zG5Iww+ItOAS2XdtNONQYH1DTrZT1ZZUPlGcGVgtXVLWG2G
+	4e8+5rTDQ/C/s5l3rjjNMNAgpmtm0iOihQ5SnmFljUIohlXzvGkNaudA0QaSiSQ3ljnf/xDHbsS
+	WhL6CJGTIAaxnmiLOo9bLhFnEnTRFDuqQ/jtq8SCHuvsPoi3tyrmOhHX3rAbr3N8gP9K5xcOXPe
+	+FS3Yt4v/dUwTNSlpI5IxD2I6LA1/XsTL790f6kPulKg1qg009ks4vBeO0UE8GPDsO55QvJhfCZ
+	RVGHiIjfCnEHsCLsWYLwumWCsyKZR2LoDS+d1qXEjX8EhDadoDFQsGmfquMEA0qVigK98zfQB3t
+	qOU4AuI5fXmsktOSt+ABo0BSwIwp8w5xSCo784dm6lf1JmGV5lZ+hpgZ8tDvg132HOiHBQRhURk
+	TMQSvd
+X-Received: by 2002:a17:90b:17c1:b0:37f:ed7e:7e42 with SMTP id 98e67ed59e1d1-3893ff630c1mr1831193a91.14.1783502576376;
+        Wed, 08 Jul 2026 02:22:56 -0700 (PDT)
+Received: from homebox ([66.75.253.8])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3118389d9bcsm9985334eec.20.2026.07.08.02.22.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Jul 2026 02:22:56 -0700 (PDT)
+From: Yuan Tan <yuantan098@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	workflows@vger.kernel.org
+Cc: yuantan098@gmail.com,
+	jhs@mojatatu.com,
+	gregkh@linuxfoundation.org,
+	sven@narfation.org,
+	netdev@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	linux-crypto@vger.kernel.org
+Subject: [RFC] VEGA: a syzbot-like workflow for LLM-found kernel bugs
+Date: Wed,  8 Jul 2026 02:22:47 -0700
+Message-ID: <20260708092247.4188498-1-yuantan098@gmail.com>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20260706-b4-shikra_crypto_changse-v3-5-23b4c2054227@oss.qualcomm.com>
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-25722-lists,linux-crypto=lfdr.de];
+	FREEMAIL_CC(0.00)[gmail.com,mojatatu.com,linuxfoundation.org,narfation.org,vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[krzk@kernel.org,linux-crypto@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	FORGED_RECIPIENTS(0.00)[m:kuldeep.singh@oss.qualcomm.com,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:robh@kernel.org,m:krzk+dt@kernel.org,m:conor+dt@kernel.org,m:andersson@kernel.org,m:harshal.dev@oss.qualcomm.com,m:vkoul@kernel.org,m:brgl@kernel.org,m:konradybcio@kernel.org,m:Frank.Li@kernel.org,m:agross@kernel.org,m:krzysztof.kozlowski@oss.qualcomm.com,m:linux-arm-msm@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:devicetree@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:dmaengine@vger.kernel.org,m:krzk@kernel.org,m:conor@kernel.org,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-25720-lists,linux-crypto=lfdr.de];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	FORGED_SENDER(0.00)[yuantan098@gmail.com,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:linux-kernel@vger.kernel.org,m:workflows@vger.kernel.org,m:yuantan098@gmail.com,m:jhs@mojatatu.com,m:gregkh@linuxfoundation.org,m:sven@narfation.org,m:netdev@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:linux-crypto@vger.kernel.org,s:lists@lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yuantan098@gmail.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[krzk@kernel.org,linux-crypto@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[quoll:mid,vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,qualcomm.com:email]
+	TAGGED_RCPT(0.00)[linux-crypto];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 48F0C7224C9
+X-Rspamd-Queue-Id: CDCF9723C09
 
-On Mon, Jul 06, 2026 at 05:01:33PM +0530, Kuldeep Singh wrote:
-> Qualcomm Shikra platform describes the BAM DMA node with 7 iommus
-> entries. The current schema limit to 6, so update the binding to allow
-> up to 7 entries.
-> 
-> Signed-off-by: Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>
-> ---
->  Documentation/devicetree/bindings/dma/qcom,bam-dma.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Hi all,
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+We would like to ask for feedback on a proposed workflow for reporting Linux
+kernel bugs found by an LLM-assisted code auditing tool that we have
+been developing since earlier this year.
 
-Best regards,
-Krzysztof
+Since February, we have been developing an LLM-driven kernel code auditing
+tool called VEGA. It started as a side project, but the results became much
+substantial than we expected: VEGA has found hundreds of valid bugs in Linux
+kernel.
+
+That immediately created a practical problem: we do not want to dump a large
+pile of bug reports onto mail lists and annoy the maintainers.
+
+The first thing we tried was to fix as many as we could ourselves. We
+started working with a group of student volunteers. Most of them are
+college students, so we have been training them, reviewing their patches,
+and trying to build an internal review process before anything is sent to
+the mailing list. The goal is to turn these findings into useful fixes, and
+also to help new contributors grow into people who can reduce maintainer
+workload instead of adding to it.
+
+The process was not perfect. Some patches were not good enough, and we also
+made some mistakes early on when deciding what should be called a security
+issue.  Our internal review process has been improving with the help of the
+community.
+
+Since March, we picked up non-root triggerable bug first and have worked on
+fixes for more than 100 validated kernel bugs. we especially want to thank
+the students and professor who have helped a lot with this effort.
+
+But the remaining queue is still too large for us to handle.
+
+Recently Jamal pointed out problems around our tags. That made me realize
+that we should probably stop treating this as an ad-hoc patch effort and
+build something closer to syzbot: public, reproducible, trackable,
+deduplicated, and useful to maintainers.
+
+So this mail is an RFC for a VEGA reporting workflow.
+
+The rough idea
+==============
+
+VEGA would have a public dashboard, similar to syzbot, and would
+send selected bug reports to the relevant kernel mailing lists.
+
+The goal is to send reports that contain enough information for maintainers
+or other developers to pick up, understand, reproduce and fix the issue.
+
+For each public report, we expect to include:
+
+  - a description of the bug
+  - the tested kernel tree and commit
+  - the kernel config and environment
+  - the crash log
+  - a minimized user-space reproducer
+  - the suspected introducing commit
+  - a suggested fix patch
+
+The suggested fix patch is meant to reduce maintainer burden. It still need
+human review, but hopefully it can save a lot time from building a patch
+from scratch.
+
+What will be public
+===================
+
+All VEGA findings that we have evaluated as not having major security
+impact can be published on the VEGA dashboard. The dashboard would make it
+possible to see what VEGA found, whether the issue was reproduced, whether
+a fix exists, whether it was reported to a mailing list, and whether it has
+been fixed upstream.
+
+For issues that we have validated as having possible serious security
+impact, we will not publish it on the public dashboard before going through
+the appropriate kernel security process.
+
+Dumping everything onto the mailing list may be annoying. During the initial
+stage, reports will be rate-limited and sent manually. We will check for
+duplicates against lore/upstream, and make sure the issue is not already
+fixed or reported.
+
+Report identity and tags
+========================
+
+Each public VEGA report will have a stable identity, similar to
+syzbot reports.
+
+One possible format is:
+
+  Reported-by: VEGA <vega+HASH@DOMAIN>
+  Closes: <public dashboard URL>
+
+=========
+
+We would like to hear what maintainers think about this before we start
+sending these reports.
+
+We do not want VEGA to become another source of mailing list noise. The goal
+is to make LLM-based bug finding transparent and useful, and to make sure
+the reports come with enough context, reproducers, suggested fixes, and
+tracking so that they reduce work rather than create more.
+
+Thanks,
+Yuan
 
 
