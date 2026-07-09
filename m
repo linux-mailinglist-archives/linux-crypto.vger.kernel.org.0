@@ -1,171 +1,166 @@
-Return-Path: <linux-crypto+bounces-25761-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25764-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id H+ZsJy+WT2oCkQIAu9opvQ
-	(envelope-from <linux-crypto+bounces-25761-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 14:38:07 +0200
+	id pkYOCAi2T2qBnAIAu9opvQ
+	(envelope-from <linux-crypto+bounces-25764-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 16:54:00 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7670731107
-	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 14:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 709FD732806
+	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 16:53:59 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=SO0DVmru;
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25761-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25761-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=none;
+	dmarc=none;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25764-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25764-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1A07330EF8CD
-	for <lists+linux-crypto@lfdr.de>; Thu,  9 Jul 2026 12:32:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5930D32389FF
+	for <lists+linux-crypto@lfdr.de>; Thu,  9 Jul 2026 14:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C9A742314E;
-	Thu,  9 Jul 2026 12:32:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45DE932B139;
+	Thu,  9 Jul 2026 14:32:19 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from cyan.elm.relay.mailchannels.net (cyan.elm.relay.mailchannels.net [23.83.212.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF9294218AA
-	for <linux-crypto@vger.kernel.org>; Thu,  9 Jul 2026 12:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8223637757F
+	for <linux-crypto@vger.kernel.org>; Thu,  9 Jul 2026 14:32:17 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783600333; cv=none; b=hqJhrVA6+YBnYOQ4m4H9FLUW7HUqRRq2buz9/4gTRa/Ssx5T+x97bo7Z4nHnYLSi69UztwkrifxkRCMqs50cZTyI5L/xHsMRKPz3rhZahI8BWJK92kTJ0eM2k+Pj2/falIPx50R83QGnFCmI3u6OrtjxYz6B8sXtVKu2mhdinlc=
+	t=1783607539; cv=none; b=l0pHBmPxfsUodmRPHZplj0BSVk+YT1ZmDX9RcCfHbMz3Eqv3RLD25fzhPu13z+1ypURGkwJomzvkCzBCT/nXLEr0kgnLcxiGrfBGkROnkkCMoI2ZU48/ktX3XV3wZSAYpyUgo4ALOUVNrEQU02IxwRcpNfjm++WPW1OmUxcsO5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783600333; c=relaxed/simple;
-	bh=oD7sVcKI0EP5wbCBcbErCM6cSOoSEbzddvyLGpoAsBI=;
-	h=From:In-Reply-To:MIME-Version:References:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sv8zlUVWmZrg6rI5oeDAP4JyZgBr1AphdHDRuGsL4U4xMOm60wWm2Zuu2pUjPYEjLi2voQpOuo1FTh3ckDAG8HZo0H+Q/E3NplQCTe3bKmFrqWVnvca20C4S+YxgIPRzXyj2mQ6Zokr8ULZDiCv2yk0jV0WVWFpKxzD34GySFvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SO0DVmru; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9299F1F01559
-	for <linux-crypto@vger.kernel.org>; Thu,  9 Jul 2026 12:32:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783600331;
-	bh=4aR9R9rWW9lEHBtHD1X7oe8tDfOcExVaxQWxI0iwWpw=;
-	h=From:In-Reply-To:References:Date:Subject:To:Cc;
-	b=SO0DVmruKzGhRCEDUhvR08+VaUPO+EXfcFiEUq4/kCU65mP7IoJMaFZlkS29qL85z
-	 jJqVr+be51s9PC+n6LxjenfQicQBWU32x3EIrjs7o/hMtZB2cOSXQFXBPVWyZA37s+
-	 oKn8SU8hXX0zXwTCgFwdn7WykFJ0ofTRsbWH7aBSz65+B1qiEIpHw5b8/h2JIoeVpm
-	 EORHEOYRb6ulLk49aBGhA5mNE6BpjbffZ6cO/hT199i4VW+7qhIazzFa1Qeeg5rVGs
-	 0Tlrpw2m9NyIusahdzqvKHIIMwUyY5lxR3fLthjVU6h87fT5qGJS4DpYLy8E+bmBQg
-	 4R7ZRsOUP/47Q==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-39c8dbf4ef0so4607691fa.2
-        for <linux-crypto@vger.kernel.org>; Thu, 09 Jul 2026 05:32:11 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+RpzUo4VJrf2jfF4I0ipXUqzEQ8b0Dsn4gnkv8+5cZVosJDdYvFK3h81Xlg8gF+CHGVjFL8lo8w87ClEnb8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyfPTuA8ccELfRyHXMAhM+H9OWAmy2Zlg4cdFOPmy29xTNucAae
-	0n8mBgpVO8Ao0DF2T+dRpmys8NUZ1NiuN373MOOGvsBPsm7UZE3JaMD/fwuGaDBhMUXI1GWb9c2
-	d/FKMaWjQ/qrLe2++BTOHjVTF2xQh234ihCsdL5qfbg==
-X-Received: by 2002:a05:651c:a09:b0:39a:d7f7:9823 with SMTP id
- 38308e7fff4ca-39c798813b4mr15252851fa.17.1783600329964; Thu, 09 Jul 2026
- 05:32:09 -0700 (PDT)
-Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 9 Jul 2026 05:32:08 -0700
-Received: from 969154062570 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 9 Jul 2026 05:32:08 -0700
-From: Bartosz Golaszewski <brgl@kernel.org>
-In-Reply-To: <ak4_vsdef9MJd1Yv@linaro.org>
+	s=arc-20240116; t=1783607539; c=relaxed/simple;
+	bh=V0a2ILp/tCsE6dw0LWeROasiy4crFA3UOludhXO5JsE=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=G1optxYpcSlZZP6cjuQ9oOc+H1IMC1uQyRQMBT3C4sZRDd15jjsAsh4bXpbGKM/nLxHa8H1FpWe44sqok3Sau6uW2WdCCfOI5T4SHVrVYZQOrHbc5P3Jx/0aq2dIKafOga8/FKpgOOu5WHJEn0aeTkGGDSAHeEGLmb1APk5ARNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=none smtp.client-ip=23.83.212.47
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 6D764722AE1;
+	Thu, 09 Jul 2026 12:38:55 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (trex-green-6.trex.outbound.svc.cluster.local [100.99.18.246])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 1CFF7722D10;
+	Thu, 09 Jul 2026 12:38:53 +0000 (UTC)
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MC-Copy: stored-urls
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Hook-Left: 6173d548431ec6da_1783600735271_2102916553
+X-MC-Loop-Signature: 1783600735271:136814838
+X-MC-Ingress-Time: 1783600735271
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.99.18.246 (trex/8.0.2);
+	Thu, 09 Jul 2026 12:38:55 +0000
+Received: from tmo-083-158.customers.d1-online.com ([80.187.83.158]:12616 helo=ehlo.thunderbird.net)
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.99.4)
+	(envelope-from <calestyo@scientia.org>)
+	id 1who1k-00000009w7H-1m7G;
+	Thu, 09 Jul 2026 12:38:52 +0000
+Date: Thu, 09 Jul 2026 14:38:50 +0200
+From: Christoph Anton Mitterer <calestyo@scientia.org>
+To: Milan Broz <gmazyland@gmail.com>, Eric Biggers <ebiggers@kernel.org>
+CC: linux-crypto@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>
+Subject: Re: AF_ALG deprecation fallout
+In-Reply-To: <aac82bdd-6a28-4e65-97f4-3d5942d2a6af@gmail.com>
+References: <27816cc353731e8e5484adad7d0fc447777727d8.camel@scientia.org> <20260708011112.GA3890@sol> <04fbbc8611699e469f44edbccdf3cf1ac65075d3.camel@scientia.org> <20260708030153.GA14700@sol> <aac82bdd-6a28-4e65-97f4-3d5942d2a6af@gmail.com>
+Message-ID: <5B8D2771-3FBD-4FF0-A2A0-A57120A53F5A@scientia.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260629-qcom-qce-cmd-descr-v20-0-56f67da84c05@oss.qualcomm.com>
- <20260629-qcom-qce-cmd-descr-v20-6-56f67da84c05@oss.qualcomm.com> <ak4_vsdef9MJd1Yv@linaro.org>
-Date: Thu, 9 Jul 2026 05:32:08 -0700
-X-Gmail-Original-Message-ID: <CAMRc=Me93OOyk5gzqD2kSEbR=SNXbOC7azsqc14BLVirnkEmjg@mail.gmail.com>
-X-Gm-Features: AVVi8Cee9x38eRLPwnHC8PzzhrHOdP202SPN2_gv8BvqViABwY4y57pWiMje_Lg
-Message-ID: <CAMRc=Me93OOyk5gzqD2kSEbR=SNXbOC7azsqc14BLVirnkEmjg@mail.gmail.com>
-Subject: Re: [PATCH v20 06/14] dmaengine: qcom: bam_dma: add support for BAM locking
-To: Stephan Gerhold <stephan.gerhold@linaro.org>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@oss.qualcomm.com>, Vinod Koul <vkoul@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Thara Gopinath <thara.gopinath@gmail.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
-	Udit Tiwari <quic_utiwari@quicinc.com>, Md Sadre Alam <mdalam@qti.qualcomm.com>, 
-	Dmitry Baryshkov <lumag@kernel.org>, Manivannan Sadhasivam <mani@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Peter Ujfalusi <peter.ujfalusi@gmail.com>, 
-	Michal Simek <michal.simek@amd.com>, Frank Li <Frank.Li@kernel.org>, 
-	Andy Gross <agross@codeaurora.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	dmaengine@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	brgl@kernel.org, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-AuthUser: calestyo@scientia.org
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[25];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25761-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:stephan.gerhold@linaro.org,m:bartosz.golaszewski@oss.qualcomm.com,m:vkoul@kernel.org,m:corbet@lwn.net,m:thara.gopinath@gmail.com,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:quic_utiwari@quicinc.com,m:mdalam@qti.qualcomm.com,m:lumag@kernel.org,m:mani@kernel.org,m:andersson@kernel.org,m:peter.ujfalusi@gmail.com,m:michal.simek@amd.com,m:Frank.Li@kernel.org,m:agross@codeaurora.org,m:neil.armstrong@linaro.org,m:dmaengine@vger.kernel.org,m:linux-doc@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-arm-msm@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:linux-arm-kernel@lists.infradead.org,m:brgl@kernel.org,m:bartosz.golaszewski@linaro.org,m:tharagopinath@gmail.com,m:peterujfalusi@gmail.com,s:lists@lfdr.de];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[brgl@kernel.org,linux-crypto@vger.kernel.org];
-	FREEMAIL_CC(0.00)[oss.qualcomm.com,kernel.org,lwn.net,gmail.com,gondor.apana.org.au,davemloft.net,quicinc.com,qti.qualcomm.com,amd.com,codeaurora.org,linaro.org,vger.kernel.org,lists.infradead.org];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linaro.org:email,mail.gmail.com:mid,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,sashiko.dev:url];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,gitlab.com:url];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-25764-lists,linux-crypto=lfdr.de];
+	DMARC_NA(0.00)[scientia.org];
+	FORGED_RECIPIENTS(0.00)[m:gmazyland@gmail.com,m:ebiggers@kernel.org,m:linux-crypto@vger.kernel.org,m:herbert@gondor.apana.org.au,s:lists@lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com,kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_THREE(0.00)[4];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[calestyo@scientia.org,linux-crypto@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[brgl@kernel.org,linux-crypto@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[calestyo@scientia.org,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ALIAS_RESOLVED(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
 	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E7670731107
+X-Rspamd-Queue-Id: 709FD732806
 
-On Wed, 8 Jul 2026 14:17:51 +0200, Stephan Gerhold
-<stephan.gerhold@linaro.org> said:
-> On Mon, Jun 29, 2026 at 12:01:08PM +0200, Bartosz Golaszewski wrote:
->>
->> @@ -1064,9 +1220,23 @@ static void bam_start_dma(struct bam_chan *bchan)
->>
->>  	lockdep_assert_held(&bchan->vc.lock);
->>
->> +	vd = vchan_next_desc(&bchan->vc);
->>  	if (!vd)
->>  		return;
->>
->> +	/*
->> +	 * Wrap the issued work with a LOCK/UNLOCK pair exactly once, at the
->> +	 * start of a fresh sequence and only when there is real work to lock
->> +	 * around. On a re-entry after a full FIFO, we see the BAM is locked
->> +	 * and must not add another pair we simply continue loading the
->> +	 * remainder of the same locked sequence.
->> +	 */
->> +	if (!bchan->bam_locked) {
->> +		ret = bam_setup_pipe_lock(bchan);
->> +		if (ret == 0 && bchan->bam_locked)
->> +			vd = vchan_next_desc(&bchan->vc);
->> +	}
->
-> I *suspect* though that Sashiko is right about the new race condition
-> here if new descriptors are queued while the hardware is busy processing
-> a locked sequence.
->
-> https://sashiko.dev/#/patchset/20260629-qcom-qce-cmd-descr-v20-0-56f67da84c05%40oss.qualcomm.com?part=6
->
-> Any idea how to fix this?
->
+Hey=2E
 
-We could move the bam_clocked clearing from the IRQ handler into
-bam_start_dma(), right after the UNLOCK descriptor is committed to the FIFO.
-Basically track the state at queue-time, not at interrupt time. Once we commit
-the UNLOCK, the locked range of descriptors is "sealed". If there's more work,
-we'd call bam_setup_pipe_lock() again with a new "sealed" range surrounded
-by LOCK/UNLOCK.
+Am 9=2E Juli 2026 12:47:06 MESZ schrieb Milan Broz <gmazyland@gmail=2Ecom>=
+:
+>On 7/8/26 5:01 AM, Eric Biggers wrote:
+>See my explanation here
+>https://gitlab=2Ecom/cryptsetup/cryptsetup/-/merge_requests/420#note_2520=
+172869
 
-Bart
+Do you strictly need an RFC?
+
+Nevertheless, I've mailed to the author of draft-irtf-cfrg-xchacha whether=
+ he has still any plans with it=2E
+At least then we'd know if it's worth waiting=2E
+
+
+>> We probably should add XAES-256-GCM support at some point, which takes
+>> 192-bit nonces=2E  Historically it hasn't been feasible to do anything
+>> that uses per-request AES keys in the kernel, since the kernel's crypto
+>> API wasn't designed for that=2E  But we're now moving to a simpler API
+>> where the algorithms including AES-GCM are implemented using regular
+>> functions=2E  We can build XAES-256-GCM support on top of that=2E
+>
+>That would be nice=2E
+
+Indeed=2E Would be great if that could come in the foreseeable future=2E=
+=2E=2E in particular with the uncertain future of XChaha=2E
+
+Also, blindly assuming that so far people mostly used integrity support in=
+ dm-crypt for testing and not production (due to the algos), it might take =
+a while until enough trust[0] has built up for seeing broad use=2E
+
+
+I guess it might also help end users if cryptsetup might give recommendati=
+ons on which algo to use for what (like most secure vs=2E secure enough but=
+ better performance, or so)=2E
+
+With non AEAD, this had been rather easy, and aes-xts-plain64 with 256 bit=
+ keys was simply like the gold standard=2E
+
+
+Cheers,
+Chris=2E
+
+
+[0] Not that I'd think the contributing developers weren't capable,=2E=2E=
+=2E but you know=2E=2E=2E if one puts all precious data in it (including fo=
+r backups), one doesn't want any surprises=2E
 
