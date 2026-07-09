@@ -1,117 +1,147 @@
-Return-Path: <linux-crypto+bounces-25763-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25765-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id AmNdNXexT2pzmwIAu9opvQ
-	(envelope-from <linux-crypto+bounces-25763-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 16:34:31 +0200
+	id TNEDI427T2rOnQIAu9opvQ
+	(envelope-from <linux-crypto+bounces-25765-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 17:17:33 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F8A37324D3
-	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 16:34:31 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E91B732B9E
+	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 17:17:32 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linuxfoundation.org header.s=korg header.b=VBQ9t4F5;
-	dmarc=pass (policy=none) header.from=linuxfoundation.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25763-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c09:e001:a7::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25763-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=mailbox.org header.s=mail20150812 header.b=dRhx9Vg5;
+	dkim=pass header.d=mailbox.org header.s=mail20150812 header.b=k4Cl4FVG;
+	dmarc=pass (policy=reject) header.from=mailbox.org;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25765-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25765-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 56FE43003834
-	for <lists+linux-crypto@lfdr.de>; Thu,  9 Jul 2026 14:27:41 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9E4DC3010CE1
+	for <lists+linux-crypto@lfdr.de>; Thu,  9 Jul 2026 14:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9E5331EAD;
-	Thu,  9 Jul 2026 14:27:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4F8E370AF6;
+	Thu,  9 Jul 2026 14:39:28 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F541AA780;
-	Thu,  9 Jul 2026 14:27:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0671536CE03;
+	Thu,  9 Jul 2026 14:39:26 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783607258; cv=none; b=Wvn315z10cWYCxvQ4APGyNe4KzXoTml1qEQ8g+BEmh3/7vfP/kfBcvwfKLvfJG/nvQ6WZz9UEms6v87LcvJdqS4e/h0Ci1VOwG7cJId+J+4Fb0o6nbDA8XSFBfbnacXE686ilU9iyo0kSZA6VArH7XWrCrk/I/NaRvQ4DeINuwg=
+	t=1783607968; cv=none; b=ujSgvRX8E83xEq6TLn1gfhHcg6ABtJNnUlw2zCW6xVjgV3YsObU2Nr9+GSauXxUFAbJmVh656yQcGXaireoDlALqTRer9Lw/YOSsvCXis58a1KL4k35/ETAmxjH4TLuJ0855Z03SlKrFjjnN3jbr5TdWnN3Qz2/ixTMzaJcEQ9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783607258; c=relaxed/simple;
-	bh=XgcPfTh9E+25t08NFhk2qKYKRxiIW0zesYLtJEAOtbM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oegZJXKmee4QrL7s+Y0VRVBVEVFdx4lJLxGJh1rGzejxsd7JeQNXat6T8P8jYYTTpJjbc5wBmwRbRWL7QGx4LMoZJpEGC23xJ9iCKvkp52616aB5J4QThyY9DwvL1HEBFSCdNHeFg/mXYW8tb0mkfik99hQN+/tvLFY26IfA30w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=VBQ9t4F5; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 771231F000E9;
-	Thu,  9 Jul 2026 14:27:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
-	s=korg; t=1783607256;
-	bh=XgcPfTh9E+25t08NFhk2qKYKRxiIW0zesYLtJEAOtbM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=VBQ9t4F5pEbEKNt60Qv669QNKzVt19DHjVXQ2NGngjPPwbXT+MvCi4SzoQQRNIL0z
-	 fBRxw5nAIF6blJ1hLGvRL+VbpPPa2rN9bew0Mywug3kLzU3rkjbp4uqSIQNBEfTWAA
-	 GrSMu7LrrjxkYYoaNI85a7OQLIRM5Ce52TDnwpSo=
-Date: Thu, 9 Jul 2026 16:27:33 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Goetz Goerisch <ggoerisch@gmail.com>
-Cc: herbert@gondor.apana.org.au, herve.codina@bootlin.com,
-	linux-crypto@vger.kernel.org, miquel.raynal@bootlin.com,
-	paul.louvel@bootlin.com, sashal@kernel.org, stable@vger.kernel.org,
-	thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH 1/5] Revert "crypto: talitos - rename first/last to
- first_desc/last_desc"
-Message-ID: <2026070912-pluck-bagful-2a71@gregkh>
-References: <2026052212-aged-amply-7bd8@gregkh>
- <20260523151048.14914-1-ggoerisch@gmail.com>
- <20260523151048.14914-2-ggoerisch@gmail.com>
+	s=arc-20240116; t=1783607968; c=relaxed/simple;
+	bh=49zOOt5+xEk9/lTP2PmM+mws9UQunmmAuhg/nSTLDRA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mSb0bgI30WhMX14rJvKPGDo9Bj4LneZu9ZsSrycCpX4JBy+PeLo363RsFqSBxlsChh8lQJk8W7XNaRBMjfwJh4xhdXqBafVa5hnBilUKjaCW/aF87JbCJqEoltFaBFTcfkl7eTruQ52HKD1uOkrBP79ww1Kje7CkKDJBUXtWXc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=dRhx9Vg5; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=k4Cl4FVG; arc=none smtp.client-ip=80.241.56.152
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA512)
+	(No client certificate requested)
+	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4gwyK91bs2zKvv5;
+	Thu, 09 Jul 2026 16:39:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1783607965;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=gccvbgfpf+svZIfM1dyBRepcYv+RTgI55mHg15KJzOY=;
+	b=dRhx9Vg5XMMaNFWJxU6loVPHKXRgx76ulJ4aNmbnw/TFAikPLPvCsKnmoGb6MqsU7MqsRB
+	EKvwM7G1PVrbog4awVRT/tb1FXgKSA2EdChJ+wJQzS7y+6kKnTdfTumtkn7vzF3/cLs8v4
+	LvhSZwanT2f8ljrcABuR1xbbHykqtM1+dd/hVEoIhpku3DRaLZyYcyPlibysj/mzV9lNil
+	3Ay4JvV//zsm8vor4ZDf4l/ZI93upTMcENCK4HvfyZz3Q8gJGABThATGu63UmBlEXRvbGN
+	jt71CVnXcSg5viLL4U9HeqW4O9FIPrQU8qd0u+kEW665MDM9JsusGuOg84fd+w==
+From: Manuel Ebner <manuelebner@mailbox.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1783607963;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=gccvbgfpf+svZIfM1dyBRepcYv+RTgI55mHg15KJzOY=;
+	b=k4Cl4FVGxyhYi+jtAQI3/DLHP5ZVnJxXj9xuIuKtJ1u7CygKjlNHFgcW0iWb/KVhByrXc6
+	PEOQNGDeRz115of/FfJQ3wYLZPIFqd5NNKMn8VV32ppf0kQu+drsWqQrVXbYECDYZABeeY
+	tP51M59xIT1EzZwYRHxla9UE0oTGqEvEFYbc/pfT7me23CSrzKPxoPjsB9fFG2Vgdk+lQp
+	UsaGNE4mjkH455f0C8c3ruC2Py8Prb7gq+578ZFxVdBFyohUXHm3lFdubJnG/5dyG5brZB
+	wWLDJlIhGG8vzKaiPYnbg4Kp9GMux+9GaEA+rMqNIMmUT7E9+WrYmdQhtk9XjA==
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Stephan Mueller <smueller@chronox.de>
+Cc: Manuel Ebner <manuelebner@mailbox.org>,
+	linux-crypto@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: fix bracket
+Date: Thu,  9 Jul 2026 16:38:37 +0200
+Message-ID: <20260709143837.405758-2-manuelebner@mailbox.org>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260523151048.14914-2-ggoerisch@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-MBO-RS-ID: 78dd1a326d509db60c4
+X-MBO-RS-META: 3e9gqk1jxiax9ytow16ok41tk5jgr96c
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [2.34 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linuxfoundation.org,none];
-	R_DKIM_ALLOW(-0.20)[linuxfoundation.org:s=korg];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[mailbox.org,reject];
+	R_DKIM_ALLOW(-0.20)[mailbox.org:s=mail20150812];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:ggoerisch@gmail.com,m:herbert@gondor.apana.org.au,m:herve.codina@bootlin.com,m:linux-crypto@vger.kernel.org,m:miquel.raynal@bootlin.com,m:paul.louvel@bootlin.com,m:sashal@kernel.org,m:stable@vger.kernel.org,m:thomas.petazzoni@bootlin.com,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-25763-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25765-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[gregkh@linuxfoundation.org,linux-crypto@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[manuelebner@mailbox.org,linux-crypto@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:corbet@lwn.net,m:skhan@linuxfoundation.org,m:smueller@chronox.de,m:manuelebner@mailbox.org,m:linux-crypto@vger.kernel.org,m:linux-doc@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	DKIM_TRACE(0.00)[mailbox.org:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gregkh@linuxfoundation.org,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[linuxfoundation.org:+];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	TAGGED_RCPT(0.00)[linux-crypto];
 	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[manuelebner@mailbox.org,linux-crypto@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gregkh:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linuxfoundation.org:from_mime,linuxfoundation.org:dkim,vger.kernel.org:from_smtp]
+	RCPT_COUNT_SEVEN(0.00)[9];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,mailbox.org:from_mime,mailbox.org:email,mailbox.org:mid,mailbox.org:dkim,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 7F8A37324D3
+X-Rspamd-Queue-Id: 8E91B732B9E
 
-On Sat, May 23, 2026 at 05:10:44PM +0200, Goetz Goerisch wrote:
-> This reverts commit a866e2b1c65edaee2e1bb1024ee2c761ced335f8.
-> ---
+Remove needless ')' from code block.
 
-We need a reason for a revert, AND a signed off-by line :(
+Fixes: 3b72c814a8e8 ("crypto: doc - convert crypto API documentation to Sphinx")
+Signed-off-by: Manuel Ebner <manuelebner@mailbox.org>
+---
+ Documentation/crypto/architecture.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Please fix that up for the other revert in this series and resend.
+diff --git a/Documentation/crypto/architecture.rst b/Documentation/crypto/architecture.rst
+index 249b54d0849f..ec2e99d99aff 100644
+--- a/Documentation/crypto/architecture.rst
++++ b/Documentation/crypto/architecture.rst
+@@ -95,7 +95,7 @@ additional templates may enclose other templates, such as
+ 
+ ::
+ 
+-        template1(template2(single block cipher)))
++        template1(template2(single block cipher))
+ 
+ 
+ The kernel crypto API may provide multiple implementations of a template
+-- 
+2.54.0
 
-thanks,
-
-greg k-h
 
