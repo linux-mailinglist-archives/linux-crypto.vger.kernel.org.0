@@ -1,166 +1,273 @@
-Return-Path: <linux-crypto+bounces-25764-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25762-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id pkYOCAi2T2qBnAIAu9opvQ
-	(envelope-from <linux-crypto+bounces-25764-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 16:54:00 +0200
+	id ewoXMsmdT2p8lAIAu9opvQ
+	(envelope-from <linux-crypto+bounces-25762-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 15:10:33 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 709FD732806
-	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 16:53:59 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id D099C7316A3
+	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 15:10:32 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25764-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25764-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=redhat.com header.s=mimecast20190719 header.b=Py6d+vdr;
+	dkim=pass header.d=redhat.com header.s=google header.b=WTWIHNL4;
+	dmarc=pass (policy=quarantine) header.from=redhat.com;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25762-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25762-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5930D32389FF
-	for <lists+linux-crypto@lfdr.de>; Thu,  9 Jul 2026 14:32:45 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 867FB302475E
+	for <lists+linux-crypto@lfdr.de>; Thu,  9 Jul 2026 13:06:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45DE932B139;
-	Thu,  9 Jul 2026 14:32:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B295C25BF13;
+	Thu,  9 Jul 2026 13:06:12 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from cyan.elm.relay.mailchannels.net (cyan.elm.relay.mailchannels.net [23.83.212.47])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8223637757F
-	for <linux-crypto@vger.kernel.org>; Thu,  9 Jul 2026 14:32:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15AC625B084
+	for <linux-crypto@vger.kernel.org>; Thu,  9 Jul 2026 13:06:09 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783607539; cv=none; b=l0pHBmPxfsUodmRPHZplj0BSVk+YT1ZmDX9RcCfHbMz3Eqv3RLD25fzhPu13z+1ypURGkwJomzvkCzBCT/nXLEr0kgnLcxiGrfBGkROnkkCMoI2ZU48/ktX3XV3wZSAYpyUgo4ALOUVNrEQU02IxwRcpNfjm++WPW1OmUxcsO5I=
+	t=1783602372; cv=none; b=mR9rBB/Rft6x0AIw8kYcSP9TNOERn5+RNSpaCLTZy8KPmTS9m5jUN1RciCVGUYtADRH92G+ZaFqQujzhQoz6tSpO+OGuq/tkngy23aY3xNjAhcWlwca71PRx4gYKhUaaj4QV9/pKgfgie/waLbclvA1eY4vABbmczgo/ZVRm3XY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783607539; c=relaxed/simple;
-	bh=V0a2ILp/tCsE6dw0LWeROasiy4crFA3UOludhXO5JsE=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=G1optxYpcSlZZP6cjuQ9oOc+H1IMC1uQyRQMBT3C4sZRDd15jjsAsh4bXpbGKM/nLxHa8H1FpWe44sqok3Sau6uW2WdCCfOI5T4SHVrVYZQOrHbc5P3Jx/0aq2dIKafOga8/FKpgOOu5WHJEn0aeTkGGDSAHeEGLmb1APk5ARNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=none smtp.client-ip=23.83.212.47
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 6D764722AE1;
-	Thu, 09 Jul 2026 12:38:55 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (trex-green-6.trex.outbound.svc.cluster.local [100.99.18.246])
-	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 1CFF7722D10;
-	Thu, 09 Jul 2026 12:38:53 +0000 (UTC)
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MC-Relay: Neutral
-X-MC-Copy: stored-urls
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Hook-Left: 6173d548431ec6da_1783600735271_2102916553
-X-MC-Loop-Signature: 1783600735271:136814838
-X-MC-Ingress-Time: 1783600735271
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.99.18.246 (trex/8.0.2);
-	Thu, 09 Jul 2026 12:38:55 +0000
-Received: from tmo-083-158.customers.d1-online.com ([80.187.83.158]:12616 helo=ehlo.thunderbird.net)
-	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-	(Exim 4.99.4)
-	(envelope-from <calestyo@scientia.org>)
-	id 1who1k-00000009w7H-1m7G;
-	Thu, 09 Jul 2026 12:38:52 +0000
-Date: Thu, 09 Jul 2026 14:38:50 +0200
-From: Christoph Anton Mitterer <calestyo@scientia.org>
-To: Milan Broz <gmazyland@gmail.com>, Eric Biggers <ebiggers@kernel.org>
-CC: linux-crypto@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>
-Subject: Re: AF_ALG deprecation fallout
-In-Reply-To: <aac82bdd-6a28-4e65-97f4-3d5942d2a6af@gmail.com>
-References: <27816cc353731e8e5484adad7d0fc447777727d8.camel@scientia.org> <20260708011112.GA3890@sol> <04fbbc8611699e469f44edbccdf3cf1ac65075d3.camel@scientia.org> <20260708030153.GA14700@sol> <aac82bdd-6a28-4e65-97f4-3d5942d2a6af@gmail.com>
-Message-ID: <5B8D2771-3FBD-4FF0-A2A0-A57120A53F5A@scientia.org>
+	s=arc-20240116; t=1783602372; c=relaxed/simple;
+	bh=LDysymO6z45BAwPxjT+9G6mfkoaNFOSQRLkjMgIQq8k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XqLFQfsvEfgIR3ZLnki/cPP++1mtmfINYiNkDs9o60DJSArvtte4b0oa4D9Ie9nVa060GpyCzCaYPtcek6FeYi/AKsZEunQ2Dv6Bk+eImLA1ngD50K0MbkHiY3Qftg+2xBkGvldD+KmWA/BF/Nywa5yyN6uh+orp5UkG1KScVHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Py6d+vdr; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=WTWIHNL4; arc=none smtp.client-ip=170.10.129.124
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1783602369;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=/ctGAGPnVJhK8C2yhWjcdu/Dfmm55UMOGakv3PCDE+A=;
+	b=Py6d+vdrtnz6Vx3DaCv9A4o87juxq8io4UN6GKPRWVC5WXjNel2E6FhMVhYBfBJp8jDfGF
+	FU3roeEdVYOdPCQzA9fHtS6pbDDwDlqtpkanwoY4+pfZfO1WiqW31fBb7rqlL9JODzQQ7h
+	mw3E/hQ1ulbhsIhJKfx0JoIMVNhcavI=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-191-_qJ0ynUOOzatkqHBa1A39w-1; Thu, 09 Jul 2026 09:06:07 -0400
+X-MC-Unique: _qJ0ynUOOzatkqHBa1A39w-1
+X-Mimecast-MFC-AGG-ID: _qJ0ynUOOzatkqHBa1A39w_1783602367
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-493e260e62bso12483375e9.1
+        for <linux-crypto@vger.kernel.org>; Thu, 09 Jul 2026 06:06:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1783602366; x=1784207166; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=/ctGAGPnVJhK8C2yhWjcdu/Dfmm55UMOGakv3PCDE+A=;
+        b=WTWIHNL4xD4e03FCSa1X16Iv8BA+AOEqJS0NRdHEi+9awddX5cFceuM6crkhSgSUOa
+         UP18g14jtTsx1/3Dtdzhsm2xyuNjtwVvFXRIUPf9lrwbzC7WluUrtoG0TgZWWNIFbfUU
+         mrmSBxod6FR6nK8NQP63QD9V+az9RsXGburPnnOn2CYqXt4v1DmcJWfvp+2JR0VGyOs6
+         +oOBl2IO8OvuVuApWm3xsmhfE0pz6QMaI9xn4pvqQy1meIJ8V/Y3/PTv/GNGnkyNNbiO
+         VcflRSLzOIlGBaIZdv9y+pZ+MaDHPyY6RfOjnboivdqstBko/F/eHCxQoJJoCfY5AcJA
+         kCyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783602366; x=1784207166;
+        h=content-transfer-encoding:content-type:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=/ctGAGPnVJhK8C2yhWjcdu/Dfmm55UMOGakv3PCDE+A=;
+        b=OjrLVO2ahKmNF7TUVRqwnLd3zTccaTsczbaOp4Ohhpzx0U+SfgkjXIk8/O/4ISKJKP
+         0Y0SgQh0hc0CfriT1gOV85SnoDWdkqv/gCgCOEPAXy7QH3uOB6LWUAr9SysTjFLzScxQ
+         rbu0JN/T+qKCWceeMceMnEW3ZEB+dgUAEDxAXhCAWIvsrKVEstq3Dn3bLkvVSvql3H2E
+         Pplw2/ze0LAtu2YC/d7LvE6bennig0b4FDuf5LZlURBCwaQd3Y/1MlbHg/A1pV0gg+oI
+         8k956DcpfO1jFJdWvuKGhp/x3qyb7oFteukCrmBceyJSWIMGAyzhy/ithGgDteepNqTd
+         T2Lw==
+X-Forwarded-Encrypted: i=1; AHgh+Rq8syqiL+IBiJujSn1lqaiRyqgIwAhN7BAKoqby71Vdm3MhW9evsy427HaNryNDRYfnwhJDUmkx3aQUKHY=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw7sqMGKXJ1Jk4opUC5SygVWystgVzr3GOijbXqqd3U2Kkc1sD0
+	4Jr5qiHS1q3RtPiCJja0MVONpyiGowHuySXUyXul6gEbmloNkINEQ5xXCtL+DeWOSmLiyDRJzPl
+	joLtWUHKgrziES55SNFEL9tU/SE45ITOllktlh/uXsknpZ1Mb1o5zk+jt/qN7fKUvGA==
+X-Gm-Gg: AfdE7ckkrOMcnaXA1YH/vX6Adb/ToNVd4fLqR9qgWz6Cnv2LqMHswQZVLSJ/167EJpD
+	B3txtmIg3aLE6UtubDio7KfgaKmUmgrZOr9mdjb6u4zHHzuLkWOBjRhOfvFm2RWq31Ecg83RXCj
+	AwgwJKUENejMeM5/q6I/+Y3rVlPWqG2GC+ZBMAWq5vTItrlMtQH1jkiyFy/VWwCX61lwOc5MJI/
+	sy7FoQ4bPrwF0XIv1qvCCLdMYm6c0jP8hIu4+c/j5n5V3I5MlKhmaVQy1AS5aUt4wNVrcuMbEWG
+	1W1qwMnUkFHrwinGqmgbpQOkCIaj0lklKlKgell9xlDOBgNEmnsLoPQtIX2uMuOswANXQHxjwKU
+	eQaLXQkd6
+X-Received: by 2002:a05:600c:3548:b0:490:688b:f9f8 with SMTP id 5b1f17b1804b1-493e6874e06mr61958755e9.27.1783602366654;
+        Thu, 09 Jul 2026 06:06:06 -0700 (PDT)
+X-Received: by 2002:a05:600c:3548:b0:490:688b:f9f8 with SMTP id 5b1f17b1804b1-493e6874e06mr61958365e9.27.1783602366177;
+        Thu, 09 Jul 2026 06:06:06 -0700 (PDT)
+Received: from [192.168.0.9] ([47.64.114.244])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493e5a61135sm88929005e9.1.2026.07.09.06.06.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Jul 2026 06:06:05 -0700 (PDT)
+Message-ID: <2bbc6563-3328-4153-97fb-2d0a10ceefaf@redhat.com>
+Date: Thu, 9 Jul 2026 15:06:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-AuthUser: calestyo@scientia.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 03/33] lib/crypto: aes: Add CBC and CBC-CTS support
+To: Eric Biggers <ebiggers@kernel.org>, linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+References: <20260707053503.209874-1-ebiggers@kernel.org>
+ <20260707053503.209874-4-ebiggers@kernel.org>
+Content-Language: en-US
+From: Thomas Huth <thuth@redhat.com>
+Autocrypt: addr=thuth@redhat.com; keydata=
+ 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
+In-Reply-To: <20260707053503.209874-4-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,gitlab.com:url];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25764-lists,linux-crypto=lfdr.de];
-	DMARC_NA(0.00)[scientia.org];
-	FORGED_RECIPIENTS(0.00)[m:gmazyland@gmail.com,m:ebiggers@kernel.org,m:linux-crypto@vger.kernel.org,m:herbert@gondor.apana.org.au,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com,kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_THREE(0.00)[4];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[calestyo@scientia.org,linux-crypto@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-25762-lists,linux-crypto=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[calestyo@scientia.org,linux-crypto@vger.kernel.org];
+	FORGED_SENDER(0.00)[thuth@redhat.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:ebiggers@kernel.org,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	RCPT_COUNT_THREE(0.00)[3];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[thuth@redhat.com,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 709FD732806
+X-Rspamd-Queue-Id: D099C7316A3
 
-Hey=2E
+On 07/07/2026 07.34, Eric Biggers wrote:
+> Add support for AES-CBC and AES-CBC-CTS to the crypto library.
+> 
+> These will be used to provide streamlined implementations of the
+> "cbc(aes)" and "cts(cbc(aes))" crypto_skcipher algorithms.  Most users
+> of these crypto_skcipher algorithms will also be able to switch to the
+> library, which as usual will be simpler and faster, e.g.:
+> 
+>      - block/blk-crypto-fallback.c (for AES-128-CBC-ESSIV)
+>      - fs/crypto/crypto.c (for AES-128-CBC-ESSIV)
+>      - fs/crypto/fname.c (for AES-256-CTS and AES-128-CBC)
+>      - kernel/bpf/crypto.c
+>      - net/ceph/crypto.c
+>      - security/keys/encrypted-keys/encrypted.c
+> 
+> As usual, the architecture-optimized AES-CBC and AES-CBC-CTS code will
+> be migrated into the library as well (using the hooks provided in this
+> commit), eliminating lots of repetitive boilerplate code.
+> 
+> Initial test coverage is provided by the crypto_skcipher support added
+> in a later commit.  I'm planning a KUnit test suite as well.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+> ---
+>   .../crypto/libcrypto-unauth-encryption.rst    |   7 +
+>   include/crypto/aes-cbc.h                      |  77 ++++++++
+>   lib/crypto/Kconfig                            |   6 +
+>   lib/crypto/aes.c                              | 174 ++++++++++++++++++
+>   lib/crypto/tests/Kconfig                      |   1 +
+>   5 files changed, 265 insertions(+)
+>   create mode 100644 include/crypto/aes-cbc.h
+...
+> +void aes_cbc_cts_decrypt(u8 *dst, const u8 *src, size_t len,
+> +			 u8 iv[AES_BLOCK_SIZE], const struct aes_key *key)
+> +{
+> +	/* Offset to P[n] and C[n] (last plaintext and ciphertext block) */
+> +	size_t pn_offset = round_down(len - 1, AES_BLOCK_SIZE);
+> +	/* Length of P[n] and C[n], 1 <= pn_len <= AES_BLOCK_SIZE */
+> +	size_t pn_len = len - pn_offset;
+> +	u8 *pad;
+> +
+> +	if (WARN_ON_ONCE(len < AES_BLOCK_SIZE))
+> +		return;
+> +
+> +	if (len == AES_BLOCK_SIZE) {
+> +		aes_cbc_decrypt(dst, src, len, iv, key);
+> +		return;
+> +	}
+> +	if (likely(aes_cbc_cts_decrypt_arch(dst, src, len, iv, key)))
+> +		return;
+> +
+> +	/* Compute P[0]..P[n - 2]. */
+> +	aes_cbc_decrypt(dst, src, pn_offset - AES_BLOCK_SIZE, iv, key);
+> +
+> +	/* Compute P[n] and P[n - 1], considering that src may equal dst. */
+> +	pad = &dst[pn_offset - AES_BLOCK_SIZE];
+> +	aes_decrypt(key, pad, &src[pn_offset - AES_BLOCK_SIZE]);
+> +	crypto_xor_cpy(&dst[pn_offset], &src[pn_offset], pad,
+> +		       pn_len); /* P[n] */
+> +	crypto_xor(pad, &dst[pn_offset], pn_len);
 
-Am 9=2E Juli 2026 12:47:06 MESZ schrieb Milan Broz <gmazyland@gmail=2Ecom>=
-:
->On 7/8/26 5:01 AM, Eric Biggers wrote:
->See my explanation here
->https://gitlab=2Ecom/cryptsetup/cryptsetup/-/merge_requests/420#note_2520=
-172869
+Took me a while to understand why you'd use the above xor instead of a 
+memcpy(pad, &src[pn_offset], pn_len) here, but that's because src and dst 
+might point to the same buffer, right?
 
-Do you strictly need an RFC?
+Anyway, patch looks good to me, so:
 
-Nevertheless, I've mailed to the author of draft-irtf-cfrg-xchacha whether=
- he has still any plans with it=2E
-At least then we'd know if it's worth waiting=2E
+Reviewed-by: Thomas Huth <thuth@redhat.com>
 
 
->> We probably should add XAES-256-GCM support at some point, which takes
->> 192-bit nonces=2E  Historically it hasn't been feasible to do anything
->> that uses per-request AES keys in the kernel, since the kernel's crypto
->> API wasn't designed for that=2E  But we're now moving to a simpler API
->> where the algorithms including AES-GCM are implemented using regular
->> functions=2E  We can build XAES-256-GCM support on top of that=2E
->
->That would be nice=2E
+> +	aes_decrypt(key, pad, pad);
+> +	crypto_xor(pad, iv, AES_BLOCK_SIZE); /* P[n - 1] */
+> +}
+> +EXPORT_SYMBOL_GPL(aes_cbc_cts_decrypt);
+> +#endif /* CONFIG_CRYPTO_LIB_AES_CBC */
+> +
 
-Indeed=2E Would be great if that could come in the foreseeable future=2E=
-=2E=2E in particular with the uncertain future of XChaha=2E
-
-Also, blindly assuming that so far people mostly used integrity support in=
- dm-crypt for testing and not production (due to the algos), it might take =
-a while until enough trust[0] has built up for seeing broad use=2E
-
-
-I guess it might also help end users if cryptsetup might give recommendati=
-ons on which algo to use for what (like most secure vs=2E secure enough but=
- better performance, or so)=2E
-
-With non AEAD, this had been rather easy, and aes-xts-plain64 with 256 bit=
- keys was simply like the gold standard=2E
-
-
-Cheers,
-Chris=2E
-
-
-[0] Not that I'd think the contributing developers weren't capable,=2E=2E=
-=2E but you know=2E=2E=2E if one puts all precious data in it (including fo=
-r backups), one doesn't want any surprises=2E
 
