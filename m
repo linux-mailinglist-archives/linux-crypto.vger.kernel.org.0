@@ -1,61 +1,60 @@
-Return-Path: <linux-crypto+bounces-25750-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25751-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Ek9JGwkHT2o3ZQIAu9opvQ
-	(envelope-from <linux-crypto+bounces-25750-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 04:27:21 +0200
+	id sv08MTwHT2o9ZQIAu9opvQ
+	(envelope-from <linux-crypto+bounces-25751-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 04:28:12 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5225272BEBD
-	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 04:27:20 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EC7072BEC6
+	for <lists+linux-crypto@lfdr.de>; Thu, 09 Jul 2026 04:28:12 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=ej+XT254;
+	dkim=pass header.d=kernel.org header.s=k20260515 header.b=T1dzcQ3z;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25750-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25750-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25751-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25751-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2ABF8300B9C5
-	for <lists+linux-crypto@lfdr.de>; Thu,  9 Jul 2026 02:27:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 67CBD3027110
+	for <lists+linux-crypto@lfdr.de>; Thu,  9 Jul 2026 02:27:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CBA82EEE99;
-	Thu,  9 Jul 2026 02:27:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA5AB2E06E4;
+	Thu,  9 Jul 2026 02:27:56 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1834043935A;
-	Thu,  9 Jul 2026 02:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 828391862;
+	Thu,  9 Jul 2026 02:27:55 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783564035; cv=none; b=eBwcULp196GWzeQLf06gI/LyVQ4ULFRdfL3QPCf7sskd20Ctm9i9t2PqiCKxCZr5LvmmjkMEEmpwx63KS2CMUtHJP12JObvjU6CDYm0GhyZ08oKFX3P4r1kcBrT9oqzFds0+1HxqS1IZNU2jfcsmiFRFjpktiKZ172vP4Pf0Swc=
+	t=1783564076; cv=none; b=SxT5mgn9/LzyjcsyK04BE1Z5qrVMzbVIoT/e9Fmsdl4/RP/FkMC/+7I97H+ovgcuKqr7dvPcm1bahAF6eW8obbVkNXSIaxY2aVdOYSQMJBHIvBlJbK0KBFSGsZt2UaF79mi1ZSgu8D5VDlRiPwbXoip2spcpf48MxAXklKl5zyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783564035; c=relaxed/simple;
-	bh=T2OfrOkr0G1j0a+hapy3UPr9El1BFVUIIATtGHWgNPU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Hxs7iuDSnyvvKSCflNuQzBnmlZj9AUzowHMP3bAHY8v0xsUVi/0IngUCJRayPRj5wu3ITdDCr+IRPiyVNkL6UVIZtBlAai7A2vsjDWhn3pJOyr1Iuahp26rRxinv/ikULRy6ntpNafBrnsYY4qFGOD9eyVeenRXD77rm6iPUf3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ej+XT254; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FA531F000E9;
-	Thu,  9 Jul 2026 02:27:13 +0000 (UTC)
+	s=arc-20240116; t=1783564076; c=relaxed/simple;
+	bh=wJ3i75ZiGk/YEJsPBDUEHKxxQOKkTk7TcjnUdqfg16Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=s4Sb/6KsujI7FV+XzzAjtpCcXTvZLJgy2T0JDLH+wkVg6KjDyPHT5KneUF2Ddie5ajpZcIyXtZ/4o7FbiP/bARccaSWyPnQtpfCYz8v2c58ix/90pOyuQ01Jf8ie2l6/dgtMJne4ia8o+Wyyr5eQP0c4S8Yh3EhtqsORnq/371U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T1dzcQ3z; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B48611F000E9;
+	Thu,  9 Jul 2026 02:27:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783564033;
-	bh=0/VLGLH5/go+Vwpr0tw0EW20comPYZm9iNmYzQPPYms=;
+	s=k20260515; t=1783564075;
+	bh=tGxBJV9z1KaAx6vSMzeYfvuuwaQ+zg5gqBXPbh42KdI=;
 	h=From:To:Cc:Subject:Date;
-	b=ej+XT254DzqJ39V+PmCMlKPQzuzyUQsIWfic4bsx+YRCrqF++5Zh1pEJa6Kp7ni+a
-	 gsZJiYz35zloJTn7HansAQcCa30ndYOMyjqAqIb9kQSHceqW4DZlIp1r7IoqQC530C
-	 702bNApU4zKrKhG+f9fjqvbCw/sGxcyOdBKzMMPEcgNqrtJCqdZmzDtJ3FlG6pKLYA
-	 dfUGdrqIApt4clB2iVoMsKCjyy2+L6ChrDzw6hWYaKanFIsbTU+d0SlSNS/CeN9WiO
-	 VzC7/kUdLACDz1c/nwYMMCTJUJRQD17202TfsWl4XmQH2g7JN+Fzrsqcb1r30dQA6/
-	 CzMsxWPnIdEug==
+	b=T1dzcQ3zMrrsG69sao/GZSq3gZ5LeJOGD2TkTbCymb2C7O7vAO29LwM/dw4/BUYJ+
+	 lpjRuYWkHP8SCSolKHbS4ni5zUmZrsa7Kh6CrOJtwcHg++8KiX9pspp9dSPVxBmy9I
+	 H7P5wLXkYabfANcbOav9a9cHDihF06svec1f26gwxmhqyaypByvmLzSsmpHo2iK7kS
+	 i7cJ1SJEX8q7M3g7gM07b+7rEA/6QNGSCX0moDLyob0MPSQlvOjY8JzCSUKYpErSB+
+	 YagHlA+5eLVzeEEYzuUQpMIVs1xa+Sip7vniAWJLEveWp9ipohT5FhBN72a8TG6rqb
+	 oxZKZiP+ox+yw==
 From: Eric Biggers <ebiggers@kernel.org>
 To: linux-crypto@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Ard Biesheuvel <ardb@kernel.org>,
 	"Jason A . Donenfeld" <Jason@zx2c4.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
-	Eric Biggers <ebiggers@kernel.org>,
-	Thomas Huth <thuth@redhat.com>
-Subject: [PATCH] lib/crypto: docs: Fix some sentence fragments
-Date: Wed,  8 Jul 2026 22:26:51 -0400
-Message-ID: <20260709022651.44216-1-ebiggers@kernel.org>
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH] lib/crypto: docs: Improve introduction sentence
+Date: Wed,  8 Jul 2026 22:27:47 -0400
+Message-ID: <20260709022747.44635-1-ebiggers@kernel.org>
 X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
@@ -67,192 +66,65 @@ Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-3.66 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-25751-lists,linux-crypto=lfdr.de];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-25750-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:ardb@kernel.org,m:Jason@zx2c4.com,m:herbert@gondor.apana.org.au,m:ebiggers@kernel.org,m:thuth@redhat.com,s:lists@lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:ardb@kernel.org,m:Jason@zx2c4.com,m:herbert@gondor.apana.org.au,m:ebiggers@kernel.org,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
 	FORWARDED(0.00)[lists@lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5225272BEBD
+X-Rspamd-Queue-Id: 1EC7072BEC6
 
-Currently, the section about the library API for each algorithm begins
-with a noun phrase that was intended to serve as an elaboration on the
-title.  It's better to use complete sentences.
+Make it clear that lib/crypto/ is a kernel-internal library.  It's easy
+for people to come across this page, especially the HTML version online,
+without that context.
 
-Suggested-by: Thomas Huth <thuth@redhat.com>
 Signed-off-by: Eric Biggers <ebiggers@kernel.org>
 ---
- .../crypto/libcrypto-blockcipher.rst          |  6 +--
- Documentation/crypto/libcrypto-hash.rst       | 38 ++++++++++---------
- Documentation/crypto/libcrypto-signature.rst  |  2 +-
- 3 files changed, 24 insertions(+), 22 deletions(-)
+ Documentation/crypto/libcrypto.rst | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/crypto/libcrypto-blockcipher.rst b/Documentation/crypto/libcrypto-blockcipher.rst
-index dd5ce2f8b515..fd85e27fab8d 100644
---- a/Documentation/crypto/libcrypto-blockcipher.rst
-+++ b/Documentation/crypto/libcrypto-blockcipher.rst
-@@ -6,14 +6,14 @@ Block ciphers
- AES
- ---
+diff --git a/Documentation/crypto/libcrypto.rst b/Documentation/crypto/libcrypto.rst
+index a1557d45b0e5..0733e603d229 100644
+--- a/Documentation/crypto/libcrypto.rst
++++ b/Documentation/crypto/libcrypto.rst
+@@ -4,8 +4,9 @@
+ Crypto library
+ ==============
  
--Support for the AES block cipher.
-+This API provides support for the AES block cipher.
+-``lib/crypto/`` provides faster and easier access to cryptographic algorithms
+-than the traditional crypto API.
++The Linux kernel's crypto library (``lib/crypto/``) provides kernel-internal
++users of cryptographic algorithms with faster and easier access to those
++algorithms than the traditional kernel crypto API.
  
- .. kernel-doc:: include/crypto/aes.h
- 
- DES
- ---
- 
--Support for the DES block cipher.  This algorithm is obsolete and is supported
--only for backwards compatibility.
-+This API provides support for the DES block cipher.  This algorithm is obsolete
-+and is supported only for backwards compatibility.
- 
- .. kernel-doc:: include/crypto/des.h
-diff --git a/Documentation/crypto/libcrypto-hash.rst b/Documentation/crypto/libcrypto-hash.rst
-index 4248e6fdc952..fa4c54236af6 100644
---- a/Documentation/crypto/libcrypto-hash.rst
-+++ b/Documentation/crypto/libcrypto-hash.rst
-@@ -6,81 +6,83 @@ Hash functions, MACs, and XOFs
- AES-CMAC and AES-XCBC-MAC
- -------------------------
- 
--Support for the AES-CMAC and AES-XCBC-MAC message authentication codes.
-+This API provides support for the AES-CMAC and AES-XCBC-MAC message
-+authentication codes.
- 
- .. kernel-doc:: include/crypto/aes-cbc-macs.h
- 
- BLAKE2b
- -------
- 
--Support for the BLAKE2b cryptographic hash function.
-+This API provides support for the BLAKE2b cryptographic hash function.
- 
- .. kernel-doc:: include/crypto/blake2b.h
- 
- BLAKE2s
- -------
- 
--Support for the BLAKE2s cryptographic hash function.
-+This API provides support for the BLAKE2s cryptographic hash function.
- 
- .. kernel-doc:: include/crypto/blake2s.h
- 
- GHASH and POLYVAL
- -----------------
- 
--Support for the GHASH and POLYVAL universal hash functions.  These algorithms
--are used only as internal components of other algorithms.
-+This API provides support for the GHASH and POLYVAL universal hash functions.
-+These algorithms are used only as internal components of other algorithms.
- 
- .. kernel-doc:: include/crypto/gf128hash.h
- 
- MD5
- ---
- 
--Support for the MD5 cryptographic hash function and HMAC-MD5.  This algorithm is
--obsolete and is supported only for backwards compatibility.
-+This API provides support for the MD5 cryptographic hash function and HMAC-MD5.
-+This algorithm is obsolete and is supported only for backwards compatibility.
- 
- .. kernel-doc:: include/crypto/md5.h
- 
- NH
- --
- 
--Support for the NH universal hash function.  This algorithm is used only as an
--internal component of other algorithms.
-+This API provides support for the NH universal hash function.  This algorithm is
-+used only as an internal component of other algorithms.
- 
- .. kernel-doc:: include/crypto/nh.h
- 
- Poly1305
- --------
- 
--Support for the Poly1305 universal hash function.  This algorithm is used only
--as an internal component of other algorithms.
-+This API provides support for the Poly1305 universal hash function.  This
-+algorithm is used only as an internal component of other algorithms.
- 
- .. kernel-doc:: include/crypto/poly1305.h
- 
- SHA-1
- -----
- 
--Support for the SHA-1 cryptographic hash function and HMAC-SHA1.  This algorithm
--is obsolete and is supported only for backwards compatibility.
-+This API provides support for the SHA-1 cryptographic hash function and
-+HMAC-SHA1.  This algorithm is obsolete and is supported only for backwards
-+compatibility.
- 
- .. kernel-doc:: include/crypto/sha1.h
- 
- SHA-2
- -----
- 
--Support for the SHA-2 family of cryptographic hash functions, including SHA-224,
--SHA-256, SHA-384, and SHA-512.  This also includes their corresponding HMACs:
--HMAC-SHA224, HMAC-SHA256, HMAC-SHA384, and HMAC-SHA512.
-+This API provides support for the SHA-2 family of cryptographic hash functions,
-+including SHA-224, SHA-256, SHA-384, and SHA-512.  This also includes their
-+corresponding HMACs: HMAC-SHA224, HMAC-SHA256, HMAC-SHA384, and HMAC-SHA512.
- 
- .. kernel-doc:: include/crypto/sha2.h
- 
- SHA-3
- -----
- 
--The SHA-3 functions are documented in :ref:`sha3`.
-+The SHA-3 API is documented in :ref:`sha3`.
- 
- SM3
- ---
- 
--Support for the SM3 cryptographic hash function.
-+This API provides support for the SM3 cryptographic hash function.
- 
- .. kernel-doc:: include/crypto/sm3.h
-diff --git a/Documentation/crypto/libcrypto-signature.rst b/Documentation/crypto/libcrypto-signature.rst
-index e80d59fa51b6..2a6dc793f0de 100644
---- a/Documentation/crypto/libcrypto-signature.rst
-+++ b/Documentation/crypto/libcrypto-signature.rst
-@@ -6,6 +6,6 @@ Digital signature algorithms
- ML-DSA
- ------
- 
--Support for the ML-DSA digital signature algorithm.
-+This API provides support for the ML-DSA digital signature algorithm.
- 
- .. kernel-doc:: include/crypto/mldsa.h
+ Each cryptographic algorithm is supported via a set of dedicated functions.
+ "Crypto agility", where needed, is left to calling code.
 
 base-commit: 8cdeaa50eae8dad34885515f62559ee83e7e8dda
 -- 
