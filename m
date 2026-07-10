@@ -1,60 +1,59 @@
-Return-Path: <linux-crypto+bounces-25831-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25833-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id EEFiDQQ4UWqoAwMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25831-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2026 20:20:52 +0200
+	id BQn5BBg4UWqwAwMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25833-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2026 20:21:12 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 928C573D4C3
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2026 20:20:51 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF7BE73D4DB
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2026 20:21:11 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=bootlin.com header.s=dkim header.b=vdwF9NwG;
+	dkim=pass header.d=bootlin.com header.s=dkim header.b=Z4iNCDMG;
 	dmarc=pass (policy=reject) header.from=bootlin.com;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25831-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25831-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25833-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25833-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 069903013B5E
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2026 18:20:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8A9C0301E7C5
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2026 18:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD58935DA40;
-	Fri, 10 Jul 2026 18:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015F837AA82;
+	Fri, 10 Jul 2026 18:20:48 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
+Received: from smtpout-04.galae.net (smtpout-04.galae.net [185.171.202.116])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924D02DAFAF
-	for <linux-crypto@vger.kernel.org>; Fri, 10 Jul 2026 18:20:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ECB032B131;
+	Fri, 10 Jul 2026 18:20:45 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783707646; cv=none; b=ulzzSW+aZ4AG+nFvurf0jQG8WiDsSlOxovw3EovumFc3AAS6TSToiAOa07CAolVIGIN4PhsnWpELtZJ69lmg7XTMt240s7tm1oOAXp2aAGGghQdw7oBCw3BxzboI236zLR4hh3VcUNwe9d/HG738FvQayPTwB0XFPm9u2lf13b0=
+	t=1783707647; cv=none; b=NKaTRISesd9HG+tF6oS5cjHMtSqeolIWYWKm+oNjZMj7a8BRSA38iAs9q3/JMCkv5fXZy/nmbdnbphPp9UT0Jo4d4Qq4K3e0aSbnolPd99B9IxdEAbiqSD2g1AFcdMm3t/USWux+e/C/c5013p8XZ9lILfJAcVU1Yh9BNjwqsBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783707646; c=relaxed/simple;
-	bh=NozzP4WIU6ME+FJLjKVkAfBhlev+BMMNfGoR638Y1cM=;
+	s=arc-20240116; t=1783707647; c=relaxed/simple;
+	bh=mbQxtt1ALjk0JvV6wV15sO1f3XGFfupV0DCtzCzjJ+k=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=pZ/uABs2B7gDOzOVsu1/CNJldo1ANaTm0DEq2l1XdFpmnJKE8YCpZfuU1Pw1PJ4JD5X4M5upj0LM+D7FraVdt5ddXJipckqqGJhhONe7pybMJd6gsRRXIIKN92YjElHzFNkTnNsTqJoeUzbdB6RccnLnaycfrt7r5zDW4kTuWZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=vdwF9NwG; arc=none smtp.client-ip=185.246.84.56
+	 In-Reply-To:To:Cc; b=TkEkAzKmPb8zI8i7ipTJLN5Nq32k2+aafvfsT0HmUbDRtjB5z0kH3AyMOFjE7fD7KaCUA3/ouKO2IVX98Dxcjf+Gms0yWxVCuJe+9LkEtYSrGJs2SOMpb/wC8L9veJGypT5HnvFaXSJCyX2yzcX6UUX/g+BDKUS+oOMdyBpnT1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Z4iNCDMG; arc=none smtp.client-ip=185.171.202.116
 Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
-	by smtpout-02.galae.net (Postfix) with ESMTPS id 502A81A0F47;
-	Fri, 10 Jul 2026 18:20:43 +0000 (UTC)
+	by smtpout-04.galae.net (Postfix) with ESMTPS id 95614C2C64F;
+	Fri, 10 Jul 2026 18:20:59 +0000 (UTC)
 Received: from mail.galae.net (mail.galae.net [212.83.136.155])
-	by smtpout-01.galae.net (Postfix) with ESMTPS id 1D9B560342;
-	Fri, 10 Jul 2026 18:20:43 +0000 (UTC)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0DDC111BD2C1A;
-	Fri, 10 Jul 2026 20:20:40 +0200 (CEST)
+	by smtpout-01.galae.net (Postfix) with ESMTPS id B201160342;
+	Fri, 10 Jul 2026 18:20:44 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id AAB6711BD2C19;
+	Fri, 10 Jul 2026 20:20:42 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
-	t=1783707642; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	t=1783707644; h=from:subject:date:message-id:to:cc:mime-version:content-type:
 	 content-transfer-encoding:in-reply-to:references;
-	bh=hOZVc+0GwZ0qgc1rGj8TAPqIGL8UuZAY2qhVTxtTUTY=;
-	b=vdwF9NwGG4UuqwdQrfkX5ygqUb7Wk+h2pfSv9JAdH864Ddep7rOuSQeSHc816l5Z4jR0ZC
-	fAL0mJBi72dhZoZWv6e5UoTStWrq+BpSmt9NoZEcdRYJFv0G8RmoG/ZlaB1rvvZU64K2uA
-	XQRJ8Vi4BftZfTYQdgzAXj3FMd/4B2g2Y6VJNuZFkj+NNWu3LuGx5ttTS219LR5yZ9+CwW
-	vssoyUobX+N0I/mK39LO9dGljoOCh/ih2qh6AGDNrQItJuFcJvYhIm7hKi9xRbJzkL/uLs
-	JXWOV/tx8YxbbLcgVAtVHVDKgm+fMQ3rgbpO0FiYLkdN/EPQKWA3tUZNdo/ulA==
+	bh=qIwLuGSfIQ/QUKLXBSGXK1KP3kjjLQaoLNXsHMJEXfk=;
+	b=Z4iNCDMGM2mvrlT4En6yYDESWPlhEzakgo8aWSZqmkU6QHFnkTqqYZT0sxAW2PHUkQT9jp
+	hapGaP3GXYoZ/zTdxbHvwsCL+cDeIaRu57owkBbighXDrPSb8jl9D8O/hnnQ3jo0wNG4eU
+	2pk3OLaA+HmR6XX929kYK/pc0L/y/1xT/D1/VRvCK7W9gFbydQDJsZyQcXqGjfHWLBq7Z9
+	fWp1Yn+QxLhJp8Hpe063KrBauIq4XgOLw/lXv42RiSKjHxqsj2KCbGqO03tyjFCecaNSTt
+	vM+q/nttSILr8mm4MSMC0ySv8MSxaudyQ6U/tg23NsdQw7aTol01yHI2xLen6Q==
 From: "Miquel Raynal (Schneider Electric)" <miquel.raynal@bootlin.com>
-Date: Fri, 10 Jul 2026 20:20:32 +0200
-Subject: [PATCH v2 1/2] dt-bindings: rng: Rename the title of the EIP-76
- file
+Date: Fri, 10 Jul 2026 20:20:33 +0200
+Subject: [PATCH v2 2/2] hwrng: omap: Enable on Renesas RZ/N1D
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -63,7 +62,7 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260710-schneider-v7-2-rc1-eip76-upstream-v2-1-4eab557b0e70@bootlin.com>
+Message-Id: <20260710-schneider-v7-2-rc1-eip76-upstream-v2-2-4eab557b0e70@bootlin.com>
 References: <20260710-schneider-v7-2-rc1-eip76-upstream-v2-0-4eab557b0e70@bootlin.com>
 In-Reply-To: <20260710-schneider-v7-2-rc1-eip76-upstream-v2-0-4eab557b0e70@bootlin.com>
 To: Olivia Mackall <olivia@selenic.com>, 
@@ -84,12 +83,12 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
 	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-25831-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25833-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[13];
 	FORWARDED(0.00)[lists@lfdr.de];
@@ -98,7 +97,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER(0.00)[miquel.raynal@bootlin.com,linux-crypto@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
@@ -111,33 +110,39 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto,dt,renesas];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,bootlin.com:from_mime,bootlin.com:email,bootlin.com:mid,bootlin.com:dkim,ti.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp,bootlin.com:from_mime,bootlin.com:email,bootlin.com:mid,bootlin.com:dkim]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 928C573D4C3
+X-Rspamd-Queue-Id: BF7BE73D4DB
 
-Be a little more precise in the title by giving the family name and the
-own name of the hardware block. Despite the original compatibles, this
-file describes a SafeXcel EIP-76 hardware random number generator.
+The Kconfig symbol and associated seem to be badly named as they have
+nothing OMAP specific but instead refer to Inside Secure Safexcel
+devices which have been used in many SoCs from different
+manufacturers (like OMAP, Marvell but also eg. Renesas).
+
+The Renesas RZ/N1D features this IP, so add this architecture to the
+dependency allow list. In practice this dependency list does not seem
+very relevant and could be entirely dropped, given the fact that this IP
+has been implemented by many different vendors and seems to be
+architecture agnostic.
 
 Signed-off-by: Miquel Raynal (Schneider Electric) <miquel.raynal@bootlin.com>
-Acked-by: Rob Herring (Arm) <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/rng/inside-secure,safexcel-eip76.yaml | 2 +-
+ drivers/char/hw_random/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/rng/inside-secure,safexcel-eip76.yaml b/Documentation/devicetree/bindings/rng/inside-secure,safexcel-eip76.yaml
-index f501fc7691c6..92d906998211 100644
---- a/Documentation/devicetree/bindings/rng/inside-secure,safexcel-eip76.yaml
-+++ b/Documentation/devicetree/bindings/rng/inside-secure,safexcel-eip76.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/rng/inside-secure,safexcel-eip76.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
+index a5bcef4a54ee..2f1e3a77c948 100644
+--- a/drivers/char/hw_random/Kconfig
++++ b/drivers/char/hw_random/Kconfig
+@@ -193,7 +193,7 @@ config HW_RANDOM_IXP4XX
  
--title: Inside-Secure HWRNG Module
-+title: Inside-Secure SafeXcel EIP-76 HWRNG Module
- 
- maintainers:
-   - Jayesh Choudhary <j-choudhary@ti.com>
+ config HW_RANDOM_OMAP
+ 	tristate "OMAP Random Number Generator support"
+-	depends on ARCH_OMAP16XX || ARCH_OMAP2PLUS || ARCH_MVEBU || ARCH_K3 || COMPILE_TEST
++	depends on ARCH_OMAP16XX || ARCH_OMAP2PLUS || ARCH_MVEBU || ARCH_K3 || ARCH_RZN1 || COMPILE_TEST
+ 	default HW_RANDOM
+ 	help
+ 	  This driver provides kernel-side support for the Random Number
 
 -- 
 2.54.0
