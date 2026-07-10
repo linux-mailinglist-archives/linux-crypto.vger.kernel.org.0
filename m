@@ -1,182 +1,159 @@
-Return-Path: <linux-crypto+bounces-25821-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25822-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id WDFfN4TSUGpI5gIAu9opvQ
-	(envelope-from <linux-crypto+bounces-25821-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2026 13:07:48 +0200
+	id Zb4uEbrcUGoE6gIAu9opvQ
+	(envelope-from <linux-crypto+bounces-25822-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2026 13:51:22 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E59D5739FB6
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2026 13:07:47 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 931C273A6DD
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2026 13:51:21 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=WsEVIenH;
-	dmarc=pass (policy=none) header.from=gmail.com;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25821-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c15:e001:75::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25821-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=bootlin.com header.s=dkim header.b=QYTxTAwl;
+	dmarc=pass (policy=reject) header.from=bootlin.com;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25822-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25822-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 04155300608C
-	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2026 11:07:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 210D83040452
+	for <lists+linux-crypto@lfdr.de>; Fri, 10 Jul 2026 11:45:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446B93FCB37;
-	Fri, 10 Jul 2026 11:07:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F50241F7F9;
+	Fri, 10 Jul 2026 11:45:35 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpout-02.galae.net (smtpout-02.galae.net [185.246.84.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB60C3F0ABA
-	for <linux-crypto@vger.kernel.org>; Fri, 10 Jul 2026 11:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD9D8421A13;
+	Fri, 10 Jul 2026 11:45:16 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783681661; cv=none; b=M8psl5nngchhC6LZIw9PksyP7a185qMLtM7+XmcRU/ipKWIsWXWXJUydXR4TJEhEvikzQhPTvzTCkiqTSFGHQ7n4L40tgWlwctEQY6B5USQh3R9cqrfGkhI+eqroGjmoGe1Rl7sbrR3t4SpB1yralEN3RfVlqgHSYSWem/Dpl4g=
+	t=1783683930; cv=none; b=RVZg+aPCXiQVAESXmqBmqbRJvl+tShCnlD3YJRGPJNW8pq9n6PjWbYyG82nXQlNoWnuJUp7LooaW7qOZ/9oHYmH4dn1kq3bXR8U1tB049JJvVz9NxbI/gfoJsYPiX6MQ43gn5I52efh7v3ZyehgaDwqX15fF7hojmcGKhJkIpt8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783681661; c=relaxed/simple;
-	bh=6Gv+2oCslqQ5EzPtqeoEWpOYC0FyyERn8hebctlNw5g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hp+LgVb24ZFbMXgCWHQg7BJeEPOThwxRLG0Ohz2g01BoEzC3yYtPwXFwyODxTjCNO7RPtueTu6qyHHTpmRI5TDxCqz2aUAPVCSKO/BMguHf1JWTwwo7IJhbPMj8QF01CxSN4R1s4ol60GbvyWEmDi0lMHI4aAofSORgoA55Q4l0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WsEVIenH; arc=none smtp.client-ip=209.85.216.46
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-38dbb3e08c4so35752a91.1
-        for <linux-crypto@vger.kernel.org>; Fri, 10 Jul 2026 04:07:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783681659; x=1784286459; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=QMK3eVT0/oAQlr0eGKAyS3VOV21a/B1AmoQDrAJ9a3s=;
-        b=WsEVIenHrZpp1DHI5ediOPXo+SasFkTmXjimPMVBiGXZm77XSDRArIunDFgB1D01ws
-         cr8aGqmnOHIHbQHkNxpHFu0Fga0BfFvqMwflZBXpc7K0zG2pGBhEWNG0X996qHyD+UxU
-         6nj28wt9tUxFe938bU9z24FFKqFG2Lp6AWwLvMT8/AAVPJ0sS6TWhDYSOm/a59l+Jkyv
-         CICKQemCMLxaCAmxaJ0dke0UCTYIonm7m+iB4sNHGdd7chXx7eVJOCqoW8zsK52+2Mj3
-         Z968zhd2ooVKI5Ll7lkDVtLQwG1YY/pzHfb1z3eE63LQDYRXLlpPe93JvUIRBW5sio5X
-         l5dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783681659; x=1784286459;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=QMK3eVT0/oAQlr0eGKAyS3VOV21a/B1AmoQDrAJ9a3s=;
-        b=nyiA8jZutnL4WuAz2Yq1LTUn7nClkwlBblNOj+6pJTTF9lM8QIhGDQ//Jf/HhE+oya
-         JGohUapjUR1v4N06cK4fxCcBLJS2DqWKTT8H9qY2+QTHXoBPvJW1556wvORbms8+aj9M
-         vRlrt/kcwgp4PJaGeMQQ1cCMqhoA2oCkFKNDboEjVh2ySTNRDETNyLYuqZYoKfVrP9n5
-         8ia6FcdPkDEtoM3j2VAp3qElVCx0PHc/ViwNShErWoKz8sdBfbmeoXEmWwGkZm9rPelo
-         sgqIW+w/QXWmLVVh4nxnAnci9016DR3oOf/pLMsXQOIYJX3NKxUbkXvhO7w8iD4AaEcc
-         nh6g==
-X-Forwarded-Encrypted: i=1; AHgh+RrpRzXNZ27SRj4dXo16NENewfjp2joZx/YU89JeoqSaYmLpCREkh2G5/hTmc0L5P7ZsBBPZF4mNuclQ10I=@vger.kernel.org
-X-Gm-Message-State: AOJu0YwsNd+Jf9hFb8FCv0orT+uQ2v5d2wiMATgfTEqv6UxXyU/CTQZ4
-	t7xDkGsv6Jf/MBnOg3prSr2OfwCXu3xnUynq1lkU1Mkx9f6JeRn9ZkJ7
-X-Gm-Gg: AfdE7ck3LL6p5AkteBwZ3s3whkLkLXBGm1hrny9fbyn7jgSK4Datto2rpOksCL3Z6jR
-	Kd+yPXw9Icd7jXhpPo9kaH/Cw1KMD10IX4V4r07e5iZVWk1bBLyXeXNZBGzA3RloLo2Y9W9gBmi
-	ELRK5AHNu4jauskA1+hMmp7Aa4rAA9BhWTeKpLCptAzf1QX/qNF31eiSEZyCZMIs9gqZoQOALm0
-	NPO612JCSeYZROUa0yfm8XodaZ4qbkCdnaN24n9LQsw1IUOS9hpnDNEjUnHobfWTWWVl/nO4OLk
-	WK9GK9rCydMpvpVjvrj1rffYnscQEKyg3LwiS0L+vcyVEw+fKMGDqksDIdpA05pvUbg3C6XP0aH
-	eaHIs+wLRJQxzUmsPxpfRzJL3CizwWdNjhlF8DIHm/zk0N2uIJsLqOAtzGbX7hu9SqExK+1+Nek
-	me6tOFOvzlRfjRiVE3OEUjpDnm1IQ=
-X-Received: by 2002:a17:90b:564f:b0:37f:d6d5:8e8c with SMTP id 98e67ed59e1d1-3893d91fed4mr10524502a91.0.1783681659012;
-        Fri, 10 Jul 2026 04:07:39 -0700 (PDT)
-Received: from ahmi-PC.. ([2401:4900:88f4:a225:f83:5ab4:33ab:8313])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-311838c9235sm35061109eec.21.2026.07.10.04.07.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Jul 2026 04:07:38 -0700 (PDT)
-From: Narasimharao Vadlamudi <ahmisaranrao@gmail.com>
-To: Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S . Miller" <davem@davemloft.net>
-Cc: Neal Liu <neal_liu@aspeedtech.com>,
-	Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	YueHaibing <yuehaibing@huawei.com>,
-	linux-aspeed@lists.ozlabs.org,
-	linux-crypto@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Narasimharao Vadlamudi <ahmisaranrao@gmail.com>
-Subject: [PATCH] crypto: aspeed: Propagate platform_get_irq() errors
-Date: Fri, 10 Jul 2026 16:37:29 +0530
-Message-ID: <20260710110729.224090-1-ahmisaranrao@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1783683930; c=relaxed/simple;
+	bh=u5nphNG168GZ/VoM3JlEPFsfbmOIChAwWaJlqtZYhRU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=hVXEJra9sYuDd4oW1Zz+zynJ59vSI9JbInyixL1o0y3iQ/R/SShbCTBFQp26YF6b3lTIiJEX5jufZvfgMo7QbvPdmvhRQxqI8VOyoDozqfTICJ70yAVXBJ/ak976kuUUeR/tav54kIge+tYjLJHC+kXOpDbWN0VF9C0B83xJatY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QYTxTAwl; arc=none smtp.client-ip=185.246.84.56
+Received: from smtpout-01.galae.net (smtpout-01.galae.net [212.83.139.233])
+	by smtpout-02.galae.net (Postfix) with ESMTPS id BA1C21A0F3A;
+	Fri, 10 Jul 2026 11:45:10 +0000 (UTC)
+Received: from mail.galae.net (mail.galae.net [212.83.136.155])
+	by smtpout-01.galae.net (Postfix) with ESMTPS id 828E560342;
+	Fri, 10 Jul 2026 11:45:10 +0000 (UTC)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 0B21111BD0281;
+	Fri, 10 Jul 2026 13:44:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=dkim;
+	t=1783683909; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=lNEfnd2GOwK6OV6o3n233rtSH9H6bRRqMfAyW9Ht5sQ=;
+	b=QYTxTAwl8ZZXjQUPTzcKeqjX0JGuQk0ZxPy1WBaHghwxQ14Zbow3vbxZLkweXwy9an4Rrs
+	iF83k5c+2MPNBs52qoP9HCDa10QpUnqxWF+90v+GHdaaFRIU8sH+BsNMsRcfJIPqNhQoj5
+	/JyDADaosgmQ3YFMvJa/694nNHppGxSrixD96m1Z9qWZ3LfzvDacOcUJfbQ3NT4Yzvy90v
+	Gj3FoBW+DOqcbX/E2tByHZxsmKxfTeDAezvKuaFuFlmdgV4016fhRh1xRKFcbAIEEL9mdG
+	Nchh02+7vjL7SK9qqTVdwab/4W5DIfcjRyILYca8ShWQjF4smF+DWQoc438ZRg==
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Brian Masney <bmasney@redhat.com>,  Michael Turquette
+ <mturquette@baylibre.com>,  Rob Herring <robh@kernel.org>,  Krzysztof
+ Kozlowski <krzk+dt@kernel.org>,  Conor Dooley <conor+dt@kernel.org>,
+  Thomas Gleixner <tglx@kernel.org>,  Olivia Mackall <olivia@selenic.com>,
+  Herbert Xu <herbert@gondor.apana.org.au>,  Jayesh Choudhary
+ <j-choudhary@ti.com>,  David S. Miller <davem@davemloft.net>,  Christian
+ Marangi <ansuelsmth@gmail.com>,  Antoine Tenart <atenart@kernel.org>,
+  Geert Uytterhoeven <geert+renesas@glider.be>,  Magnus Damm
+ <magnus.damm@gmail.com>,  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+  Pascal EBERHARD <pascal.eberhard@se.com>,  Wolfram Sang
+ <wsa+renesas@sang-engineering.com>,  linux-clk@vger.kernel.org,
+  devicetree@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-crypto@vger.kernel.org,  linux-renesas-soc@vger.kernel.org,  Herve
+ Codina <herve.codina@bootlin.com>
+Subject: Re: [PATCH 10/16] clk: Add support for clock nexus dt bindings
+In-Reply-To: <177595635458.5403.1619739189587608339@lazor> (Stephen Boyd's
+	message of "Sat, 11 Apr 2026 18:12:34 -0700")
+References: <20260327-schneider-v7-0-rc1-crypto-v1-0-5e6ff7853994@bootlin.com>
+	<20260327-schneider-v7-0-rc1-crypto-v1-10-5e6ff7853994@bootlin.com>
+	<acqT3Dh03y3JiLLc@redhat.com> <87y0j76p8o.fsf@bootlin.com>
+	<177595635458.5403.1619739189587608339@lazor>
+User-Agent: mu4e 1.12.7; emacs 30.2
+Date: Fri, 10 Jul 2026 13:44:53 +0200
+Message-ID: <87jyr3gjbe.fsf@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Last-TLS-Session-Version: TLSv1.3
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[bootlin.com,reject];
+	R_DKIM_ALLOW(-0.20)[bootlin.com:s=dkim];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_CC(0.00)[aspeedtech.com,jms.id.au,codeconstruct.com.au,huawei.com,lists.ozlabs.org,vger.kernel.org,lists.infradead.org,gmail.com];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-25821-lists,linux-crypto=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-25822-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:neal_liu@aspeedtech.com,m:joel@jms.id.au,m:andrew@codeconstruct.com.au,m:yuehaibing@huawei.com,m:linux-aspeed@lists.ozlabs.org,m:linux-crypto@vger.kernel.org,m:linux-arm-kernel@lists.infradead.org,m:linux-kernel@vger.kernel.org,m:ahmisaranrao@gmail.com,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[ahmisaranrao@gmail.com,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ahmisaranrao@gmail.com,linux-crypto@vger.kernel.org];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:sboyd@kernel.org,m:bmasney@redhat.com,m:mturquette@baylibre.com,m:robh@kernel.org,m:krzk+dt@kernel.org,m:conor+dt@kernel.org,m:tglx@kernel.org,m:olivia@selenic.com,m:herbert@gondor.apana.org.au,m:j-choudhary@ti.com,m:davem@davemloft.net,m:ansuelsmth@gmail.com,m:atenart@kernel.org,m:geert+renesas@glider.be,m:magnus.damm@gmail.com,m:thomas.petazzoni@bootlin.com,m:pascal.eberhard@se.com,m:wsa+renesas@sang-engineering.com,m:linux-clk@vger.kernel.org,m:devicetree@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:linux-renesas-soc@vger.kernel.org,m:herve.codina@bootlin.com,m:krzk@kernel.org,m:conor@kernel.org,m:geert@glider.be,m:magnusdamm@gmail.com,m:wsa@sang-engineering.com,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[miquel.raynal@bootlin.com,linux-crypto@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	FREEMAIL_CC(0.00)[redhat.com,baylibre.com,kernel.org,selenic.com,gondor.apana.org.au,ti.com,davemloft.net,gmail.com,glider.be,bootlin.com,se.com,sang-engineering.com,vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[miquel.raynal@bootlin.com,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[bootlin.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto,dt,renesas];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,bootlin.com:from_mime,bootlin.com:dkim,bootlin.com:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E59D5739FB6
+X-Rspamd-Queue-Id: 931C273A6DD
 
-platform_get_irq() returns a positive IRQ number on success and a negative
-error code on failure. aspeed_acry_probe() and aspeed_hace_probe()
-already detect negative returns, but both convert every failure to -ENXIO.
+Hello,
 
-Return the original error code so callers can handle errors such as
--EPROBE_DEFER correctly.
+>> > Before I left my Reviewed-by, I should have double checked Sashiko. It
+>> > has several questions about this patch. The first is:
+>> >
+>> >     Are there other places in the clock framework that need to transit=
+ion to the
+>> >     new map API to ensure assigned clocks work?
+>> >=20=20=20=20=20
+>> >     For instance, assigned-clocks and assigned-clock-parents are parse=
+d in
+>> >     drivers/clk/clk-conf.c using of_parse_phandle_with_args(). If a de=
+vice
+>> >     specifies an assigned clock that routes through a nexus node, will=
+ it fail
+>> >     to configure because the map is not traversed?
+>>=20
+>> The goal of the nexus node is to isolate what is behind. Are
+>> assigned-clocks et al. supposed to traverse a nexus node? I am tempted
+>> to say "no", but I'm open to discussing this ofc.
+>
+> Why would assigned-clocks not traverse the nexus node? If I'm a DT
+> author I would think any clock specifier should be routed properly
+> through the nexus node.
 
-Fixes: 2f1cf4e50c95 ("crypto: aspeed - Add ACRY RSA driver")
-Fixes: 70513e1d6559 ("crypto: aspeed - Fix check for platform_get_irq() errors")
-Signed-off-by: Narasimharao Vadlamudi <ahmisaranrao@gmail.com>
----
- drivers/crypto/aspeed/aspeed-acry.c | 2 +-
- drivers/crypto/aspeed/aspeed-hace.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Ok, giving this another thought, it may indeed be relevant to apply a
+default frequency which needs to traverse the nexus to be active. I've
+done the same change in the clk-conf.c file and tested with a dummy
+example, it just works.
 
-diff --git a/drivers/crypto/aspeed/aspeed-acry.c b/drivers/crypto/aspeed/aspeed-acry.c
-index 5993bcba9716..301612556a76 100644
---- a/drivers/crypto/aspeed/aspeed-acry.c
-+++ b/drivers/crypto/aspeed/aspeed-acry.c
-@@ -728,7 +728,7 @@ static int aspeed_acry_probe(struct platform_device *pdev)
- 	/* Get irq number and register it */
- 	acry_dev->irq = platform_get_irq(pdev, 0);
- 	if (acry_dev->irq < 0)
--		return -ENXIO;
-+		return acry_dev->irq;
- 
- 	rc = devm_request_irq(dev, acry_dev->irq, aspeed_acry_irq, 0,
- 			      dev_name(dev), acry_dev);
-diff --git a/drivers/crypto/aspeed/aspeed-hace.c b/drivers/crypto/aspeed/aspeed-hace.c
-index 3fe644bfe037..1f9afa002ae8 100644
---- a/drivers/crypto/aspeed/aspeed-hace.c
-+++ b/drivers/crypto/aspeed/aspeed-hace.c
-@@ -127,7 +127,7 @@ static int aspeed_hace_probe(struct platform_device *pdev)
- 	/* Get irq number and register it */
- 	hace_dev->irq = platform_get_irq(pdev, 0);
- 	if (hace_dev->irq < 0)
--		return -ENXIO;
-+		return hace_dev->irq;
- 
- 	rc = devm_request_irq(&pdev->dev, hace_dev->irq, aspeed_hace_irq, 0,
- 			      dev_name(&pdev->dev), hace_dev);
--- 
-2.43.0
-
+Thanks,
+Miqu=C3=A8l
 
