@@ -1,184 +1,159 @@
-Return-Path: <linux-crypto+bounces-25842-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25843-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id xl/nAcQnUmoDMwMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25842-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 13:23:48 +0200
+	id hqIBF+tYUmpsOgMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25843-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 16:53:31 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BAC674160E
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 13:23:47 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70D68741D6A
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 16:53:30 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=googlemail.com header.s=20251104 header.b=GfItbQ2X;
-	dmarc=fail reason="SPF not aligned (relaxed), DKIM not aligned (relaxed)" header.from=gmail.com (policy=none);
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25842-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25842-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=linux.dev header.s=key1 header.b=ZwLBM+Pr;
+	dmarc=pass (policy=none) header.from=linux.dev;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25843-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25843-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1076F301BF68
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 11:23:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7E5C1300E24F
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 14:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A103BBFBC;
-	Sat, 11 Jul 2026 11:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C443628136F;
+	Sat, 11 Jul 2026 14:53:28 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D67B3BD642
-	for <linux-crypto@vger.kernel.org>; Sat, 11 Jul 2026 11:23:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3B5627A476
+	for <linux-crypto@vger.kernel.org>; Sat, 11 Jul 2026 14:53:24 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783769023; cv=none; b=gL7wllT7+qK3bPvK/obWXK3dBpvpSy+H0rL/nBJwwMeqL4Pkhp8WECMy+IcDkxu40y74dmVvjIjg5jp0QPVFhI5xyhue7khUyDVdLWpXIR7v3FPjpJq2qvGWyOlFneb2qfYiwwJEfLzyANF2n6qBQ7AnOYTcVV31YIG/5bml/J4=
+	t=1783781608; cv=none; b=sGbgshF0DtI5s+NDHAlV3AhX60EdOGxde7xbEo+/Tw155g5lDXLE8RU/ZfNv4ERSjMP4NZKkmwg8VQUUxz4puTGRTTGOVRo3k0gtKEy0V6gM+RmZOZ8Se68L3H0aZqrOzXUlKh+OdXQ8zdztYgLhil5KdFQ0QMlRbg/g3wzfEjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783769023; c=relaxed/simple;
-	bh=OEYqxVTCTI9USysQOmqLS37+FcyNxiCmGACoc0w05Xk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ErriNflXSXTfkpZAegZtmmRCozIx73rvvj4dJYWBRF3r957dYvfw/bTQbhmcyhO56gm1/QDZdT+Ep0i14e1WczQ2veA97LVzWfSQNIholV2D2IQ61P5SY0x1jWTOgmNJyRGyyIbL2+S2YKRVkhleWfKnTw+13ISZsMSi9bh9ff0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=GfItbQ2X; arc=none smtp.client-ip=209.85.218.48
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-c15f020a223so247475766b.1
-        for <linux-crypto@vger.kernel.org>; Sat, 11 Jul 2026 04:23:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20251104; t=1783769019; x=1784373819; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :content-type:mime-version:references:message-id:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=234jl/SdWrM5VnGn/5as0DaA7W5mFTvl5zh/6Ezco9A=;
-        b=GfItbQ2X7J0gFAiMF8+EgkPDwLa2Oo95gBipecodccqhlxE2TCrWKudrY4hSg0VPNT
-         dW7y/DiKYpCIk+RDvcYdFUYDf9JvQ+BnYnRsmcWhGZiV9Z1oZJSqYh9n/tSSB2lhtwPL
-         b5VSj12KvtE68anfzQg+68uRZXHugeLxYNBqtdS4Pl7VACCpw9/iZ/kUCfHXrpcYv6uf
-         Yi8vNgyEkbi7pXsbbuJkNjYnh3IxFqel1LYoMvMEDgPAPCLDEKArCh7h4D6cXGrPaJ5y
-         +ALN6j0V2mzpZyFYp1C9xtw9ds2jwVkLANwxw/kvslOL+5HHjLC+/eEUCqadoU+Gct0f
-         bKzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783769020; x=1784373820;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :content-type:mime-version:references:message-id:subject:cc:to:from
-         :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=234jl/SdWrM5VnGn/5as0DaA7W5mFTvl5zh/6Ezco9A=;
-        b=UTj4B0FjUjsun1ShV8FUqVn3sCAseEfTVfYMUrIocnPzitaZZ8zEk/J4zSsLCCQEcX
-         UccN4/U2YN/jUzz9X3qOAyCO/nT+WkshYkVwyxQCLn9jaffoQs8HNR1NlPxJPdfRohmR
-         ftAEIWL1g6E8k07pAr58GsgXGXE/FfZYRx4wibNLJ/CEX+Cxl1rPhTBHJ3ZHhOFBxO4Z
-         SMZ83qXiwZMr1kbUTGoj9p2huavIMVwQ6nJh6irMpGfP/byMakpbXwhG7jwLMCDV4iB5
-         Z4tKjtfK90JGBsf/tgJbOYtyemuFjYdoUrvoJ9wO9mDFA5/TP3cbSIcqF29NLQI1Qa/f
-         +CFw==
-X-Forwarded-Encrypted: i=1; AHgh+RoAD1DLPlT3O+iDaJ4NnXImPYA2dZNBtwcN0v1ZWI9xA5iQ9iyZTtNvdug+CKXb5oQ5vQthXeWGf70HGt8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YziLUENb+0A/fn5B0SBp07PM2n07CR3VvXAVVpP6KbpLnmba8qe
-	jdXHsVBzbp4W/05AOONXsFwGTNGGn9PrpVfD583oI+7Igbdk8Ty97NPQyjfLTZQUjMuBaQ==
-X-Gm-Gg: AfdE7cmBIVjWCRK4V3tBWqygUhkgXzS7aAzqNAfS8/wiP2pp15YOQQW9sn+5kAmeqiD
-	BqheNUkKaDiaw9zJzP6VO+LR2g/q3dl/zsKYPWh8AsdMtzzYlV2hD3eCp7VpClUG8lNgUTHD8ru
-	Ld09OP8E+aiEI3XmNhuKoePdbmUq6jOWnTxFkAfX7zQ7tLnHoe5xr20QiFpoc2NALJS0+Cvsb5E
-	3dMslmsogo+ErDGmzCQR0P1UMgDduNrukl5qFm5MLmgclXavLPsWSkkF9rBf5mVe4uiBlXKSLcT
-	ycAAAaRSwQrBWr9ygNK2OEJ2a7BePrDvtylAr+f1av2J9lJD0f5r2e2mxbHP/QqV1Y2hIzMoENP
-	/aRKwXV26OjCoGHPtE8Id9Uxmq0T0vQveRJY2M7IEiRQf/tnVEi0N/5jul4FNoAy3lYQxhI/OF3
-	C1Z6jstl2HtR2k7sATg2geO66a5trbs11qi9cinYft
-X-Received: by 2002:a17:907:25ce:b0:c15:ce72:9350 with SMTP id a640c23a62f3a-c161ed88b0emr98383966b.41.1783769019411;
-        Sat, 11 Jul 2026 04:23:39 -0700 (PDT)
-Received: from fudgebox (k10193.upc-k.chello.nl. [62.108.10.193])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c15ad694736sm728524666b.0.2026.07.11.04.23.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Jul 2026 04:23:38 -0700 (PDT)
-Date: Sat, 11 Jul 2026 13:23:36 +0200
-From: David Gall <david.ccm.gall@googlemail.com>
-To: Ignat Korchagin <ignat@linux.win>
-Cc: Greg KH <gregkh@linuxfoundation.org>,
-	Eric Biggers <ebiggers@kernel.org>, Lukas Wunner <lukas@wunner.de>,
+	s=arc-20240116; t=1783781608; c=relaxed/simple;
+	bh=/rlW6l0xR2wdtg1H+Pws5RiWM86Rbb+yDyIqU8+10pQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Mou3Q4mXzqyrzsg4lP/wX0AVOtx9vaT7Mgiqzlo9bNq5ab1Y6SloWQZYwi5sSTKhaRCSqJqhOmGWkstZinx5aThMuBJkUsesFlMIfonriFPZO2abLnMnIn1thfl2ZpXDRh70YWpNJ2XZEn7LCQuRJwpK4IpvkZUlthw7opZfqiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZwLBM+Pr; arc=none smtp.client-ip=91.218.175.173
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1783781602;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=aZtHVuRO2nxmJugmNN9a89pfeJYPUJKY7mYAI9yqz4Q=;
+	b=ZwLBM+Prxzi72yW7EV+6MvJuM3ROokiTbHd5DIazgdBzC6OV/mhrGAyB15HEwFzWGU39Su
+	zCpOt2D18CKk5ETaBKkOhe/IvuhXo1yjwJmuPlBPOIFjT3pzffG167Oso7MiEU9c0eVLm6
+	m84wdUt8HVFCPggR/3MyPWnlyH0w+nY=
+From: Thorsten Blum <thorsten.blum@linux.dev>
+To: =?UTF-8?q?Breno=20Leit=C3=A3o?= <leitao@debian.org>,
+	Nayna Jain <nayna@linux.ibm.com>,
+	Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
 	"David S. Miller" <davem@davemloft.net>,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: rsassa-pkcs1: use constant-time comparison for
- digest and signature verification
-Message-ID: <alInuM5TquLTv5QE@fudgebox>
-References: <alEr_e-G0L2nxxv-@fudgebox>
- <20260710213718.GD1911@quark>
- <2026071156-masculine-unsold-3567@gregkh>
- <CAOs+rJUPQq88D7YwHyrbTFF-G9Lw7cJ9pcaZBpACP89ES9z00w@mail.gmail.com>
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>
+Cc: Thorsten Blum <thorsten.blum@linux.dev>,
+	linux-crypto@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: powerpc/aes - use bool for encryption/decryption flag
+Date: Sat, 11 Jul 2026 16:52:17 +0200
+Message-ID: <20260711145216.747128-3-thorsten.blum@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2073; i=thorsten.blum@linux.dev; h=from:subject; bh=/rlW6l0xR2wdtg1H+Pws5RiWM86Rbb+yDyIqU8+10pQ=; b=owGbwMvMwCUWt7pQ4caZUj3G02pJDFlBEQv+3Pg0ufzyLEXdyVmXBVc942tZweRfeedI+48G6 wbDLXmFHaUsDGJcDLJiiiwPZv2Y4VtaU7nJJGInzBxWJpAhDFycAjCRB3mMDNuuPgtIcY408L7d 8/5bym73eec1qp4VTr9WM/FGcq2E7R2Gf8oHM88daags1bxrYHsocX64rTknK2fBcpfynQVphl4 NHAA=
+X-Developer-Key: i=thorsten.blum@linux.dev; a=openpgp; fpr=1D60735E8AEF3BE473B69D84733678FD8DFEEAD4
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOs+rJUPQq88D7YwHyrbTFF-G9Lw7cJ9pcaZBpACP89ES9z00w@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.06 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[googlemail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[gmail.com : SPF not aligned (relaxed), DKIM not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:ignat@linux.win,m:gregkh@linuxfoundation.org,m:ebiggers@kernel.org,m:lukas@wunner.de,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:leitao@debian.org,m:nayna@linux.ibm.com,m:pfsmorigo@gmail.com,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:maddy@linux.ibm.com,m:mpe@ellerman.id.au,m:npiggin@gmail.com,m:chleroy@kernel.org,m:thorsten.blum@linux.dev,m:linux-crypto@vger.kernel.org,m:linuxppc-dev@lists.ozlabs.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[davidccmgall@gmail.com,linux-crypto@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25842-lists,linux-crypto=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[debian.org,linux.ibm.com,gmail.com,gondor.apana.org.au,davemloft.net,ellerman.id.au,kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	FORGED_SENDER(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[googlemail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[davidccmgall@gmail.com,linux-crypto@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-25843-lists,linux-crypto=lfdr.de];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[thorsten.blum@linux.dev,linux-crypto@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	FREEMAIL_FROM(0.00)[googlemail.com];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linuxfoundation.org:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,googlemail.com:dkim,fudgebox:mid]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FROM_HAS_DN(0.00)[]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 5BAC674160E
+X-Rspamd-Queue-Id: 70D68741D6A
 
-On Sat, Jul 11, 2026 at 09:00:23AM +0100, Ignat Korchagin wrote:
-> On Sat, Jul 11, 2026 at 6:19 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Fri, Jul 10, 2026 at 05:37:18PM -0400, Eric Biggers wrote:
-> > > On Fri, Jul 10, 2026 at 07:29:33PM +0200, David C.C.M. Gall wrote:
-> > > > Replace memcmp() with crypto_memneq() for cryptographic digest and
-> > > > signature comparisons to prevent timing side-channel attacks.
-> > > >
-> > > > crypto/rsassa-pkcs1.c: RSA signature digest verification used memcmp
-> > > > which can leak valid prefix length via timing analysis, user data
-> > > > could reach the leaky comparison via the digest argument to verify.
-> > > >
-> > > > Assisted-by: gregkh_clanker_t1000
-> > > > Signed-off-by: David C.C.M. Gall <david.ccm.gall@googlemail.com>
-> > >
-> > > While we should use crypto_memneq() on MACs, auth tags, and other secret
-> > > data, I don't think we should let it creep into domains where it is
-> > > clearly not needed, like public key signature verification.
-> >
-> > But isn't this user-controlled data and so a user could use it to figure
-> > out the key?
-> 
-> This is signature verification with a public key. So the user knows
-> the key already.
-> 
-> > thanks,
-> >
-> > greg k-h
-> >
-> 
-> Ignat
-Nevermind, my reasoning on how this method is used was faulty. The
-crypto_memneq call does not protect against digest forgery, the
-public key is already available to anyone attempting verification,
-so an attacker can compute the padding/digest offline without needing
-the kernel's comparison at all, timing or otherwise.
+Use bool for the CBC encryption/decryption flag passed through
+p8_aes_cbc_crypt() to aes_p8_cbc_encrypt().
 
-That said, this function already uses crypto_memneq for the hash-prefix
-check a few lines above. I'd argue for consistency it's worth using it
-for the digest comparison too.
+Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+---
+ arch/powerpc/crypto/aes_cbc.c | 6 +++---
+ include/crypto/aes.h          | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-David
+diff --git a/arch/powerpc/crypto/aes_cbc.c b/arch/powerpc/crypto/aes_cbc.c
+index 4a9f285f0970..9c271b4642c8 100644
+--- a/arch/powerpc/crypto/aes_cbc.c
++++ b/arch/powerpc/crypto/aes_cbc.c
+@@ -72,7 +72,7 @@ static int p8_aes_cbc_setkey(struct crypto_skcipher *tfm, const u8 *key,
+ 	return ret ? -EINVAL : 0;
+ }
+ 
+-static int p8_aes_cbc_crypt(struct skcipher_request *req, int enc)
++static int p8_aes_cbc_crypt(struct skcipher_request *req, bool enc)
+ {
+ 	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
+ 	const struct p8_aes_cbc_ctx *ctx = crypto_skcipher_ctx(tfm);
+@@ -110,12 +110,12 @@ static int p8_aes_cbc_crypt(struct skcipher_request *req, int enc)
+ 
+ static int p8_aes_cbc_encrypt(struct skcipher_request *req)
+ {
+-	return p8_aes_cbc_crypt(req, 1);
++	return p8_aes_cbc_crypt(req, true);
+ }
+ 
+ static int p8_aes_cbc_decrypt(struct skcipher_request *req)
+ {
+-	return p8_aes_cbc_crypt(req, 0);
++	return p8_aes_cbc_crypt(req, false);
+ }
+ 
+ struct skcipher_alg p8_aes_cbc_alg = {
+diff --git a/include/crypto/aes.h b/include/crypto/aes.h
+index 16fbfd93e2bd..3279cfa54608 100644
+--- a/include/crypto/aes.h
++++ b/include/crypto/aes.h
+@@ -259,7 +259,7 @@ int aes_p8_set_decrypt_key(const u8 *userKey, const int bits,
+ void aes_p8_encrypt(const u8 *in, u8 *out, const struct p8_aes_key *key);
+ void aes_p8_decrypt(const u8 *in, u8 *out, const struct p8_aes_key *key);
+ void aes_p8_cbc_encrypt(const u8 *in, u8 *out, size_t len,
+-			const struct p8_aes_key *key, u8 *iv, const int enc);
++			const struct p8_aes_key *key, u8 *iv, bool enc);
+ void aes_p8_ctr32_encrypt_blocks(const u8 *in, u8 *out, size_t len,
+ 				 const struct p8_aes_key *key, const u8 *iv);
+ void aes_p8_xts_encrypt(const u8 *in, u8 *out, size_t len,
 
