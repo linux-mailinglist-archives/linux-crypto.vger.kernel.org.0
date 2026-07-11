@@ -1,133 +1,165 @@
-Return-Path: <linux-crypto+bounces-25840-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25841-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 5XRHOcXVUWrSJQMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25840-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 07:33:57 +0200
+	id oumlLDL4UWrlKwMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25841-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 10:00:50 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6149D740669
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 07:33:57 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F44E740D66
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 10:00:50 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=linuxfoundation.org header.s=korg header.b=kJzGi75P;
-	dmarc=pass (policy=none) header.from=linuxfoundation.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25840-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25840-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=none;
+	dmarc=none;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25841-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25841-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8B494301B92C
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 05:33:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0615B3021723
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 08:00:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 529EE2F8EBF;
-	Sat, 11 Jul 2026 05:33:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52FE52857FA;
+	Sat, 11 Jul 2026 08:00:39 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B484259C82;
-	Sat, 11 Jul 2026 05:33:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954874499B8
+	for <linux-crypto@vger.kernel.org>; Sat, 11 Jul 2026 08:00:37 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783748028; cv=none; b=Qd+9Ccex7S6rsoOItl7UZnxRGrKBBlERDkDhJuQyWX9JH2h28JpDJD3y6E26wLCSVshNqHA7hGk0Myqh0zwc7Ue2GbHZ2WWzbpDEOsXbJB0zaVSoqZ0Ax4gGnFwqBd6nmYZ5ij+xLIhwvrtGaWQKEYtGX3TL+Z+gl/FCcIRmUH8=
+	t=1783756839; cv=none; b=KIDdhaAfuyHgFirx1S9sM7moP+qLdPj7pBq2MnXlOkYV8q80jMtfL+rKEWHsqNrULnIxMhA8OUEmYy1NiottBPRnUF+c+DXEVvKr32BleiilZhIZtWf/AGN+JyeSHrVmP0IG5b3+y7PBPXSH8cxKeVvragddT8EjAvAz4it23HU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783748028; c=relaxed/simple;
-	bh=opE5NEWq3bToYe6XQSN51rpaZOWtxWIl1qFst6FmEKc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rGG09Y7Y9yMvoe4v7EjvHeuDZcJ4BjpgdDLk2t679Ak/VoTxw5jTdsqoxyOUpUgMvuJpr35M1QLb89FJh85Q7dPN31zkBe9Z5bncrC2l6ROZwXRCKA756CaX5BY6n4aZXRbfTe4a+q4jc8JcL7ZE0QZT3lvQ+UE7xDqYUMrC+Nk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=kJzGi75P; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69C161F000E9;
-	Sat, 11 Jul 2026 05:33:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
-	s=korg; t=1783748026;
-	bh=JLNqoA4EMUbeTcKOWVfrxBUKnV6gFApbWfRSrcQeMMY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=kJzGi75Ph+TZ6t3Cq1Kbcte8yklMQdEokbProSnbuiBmd/ZpUUQklKAxJNOnNCZZA
-	 JlB9YG/EOLQXsC+eDyXBUfpgbkl6cJEuUtSG9P5QO1PXhobObh5IS0ygaCUm1/zpCt
-	 5lvsQfm6Tk8ZJzubkOw2SBcZ6eKJ0x9PJi3tbAKs=
-Date: Sat, 11 Jul 2026 07:33:42 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Yuan Tan <yuantan098@gmail.com>
-Cc: andrew@lunn.ch, Paolo Abeni <pabeni@redhat.com>,
-	laurent.pinchart@ideasonboard.com, hdanton@sina.com,
-	linux-kernel@vger.kernel.org, workflows@vger.kernel.org,
-	jhs@mojatatu.com, sven@narfation.org, netdev@vger.kernel.org,
-	netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [RFC] VEGA: a syzbot-like workflow for LLM-found kernel bugs
-Message-ID: <2026071131-dweeb-quickstep-d550@gregkh>
-References: <20260708092247.4188498-1-yuantan098@gmail.com>
- <2026070828-carried-extortion-789e@gregkh>
- <CAPuPA7Kdy_wghauOH5pggq+woLmtp4-BEyn8LoBJ2UhRExF+Xw@mail.gmail.com>
+	s=arc-20240116; t=1783756839; c=relaxed/simple;
+	bh=MscGTZTkUv6wn8Wn4fUBW0ZSExMyGE7p6dLLOPPbTBU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PvC78NrHHApijsmD3ws2qxQfpe4Ko/NGWO1JfQw/ycqMCY3dFjVQT2S0x3OOZrySdkHT09mshYdlHAt7wMSAiWcGcLVt2RJYrdtWkh0Hf0rR0FXgHduGx7dzW+GPZZWTbGVj7vGc+yiUrgf2WWOlqhuxCRsBaR2yQ10qQUDWIRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.win; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.47
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-6989c0ec3c5so3172454a12.2
+        for <linux-crypto@vger.kernel.org>; Sat, 11 Jul 2026 01:00:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783756836; x=1784361636;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=MscGTZTkUv6wn8Wn4fUBW0ZSExMyGE7p6dLLOPPbTBU=;
+        b=WKUVjbhwDRDSPZOroyRNZvW1euMYhScn18YdrUC5dj8huKH1FVudHn/MqUZli1rn93
+         78olCyFWwahwMwziwMAOFGHp5Zo2HpN8svi+Y0ERYlSUHPAXdDFYT58vYWUjp7v+uq5W
+         F/B+msmgoYsS785+drriXAaUIrrKlz/5dYl0GZOnwLp3qXVr0XGghYmRGppqAEq5d/h+
+         jZM/2KCSnvvzwyNVWurG2r+XapEdQk2xmtbosLTLxbFTCJMhC80CGMfHnr7dwDuQ7x2I
+         KZSyMeXIdmdV8UwSI3hCrv2zEq3qddnvB7SqL6hbu/lz9f2KWI43kUfdXcBR7v4nF1/G
+         pTog==
+X-Forwarded-Encrypted: i=1; AHgh+RqBuyoRawDzdDAdIz3odL4778fA6RWwIwgxDw1JTo6Q2E5T33LBEsIOBFNY/nZ5bbHWzJGOcADrjp960UI=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzyexZo5cCGMt4xHQV1Ok4dhsJ+oTE34+dkpi6A5pdhQLy/tnlo
+	ReACYvZ6J9B3IF+U7XhEaRHNe/BOWIw0gceobzOSX+U7/G8u1cJLKTPJZrtLWBbiaiA=
+X-Gm-Gg: AfdE7ck3z65qTGzPi3oYwJx/kDAA9FDDy2JAHqeOnTL/2AjFkd8lU/PZZx09/yvW3Tn
+	TtSUs2nM0G2wagnjCR6W7jvsLTThRbYOs6A5RHFrV0IcB9/VY2/5lZ4dwL6aBOv1rvzDarKAy3S
+	++Z+/5Psrpes3kj4P0Q5v+S2H5q3Ncwc689Aa4Ynfe7qXhWH5Epf8BAJgN9oWJ45q0vrKXT/sIB
+	aqZLRU3aSinda1PzHxDplOyfntxacJfKXMMVl6OSbOdaGHpt5przD3zyFrNhe1SXlezj7AqhU9Q
+	blOx1SaDO/yPsZ+J1wT29jqxj2/PnYLhuPuBN8iQbpUThXmd4YWlzqoJmOtVmD0eKnU6LohSyOd
+	RyPda4ERHOcZyPTUz9SI6+y040lAQ6Xk+69YWXF6H5sqIaf6fJJFXx8+RzaqxhBX37aTPKbSyKY
+	VfiQpNEEEi4Sns/Z/SfJkjOcVYw3Q+03zcQYEBDY4Nt/LptAWOirxUAA==
+X-Received: by 2002:a17:907:a644:b0:c15:b96f:c3d1 with SMTP id a640c23a62f3a-c161ea1f5bcmr78775266b.41.1783756835756;
+        Sat, 11 Jul 2026 01:00:35 -0700 (PDT)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c15e1289befsm383213966b.28.2026.07.11.01.00.34
+        for <linux-crypto@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 11 Jul 2026 01:00:34 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-c15f6d667bcso210395066b.2
+        for <linux-crypto@vger.kernel.org>; Sat, 11 Jul 2026 01:00:34 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AHgh+Rrxc9NEC0kwiXWgmZ58o27sgTY1iMvi1xIwmGo9RnSgJnSBsyGvgOAGs50pcF4Tw+3yBi33yC23FbUWOOU=@vger.kernel.org
+X-Received: by 2002:a17:907:d1d:b0:c15:ec09:d099 with SMTP id
+ a640c23a62f3a-c161e84b50cmr83397566b.3.1783756834345; Sat, 11 Jul 2026
+ 01:00:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPuPA7Kdy_wghauOH5pggq+woLmtp4-BEyn8LoBJ2UhRExF+Xw@mail.gmail.com>
+References: <alEr_e-G0L2nxxv-@fudgebox> <20260710213718.GD1911@quark> <2026071156-masculine-unsold-3567@gregkh>
+In-Reply-To: <2026071156-masculine-unsold-3567@gregkh>
+From: Ignat Korchagin <ignat@linux.win>
+Date: Sat, 11 Jul 2026 09:00:23 +0100
+X-Gmail-Original-Message-ID: <CAOs+rJUPQq88D7YwHyrbTFF-G9Lw7cJ9pcaZBpACP89ES9z00w@mail.gmail.com>
+X-Gm-Features: AUfX_mxfB9lRyM9aBgF-lmD7co2kMM6ObJOg0FVE2xaT4F56v9KALHh3-mPpr-Y
+Message-ID: <CAOs+rJUPQq88D7YwHyrbTFF-G9Lw7cJ9pcaZBpACP89ES9z00w@mail.gmail.com>
+Subject: Re: [PATCH] crypto: rsassa-pkcs1: use constant-time comparison for
+ digest and signature verification
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Eric Biggers <ebiggers@kernel.org>, 
+	"David C.C.M. Gall" <david.ccm.gall@googlemail.com>, Lukas Wunner <lukas@wunner.de>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [2.34 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linuxfoundation.org,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[linuxfoundation.org:s=korg];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-25841-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,googlemail.com,wunner.de,gondor.apana.org.au,davemloft.net,vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS(0.00)[m:yuantan098@gmail.com,m:andrew@lunn.ch,m:pabeni@redhat.com,m:laurent.pinchart@ideasonboard.com,m:hdanton@sina.com,m:linux-kernel@vger.kernel.org,m:workflows@vger.kernel.org,m:jhs@mojatatu.com,m:sven@narfation.org,m:netdev@vger.kernel.org,m:netfilter-devel@vger.kernel.org,m:linux-crypto@vger.kernel.org,s:lists@lfdr.de];
-	FORGED_SENDER(0.00)[gregkh@linuxfoundation.org,linux-crypto@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FREEMAIL_TO(0.00)[gmail.com];
+	DMARC_NA(0.00)[linux.win];
+	FORGED_RECIPIENTS(0.00)[m:gregkh@linuxfoundation.org,m:ebiggers@kernel.org,m:david.ccm.gall@googlemail.com,m:lukas@wunner.de,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:davidccmgall@gmail.com,s:lists@lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-25840-lists,linux-crypto=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linuxfoundation.org:+];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gregkh@linuxfoundation.org,linux-crypto@vger.kernel.org];
-	FREEMAIL_CC(0.00)[lunn.ch,redhat.com,ideasonboard.com,sina.com,vger.kernel.org,mojatatu.com,narfation.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[ignat@linux.win,linux-crypto@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ignat@linux.win,linux-crypto@vger.kernel.org];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,linuxfoundation.org:from_mime,linuxfoundation.org:dkim,gregkh:mid]
+	ALIAS_RESOLVED(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	R_DKIM_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6149D740669
+X-Rspamd-Queue-Id: 0F44E740D66
 
-On Fri, Jul 10, 2026 at 07:14:36PM -0700, Yuan Tan wrote:
-> > But hey, I could be totally wrong.  Maybe some generous company that is
-> > involved in unleashing this hell on us would be so kind as to pony up to
-> > do the work to create this and help fix the issues that their tools are
-> > finding.  Just like Google did in the past, there is precedent, but for
-> > some reason people don't like learning from history...
-> 
-> We have also received some bug bounty rewards from Google, which gives
-> us some resources to put back into this effort.
+On Sat, Jul 11, 2026 at 6:19=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org=
+> wrote:
+>
+> On Fri, Jul 10, 2026 at 05:37:18PM -0400, Eric Biggers wrote:
+> > On Fri, Jul 10, 2026 at 07:29:33PM +0200, David C.C.M. Gall wrote:
+> > > Replace memcmp() with crypto_memneq() for cryptographic digest and
+> > > signature comparisons to prevent timing side-channel attacks.
+> > >
+> > > crypto/rsassa-pkcs1.c: RSA signature digest verification used memcmp
+> > > which can leak valid prefix length via timing analysis, user data
+> > > could reach the leaky comparison via the digest argument to verify.
+> > >
+> > > Assisted-by: gregkh_clanker_t1000
+> > > Signed-off-by: David C.C.M. Gall <david.ccm.gall@googlemail.com>
+> >
+> > While we should use crypto_memneq() on MACs, auth tags, and other secre=
+t
+> > data, I don't think we should let it creep into domains where it is
+> > clearly not needed, like public key signature verification.
+>
+> But isn't this user-controlled data and so a user could use it to figure
+> out the key?
 
-That's good, but I don't want you to have to rely on Google's bug bounty
-money, as that is not going to be reliable if past history is any
-indication :(
+This is signature verification with a public key. So the user knows
+the key already.
 
-> We are prepared to invest more engineering time in fixing these bugs,
-> and we are also considering hiring engineers to help.
-> 
-> Will you also be attending NetDev in person? If so, perhaps we can chat there :)
+> thanks,
+>
+> greg k-h
+>
 
-Unfortunatly due to passport/visa issues, I can not attend this year,
-but will be speaking remotely.  I will be in Prague later this year at
-OSS and Plumbers.
-
-thanks,
-
-greg k-h
+Ignat
 
