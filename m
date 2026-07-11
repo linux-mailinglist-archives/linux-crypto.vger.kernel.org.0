@@ -1,165 +1,184 @@
-Return-Path: <linux-crypto+bounces-25841-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25842-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id oumlLDL4UWrlKwMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25841-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 10:00:50 +0200
+	id xl/nAcQnUmoDMwMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25842-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 13:23:48 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F44E740D66
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 10:00:50 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BAC674160E
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 13:23:47 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	dmarc=none;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25841-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25841-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=googlemail.com header.s=20251104 header.b=GfItbQ2X;
+	dmarc=fail reason="SPF not aligned (relaxed), DKIM not aligned (relaxed)" header.from=gmail.com (policy=none);
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25842-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25842-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0615B3021723
-	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 08:00:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1076F301BF68
+	for <lists+linux-crypto@lfdr.de>; Sat, 11 Jul 2026 11:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52FE52857FA;
-	Sat, 11 Jul 2026 08:00:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A103BBFBC;
+	Sat, 11 Jul 2026 11:23:43 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954874499B8
-	for <linux-crypto@vger.kernel.org>; Sat, 11 Jul 2026 08:00:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D67B3BD642
+	for <linux-crypto@vger.kernel.org>; Sat, 11 Jul 2026 11:23:41 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783756839; cv=none; b=KIDdhaAfuyHgFirx1S9sM7moP+qLdPj7pBq2MnXlOkYV8q80jMtfL+rKEWHsqNrULnIxMhA8OUEmYy1NiottBPRnUF+c+DXEVvKr32BleiilZhIZtWf/AGN+JyeSHrVmP0IG5b3+y7PBPXSH8cxKeVvragddT8EjAvAz4it23HU=
+	t=1783769023; cv=none; b=gL7wllT7+qK3bPvK/obWXK3dBpvpSy+H0rL/nBJwwMeqL4Pkhp8WECMy+IcDkxu40y74dmVvjIjg5jp0QPVFhI5xyhue7khUyDVdLWpXIR7v3FPjpJq2qvGWyOlFneb2qfYiwwJEfLzyANF2n6qBQ7AnOYTcVV31YIG/5bml/J4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783756839; c=relaxed/simple;
-	bh=MscGTZTkUv6wn8Wn4fUBW0ZSExMyGE7p6dLLOPPbTBU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PvC78NrHHApijsmD3ws2qxQfpe4Ko/NGWO1JfQw/ycqMCY3dFjVQT2S0x3OOZrySdkHT09mshYdlHAt7wMSAiWcGcLVt2RJYrdtWkh0Hf0rR0FXgHduGx7dzW+GPZZWTbGVj7vGc+yiUrgf2WWOlqhuxCRsBaR2yQ10qQUDWIRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.win; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.47
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-6989c0ec3c5so3172454a12.2
-        for <linux-crypto@vger.kernel.org>; Sat, 11 Jul 2026 01:00:37 -0700 (PDT)
+	s=arc-20240116; t=1783769023; c=relaxed/simple;
+	bh=OEYqxVTCTI9USysQOmqLS37+FcyNxiCmGACoc0w05Xk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ErriNflXSXTfkpZAegZtmmRCozIx73rvvj4dJYWBRF3r957dYvfw/bTQbhmcyhO56gm1/QDZdT+Ep0i14e1WczQ2veA97LVzWfSQNIholV2D2IQ61P5SY0x1jWTOgmNJyRGyyIbL2+S2YKRVkhleWfKnTw+13ISZsMSi9bh9ff0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=GfItbQ2X; arc=none smtp.client-ip=209.85.218.48
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-c15f020a223so247475766b.1
+        for <linux-crypto@vger.kernel.org>; Sat, 11 Jul 2026 04:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20251104; t=1783769019; x=1784373819; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :content-type:mime-version:references:message-id:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=234jl/SdWrM5VnGn/5as0DaA7W5mFTvl5zh/6Ezco9A=;
+        b=GfItbQ2X7J0gFAiMF8+EgkPDwLa2Oo95gBipecodccqhlxE2TCrWKudrY4hSg0VPNT
+         dW7y/DiKYpCIk+RDvcYdFUYDf9JvQ+BnYnRsmcWhGZiV9Z1oZJSqYh9n/tSSB2lhtwPL
+         b5VSj12KvtE68anfzQg+68uRZXHugeLxYNBqtdS4Pl7VACCpw9/iZ/kUCfHXrpcYv6uf
+         Yi8vNgyEkbi7pXsbbuJkNjYnh3IxFqel1LYoMvMEDgPAPCLDEKArCh7h4D6cXGrPaJ5y
+         +ALN6j0V2mzpZyFYp1C9xtw9ds2jwVkLANwxw/kvslOL+5HHjLC+/eEUCqadoU+Gct0f
+         bKzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783756836; x=1784361636;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=MscGTZTkUv6wn8Wn4fUBW0ZSExMyGE7p6dLLOPPbTBU=;
-        b=WKUVjbhwDRDSPZOroyRNZvW1euMYhScn18YdrUC5dj8huKH1FVudHn/MqUZli1rn93
-         78olCyFWwahwMwziwMAOFGHp5Zo2HpN8svi+Y0ERYlSUHPAXdDFYT58vYWUjp7v+uq5W
-         F/B+msmgoYsS785+drriXAaUIrrKlz/5dYl0GZOnwLp3qXVr0XGghYmRGppqAEq5d/h+
-         jZM/2KCSnvvzwyNVWurG2r+XapEdQk2xmtbosLTLxbFTCJMhC80CGMfHnr7dwDuQ7x2I
-         KZSyMeXIdmdV8UwSI3hCrv2zEq3qddnvB7SqL6hbu/lz9f2KWI43kUfdXcBR7v4nF1/G
-         pTog==
-X-Forwarded-Encrypted: i=1; AHgh+RqBuyoRawDzdDAdIz3odL4778fA6RWwIwgxDw1JTo6Q2E5T33LBEsIOBFNY/nZ5bbHWzJGOcADrjp960UI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzyexZo5cCGMt4xHQV1Ok4dhsJ+oTE34+dkpi6A5pdhQLy/tnlo
-	ReACYvZ6J9B3IF+U7XhEaRHNe/BOWIw0gceobzOSX+U7/G8u1cJLKTPJZrtLWBbiaiA=
-X-Gm-Gg: AfdE7ck3z65qTGzPi3oYwJx/kDAA9FDDy2JAHqeOnTL/2AjFkd8lU/PZZx09/yvW3Tn
-	TtSUs2nM0G2wagnjCR6W7jvsLTThRbYOs6A5RHFrV0IcB9/VY2/5lZ4dwL6aBOv1rvzDarKAy3S
-	++Z+/5Psrpes3kj4P0Q5v+S2H5q3Ncwc689Aa4Ynfe7qXhWH5Epf8BAJgN9oWJ45q0vrKXT/sIB
-	aqZLRU3aSinda1PzHxDplOyfntxacJfKXMMVl6OSbOdaGHpt5przD3zyFrNhe1SXlezj7AqhU9Q
-	blOx1SaDO/yPsZ+J1wT29jqxj2/PnYLhuPuBN8iQbpUThXmd4YWlzqoJmOtVmD0eKnU6LohSyOd
-	RyPda4ERHOcZyPTUz9SI6+y040lAQ6Xk+69YWXF6H5sqIaf6fJJFXx8+RzaqxhBX37aTPKbSyKY
-	VfiQpNEEEi4Sns/Z/SfJkjOcVYw3Q+03zcQYEBDY4Nt/LptAWOirxUAA==
-X-Received: by 2002:a17:907:a644:b0:c15:b96f:c3d1 with SMTP id a640c23a62f3a-c161ea1f5bcmr78775266b.41.1783756835756;
-        Sat, 11 Jul 2026 01:00:35 -0700 (PDT)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c15e1289befsm383213966b.28.2026.07.11.01.00.34
-        for <linux-crypto@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 11 Jul 2026 01:00:34 -0700 (PDT)
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-c15f6d667bcso210395066b.2
-        for <linux-crypto@vger.kernel.org>; Sat, 11 Jul 2026 01:00:34 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AHgh+Rrxc9NEC0kwiXWgmZ58o27sgTY1iMvi1xIwmGo9RnSgJnSBsyGvgOAGs50pcF4Tw+3yBi33yC23FbUWOOU=@vger.kernel.org
-X-Received: by 2002:a17:907:d1d:b0:c15:ec09:d099 with SMTP id
- a640c23a62f3a-c161e84b50cmr83397566b.3.1783756834345; Sat, 11 Jul 2026
- 01:00:34 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1783769020; x=1784373820;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :content-type:mime-version:references:message-id:subject:cc:to:from
+         :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=234jl/SdWrM5VnGn/5as0DaA7W5mFTvl5zh/6Ezco9A=;
+        b=UTj4B0FjUjsun1ShV8FUqVn3sCAseEfTVfYMUrIocnPzitaZZ8zEk/J4zSsLCCQEcX
+         UccN4/U2YN/jUzz9X3qOAyCO/nT+WkshYkVwyxQCLn9jaffoQs8HNR1NlPxJPdfRohmR
+         ftAEIWL1g6E8k07pAr58GsgXGXE/FfZYRx4wibNLJ/CEX+Cxl1rPhTBHJ3ZHhOFBxO4Z
+         SMZ83qXiwZMr1kbUTGoj9p2huavIMVwQ6nJh6irMpGfP/byMakpbXwhG7jwLMCDV4iB5
+         Z4tKjtfK90JGBsf/tgJbOYtyemuFjYdoUrvoJ9wO9mDFA5/TP3cbSIcqF29NLQI1Qa/f
+         +CFw==
+X-Forwarded-Encrypted: i=1; AHgh+RoAD1DLPlT3O+iDaJ4NnXImPYA2dZNBtwcN0v1ZWI9xA5iQ9iyZTtNvdug+CKXb5oQ5vQthXeWGf70HGt8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YziLUENb+0A/fn5B0SBp07PM2n07CR3VvXAVVpP6KbpLnmba8qe
+	jdXHsVBzbp4W/05AOONXsFwGTNGGn9PrpVfD583oI+7Igbdk8Ty97NPQyjfLTZQUjMuBaQ==
+X-Gm-Gg: AfdE7cmBIVjWCRK4V3tBWqygUhkgXzS7aAzqNAfS8/wiP2pp15YOQQW9sn+5kAmeqiD
+	BqheNUkKaDiaw9zJzP6VO+LR2g/q3dl/zsKYPWh8AsdMtzzYlV2hD3eCp7VpClUG8lNgUTHD8ru
+	Ld09OP8E+aiEI3XmNhuKoePdbmUq6jOWnTxFkAfX7zQ7tLnHoe5xr20QiFpoc2NALJS0+Cvsb5E
+	3dMslmsogo+ErDGmzCQR0P1UMgDduNrukl5qFm5MLmgclXavLPsWSkkF9rBf5mVe4uiBlXKSLcT
+	ycAAAaRSwQrBWr9ygNK2OEJ2a7BePrDvtylAr+f1av2J9lJD0f5r2e2mxbHP/QqV1Y2hIzMoENP
+	/aRKwXV26OjCoGHPtE8Id9Uxmq0T0vQveRJY2M7IEiRQf/tnVEi0N/5jul4FNoAy3lYQxhI/OF3
+	C1Z6jstl2HtR2k7sATg2geO66a5trbs11qi9cinYft
+X-Received: by 2002:a17:907:25ce:b0:c15:ce72:9350 with SMTP id a640c23a62f3a-c161ed88b0emr98383966b.41.1783769019411;
+        Sat, 11 Jul 2026 04:23:39 -0700 (PDT)
+Received: from fudgebox (k10193.upc-k.chello.nl. [62.108.10.193])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c15ad694736sm728524666b.0.2026.07.11.04.23.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Jul 2026 04:23:38 -0700 (PDT)
+Date: Sat, 11 Jul 2026 13:23:36 +0200
+From: David Gall <david.ccm.gall@googlemail.com>
+To: Ignat Korchagin <ignat@linux.win>
+Cc: Greg KH <gregkh@linuxfoundation.org>,
+	Eric Biggers <ebiggers@kernel.org>, Lukas Wunner <lukas@wunner.de>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: rsassa-pkcs1: use constant-time comparison for
+ digest and signature verification
+Message-ID: <alInuM5TquLTv5QE@fudgebox>
+References: <alEr_e-G0L2nxxv-@fudgebox>
+ <20260710213718.GD1911@quark>
+ <2026071156-masculine-unsold-3567@gregkh>
+ <CAOs+rJUPQq88D7YwHyrbTFF-G9Lw7cJ9pcaZBpACP89ES9z00w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <alEr_e-G0L2nxxv-@fudgebox> <20260710213718.GD1911@quark> <2026071156-masculine-unsold-3567@gregkh>
-In-Reply-To: <2026071156-masculine-unsold-3567@gregkh>
-From: Ignat Korchagin <ignat@linux.win>
-Date: Sat, 11 Jul 2026 09:00:23 +0100
-X-Gmail-Original-Message-ID: <CAOs+rJUPQq88D7YwHyrbTFF-G9Lw7cJ9pcaZBpACP89ES9z00w@mail.gmail.com>
-X-Gm-Features: AUfX_mxfB9lRyM9aBgF-lmD7co2kMM6ObJOg0FVE2xaT4F56v9KALHh3-mPpr-Y
-Message-ID: <CAOs+rJUPQq88D7YwHyrbTFF-G9Lw7cJ9pcaZBpACP89ES9z00w@mail.gmail.com>
-Subject: Re: [PATCH] crypto: rsassa-pkcs1: use constant-time comparison for
- digest and signature verification
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Eric Biggers <ebiggers@kernel.org>, 
-	"David C.C.M. Gall" <david.ccm.gall@googlemail.com>, Lukas Wunner <lukas@wunner.de>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOs+rJUPQq88D7YwHyrbTFF-G9Lw7cJ9pcaZBpACP89ES9z00w@mail.gmail.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [0.04 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.06 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[googlemail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[gmail.com : SPF not aligned (relaxed), DKIM not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-25841-lists,linux-crypto=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,googlemail.com,wunner.de,gondor.apana.org.au,davemloft.net,vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:ignat@linux.win,m:gregkh@linuxfoundation.org,m:ebiggers@kernel.org,m:lukas@wunner.de,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[linux.win];
-	FORGED_RECIPIENTS(0.00)[m:gregkh@linuxfoundation.org,m:ebiggers@kernel.org,m:david.ccm.gall@googlemail.com,m:lukas@wunner.de,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:davidccmgall@gmail.com,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[ignat@linux.win,linux-crypto@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[davidccmgall@gmail.com,linux-crypto@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ignat@linux.win,linux-crypto@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-25842-lists,linux-crypto=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORWARDED(0.00)[lists@lfdr.de];
+	DKIM_TRACE(0.00)[googlemail.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[davidccmgall@gmail.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FREEMAIL_FROM(0.00)[googlemail.com];
 	RCPT_COUNT_SEVEN(0.00)[8];
-	R_DKIM_NA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linuxfoundation.org:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,googlemail.com:dkim,fudgebox:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 0F44E740D66
+X-Rspamd-Queue-Id: 5BAC674160E
 
-On Sat, Jul 11, 2026 at 6:19=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
->
-> On Fri, Jul 10, 2026 at 05:37:18PM -0400, Eric Biggers wrote:
-> > On Fri, Jul 10, 2026 at 07:29:33PM +0200, David C.C.M. Gall wrote:
-> > > Replace memcmp() with crypto_memneq() for cryptographic digest and
-> > > signature comparisons to prevent timing side-channel attacks.
-> > >
-> > > crypto/rsassa-pkcs1.c: RSA signature digest verification used memcmp
-> > > which can leak valid prefix length via timing analysis, user data
-> > > could reach the leaky comparison via the digest argument to verify.
-> > >
-> > > Assisted-by: gregkh_clanker_t1000
-> > > Signed-off-by: David C.C.M. Gall <david.ccm.gall@googlemail.com>
+On Sat, Jul 11, 2026 at 09:00:23AM +0100, Ignat Korchagin wrote:
+> On Sat, Jul 11, 2026 at 6:19 AM Greg KH <gregkh@linuxfoundation.org> wrote:
 > >
-> > While we should use crypto_memneq() on MACs, auth tags, and other secre=
-t
-> > data, I don't think we should let it creep into domains where it is
-> > clearly not needed, like public key signature verification.
->
-> But isn't this user-controlled data and so a user could use it to figure
-> out the key?
+> > On Fri, Jul 10, 2026 at 05:37:18PM -0400, Eric Biggers wrote:
+> > > On Fri, Jul 10, 2026 at 07:29:33PM +0200, David C.C.M. Gall wrote:
+> > > > Replace memcmp() with crypto_memneq() for cryptographic digest and
+> > > > signature comparisons to prevent timing side-channel attacks.
+> > > >
+> > > > crypto/rsassa-pkcs1.c: RSA signature digest verification used memcmp
+> > > > which can leak valid prefix length via timing analysis, user data
+> > > > could reach the leaky comparison via the digest argument to verify.
+> > > >
+> > > > Assisted-by: gregkh_clanker_t1000
+> > > > Signed-off-by: David C.C.M. Gall <david.ccm.gall@googlemail.com>
+> > >
+> > > While we should use crypto_memneq() on MACs, auth tags, and other secret
+> > > data, I don't think we should let it creep into domains where it is
+> > > clearly not needed, like public key signature verification.
+> >
+> > But isn't this user-controlled data and so a user could use it to figure
+> > out the key?
+> 
+> This is signature verification with a public key. So the user knows
+> the key already.
+> 
+> > thanks,
+> >
+> > greg k-h
+> >
+> 
+> Ignat
+Nevermind, my reasoning on how this method is used was faulty. The
+crypto_memneq call does not protect against digest forgery, the
+public key is already available to anyone attempting verification,
+so an attacker can compute the padding/digest offline without needing
+the kernel's comparison at all, timing or otherwise.
 
-This is signature verification with a public key. So the user knows
-the key already.
+That said, this function already uses crypto_memneq for the hash-prefix
+check a few lines above. I'd argue for consistency it's worth using it
+for the digest comparison too.
 
-> thanks,
->
-> greg k-h
->
-
-Ignat
+David
 
