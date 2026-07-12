@@ -1,194 +1,134 @@
-Return-Path: <linux-crypto+bounces-25861-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25862-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id TR7dBIP/UmrVVwMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25861-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 04:44:19 +0200
+	id f6cJKecDU2o1WAMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25862-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 05:03:03 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50F39743974
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 04:44:18 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 635A9743A18
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 05:03:02 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gmail.com header.s=20251104 header.b=hfRWUlvg;
-	dmarc=pass (policy=none) header.from=gmail.com;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25861-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25861-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	arc=pass ("subspace.kernel.org:s=arc-20240116:i=2")
+	dkim=pass header.d=gondor.apana.org.au header.s=h01 header.b=O+bt4UU8;
+	dmarc=pass (policy=quarantine) header.from=apana.org.au;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25862-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25862-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DECF130179E8
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 02:44:15 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 7E56A3004CAB
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 03:02:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE672368277;
-	Sun, 12 Jul 2026 02:44:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E745127A476;
+	Sun, 12 Jul 2026 03:02:55 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B4381C68F
-	for <linux-crypto@vger.kernel.org>; Sun, 12 Jul 2026 02:44:12 +0000 (UTC)
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783824253; cv=pass; b=NN9HPWQ4aUa5XB8kPdaaV5J4Qw+M4Wj1w7TK2Pp2fKD6UpqSSWgH4Grf6d9Qdd0mxqOaJvyMdO5TvXfE3BQ/PO5YAsVlxmb0+pFQJCNR6oXKFIDEoCVT/mL1gA7TdZTlseB+BVDLc4Ht2AcmCsENaGRNEUtjZBnU8If3GzSDb2w=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783824253; c=relaxed/simple;
-	bh=VpNyuXu6TnU4VubVPyoSf475P8tqAr0gyIf4yhpsNF0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S79R3HO2JddYpe60sc4uRh7qRPFB+i5L0INOkZ8ghQXd5zzvrfm7Q7omT/bAB/5AIDxSTawRgmmJGVotb97WvPuMfGoKRUuD2QW7j+5oX8XkzVa4g2HAIuAdf1Tl2tZJ9+jn4GfuwG5U+it8bKCyX6UfMlesorWJq6gFGxirz5g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hfRWUlvg; arc=pass smtp.client-ip=209.85.219.49
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-8ee88fce572so21505706d6.1
-        for <linux-crypto@vger.kernel.org>; Sat, 11 Jul 2026 19:44:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1783824251; cv=none;
-        d=google.com; s=arc-20260327;
-        b=SwRvE/6IORQ8CcDQ3vWwAjI2pB2wR1hMnTbDBcAifI6opUBYc7vy6499mlVrYr9JQ9
-         FAooNjRBsCQy7OVXV0T3XhZC9FVs1GOoc9H9SGYYzcbRRxstWCWEoRXgeyH7a/xeAOhL
-         8wKIqvm8mC4TqucKeZSf97s/LwypHcdrVHv02AvZfFjcTIXP5CfHIxPQeo34PG2Vfh5M
-         s765uansTwhFZy8Wf5KqQyo4rCkNKLvNa/Oq0/78f6wvRKGZREUCc11is141c+Ro8VDe
-         7+JKDu93V8G5ZQMfYccTlS82P1/gpiGdD7DZEnqynUyVEpY7GEq6UNgh94jr6ExbzMV6
-         3cMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=uSPbXXuWQiFm+lkWUPjIwu/3EBZIFqc/5MozDdOJ2rc=;
-        fh=z8l3n/3gBnY0OIuvxXc5FkqOk8xbSIDwMAaWJ+XV+Q4=;
-        b=Dw51nPYNGQAJy7Lwbej87JYOq3+tQ7R5EJRywKIkfo+GP8pZuy2OIOjSXq8Ljt+l3q
-         BiWPOGVoY4efyNTiU5j+UZYjYPpqrqGZbJCwccK+sH4Y7SSDmqA/i2+4EXe1FEm2IzgK
-         Hnk5D2lBsDpIJ0X5JWvVkaXWpm3eozZh75AETQf9GVYQnu9HF9FRR9yVNUkzbV+7cba7
-         PrO6mFpe66k+k0OgoafGDOmu4FaSvFfltNCWZmSB5JsM7nu4A/eB5NcSv15Nx0szrD5Z
-         /aMrYf/NhGIJQVqZsJqa+bYDmM2EOEiGgaJWLRgFe4H1hcFoVNOfR8DTg67vhQxMNa1U
-         810Q==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1783824251; x=1784429051; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=uSPbXXuWQiFm+lkWUPjIwu/3EBZIFqc/5MozDdOJ2rc=;
-        b=hfRWUlvgWVxBd36vJCJ3nPy23IDhuPwZmv8saHCytcRj8gDHvG1RhAiZlrE4TyBFUv
-         w5S4YzLQEJ/nbrrA05BjoK3bTLKfYyf8Wc7fhU0hJjKpjn4aqLaGUwZiyRqew0N6DGIy
-         PeMBEdbbzDpG3871PtHZljpdNazbQrY1HMJnXWAKsTmmxm4qtd2YV3dkg+oR3qcAgLBT
-         h3VSpRDWjMDfnuDBQ5NsOADkL0hT+LaNR4HE9hKEsLVlT4/WawUTFIlyViiYCDGGFHHr
-         509ZQKZeIfOFs8EGujHecoylLykD1raEGtuRYnLrZxC2wSpKlDnPv8UnTSpekJwZOSxg
-         MQxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1783824251; x=1784429051;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=uSPbXXuWQiFm+lkWUPjIwu/3EBZIFqc/5MozDdOJ2rc=;
-        b=qPeUPygqCQhqNsHmF2Q97jzRoC6x//0JNIcudOBq5x4YZJA+Db5J4L8ut7hjqabvGj
-         s2uxj9Om5IepF5TMRv3W3mGd0qDXSuukkahklZug6g1s3DMFOqVkLPPkIA3YVHTxENMm
-         pl6wIsDDa3wtyOWYy1qPSJdEzHzYSFIrqySXzzbVnJuTOa5lBwzAcnEtPd5J3cJaNDam
-         aP/mbKiTayvSVJr8IQxXPs0rKMPsQ7MCeGCsB8kO/419v3Jea5bBhaIsoqv9zzZkzQ1l
-         I7SGOtLz93REuc+PNOo1Zcx5o+4ju7SJ/HgyowUtGs+KV3wU8wmhvzAvzqSmmD8e0kdR
-         XGVg==
-X-Forwarded-Encrypted: i=1; AHgh+RpLb4xmXUfmoQEirWKMb2Xab6zum/tI4TRhniwz2NmdFcDU1ilsW3i3u1rJKJ253RyzjBLCRXQDuLMxAfI=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzN6NlVYc8qhd5s3hbWHl52EnpGnjdksOU84sOe1Oudyf8reREE
-	3Mhbe4xRKyCIYahSacsMjvE2JacAN/N5tCWrStBcskJY3d80P7BaMORwkRC+1f81k9RyRC1LMoz
-	vgF3OlQ2kSCe6zNKs0YHrrBQTwJs7oKkfuoVqqDY=
-X-Gm-Gg: AfdE7ckuyCtdFZnU5RmuF2ILzPFSXUALbflrF2dr/iH7xqmJcIym4Wn3N2BeRX6hRcH
-	sSWDt8ZHz1qjy3+1MtM6r//XIKRG7C3wsfXYPfSfquXdgdBliDs8fP6tToFPF02eG2v/87J3Pid
-	3JvedcHr4HYGX+V4HgNKi83Eup1+2segYVRQbr+x6Tr3hPHX4c17bCL/ZQUfBaGdYDnZ9fLdEs/
-	gK2N+0EvlXf5iRmjE/LtOa3xcX2MOCNriaFdfh2zq+U7ofnxyONVAWSYh82vc6/GADVnYSQG6l7
-	FaFMaw==
-X-Received: by 2002:a05:6214:459f:b0:8ee:88fc:e0ba with SMTP id
- 6a1803df08f44-90400b8395dmr63724626d6.6.1783824251374; Sat, 11 Jul 2026
- 19:44:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14F8B17C203;
+	Sun, 12 Jul 2026 03:02:49 +0000 (UTC)
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1783825375; cv=none; b=Hzl3nzNmv28ijWsRDmmlK+EXxEWcGF5HFYls21MKpYUkNcWOyzPrN8BnVcLTDioV/t/wBmopMm8YXNFroF7uKn3dJUFk+1E56G2xQGbcli8yeKn/6YgEu6ERow/mq8X/DtzzB/cSOgrdKOWpnBTH1ULujW9Chk+8KHJb375wAIg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1783825375; c=relaxed/simple;
+	bh=DOR0ni7bbfAXQwbOUWpkehrUfd6sxGsr17SmA2tr3LM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eg1XtGLr7i3gMFGn1CaxdjCoSg4jG3fdRQ2oKMN2F0Kj8LyM5c098TVcf5V+DhEdaqDYiB4F2ixdoCZW+/P/Ir1B6QSFeHm8mABEyoE6Oqg+PGmcFHrLe60LrhZsJTA3yVQvPx/eBNK8/Yp/5KLHxkNQNoL1BlNyNrpXj31RyRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=O+bt4UU8; arc=none smtp.client-ip=180.181.231.80
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
+	from:content-type:reply-to; bh=IGjzba5R0fPfNAYmwgs2ccd2zCCepjFwAJcMABMNhjM=; 
+	b=O+bt4UU8ISQOPLom94qxJjvSLJJ5wjmCwJMj3ppiJehc04bSFYIEcYHO7NpRL7nH5LbnZYcon3a
+	CMg8eQV9xTwMP9YdzemuS32v+9FVaOmvXPvCbHkuA5CezNuncLheJyIq0KSHqsKYNYfJ0ba9o+8st
+	aelLXzfZQhs1VXp+vn8Lan/DsCCcRlKv5eA/Hk4v5fl4pXoe4Y8rET6J39nqGG0fRTO41pqSsjQpk
+	On0KCNb4g9zaQKr5HWXUeVlwRoacD6dsgtmNVDlwhEdqa818451L0zS/pHU/q9MTPjxy6YFeBlpUj
+	PSYWDl4BQxSDl50j4OwFi6cxEQpg42jTpy5g==;
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.98.2 #2 (Debian))
+	id 1wikSk-0000000Cm3O-2wIM;
+	Sun, 12 Jul 2026 11:02:39 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 12 Jul 2026 11:02:38 +0800
+Date: Sun, 12 Jul 2026 11:02:38 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: "Cen Zhang (Microsoft)" <blbllhy@gmail.com>
+Cc: tgraf@suug.ch, akpm@linux-foundation.org, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org, AutonomousCodeSecurity@microsoft.com,
+	tgopinath@linux.microsoft.com, kys@microsoft.com,
+	Neil Brown <neilb@suse.de>
+Subject: Re: [PATCH v3] lib/rhashtable: clear stale iter->p on table restart
+Message-ID: <alMDzpDrUzdB8e0r@gondor.apana.org.au>
+References: <20260707164115.4979-1-blbllhy@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260705220112.2522-2-muhammetkaankilinc@gmail.com> <20260706135124.draft-0003@kernel.org>
-In-Reply-To: <20260706135124.draft-0003@kernel.org>
-From: =?UTF-8?B?TXVoYW1tZXQgS2FhbiBLxLFsxLFuw6c=?= <muhammetkaankilinc@gmail.com>
-Date: Sun, 12 Jul 2026 05:43:59 +0300
-X-Gm-Features: AUfX_mwsFjJKYmNHgJtNJGbvZnqB1zcgYKZqP7pXckm3QbfUyRNP4WT7_Ct4gZ8
-Message-ID: <CAAGBmJG-bt2vrKKArWKbGAe7G9U4etkaKnUgV50UTVB-To0bXA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] crypto: algif_skcipher - snapshot IV for async
- skcipher requests
-To: Sasha Levin <sashal@kernel.org>
-Cc: herbert@gondor.apana.org.au, ebiggers@kernel.org, 
-	linux-crypto@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260707164115.4979-1-blbllhy@gmail.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-1.22 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	R_MIXED_CHARSET(0.94)[subject];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
+	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:sashal@kernel.org,m:herbert@gondor.apana.org.au,m:ebiggers@kernel.org,m:linux-crypto@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-25862-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25861-lists,linux-crypto=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FORGED_SENDER(0.00)[muhammetkaankilinc@gmail.com,linux-crypto@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	FORWARDED(0.00)[lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS(0.00)[m:blbllhy@gmail.com,m:tgraf@suug.ch,m:akpm@linux-foundation.org,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:AutonomousCodeSecurity@microsoft.com,m:tgopinath@linux.microsoft.com,m:kys@microsoft.com,m:neilb@suse.de,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[muhammetkaankilinc@gmail.com,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	RCPT_COUNT_FIVE(0.00)[5];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,mail.gmail.com:mid]
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,vger.kernel.org:from_smtp,apana.org.au:url,apana.org.au:email,gondor.apana.org.au:from_mime,gondor.apana.org.au:dkim,gondor.apana.org.au:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 50F39743974
+X-Rspamd-Queue-Id: 635A9743A18
 
-Thanks for the review, Sasha.
+On Tue, Jul 07, 2026 at 12:41:15PM -0400, Cen Zhang (Microsoft) wrote:
+> rhashtable_walk_start_check() has two restart paths when resuming a walk.
+> When iter->walker.tbl is valid, it re-validates iter->p against the table
+> and sets iter->p = NULL if the object is gone.  When iter->walker.tbl is
+> NULL (table was freed during resize), it resets slot and skip but forgets
+> to clear iter->p.
+> 
+> rhashtable_walk_next() then dereferences the stale iter->p, reading
+> freed memory.  This is a use-after-free.
 
-v2 addresses both points:
+Maybe I'm misreading the original patch (in the Fixes header).  But
+it seems the whole point of having it is to look for iter->p in the
+new table.  Even if the hash table remains the same iter->p could have
+been freed since we hold no reference to that object.
 
-- The snapshot is now limited to the AIO branch; the sync path passes
-  ctx->iv directly.
+If that is the case, then resetting iter->p on a resize doesn't
+fix this at all since the root cause is that iter->p is being
+held with no reference.
 
-- On the writeback: I initially implemented it in the completion
-  callback, but that requires lock_sock() there, and the callback can
-  run in softirq/atomic context on hardware skcipher backends -- a
-  sleeping-in-atomic bug. Rather than convert the ctx->iv serialization
-  to a spinlock (too invasive for stable), v2 follows the aead sibling
-  5aa58c3a572b and drops the writeback entirely. Implicit back-to-back
-  AIO IV chaining is therefore not preserved; callers set the IV
-  explicitly per request. MSG_MORE chaining is unaffected (carried by
-  ctx->state, untouched).
-
-v2: https://lore.kernel.org/linux-crypto/20260712022618.1665-2-muhammetkaan=
-kilinc@gmail.com
+I think we should just revert the original patch since the whole
+concept doesn't seem to work (although it's salvageable for the
+non-rhlist case).
 
 Thanks,
-Kaan
-
-
-On Mon, Jul 6, 2026 at 5:08=E2=80=AFPM Sasha Levin <sashal@kernel.org> wrot=
-e:
->
-> > The AIO/async path in skcipher_recvmsg() passes the socket-wide
-> > ctx->iv directly into the skcipher request. After io_submit() the
-> > socket lock is dropped and the request is processed asynchronously
-> > by a worker (e.g. cryptd), which dereferences ctx->iv only later.
->
-> The race looks real, but the snapshot here is taken for synchronous
-> requests too, and the updated IV is never written back to ctx->iv.
-> That breaks implicit IV chaining across MSG_MORE fragments and
-> back-to-back operations for cbc/ctr on a path that has no race to
-> begin with.
->
-> --
-> Thanks,
-> Sasha
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
