@@ -1,56 +1,56 @@
-Return-Path: <linux-crypto+bounces-25869-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25870-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 8jj8J0ABVGpAgwMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25869-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 23:04:00 +0200
+	id F3uNKcIHVGqxhAMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25870-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 23:31:46 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7E58745E6B
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 23:03:59 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ADFB746049
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 23:31:46 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20201202 header.b=evl7KOnS;
+	dkim=pass header.d=kernel.org header.s=k20201202 header.b=o4e5iLPL;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25869-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25869-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25870-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25870-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DC3F1300D461
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 21:03:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 40452300B86D
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 21:31:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D08934DCE4;
-	Sun, 12 Jul 2026 21:03:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A2D36A369;
+	Sun, 12 Jul 2026 21:31:41 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180D7271A71;
-	Sun, 12 Jul 2026 21:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A8E3233923;
+	Sun, 12 Jul 2026 21:31:40 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783890233; cv=none; b=DpDKoy94lMzS44vAZUtDO32kT70IKL4CwzfN/Bf9LmurNGUPSYZ9xPdlOsj/KZ2DZS4Nsh1PspdfXo7cK9KzkDL/G0Lmdth+432vAEUhyFwbl/2bT6P7j9XzBaUHvyHSPpw5xtyBHUcDby2YMRA20KPMq4S0YBSk68Lv/2gHgdA=
+	t=1783891901; cv=none; b=OiKt/PX18XXSZjjiJgMm6qBDarIlfj4DRm2ZNqakBWlwiRmYHQCnNIFTZgJzh8ItY3N1/DGc65DtoibmtsE6SmquTEfIgMrBfG3PjcmCoGMDDQ5jR3z7mp3rkHoh4/FTApIXgyAPMoSXVUs0Adi6U3ZEsohFjkNx7nvxl2hM2qU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783890233; c=relaxed/simple;
-	bh=EwpmvuLDSJe+PvdmUDmsI/3LRWiTL+fqy8/3bHV8lwU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=hbPrxxQs4V31kv8Pf6cw6+qZ/j8seGgkF5a0MbpRW8zGDO2hZap/2IN/oHstNhnTQvdAxHmGvRkrIsHPVlTpCYBTfamcRWi9EldCiuLIQQmgb/wTr1rIyfcAQ1dxINdkDasmE3odjkZIWjnKV5oME1UB2EsguUY9JTHo67hA2pw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=evl7KOnS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A33E1C2BCB7;
-	Sun, 12 Jul 2026 21:03:52 +0000 (UTC)
+	s=arc-20240116; t=1783891901; c=relaxed/simple;
+	bh=9FWW1i+hhUIvbjpIr65Q7V5Gh7SOFL1Xb3mRf1to5ic=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Am1QQIqFELZdq2gC/3q6xS+zuSafowHuWOQtvKxaPmfCcXCatrvWbazPeKS3wtRRqpoBaoGrC1NS9exZrm61OHV2iCAfydr00++HDsq9phT+2t9lDzkQ0PsiJF5NUBZRX4bFjQnaaTewMPj+VDCM5mfuu+mYZEZ44kVm24RdXVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o4e5iLPL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8B65AC2BCB7;
+	Sun, 12 Jul 2026 21:31:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1783890232;
-	bh=EwpmvuLDSJe+PvdmUDmsI/3LRWiTL+fqy8/3bHV8lwU=;
+	s=k20201202; t=1783891900;
+	bh=9FWW1i+hhUIvbjpIr65Q7V5Gh7SOFL1Xb3mRf1to5ic=;
 	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=evl7KOnSfddybwbNyHhrtw+YhYOp0D5UjWVapRsF8CGZEfh0jnUjif5+KoJYk4CoS
-	 lniF8An8f1WxTu35Vze8iUXeuloUkb4/69MHmDvRxdU9r6m33gq1WDovyXQgaZmR20
-	 o5NZF5REx1kMFLqqLJMmKgn4oi5nqBTI3iQ5nHeW/+JGPbPQPX6FEniXNX8bnVTX8w
-	 7SFU7axYoosRn7nQrNu2nnepd0/YX4ZZua2gjpaziFHU1RJ36eGFJZcGA5V4KXKpQD
-	 HO6H5PikLbYHwhzfT8TXmnwmvoUODwIRKvakSvvml50JL73sfFtUxCfn27NrfUN6tE
-	 OrBt+ltU/wY3A==
+	b=o4e5iLPLr+RTBrvPQS3WfLSEuYC1/8bl736/tDYfTYXzKbwdYeHCBwtID1/hwEDpK
+	 YCkzIc1EcHLQwQq4PBFXlQbTgQLviLLAUsCJE5PqKMMNW2mFs7zzZmJGzk81TX3jot
+	 Ngs3OrqO5X/PQImyK5H1OuB/XqcRLKSMx7EtfOf8lKPrH4pJJ2+Zx6S+RY/tgmcUOU
+	 ulZLxyE8zUDz557f0qNOAxLD8eqIajUuvc39nilmAZTYIm+9PlrN9RGdkf3/tT2Fby
+	 m69LMK/Eb+KRtKmn4IMiP78+pX+R4LSVJ5fUdeolIjYHKxGjgdXOtsksmkL+ZP1XqG
+	 f1w+inbW1l/Vg==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FDEBC43458;
-	Sun, 12 Jul 2026 21:03:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 695E4C43458;
+	Sun, 12 Jul 2026 21:31:40 +0000 (UTC)
 From: Demi Marie Obenour via B4 Relay <devnull+demiobenour.gmail.com@kernel.org>
-Date: Sun, 12 Jul 2026 17:03:47 -0400
-Subject: [PATCH] drivers/crypto: Mark QCE as BROKEN
+Date: Sun, 12 Jul 2026 17:31:31 -0400
+Subject: [PATCH v2] drivers/crypto: Mark QCE as BROKEN
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -59,23 +59,24 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260712-qce-broken-v1-1-85e2bff17871@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIzMDc0Mj3cLkVN2kovzs1DxdMwNjUwsz42RDk0QDJaCGgqLUtMwKsGHRsbW
- 1AGU/NSRcAAAA
+Message-Id: <20260712-qce-broken-v2-1-b2dfff47f7f5@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/23MQQ6CMBCF4auQWTumU4QSV97DsIA6wESh2JpGQ
+ 3p3K2uX/0vet0FgLxzgXGzgOUoQt+TQhwLs1C0jo9xyg1a6VoY0Pi1j792dF6xVWTV1aenUKci
+ H1fMg7x27trknCS/nP7sd6bf+ZSIhYVOx7oeBTGPoMs6dPI7WzdCmlL4k4213pAAAAA==
 X-Change-ID: 20260712-qce-broken-6035863c14a0
 To: Russell King <linux@armlinux.org.uk>, 
  Herbert Xu <herbert@gondor.apana.org.au>, 
  "David S. Miller" <davem@davemloft.net>
 Cc: Eric Biggers <ebiggers@kernel.org>, 
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-crypto@vger.kernel.org, Demi Marie Obenour <demiobenour@gmail.com>
+ linux-crypto@vger.kernel.org, stable@vger.kernel.org, 
+ Demi Marie Obenour <demiobenour@gmail.com>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1783890232; l=3381;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783891900; l=3669;
  i=demiobenour@gmail.com; s=20250731; h=from:subject:message-id;
- bh=k+Q6SSK3eTUVW0/qFAAgRAvug1Z5DMEW0/J5hlhyk2I=;
- b=StJ2payYfWR0FwYTFzR6HC8De01jA9tRWE3JUXyX06tFBdgjgm0QitaWN+s7htiFHYIYQb1/z
- 6XE+JD/Ey9xB7/cy/lUdZ5n50XDF9SgpToK/5bKdImteoHvPnq/Eyay
+ bh=0ILgQWt/4xfgFagXe7i7e2xC/Wm1GX2PHFzASrAHbAA=;
+ b=Mp3fpdk7vu3JdbLmRrd/1oUzmDupyD0xlbfW4UJTanT9//APwjIrzaT4q5OB6aOQ/DTs7ipCB
+ xN5u5LuXYA0An27pmX5VnKkcXYlZ9bmm/IcvSHMr6fR12NlkFMra50M
 X-Developer-Key: i=demiobenour@gmail.com; a=ed25519;
  pk=4iGY+ynEKxIfs+fIUK9EzsvZ44yGE0GvXLeLTPKKPhI=
 X-Endpoint-Received: by B4 Relay for demiobenour@gmail.com/20250731 with
@@ -89,12 +90,12 @@ X-Spamd-Result: default: False [-3.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS(0.00)[m:linux@armlinux.org.uk,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:ebiggers@kernel.org,m:linux-arm-kernel@lists.infradead.org,m:linux-kernel@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:demiobenour@gmail.com,s:lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-25869-lists,linux-crypto=lfdr.de,demiobenour.gmail.com];
+	FORGED_RECIPIENTS(0.00)[m:linux@armlinux.org.uk,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:ebiggers@kernel.org,m:linux-arm-kernel@lists.infradead.org,m:linux-kernel@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:stable@vger.kernel.org,m:demiobenour@gmail.com,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25870-lists,linux-crypto=lfdr.de,demiobenour.gmail.com];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER(0.00)[devnull@kernel.org,linux-crypto@vger.kernel.org];
@@ -112,15 +113,15 @@ X-Spamd-Result: default: False [-3.16 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[devnull@kernel.org,linux-crypto@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
 	REPLYTO_DOM_NEQ_FROM_DOM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	TAGGED_RCPT(0.00)[linux-crypto];
 	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp]
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E7E58745E6B
+X-Rspamd-Queue-Id: 1ADFB746049
 
 From: Demi Marie Obenour <demiobenour@gmail.com>
 
@@ -147,7 +148,13 @@ enabled.
 [4]: https://lore.kernel.org/r/20260629-qcom-qce-cmd-descr-v20-0-56f67da84c05@oss.qualcomm.com/
 [5]: https://lore.kernel.org/r/20260524204537.GB110177@quark/
 
+Fixes: ec8f5d8f6f76 ("crypto: qce - Qualcomm crypto engine driver")
 Signed-off-by: Demi Marie Obenour <demiobenour@gmail.com>
+---
+Changes in v2:
+- Add Fixes: ec8f5d8f6f76 ("crypto: qce - Qualcomm crypto engine driver")
+- Add Cc: stable@vger.kernel.org
+- Link to v1: https://lore.kernel.org/r/20260712-qce-broken-v1-1-85e2bff17871@gmail.com
 ---
  arch/arm/configs/multi_v7_defconfig | 1 -
  arch/arm64/configs/defconfig        | 1 -
