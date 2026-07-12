@@ -1,118 +1,214 @@
-Return-Path: <linux-crypto+bounces-25868-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25869-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id LDpJFMb4U2rtgQMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25868-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 22:27:50 +0200
+	id 8jj8J0ABVGpAgwMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25869-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 23:04:00 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5760745D4B
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 22:27:49 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E58745E6B
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 23:03:59 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=H2OeG+SV;
+	dkim=pass header.d=kernel.org header.s=k20201202 header.b=evl7KOnS;
 	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25868-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25868-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25869-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25869-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A9D1A300B3C6
-	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 20:27:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DC3F1300D461
+	for <lists+linux-crypto@lfdr.de>; Sun, 12 Jul 2026 21:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59CAB3B3BE5;
-	Sun, 12 Jul 2026 20:27:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D08934DCE4;
+	Sun, 12 Jul 2026 21:03:53 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAB023C368;
-	Sun, 12 Jul 2026 20:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180D7271A71;
+	Sun, 12 Jul 2026 21:03:52 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783888067; cv=none; b=KDZ/xEnRxVNCQFSnFpdsfrtq8U5kdAWyF8Hr72XdYB0tOK4NcGKY+36w/8sS9ncpv/rNAFFymC2B1r5HXYcZRN3noOmKKd4UG2Mw36Q8UUusykk7nDFfq4+SgfsHVcEZ+De8FcIsQK8TYqxW0gvUmibf/yNDQVV68Y6uZ0viNSQ=
+	t=1783890233; cv=none; b=DpDKoy94lMzS44vAZUtDO32kT70IKL4CwzfN/Bf9LmurNGUPSYZ9xPdlOsj/KZ2DZS4Nsh1PspdfXo7cK9KzkDL/G0Lmdth+432vAEUhyFwbl/2bT6P7j9XzBaUHvyHSPpw5xtyBHUcDby2YMRA20KPMq4S0YBSk68Lv/2gHgdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783888067; c=relaxed/simple;
-	bh=cMQ7qKy85aI0Ey6pmR7ab44Po5nDh9ffT2own44a108=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VwPrxj5+f6X/POL8n099J6ZADrOO35oQT7QzQAW9MZQacJCOjuDpmc16SnPd56FqOAtfpaXo9amA9UIKuEx9Yd5uMiBt5/TAJDa0pu0urEnsUrqalQ6TeWq//ztlxAqI+7mlfCPc3p1iVC1f/McnNPyBeuNsNXqWmOGjbZOf8Hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H2OeG+SV; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13B8F1F00A3A;
-	Sun, 12 Jul 2026 20:27:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783888065;
-	bh=fpgKaZ+xtnuszV5MahSHFMgtA0JNZtFAhs6G5RrS3NQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=H2OeG+SV9D0Y874MmRvzPmPlULvfcvikAF3jdQfdAlacr+LBOiGw04UIHATEs6uz/
-	 6+eTEy1ZYi1Kg570ZWwq9X4qFceT4kp8kg2QK8LmEAuXUpQb8vBLfbl1QZ5NAgkK1Y
-	 GQlJE8ig+Jw7/ZiP5uz2T0TFgTalaCEQ87OD520Q2LhzZ0+P8Uh6R7Ya4b0RMvXliQ
-	 4ZIetnJxIByR9lHffxJdgkgLLkFar1KvQPWPvl+S8f4lZkHUG1Qimtl5T7FBCQyhbo
-	 fW2UqXWCYFUtwOjs/vnSyHmi3/yHzTJ8euR5gEsA3br/so4bQm9MKSbecqf0guQO1k
-	 o5jD7QgFpzF0g==
-From: Sasha Levin <sashal@kernel.org>
-To: herbert@gondor.apana.org.au,
-	ebiggers@kernel.org
-Cc: Sasha Levin <sashal@kernel.org>,
-	linux-crypto@vger.kernel.org,
-	stable@vger.kernel.org,
-	=?UTF-8?q?Muhammet=20Kaan=20KILIN=C3=87?= <muhammetkaankilinc@gmail.com>
-Subject: Re: [PATCH v2 1/2] crypto: algif_skcipher - snapshot IV for async skcipher requests
-Date: Sun, 12 Jul 2026 16:27:39 -0400
-Message-ID: <20260712105304.agent5-0003@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260712022618.1665-2-muhammetkaankilinc@gmail.com>
-References: <20260712022618.1665-2-muhammetkaankilinc@gmail.com>
+	s=arc-20240116; t=1783890233; c=relaxed/simple;
+	bh=EwpmvuLDSJe+PvdmUDmsI/3LRWiTL+fqy8/3bHV8lwU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=hbPrxxQs4V31kv8Pf6cw6+qZ/j8seGgkF5a0MbpRW8zGDO2hZap/2IN/oHstNhnTQvdAxHmGvRkrIsHPVlTpCYBTfamcRWi9EldCiuLIQQmgb/wTr1rIyfcAQ1dxINdkDasmE3odjkZIWjnKV5oME1UB2EsguUY9JTHo67hA2pw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=evl7KOnS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A33E1C2BCB7;
+	Sun, 12 Jul 2026 21:03:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1783890232;
+	bh=EwpmvuLDSJe+PvdmUDmsI/3LRWiTL+fqy8/3bHV8lwU=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=evl7KOnSfddybwbNyHhrtw+YhYOp0D5UjWVapRsF8CGZEfh0jnUjif5+KoJYk4CoS
+	 lniF8An8f1WxTu35Vze8iUXeuloUkb4/69MHmDvRxdU9r6m33gq1WDovyXQgaZmR20
+	 o5NZF5REx1kMFLqqLJMmKgn4oi5nqBTI3iQ5nHeW/+JGPbPQPX6FEniXNX8bnVTX8w
+	 7SFU7axYoosRn7nQrNu2nnepd0/YX4ZZua2gjpaziFHU1RJ36eGFJZcGA5V4KXKpQD
+	 HO6H5PikLbYHwhzfT8TXmnwmvoUODwIRKvakSvvml50JL73sfFtUxCfn27NrfUN6tE
+	 OrBt+ltU/wY3A==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FDEBC43458;
+	Sun, 12 Jul 2026 21:03:52 +0000 (UTC)
+From: Demi Marie Obenour via B4 Relay <devnull+demiobenour.gmail.com@kernel.org>
+Date: Sun, 12 Jul 2026 17:03:47 -0400
+Subject: [PATCH] drivers/crypto: Mark QCE as BROKEN
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260712-qce-broken-v1-1-85e2bff17871@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIzMDc0Mj3cLkVN2kovzs1DxdMwNjUwsz42RDk0QDJaCGgqLUtMwKsGHRsbW
+ 1AGU/NSRcAAAA
+X-Change-ID: 20260712-qce-broken-6035863c14a0
+To: Russell King <linux@armlinux.org.uk>, 
+ Herbert Xu <herbert@gondor.apana.org.au>, 
+ "David S. Miller" <davem@davemloft.net>
+Cc: Eric Biggers <ebiggers@kernel.org>, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-crypto@vger.kernel.org, Demi Marie Obenour <demiobenour@gmail.com>
+X-Mailer: b4 0.14.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1783890232; l=3381;
+ i=demiobenour@gmail.com; s=20250731; h=from:subject:message-id;
+ bh=k+Q6SSK3eTUVW0/qFAAgRAvug1Z5DMEW0/J5hlhyk2I=;
+ b=StJ2payYfWR0FwYTFzR6HC8De01jA9tRWE3JUXyX06tFBdgjgm0QitaWN+s7htiFHYIYQb1/z
+ 6XE+JD/Ey9xB7/cy/lUdZ5n50XDF9SgpToK/5bKdImteoHvPnq/Eyay
+X-Developer-Key: i=demiobenour@gmail.com; a=ed25519;
+ pk=4iGY+ynEKxIfs+fIUK9EzsvZ44yGE0GvXLeLTPKKPhI=
+X-Endpoint-Received: by B4 Relay for demiobenour@gmail.com/20250731 with
+ auth_id=473
+X-Original-From: Demi Marie Obenour <demiobenour@gmail.com>
+Reply-To: demiobenour@gmail.com
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.66 / 15.00];
+X-Spamd-Result: default: False [-3.16 / 15.00];
 	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+	FREEMAIL_REPLYTO_NEQ_FROM(2.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-25868-lists,linux-crypto=lfdr.de];
-	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:linux@armlinux.org.uk,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:ebiggers@kernel.org,m:linux-arm-kernel@lists.infradead.org,m:linux-kernel@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:demiobenour@gmail.com,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25869-lists,linux-crypto=lfdr.de,demiobenour.gmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:herbert@gondor.apana.org.au,m:ebiggers@kernel.org,m:sashal@kernel.org,m:linux-crypto@vger.kernel.org,m:stable@vger.kernel.org,m:muhammetkaankilinc@gmail.com,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER(0.00)[sashal@kernel.org,linux-crypto@vger.kernel.org];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,gmail.com];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-crypto@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER(0.00)[devnull@kernel.org,linux-crypto@vger.kernel.org];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FREEMAIL_REPLYTO(0.00)[gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[kernel.org,lists.infradead.org,vger.kernel.org,gmail.com];
 	DKIM_TRACE(0.00)[kernel.org:+];
+	HAS_REPLYTO(0.00)[demiobenour@gmail.com];
+	RCVD_COUNT_FIVE(0.00)[5];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[devnull@kernel.org,linux-crypto@vger.kernel.org];
+	PRECEDENCE_BULK(0.00)[];
+	REPLYTO_DOM_NEQ_FROM_DOM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: D5760745D4B
+X-Rspamd-Queue-Id: E7E58745E6B
 
-> MSG_MORE chunked chaining is unaffected: it is carried by ctx->state via
-> crypto_skcipher_export()/import(), independent of the IV snapshot.
+From: Demi Marie Obenour <demiobenour@gmail.com>
 
-This isn't true for cbc/ctr: their statesize is 0, so export/import carry
-nothing. The chained IV propagates only through the req->iv writeback, which
-this patch redirects into the freed snapshot - AIO + MSG_MORE cbc/ctr silently
-produces wrong output.
+This driver is harmful:
 
+- It is much slower than the CPU [1] [2].
+- It Has a history of bugs [2] [3].
+- It does not have exclusive access to the hardware [4], causing races
+  with the secure world.
+- It register its implementations with too low a cra_priority for them
+  to be actually used [5].
+
+Therefore, disable it to ensure that nobody builds it into kernels they
+intend to ship.
+
+In the future, the driver will be used for processing restricted media
+content.  However, the kernel does not currently support this.  Since
+the driver will have future uses, allow building it if COMPILE_TEST is
+enabled.
+
+[1]: https://lore.kernel.org/r/20250704070322.20692-1-ebiggers@kernel.org/
+[2]: https://lore.kernel.org/r/20250615031807.GA81869@sol/
+[3]: https://lore.kernel.org/r/20260706-qce-fix-self-tests-v5-0-86f461ff1829@oss.qualcomm.com/
+[4]: https://lore.kernel.org/r/20260629-qcom-qce-cmd-descr-v20-0-56f67da84c05@oss.qualcomm.com/
+[5]: https://lore.kernel.org/r/20260524204537.GB110177@quark/
+
+Signed-off-by: Demi Marie Obenour <demiobenour@gmail.com>
+---
+ arch/arm/configs/multi_v7_defconfig | 1 -
+ arch/arm64/configs/defconfig        | 1 -
+ drivers/crypto/Kconfig              | 6 +++++-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+index 01e016752c4d425e59a1a499abb8df8845aa9833..13d85a0e8580000235b4dbf6d0911b4e09af199d 100644
+--- a/arch/arm/configs/multi_v7_defconfig
++++ b/arch/arm/configs/multi_v7_defconfig
+@@ -1321,7 +1321,6 @@ CONFIG_CRYPTO_DEV_ATMEL_AES=m
+ CONFIG_CRYPTO_DEV_ATMEL_TDES=m
+ CONFIG_CRYPTO_DEV_ATMEL_SHA=m
+ CONFIG_CRYPTO_DEV_MARVELL_CESA=m
+-CONFIG_CRYPTO_DEV_QCE=m
+ CONFIG_CRYPTO_DEV_ROCKCHIP=m
+ CONFIG_CRYPTO_DEV_STM32_HASH=m
+ CONFIG_CRYPTO_DEV_STM32_CRYP=m
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 76ce07a08d5ac45bc4a4890c3f1aa7391de346fd..c624cdd122d144ad7e052f965c20c9bdcb3bd2e1 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -1940,7 +1940,6 @@ CONFIG_CRYPTO_AES_ARM64_CE_CCM=y
+ CONFIG_CRYPTO_DEV_SUN8I_CE=m
+ CONFIG_CRYPTO_DEV_FSL_CAAM=m
+ CONFIG_CRYPTO_DEV_FSL_DPAA2_CAAM=m
+-CONFIG_CRYPTO_DEV_QCE=m
+ CONFIG_CRYPTO_DEV_TEGRA=m
+ CONFIG_CRYPTO_DEV_ZYNQMP_AES=m
+ CONFIG_CRYPTO_DEV_ZYNQMP_SHA3=m
+diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
+index 03a8f7a1f75e878846dcf34da1265828949fbd9c..0189dfdcbbe11098ead0ea194293422a31d8fe65 100644
+--- a/drivers/crypto/Kconfig
++++ b/drivers/crypto/Kconfig
+@@ -528,13 +528,17 @@ source "drivers/crypto/intel/Kconfig"
+ 
+ config CRYPTO_DEV_QCE
+ 	tristate "Qualcomm crypto engine accelerator"
+-	depends on ARCH_QCOM || COMPILE_TEST
++	depends on (BROKEN && ARCH_QCOM) || COMPILE_TEST
+ 	depends on HAS_IOMEM
+ 	help
+ 	  This driver supports Qualcomm crypto engine accelerator
+ 	  hardware. To compile this driver as a module, choose M here. The
+ 	  module will be called qcrypto.
+ 
++	  This driver does not have exclusive access to the
++	  hardware, causing races with the secure world.  It
++	  is also slower than the CPU.
++
+ config CRYPTO_DEV_QCE_SKCIPHER
+ 	bool
+ 	depends on CRYPTO_DEV_QCE
+
+---
+base-commit: e264401ce4776a288524e5b87593d4d864147115
+change-id: 20260712-qce-broken-6035863c14a0
+
+Best regards,
 -- 
-Thanks,
-Sasha
+Demi Marie Obenour <demiobenour@gmail.com>
+
+
 
