@@ -1,139 +1,193 @@
-Return-Path: <linux-crypto+bounces-25883-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25884-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id OY0INUtUVGrfkgMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25883-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 04:58:19 +0200
+	id HhhlKl5YVGqYkwMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25884-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 05:15:42 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1096B746D32
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 04:58:19 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09CE3746E0A
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 05:15:42 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=cG28i22f;
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25883-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25883-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=VF2eS70x;
+	dmarc=pass (policy=none) header.from=gmail.com;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25884-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25884-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EF1C7300FEDE
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 02:57:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1831530086D0
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 03:15:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E3B3659EE;
-	Mon, 13 Jul 2026 02:57:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E762B2749F1;
+	Mon, 13 Jul 2026 03:15:38 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E8A33F598;
-	Mon, 13 Jul 2026 02:57:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F4924BBF0
+	for <linux-crypto@vger.kernel.org>; Mon, 13 Jul 2026 03:15:35 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783911475; cv=none; b=kdO0dm0ga6ouX1MTSPcbfU5qUNtxriVULXO6Rls71W7yMd6fmUTtHz1WUVJB24eUvPwMxgGIQKymW2kGHJqOpHvd3tH3scp/mMH7vJwffP+VUpNHuDafnwRnB3I7HUWDDIV2MktaV7O+OpeIWpBWqrnHLKa5mC0rQnKnZxVIvsM=
+	t=1783912537; cv=none; b=WrZmHi3FeFWK9afALWSTq0pu24Mv51GTx6xcwUvXS7MdykZtRSwywnYwWnh5CppfyifVriIxO5kfzFeP2RamCVIa5d3wjbY/y8McyPDhZkOuxUpKjoem8o68AGx1L/uj65scGdh2zxb/zR8C+6QMDX0xFJx8ih+XFnalp37vujc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783911475; c=relaxed/simple;
-	bh=1j1ktiudgVP+BmyH45G9e/PokfKl4lKPJgW30o5nsno=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N8twoO98p6MDHOwg3HoFFoi+L/AKUyTz/7DtQblDZHbFkjPJBtBqZ16qDuppqTIQSx3CFKbmbFomUdziIoboIv+8X0nAU7rpjqXRJMxLFye02DF4W9XQ9FbtT40w6kG4KF+tzd8pydmDkOQn0qVO3ay0xeFMKefJEbRdsiopVZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cG28i22f; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E390A1F000E9;
-	Mon, 13 Jul 2026 02:57:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783911474;
-	bh=/hRnTUulKPiYornA9CIY0YUDODR0Yv2On60iD5z+Ovw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=cG28i22fpIZ9ePz2SOq4tK5Q2IBQh5aMchvOUFHUtm57MLqZkzCUNNxakiFVRMQEy
-	 20JdUtNB3Sbbm/QamvF99sFUFy3J7LMocPnufg3Yez4nFaLE39ZoB7UeDy0/QOhPqh
-	 a9MITHEmltMmi+Hyba5xGV4yNwt8eaAtrGuAEvYACfCPYqZM7gqHTexbjKyCoMHDsa
-	 ZMyCtqlYfr7Xxl37jRRgqwzFPu/wzE9gBJ1K6ID4Jms6xpYZBSQ014GSUP3l3DhdHQ
-	 n4teOvJqClQgWLxBmKDJcPwv1/63Mw1+9avBygJe+dgmtKJFKOpIQk0bP0JarAemz3
-	 RSx0Z07Rr03WA==
-Date: Sun, 12 Jul 2026 22:57:52 -0400
-From: Eric Biggers <ebiggers@kernel.org>
-To: demiobenour@gmail.com
-Cc: Russell King <linux@armlinux.org.uk>,
+	s=arc-20240116; t=1783912537; c=relaxed/simple;
+	bh=t8oA++ofkLjSUHQVdPztiR1tlyz354IWY+FPVWWxlwc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FrodPWgE502DzGMQcZ7uE4yygHfB17BvvniGu6e5lpJh/KIPaHFSOESlIqYb4mJOlBvWW5AtHn5EttBr40RivYqfoJzBdqosi4ROx/Y1wVKq3bnexOpLT+P67Kv55ghVdFrw4Fvv8rlOwwliwsj70X2igWKE+y97Fwz5VRyS59k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VF2eS70x; arc=none smtp.client-ip=209.85.215.171
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-c85b73ffb52so1308164a12.3
+        for <linux-crypto@vger.kernel.org>; Sun, 12 Jul 2026 20:15:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1783912534; x=1784517334; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=lGBnUHO0f4jIfHxe2uWJUDkRQrU6rmLu0sMXefsRiuQ=;
+        b=VF2eS70xv/0DxZX+d/BqC1aD6jvQ62DSSZQHP8/6DgEO7b5/CByue4+9W9WDt7aPZC
+         nhWYywZuU53h6z1rQst0d5m5y4mpR0nFjGOZaD/s3fUueXjo0KD7nNEpXHhqfuOY3X18
+         jOuf7IFPk0hhWF3UF4hExqvCULcNcwfCPmWBfsP15XY77O3QspguCz+mr5698VTHc8Ft
+         I42uy8bsmjYjelw+nJsaahOBf0sqMSk5i0lTksHKScD6jJMdFKryEuQMAoNTxr5J//9F
+         Tv3CCOeL8lX6AqmCFkhqixfTa/QJrLgKiinXXNM1YPuh/6iK1dnO/uQW09LF+em82l4U
+         UYhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1783912534; x=1784517334;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=lGBnUHO0f4jIfHxe2uWJUDkRQrU6rmLu0sMXefsRiuQ=;
+        b=mEP9DT43dod72Q6x0XPGb7VZMXYo8LHy3tcsQfCCzmBCM8mFyrgdbuDeIGTgHWr0iO
+         cjpUMha2ILjyV+RnkcY52ypcLLKoFixVZOW2J6dBe/66sRKBZqG9bnQUuFPBiWWfZ/oA
+         n7hQLoa/8Pdh9RQy2EhoLdYc2QcohCnI6fgvca4HKoP+kAtodpR+mAeyYnOkbCZYqibT
+         1Q2sY4BbG5BzP613SdoGwuSEoAdVPjTpJH3oHMJcjgwI5XjFLBRe1+peFcHIZ+Hkyn8S
+         HjH4qEcrI/RxvAOPzZqHFwIwxVgZEE3Ca+LrSHImuw3jwLYduQBKL+HybYJ+Vdf2mhCB
+         TPwg==
+X-Gm-Message-State: AOJu0Yyf8yi810gL7NPaD/VtJSmr5fNlehRRZPqE2yiK9fWnzG5Kvmv0
+	9qHYtbwwqiHMipH7bTpYpGNgEtCFvYaZa3jrGkjuIfzv2LREdXp74UabXVLW0ec+
+X-Gm-Gg: AfdE7clF5rAdwa7uE0pnNLIS0rIXMCW1qwxWK/cNc0CF9vBu78B7HuwONs3raeqPOVF
+	qMe5oiTlY1aIE5dpBbZQVbT266I8gCtnWtKzRdfioVbJEXsji/PlJz840mb4KIe7y4edd7RmJF/
+	KJnt7JLprJ9rYyiWapWI5DgSCKa4NgPmCQ2LWijVqFzc23Ixy0bi2IYLmSTP2xqFwwsKPCLRMny
+	UfF4VpTXTh1tAX4R3RdO/+pG5IuEbey/neVhy8SV2G3nsOJACi+h4XlBC35g6x1/GUa/s/ZwrrD
+	2oginx6AN9PtNDAJ4hUfFlxOjKJTCF63cu0HSgVqSCvPqsUdxna4slDiGFZG97PCg5LqX+1QlKj
+	SiiMRk5FS4OIBrvfR/RhamLlboVoV8mM2kpubeXvkFJ4RWzH3hhA0B1QUBHw/SI25y5Ie9uuFuL
+	iTfwxs0FijHGYPwGwfp4gO013/wvg9BlU7bP2vw5uiVciTCoqf5CHIwfAd6nsagY7lcxELOMCCS
+	ZjhCvrMawGX4yIOBlk5C2h+uGDqf4btx0yh15NHc89DkZ0b4Yrhrv/W3k34J+LIk6D8XCsh2vgz
+X-Received: by 2002:a05:6a21:468a:b0:3bf:b68f:4682 with SMTP id adf61e73a8af0-3c11062ea08mr7111178637.7.1783912534078;
+        Sun, 12 Jul 2026 20:15:34 -0700 (PDT)
+Received: from ryzen.lan ([2601:644:8000:7a86::e35])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-ca5af7d58f3sm7686767a12.1.2026.07.12.20.15.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 12 Jul 2026 20:15:33 -0700 (PDT)
+From: Rosen Penev <rosenp@gmail.com>
+To: linux-crypto@vger.kernel.org
+Cc: Srujana Challa <schalla@marvell.com>,
+	Bharat Bhushan <bbhushan2@marvell.com>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
 	"David S. Miller" <davem@davemloft.net>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-crypto@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] drivers/crypto: Mark QCE as BROKEN
-Message-ID: <20260713025752.GF4362@quark>
-References: <20260712-qce-broken-v2-1-b2dfff47f7f5@gmail.com>
+	Boris Brezillon <bbrezillon@kernel.org>,
+	Arnaud Ebalard <arno@natisbad.org>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCHv2] crypto: cesa: switch to non-devm IRQ to free it earlier
+Date: Sun, 12 Jul 2026 20:15:32 -0700
+Message-ID: <20260713031532.2458000-1-rosenp@gmail.com>
+X-Mailer: git-send-email 2.55.0
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260712-qce-broken-v2-1-b2dfff47f7f5@gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:demiobenour@gmail.com,m:linux@armlinux.org.uk,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:linux-arm-kernel@lists.infradead.org,m:linux-kernel@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-25883-lists,linux-crypto=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-25884-lists,linux-crypto=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:linux-crypto@vger.kernel.org,m:schalla@marvell.com,m:bbhushan2@marvell.com,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:bbrezillon@kernel.org,m:arno@natisbad.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	FORGED_SENDER(0.00)[rosenp@gmail.com,linux-crypto@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[rosenp@gmail.com,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
 	RCPT_COUNT_SEVEN(0.00)[8];
-	TAGGED_RCPT(0.00)[linux-crypto];
-	MISSING_XM_UA(0.00)[];
+	ALIAS_RESOLVED(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp,quark:mid]
+	TAGGED_RCPT(0.00)[linux-crypto];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 1096B746D32
+X-Rspamd-Queue-Id: 09CE3746E0A
 
-On Sun, Jul 12, 2026 at 05:31:31PM -0400, Demi Marie Obenour via B4 Relay wrote:
-> From: Demi Marie Obenour <demiobenour@gmail.com>
-> 
-> This driver is harmful:
-> 
-> - It is much slower than the CPU [1] [2].
-> - It Has a history of bugs [2] [3].
-> - It does not have exclusive access to the hardware [4], causing races
->   with the secure world.
-> - It register its implementations with too low a cra_priority for them
->   to be actually used [5].
-> 
-> Therefore, disable it to ensure that nobody builds it into kernels they
-> intend to ship.
-> 
-> In the future, the driver will be used for processing restricted media
-> content.  However, the kernel does not currently support this.  Since
-> the driver will have future uses, allow building it if COMPILE_TEST is
-> enabled.
-> 
-> [1]: https://lore.kernel.org/r/20250704070322.20692-1-ebiggers@kernel.org/
-> [2]: https://lore.kernel.org/r/20250615031807.GA81869@sol/
-> [3]: https://lore.kernel.org/r/20260706-qce-fix-self-tests-v5-0-86f461ff1829@oss.qualcomm.com/
-> [4]: https://lore.kernel.org/r/20260629-qcom-qce-cmd-descr-v20-0-56f67da84c05@oss.qualcomm.com/
-> [5]: https://lore.kernel.org/r/20260524204537.GB110177@quark/
-> 
-> Fixes: ec8f5d8f6f76 ("crypto: qce - Qualcomm crypto engine driver")
-> Signed-off-by: Demi Marie Obenour <demiobenour@gmail.com>
+Switch the IRQ request from devm_request_threaded_irq() to
+request_threaded_irq() so the IRQ is released explicitly, allowing it to
+be freed earlier in the cleanup path rather than deferred to device
+teardown.
 
-Acked-by: Eric Biggers <ebiggers@kernel.org>
+Add the matching free_irq() and irq_set_affinity_hint(NULL) calls in both
+the probe error path and the remove function to release the IRQ and clear
+the affinity hint set during probe.
 
-- Eric
+Fixes: f63601fd616ab ("crypto: marvell/cesa - add a new driver for Marvell's CESA")
+Assisted-by: opencode:big-pickle
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+---
+ v2: fixed Fixes tag and reworded commit
+ drivers/crypto/marvell/cesa/cesa.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/crypto/marvell/cesa/cesa.c b/drivers/crypto/marvell/cesa/cesa.c
+index 75d8ba23d9a2..57c9295be711 100644
+--- a/drivers/crypto/marvell/cesa/cesa.c
++++ b/drivers/crypto/marvell/cesa/cesa.c
+@@ -511,7 +511,7 @@ static int mv_cesa_probe(struct platform_device *pdev)
+ 		writel(engine->sram_dma & CESA_SA_SRAM_MSK,
+ 		       engine->regs + CESA_SA_DESC_P0);
+ 
+-		ret = devm_request_threaded_irq(dev, irq, NULL, mv_cesa_int,
++		ret = request_threaded_irq(irq, NULL, mv_cesa_int,
+ 						IRQF_ONESHOT,
+ 						dev_name(&pdev->dev),
+ 						engine);
+@@ -540,6 +540,10 @@ static int mv_cesa_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ err_cleanup:
++	while (i--) {
++		irq_set_affinity_hint(cesa->engines[i].irq, NULL);
++		free_irq(cesa->engines[i].irq, &cesa->engines[i]);
++	}
+ 	for (i = 0; i < caps->nengines; i++)
+ 		mv_cesa_put_sram(pdev, i);
+ 
+@@ -553,8 +557,13 @@ static void mv_cesa_remove(struct platform_device *pdev)
+ 
+ 	mv_cesa_remove_algs(cesa);
+ 
+-	for (i = 0; i < cesa->caps->nengines; i++)
++	for (i = 0; i < cesa->caps->nengines; i++) {
++		struct mv_cesa_engine *engine = &cesa->engines[i];
++
++		irq_set_affinity_hint(engine->irq, NULL);
++		free_irq(engine->irq, engine);
+ 		mv_cesa_put_sram(pdev, i);
++	}
+ }
+ 
+ static const struct platform_device_id mv_cesa_plat_id_table[] = {
+-- 
+2.55.0
+
 
