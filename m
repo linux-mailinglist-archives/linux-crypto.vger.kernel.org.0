@@ -1,63 +1,61 @@
-Return-Path: <linux-crypto+bounces-25928-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25929-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id O9pgCxblVGq0ggAAu9opvQ
-	(envelope-from <linux-crypto+bounces-25928-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 15:16:06 +0200
+	id ONkYJqXrVGrghAAAu9opvQ
+	(envelope-from <linux-crypto+bounces-25929-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 15:44:05 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C79974B6DD
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 15:16:05 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2AE574BC8A
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 15:44:04 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b=M6WsI97x;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25928-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25928-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=linuxfoundation.org header.s=korg header.b=Ix3MMdiK;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25929-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25929-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=linuxfoundation.org;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C2846327C94D
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 13:08:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9313C326E552
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 13:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875484189B0;
-	Mon, 13 Jul 2026 13:07:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F28CA21146C;
+	Mon, 13 Jul 2026 13:25:39 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC6B4189A5;
-	Mon, 13 Jul 2026 13:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 119DF42B30B;
+	Mon, 13 Jul 2026 13:25:38 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783948069; cv=none; b=HQSajkx0DtrFz49uGxtONAlMW2D70fNTiyQPM73wBXeVkYvLF4/IuvpoHZUs9SM9JjV5CdRZNDWlja1ekHsniVZ5tVme8mk9fpFrmv3CBv1vDeA8QzaNU9VFt8DqP20/PO3GUieeBX5gUZtBFurUyZ6Z8bMocyOhjLI/UV7z1bo=
+	t=1783949139; cv=none; b=cFs40Zo70bi5QqSrucTlCbFsaYcrxT/AbPX9jx1RNjHJOO3vONdpP3zVCubfjgEuvWHm4f4x0IAzZC1xBNc1wDXkZ+XQYfObtO+rBk8/n5CvgJAKKgF+rQffhOA4USrQY2fWCNNb6AEhzsvBogaXykGLSm17RfZBvQCDLpRDeCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783948069; c=relaxed/simple;
-	bh=eZDb2Tb0TorVW6SVUJBl2A+95nQMtBtkxZCbkSWL+D0=;
+	s=arc-20240116; t=1783949139; c=relaxed/simple;
+	bh=4p4pOqHPR/FSXAycf5Ox3xWUt3hHCsh48CCppunVf/M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hYIbyf1wRiJj9ruU/axq9hyLB+HGrlm6TIhFXZv8IaG687QuwhRJGa8Gq4zYgoVXqV+gL0Y7UCP3DeRn8kpwIJypGChzaLamG5FUwAveWLxakUIxnui+bS9bn4WAYjzUY2iW/MHdURXQxRMIY4Sxwad8ebaWHmKTcU4VGMwrLQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M6WsI97x; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D30F1F00A3D;
-	Mon, 13 Jul 2026 13:07:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1783948067;
-	bh=kXQnTwBPub3tZDUV3lE7n/0kdw8aNXe/OrgkdMgIWss=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=Il4+ocD+OTUwZo6NAcKDLXB5tUEgwF3cfrodSNjpG+8KMaKYcZcCiTLG0c5C+KSLKttY4rV3C3BgVTxAgcFJae+1aiuSnGyIkUcWApiALjzlGi+9WaM104ftwt0ZVOY1gCPWJPyfX2A+sRCyDcxIPn0S8UkTyK54B/JcxFczzvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Ix3MMdiK; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6341D1F000E9;
+	Mon, 13 Jul 2026 13:25:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
+	s=korg; t=1783949137;
+	bh=Gy/cfC9eWSI/4w83EWhj+5TaSyCxLCsDNooQU9g7aCY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=M6WsI97x0WTAWfxR3KXWh9Utq+r9um1NRRAO4gUwOERZBkLePwAAszdV6RYGWd7RV
-	 +GUZ6+s/4IFenPdHEgtOuSZaWu1zexnaqtBQ9rNpkPj4dQ/azMsiskt9R2rkXIpiwO
-	 U9MSPRqaaVLtSVTffHNFxadDfVgQFogfJBZ6ikjx72rWfHBHJqQ9fXYnST9pD26a1L
-	 aTKGHKrQB1MHm2r0WQdku6WYSh4P3NPyF3Asg0gLr7bRTHf996+1SxZ1Lm3W1y0TCJ
-	 rBKyMAKxCMh5lgwcp/hkHlX8Jli69z+gP4qguXLv5HvPylT2D8Fv7p6S0uMmLx5WW+
-	 NMAh5Kt/NVtFw==
-Date: Mon, 13 Jul 2026 09:07:45 -0400
-From: Eric Biggers <ebiggers@kernel.org>
-To: Greg KH <gregkh@linuxfoundation.org>
+	b=Ix3MMdiKvNSDH1QKARVBfMh230lzDNqULteYdKoRLu+kj4TBW0nXjt5LZXKm71YNZ
+	 OfzCXxpC1msmJNB9OnvOSolywlOVzc03JCLnUrRt60hAafrXur6pgFwUXFgRtJZaO3
+	 VKz3ogHoYS6xtxGcEnRdCnOwD8tpKzBvzPIsYsUI=
+Date: Mon, 13 Jul 2026 15:19:34 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Eric Biggers <ebiggers@kernel.org>
 Cc: demiobenour@gmail.com, Russell King <linux@armlinux.org.uk>,
 	Herbert Xu <herbert@gondor.apana.org.au>,
 	"David S. Miller" <davem@davemloft.net>,
 	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
 	linux-crypto@vger.kernel.org, stable@vger.kernel.org
 Subject: Re: [PATCH v2] drivers/crypto: Mark QCE as BROKEN
-Message-ID: <20260713130745.GA2254@quark>
+Message-ID: <2026071312-prowler-expectant-8294@gregkh>
 References: <20260712-qce-broken-v2-1-b2dfff47f7f5@gmail.com>
  <2026071312-uncover-refining-8cac@gregkh>
+ <20260713130745.GA2254@quark>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -66,77 +64,88 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2026071312-uncover-refining-8cac@gregkh>
+In-Reply-To: <20260713130745.GA2254@quark>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.66 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
+X-Spamd-Result: default: False [2.34 / 15.00];
+	MID_END_EQ_FROM_USER_PART(4.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linuxfoundation.org,none];
 	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linuxfoundation.org:s=korg];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-25928-lists,linux-crypto=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25929-lists,linux-crypto=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS(0.00)[m:gregkh@linuxfoundation.org,m:demiobenour@gmail.com,m:linux@armlinux.org.uk,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:linux-arm-kernel@lists.infradead.org,m:linux-kernel@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FREEMAIL_CC(0.00)[gmail.com,armlinux.org.uk,gondor.apana.org.au,davemloft.net,lists.infradead.org,vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS(0.00)[m:ebiggers@kernel.org,m:demiobenour@gmail.com,m:linux@armlinux.org.uk,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:linux-arm-kernel@lists.infradead.org,m:linux-kernel@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	FORGED_SENDER(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
+	FORGED_SENDER(0.00)[gregkh@linuxfoundation.org,linux-crypto@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-crypto@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[gregkh@linuxfoundation.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[linuxfoundation.org:+];
 	RCPT_COUNT_SEVEN(0.00)[9];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,quark:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gregkh:mid,linuxfoundation.org:from_mime,linuxfoundation.org:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,vger.kernel.org:from_smtp]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 6C79974B6DD
+X-Rspamd-Queue-Id: C2AE574BC8A
 
-On Mon, Jul 13, 2026 at 06:47:07AM +0200, Greg KH wrote:
-> On Sun, Jul 12, 2026 at 05:31:31PM -0400, Demi Marie Obenour via B4 Relay wrote:
-> > From: Demi Marie Obenour <demiobenour@gmail.com>
+On Mon, Jul 13, 2026 at 09:07:45AM -0400, Eric Biggers wrote:
+> On Mon, Jul 13, 2026 at 06:47:07AM +0200, Greg KH wrote:
+> > On Sun, Jul 12, 2026 at 05:31:31PM -0400, Demi Marie Obenour via B4 Relay wrote:
+> > > From: Demi Marie Obenour <demiobenour@gmail.com>
+> > > 
+> > > This driver is harmful:
+> > > 
+> > > - It is much slower than the CPU [1] [2].
+> > > - It Has a history of bugs [2] [3].
+> > > - It does not have exclusive access to the hardware [4], causing races
+> > >   with the secure world.
+> > > - It register its implementations with too low a cra_priority for them
+> > >   to be actually used [5].
+> > > 
+> > > Therefore, disable it to ensure that nobody builds it into kernels they
+> > > intend to ship.
+> > > 
+> > > In the future, the driver will be used for processing restricted media
+> > > content.  However, the kernel does not currently support this.  Since
+> > > the driver will have future uses, allow building it if COMPILE_TEST is
+> > > enabled.
 > > 
-> > This driver is harmful:
-> > 
-> > - It is much slower than the CPU [1] [2].
-> > - It Has a history of bugs [2] [3].
-> > - It does not have exclusive access to the hardware [4], causing races
-> >   with the secure world.
-> > - It register its implementations with too low a cra_priority for them
-> >   to be actually used [5].
-> > 
-> > Therefore, disable it to ensure that nobody builds it into kernels they
-> > intend to ship.
-> > 
-> > In the future, the driver will be used for processing restricted media
-> > content.  However, the kernel does not currently support this.  Since
-> > the driver will have future uses, allow building it if COMPILE_TEST is
-> > enabled.
+> > Why not just delete it now, and then bring it back when it is needed in
+> > the future?  Otherwise this will just trip up the static code checkers
+> > who will attempt to "fix" things in it.
 > 
-> Why not just delete it now, and then bring it back when it is needed in
-> the future?  Otherwise this will just trip up the static code checkers
-> who will attempt to "fix" things in it.
+> That makes sense to me, but Qualcomm pushed back on deletion:
+> https://lore.kernel.org/linux-crypto/20260602-qcom-qce-broken-v1-1-a4ef756089e0@oss.qualcomm.com/
+> 
+> But I've still not seen any evidence that this driver is useful for
+> anything or has any users.  Even Qualcomm seems to be unwilling to make
+> such claims; they only claim that the IP is used (i.e., not in Linux)
+> and that new features are planned.
 
-That makes sense to me, but Qualcomm pushed back on deletion:
-https://lore.kernel.org/linux-crypto/20260602-qcom-qce-broken-v1-1-a4ef756089e0@oss.qualcomm.com/
+Well we don't normally have drivers that are marked as BROKEN just
+laying around in the tree these days, especially given that a LLM is
+bound to do a drive-by and find lots of issues that people will not
+realize doesn't matter given that the code is never actually built.
 
-But I've still not seen any evidence that this driver is useful for
-anything or has any users.  Even Qualcomm seems to be unwilling to make
-such claims; they only claim that the IP is used (i.e., not in Linux)
-and that new features are planned.
+But hey, it's not my subsystem, if you want to keep it here, fine with
+me, just asking :)
 
-- Eric
+thanks,
+
+greg k-h
 
