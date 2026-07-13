@@ -1,69 +1,63 @@
-Return-Path: <linux-crypto+bounces-25891-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25892-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 7J6vBKReVGrilAMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25891-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 05:42:28 +0200
+	id hbKdLT9fVGr1lAMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25892-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 05:45:03 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A950746FB5
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 05:42:27 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 062E4746FC6
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 05:45:02 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gondor.apana.org.au header.s=h01 header.b=Qb2bWov7;
+	dkim=pass header.d=gondor.apana.org.au header.s=h01 header.b="l//rRRH1";
 	dmarc=pass (policy=quarantine) header.from=apana.org.au;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25891-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25891-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25892-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25892-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 6675630034A4
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 03:42:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5BE3D300AB28
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 03:44:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC8633B6CB;
-	Mon, 13 Jul 2026 03:42:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE0C33A00C;
+	Mon, 13 Jul 2026 03:44:58 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
 Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BADAC1F3BA4;
-	Mon, 13 Jul 2026 03:42:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15CD72116F4;
+	Mon, 13 Jul 2026 03:44:55 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783914139; cv=none; b=Bg6KOGFUXi1nKciSoIdFdQ8z5MLBTiDvGthv2sdBNyjMWyM3zuk74GC2JGIbb5u2z+E66503kSkVuRl5bpRe86EA3tEoOB4uKzAqzg8HLnvXBk4a+99Eop15iI/gK3EZOe02CDEbkOjpLv6mXbTt7w0GIm0QaV89+NAETCLUbeQ=
+	t=1783914298; cv=none; b=JV3foBFEkBsp4a7v2q5K1HOe7qHds0yhDiitNw+DYc43oaFvoHDkLYM1W6yiCrr0NcNORct4ByHoBIr/b8996cKaF7fA5y+XRNg+nrqkB+MZKl/LALhQctwp37KyEGhkUXhv30xbcVncvqM44tjek90tSmWvqzo0zckY/d1iOKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783914139; c=relaxed/simple;
-	bh=viFaBWiMYiXNWA4jLXpBiJLpNrYbbMfjMI1CIpubu4c=;
+	s=arc-20240116; t=1783914298; c=relaxed/simple;
+	bh=r8sfdbqN1zs6K8NiXsx1BVuNZ9M2YhYO4Ctgpt76Edw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NVgTCtVtv8SYyLkyKmWbyuETpfml/lkgZ1WmWVQcvkAA0aA9/mKPA98BaVOesyYMOD5NSNCdO6ijJOysd0/578+C+MitO/G6pw+3vGycidzneex0MuWGKQiqPeATXmnRFp9QGtlkXJeLKzOzF7qhmnU+zZ2jzqjU7GMyN7VR+d0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=Qb2bWov7; arc=none smtp.client-ip=180.181.231.80
+	 Content-Type:Content-Disposition:In-Reply-To; b=GDRxFOO27bRHI8rD3i/i1Rg7ozufg8S5uhQoYtozHV3kIeBRqru8mCpRnn8QMOcAMIURQGDD4A4h6NngI/dxGBAiecfArtZgK5IpX0cb4XcheDnFzSoT+YduDwgGmKVjqcLdoW6rwZuQ1O51Vs1TFqkxU1X/mZpItzr4F6OqABY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=l//rRRH1; arc=none smtp.client-ip=180.181.231.80
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
 	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=89rWfb/GKA0YbwlF/rC1Uqb+AHHDfcTsgnf6prS00ms=; 
-	b=Qb2bWov7fDBLJ4II8sHjsLbeIXS4BXEzwIlOgSn1BDBcp1Vkbk9yo6voNd5z1BnQaDm8W8bfCHd
-	6oWRW1VN1NYQYo93R6N9AsmmaOoB3y1Oo77s1Z4cyz0khXh+AnHUmHOKi8URHGJhKGnu7F7lXgtAM
-	U2spVQE/Ax9CwwX1VQF9iUSRDTTyXpHpWLpb9aqQqnIOWDJ5gVTcQfNwBzRztQ2ZFmVEoAakRC5AD
-	nz9LzgWWhBTq+8UuLXPQ17GIcDCVFRMopIY0NkTkHwICMORLitb42bdHqebl4sPB/vZpmoKlm5qgo
-	fjWbWEw6hABQ1T1+auOa2NMplNFQ2I5NJLMw==;
+	from:content-type:reply-to; bh=RREQle099gdxdz7gtCoh4ys0y9zML3oLj26BLgi/8GE=; 
+	b=l//rRRH1MwZXJiVab728G6psnKp8my4yzdw2/SuqSldp8ojJWtpcuhpnDRxZ+sELPkfaaL35CSJ
+	CGslQQUJygsEP47uRZ6iFY8p1jvBGnOKGsf54VoaD6/HhI6I6DPWZJh6LVhnTF26xcJYnbuniZjmE
+	hVw3IkJdV2uQeIhRLq97EFB3FdviM+9lJIMk18nRNotBCOqlfcnCsvo6GcP8bbU6ZHBuIO+KwuHGG
+	Z2KqxHgRdJq3PVwh8RWEY+0IRUs6/+8jnj29YX76zIHBBixOpWQXG1w1OfL4HfS+di15P1e0l80HI
+	zmQxCbof8LCLLvRA9IfWCVEoSs8TIhRMyAWA==;
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
 	by formenos.hmeau.com with smtp (Exim 4.98.2 #2 (Debian))
-	id 1wj7Yb-0000000CyEH-3axH;
-	Mon, 13 Jul 2026 11:42:14 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 13 Jul 2026 13:42:13 +1000
-Date: Mon, 13 Jul 2026 13:42:13 +1000
+	id 1wj7b9-0000000CyH7-3rWD;
+	Mon, 13 Jul 2026 11:44:52 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 13 Jul 2026 13:44:51 +1000
+Date: Mon, 13 Jul 2026 13:44:51 +1000
 From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Jingyi Wang <jingyi.wang@oss.qualcomm.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>, aiqun.yu@oss.qualcomm.com,
-	tingwei.zhang@oss.qualcomm.com, trilok.soni@oss.qualcomm.com,
-	yijie.yang@oss.qualcomm.com, linux-arm-msm@vger.kernel.org,
-	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-Subject: Re: [PATCH v2 0/3] dt-bindings: crypto: Add Qualcomm Maili crypto
- support
-Message-ID: <alRelRyJDvTdNTgJ@gondor.apana.org.au>
-References: <20260628-maili-crypto-v2-0-f8ce760f71d6@oss.qualcomm.com>
+To: Yuho Choi <dbgh9129@gmail.com>
+Cc: Olivia Mackall <olivia@selenic.com>,
+	Alexander Sverdlin <alex@sverdlin.org>, Nishanth Menon <nm@ti.com>,
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] hwrng: ks-sa: Fix runtime PM cleanup on registration
+ failure
+Message-ID: <alRfM-Ygtmk1UNa2@gondor.apana.org.au>
+References: <20260702233921.100478-1-dbgh9129@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -72,28 +66,29 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260628-maili-crypto-v2-0-f8ce760f71d6@oss.qualcomm.com>
+In-Reply-To: <20260702233921.100478-1-dbgh9129@gmail.com>
 X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
 	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25891-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:jingyi.wang@oss.qualcomm.com,m:davem@davemloft.net,m:robh@kernel.org,m:krzk+dt@kernel.org,m:conor+dt@kernel.org,m:vkoul@kernel.org,m:andersson@kernel.org,m:aiqun.yu@oss.qualcomm.com,m:tingwei.zhang@oss.qualcomm.com,m:trilok.soni@oss.qualcomm.com,m:yijie.yang@oss.qualcomm.com,m:linux-arm-msm@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:devicetree@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:krzysztof.kozlowski@oss.qualcomm.com,m:krzk@kernel.org,m:conor@kernel.org,s:lists@lfdr.de];
+	TAGGED_FROM(0.00)[bounces-25892-lists,linux-crypto=lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:dbgh9129@gmail.com,m:olivia@selenic.com,m:alex@sverdlin.org,m:nm@ti.com,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
 	FORGED_SENDER(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
 	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	FORGED_SENDER_FORWARDING(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
@@ -102,37 +97,27 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	ALIAS_RESOLVED(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email,vger.kernel.org:from_smtp,qualcomm.com:email]
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email,vger.kernel.org:from_smtp,gondor.apana.org.au:from_mime,gondor.apana.org.au:dkim,gondor.apana.org.au:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 0A950746FB5
+X-Rspamd-Queue-Id: 062E4746FC6
 
-On Sun, Jun 28, 2026 at 11:44:34PM -0700, Jingyi Wang wrote:
-> Add crypto(ICE and TRNG) dt-binding support for Qualcomm upcoming Maili
-> SoC. Meanwhile fix the power-domain and clk missing on Hawi.
+On Thu, Jul 02, 2026 at 07:39:21PM -0400, Yuho Choi wrote:
+> ks_sa_rng_probe() enables runtime PM and resumes the device before
+> registering the hwrng. If devm_hwrng_register() fails, probe returns
+> without dropping the runtime PM usage count or disabling runtime PM.
 > 
-> Signed-off-by: Jingyi Wang <jingyi.wang@oss.qualcomm.com>
-> ---
-> Changes in v2:
-> - add power-domain and clk constraint
-> - add acked-by tag
-> - Link to v1: https://lore.kernel.org/r/20260609-maili-crypto-v1-0-0f577df56a61@oss.qualcomm.com
+> Unwind the runtime PM state on the registration failure path, matching
+> the cleanup done by remove().
 > 
+> Fixes: e9009fb227fa ("hwrng: ks-sa - Use pm_runtime_resume_and_get() to replace open coding")
+> Signed-off-by: Yuho Choi <dbgh9129@gmail.com>
 > ---
-> Jingyi Wang (3):
->       dt-bindings: crypto: qcom,prng: Document Maili TRNG
->       dt-bindings: crypto: qcom,inline-crypto-engine: Document Maili ICE
->       dt-bindings: crypto: qcom,ice: Fix missing power-domain and iface clk on Hawi
-> 
->  .../devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml          | 3 +++
->  Documentation/devicetree/bindings/crypto/qcom,prng.yaml                | 1 +
->  2 files changed, 4 insertions(+)
-> ---
-> base-commit: a87737435cfa134f9cdcc696ba3080759d04cf72
-> change-id: 20260609-maili-crypto-5d612f629acf
+>  drivers/char/hw_random/ks-sa-rng.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
 
-All applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
