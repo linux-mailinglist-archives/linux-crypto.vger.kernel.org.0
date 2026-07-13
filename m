@@ -1,63 +1,60 @@
-Return-Path: <linux-crypto+bounces-25896-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25897-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id 9V+HCb1fVGoRlQMAu9opvQ
-	(envelope-from <linux-crypto+bounces-25896-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 05:47:09 +0200
+	id viEXDvhtVGrplwMAu9opvQ
+	(envelope-from <linux-crypto+bounces-25897-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 06:47:52 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71A36746FFE
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 05:47:08 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4DA9747271
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 06:47:51 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=gondor.apana.org.au header.s=h01 header.b=MIivsQAv;
-	dmarc=pass (policy=quarantine) header.from=apana.org.au;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25896-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25896-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dkim=pass header.d=linuxfoundation.org header.s=korg header.b=0mMAEGUu;
+	dmarc=pass (policy=none) header.from=linuxfoundation.org;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25897-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.105.105.114 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25897-lists+linux-crypto=lfdr.de@vger.kernel.org";
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D0DC5301DAEA
-	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 03:46:37 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 908453022DD6
+	for <lists+linux-crypto@lfdr.de>; Mon, 13 Jul 2026 04:47:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9217C309DDB;
-	Mon, 13 Jul 2026 03:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 311CB348C6C;
+	Mon, 13 Jul 2026 04:47:14 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [180.181.231.80])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC7F33F38B;
-	Mon, 13 Jul 2026 03:46:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F392B340A6F;
+	Mon, 13 Jul 2026 04:47:12 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1783914397; cv=none; b=ijynaNrZQWP5YhKCbs8AUBaxV+aIkCFxQdIqHlfygXKwekQJ1GaLPUYg9WoJJSmW6eeuhHJ8DP7Erjx1BBOR3XM/Y7lkG4vCpMwivuW6/X0U8WGfac8oSkfwCvXVcKlA8QRXUFXjCsif/GyFBRZjzSUjaea6do+Xf05VsoxzXvE=
+	t=1783918034; cv=none; b=eXbsBAmGWeZpfF17kbmchZ1pzSU6h6FePZXCfdOi/dDyWNbwfNT9ZmdUxjzLOdxiG59/Jy8D6IEgTtcPbZKugI7pD3xvQq5vWExj/4BrFMPsEUF7R6Ol1QLScPAublCzHQDNszW8w7301PFg01HWpogqmgiEmpU/gSgg0I5CsL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1783914397; c=relaxed/simple;
-	bh=Uvr2Fd/lnagmF+gNNQIGQS7YNcf4dy2hX1qS4zqmqxc=;
+	s=arc-20240116; t=1783918034; c=relaxed/simple;
+	bh=JIypKOIXxa8D99JWB1t2xz0jlYRBSgOjoMtuoBHEY6o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GTvhk7xEkO2i8Qtax2CZFxj/iS1yHTSYrNofKc4EKDOOntB+P1ob/RB6OKa6uTQn5YYIe/ohVPN3XHH6MtphnVZTuxYrzDwrzGoR296gebR6sxj22PxWQKyj5O4Owah7V106LwVm7DT6LYHPe328BLA2avn+/1XeNTci9sKeG/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; dkim=pass (2048-bit key) header.d=gondor.apana.org.au header.i=@gondor.apana.org.au header.b=MIivsQAv; arc=none smtp.client-ip=180.181.231.80
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=gondor.apana.org.au; s=h01; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:cc:to:subject:message-id:date:
-	from:content-type:reply-to; bh=IV4qlhj0eWVV13eQM7LMrxiETB767e9EAWhq8ihnBHY=; 
-	b=MIivsQAvEx/0c0RIKb33C0eme5xtd8+73kusaFdmhzGLZL0bPpqNZv0EQoTIKGCbEQfFLJBf1ok
-	hrLlq089g0WbWrM6/9E64VGBnUMujyQo+0qvhWF3GGp5wFcP3I4ye50JSUr/SB56DLRozAdW9PKzu
-	LBgxDriZpoIq+dum4Yw3DltjJvyZb0O2V6tr2KFrsA6V5ipqoKadEmzgvPxjRrnKzs77Oos/F2/Bl
-	8zsTKc8eVjQJB2yk44SC+0jnrdrask6P5+jWfL7j5FO4KyZyob/S0SawHydjOXFSHZKb2P6nrK3bP
-	dF/L//HAAv7KApoNmzLZ9gV8FfliQezgkoLg==;
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.98.2 #2 (Debian))
-	id 1wj7cj-0000000CyIZ-0fU7;
-	Mon, 13 Jul 2026 11:46:30 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 13 Jul 2026 13:46:29 +1000
-Date: Mon, 13 Jul 2026 13:46:29 +1000
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Pengpeng Hou <pengpeng@iscas.ac.cn>
-Cc: Prabhjot Khurana <prabhjot.khurana@intel.com>,
-	Mark Gross <mgross@linux.intel.com>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=b/e1E475hP3mEcyS9nB6kH0idPs2a5cEwYAid/bFz7TfQ+wIstx9g9UaXerHOZHw+zI2rRtFWV4J75GJ/0Pjf8XR5KWRDHVAQo7iuxk8eqzKJNNgkeFnJwePg80GXZExuuNxWt5edY13MG2tR30BMaAgxyIAkmWSdRb8QWZsJpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=0mMAEGUu; arc=none smtp.client-ip=100.103.45.18
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1190F1F000E9;
+	Mon, 13 Jul 2026 04:47:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxfoundation.org;
+	s=korg; t=1783918032;
+	bh=9PAJlGm06FdpPNE7UoP/ZDlHwM5ZAN6RmcnqlknM3U8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=0mMAEGUuZ+pvom+KPpTGZ/jy2dn31zcecZPV462JSSnQOYNsGMieQl7Qs8RG99wDe
+	 ysif8cOHHXdhAKuohY0T/tomxmuYxDjz+GBytCjV/RTSQ7BK+b/JpJBv7nDy1J95gr
+	 oHnQWFGN9XqHHtwZPrtQKnV8hkfpAhuF0LA/vzJg=
+Date: Mon, 13 Jul 2026 06:47:07 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: demiobenour@gmail.com
+Cc: Russell King <linux@armlinux.org.uk>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
 	"David S. Miller" <davem@davemloft.net>,
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: keembay: add missing MODULE_DEVICE_TABLE()
-Message-ID: <alRflcX52b0e6Q2V@gondor.apana.org.au>
-References: <20260704124609.16628-1-pengpeng@iscas.ac.cn>
+	Eric Biggers <ebiggers@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-crypto@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] drivers/crypto: Mark QCE as BROKEN
+Message-ID: <2026071312-uncover-refining-8cac@gregkh>
+References: <20260712-qce-broken-v2-1-b2dfff47f7f5@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
@@ -66,61 +63,70 @@ List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260704124609.16628-1-pengpeng@iscas.ac.cn>
+In-Reply-To: <20260712-qce-broken-v2-1-b2dfff47f7f5@gmail.com>
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [2.34 / 15.00];
+	MID_END_EQ_FROM_USER_PART(4.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[apana.org.au,quarantine];
-	R_DKIM_ALLOW(-0.20)[gondor.apana.org.au:s=h01];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linuxfoundation.org,none];
+	R_DKIM_ALLOW(-0.20)[linuxfoundation.org:s=korg];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25896-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:pengpeng@iscas.ac.cn,m:prabhjot.khurana@intel.com,m:mgross@linux.intel.com,m:davem@davemloft.net,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
+	FORGED_RECIPIENTS(0.00)[m:demiobenour@gmail.com,m:linux@armlinux.org.uk,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:ebiggers@kernel.org,m:linux-arm-kernel@lists.infradead.org,m:linux-kernel@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:stable@vger.kernel.org,s:lists@lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-25897-lists,linux-crypto=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[gondor.apana.org.au:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_SENDER(0.00)[gregkh@linuxfoundation.org,linux-crypto@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[herbert@gondor.apana.org.au,linux-crypto@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[gregkh@linuxfoundation.org,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[linuxfoundation.org:+];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gondor.apana.org.au:from_mime,gondor.apana.org.au:dkim,gondor.apana.org.au:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,apana.org.au:url,apana.org.au:email,vger.kernel.org:from_smtp,iscas.ac.cn:email]
+	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,linuxfoundation.org:from_mime,linuxfoundation.org:dkim,gregkh:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 71A36746FFE
+X-Rspamd-Queue-Id: A4DA9747271
 
-On Sat, Jul 04, 2026 at 08:46:09PM +0800, Pengpeng Hou wrote:
-> The driver has an OF match table wired to .of_match_table, but does
-> not export the table with MODULE_DEVICE_TABLE().
+On Sun, Jul 12, 2026 at 05:31:31PM -0400, Demi Marie Obenour via B4 Relay wrote:
+> From: Demi Marie Obenour <demiobenour@gmail.com>
 > 
-> Add the missing MODULE_DEVICE_TABLE(of, ...) entry so module alias
-> information is generated for OF based module autoloading.
+> This driver is harmful:
 > 
-> This is a source-level fix.  It does not claim dynamic hardware
-> reproduction; the evidence is the driver-owned match table, its use by
-> the platform driver, and the missing module alias publication.
+> - It is much slower than the CPU [1] [2].
+> - It Has a history of bugs [2] [3].
+> - It does not have exclusive access to the hardware [4], causing races
+>   with the secure world.
+> - It register its implementations with too low a cra_priority for them
+>   to be actually used [5].
 > 
-> Signed-off-by: Pengpeng Hou <pengpeng@iscas.ac.cn>
-> ---
->  drivers/crypto/intel/keembay/keembay-ocs-ecc.c | 1 +
->  1 file changed, 1 insertion(+)
+> Therefore, disable it to ensure that nobody builds it into kernels they
+> intend to ship.
+> 
+> In the future, the driver will be used for processing restricted media
+> content.  However, the kernel does not currently support this.  Since
+> the driver will have future uses, allow building it if COMPILE_TEST is
+> enabled.
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Why not just delete it now, and then bring it back when it is needed in
+the future?  Otherwise this will just trip up the static code checkers
+who will attempt to "fix" things in it.
+
+thanks,
+
+greg k-h
 
