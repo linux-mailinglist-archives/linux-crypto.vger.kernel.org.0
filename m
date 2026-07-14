@@ -1,144 +1,166 @@
-Return-Path: <linux-crypto+bounces-25970-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25971-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id AWCgCuU3VmqW1gAAu9opvQ
-	(envelope-from <linux-crypto+bounces-25970-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2026 15:21:41 +0200
+	id ZeinAmCDVmp47wAAu9opvQ
+	(envelope-from <linux-crypto+bounces-25971-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2026 20:43:44 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 975ED755060
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2026 15:21:40 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CC0B757EA8
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2026 20:43:43 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=none;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25970-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.234.253.10 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25970-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=none;
+	dkim=pass header.d=google.com header.s=20251104 header.b=rNCK1ue6;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25971-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c0a:e001:db::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25971-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=reject) header.from=google.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 21F6D322857E
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2026 13:15:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3B03A3121436
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2026 18:42:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE3C346AF04;
-	Tue, 14 Jul 2026 13:14:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31BD641A919;
+	Tue, 14 Jul 2026 18:42:03 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1616C39E9D5;
-	Tue, 14 Jul 2026 13:14:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F47141A92C
+	for <linux-crypto@vger.kernel.org>; Tue, 14 Jul 2026 18:41:58 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784034899; cv=none; b=gKPeFuEZGO2z6d9FJ4VWnjQ+jNNsuz6yZzCBbsxyeJHdUNKV8IerGVEWTOcRnpgumjkO1ilhtj7moUPsbYtdVKqUZRILQ/ZRqADVs+99w3/b5868yyrOo/AmqGc7Wuq24pK7XPnEocJPjt7gjbPrfdnQ0P0ma35sap4LWSiU5Mg=
+	t=1784054521; cv=none; b=B6giA1dNdWjMp2CnIEpUsF+gvb75DwjWJz7Q3Jj3CCmshUK7ZN/zPPMfCillUL6L3HOt08lZJKQY9bPLoMZkYV8RZ00tVIBWFDTn11FvF+woen+o/Fn37DrLAe0GYK+suLWHtS5QfvHFrxMlJbi+bZWnWMB6RD6nIREyMtqhNqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784034899; c=relaxed/simple;
-	bh=nmqSIws7vRX2EW/5LLslQG2OckXHaoREys/JVj1PNP4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=r2dhNwyhQ05dH5+DVKx4lUmPFOXvSygZfqtrRTSfE2Od5aCLKkKUGoovWR0ykhGHs1Sw0+eV/I9i3iYbMhzRj8mUq3T5TnO7KvLKP1gxdaIVbxkNOROqCqqCEsVlw3Ty0TotR3WY+MLOwqQVr5senLwFmMYvX6DY/Kkn8updTAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-X-UUID: fd849fea7f8511f1aa26b74ffac11d73-20260714
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:a1f9f766-12f5-4770-b95e-ebf84a740619,IP:0,U
-	RL:0,TC:0,Content:0,EDM:-20,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-20
-X-CID-META: VersionHash:e7bac3a,CLOUDID:e507974033cd6dc90fac44063ad26dab,BulkI
-	D:nil,BulkQuantity:0,Recheck:0,SF:102|865|898,TC:nil,Content:0|15|50,EDM:1
-	,IP:nil,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV
-	:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: fd849fea7f8511f1aa26b74ffac11d73-20260714
-X-User: pengcan@kylinos.cn
-Received: from lenovo [(10.44.16.150)] by mailgw.kylinos.cn
-	(envelope-from <pengcan@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1837002741; Tue, 14 Jul 2026 21:14:48 +0800
-From: Can Peng <pengcan@kylinos.cn>
-To: herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	mgross@linux.intel.com,
-	mikex.healy@intel.com,
-	daniele.alessandrelli@gmail.com
-Cc: linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Can Peng <pengcan@kylinos.cn>
-Subject: [PATCH] crypto: keembay - publish OF module alias for OCS AES/SM4
-Date: Tue, 14 Jul 2026 21:14:42 +0800
-Message-ID: <20260714131442.153699-1-pengcan@kylinos.cn>
-X-Mailer: git-send-email 2.53.0
+	s=arc-20240116; t=1784054521; c=relaxed/simple;
+	bh=PaQBkS90a4rPCv/dq+YRWwLuz5fATYts+TOoZzoPZj4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=dp2o7FXtyNrG+Iif8kPIC5Ngt+qhIsdLxqezFYr5hQe27dpIfGDExNSiRxXcdHIcLROLEoWSXQBFoplpHBmwWt8eIsPTdCpPUWLGDKjwHGAuP7dLF81uUjfJVN3bzDV3bj4ZHw3Q90Z0GtEZvdYwSbHX5KK3XxhsTohse7+Vkog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rNCK1ue6; arc=none smtp.client-ip=209.85.210.202
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-848860def2cso4842343b3a.2
+        for <linux-crypto@vger.kernel.org>; Tue, 14 Jul 2026 11:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1784054517; x=1784659317; darn=vger.kernel.org;
+        h=content-type:cc:to:from:subject:message-id:references:mime-version
+         :in-reply-to:date:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=4QSNMOG9WUYsnTrdiXuaPBwAZEBhxka1gM9x6zaBmSM=;
+        b=rNCK1ue6708Vv/JHVtlGRjDGmBg7q7721OgtbVuL7BIIm4HkNGVJG1vYzTGM9MDe5z
+         1OUpxXC0cOGbLG+Jzn1WMctTPA+1IfA1i77sPtNKFgOEjmuSt06dIks3incEeubf428m
+         zSITgaZnP86MMavZ181GykbtaURT2oBdYUpnDPxXERg/EWu+mul+RMoxZll7Pjf9AEfo
+         Vm/SyCa5dOmFVfkZOWFptvYLO38cjr/ZZBMFQdzRv6KzEGbecMfb8ryqEBDI8RTMYfZS
+         mZjgu9H3fKEOon8Rr9RbYgQaJAGn8urwRUCOqbTNxWJAs0meHhowCK3PmlfZYDb8nqci
+         pYWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1784054517; x=1784659317;
+        h=content-type:cc:to:from:subject:message-id:references:mime-version
+         :in-reply-to:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=4QSNMOG9WUYsnTrdiXuaPBwAZEBhxka1gM9x6zaBmSM=;
+        b=iHyerWcuEeSUsPE7bn1FXSsTs2gr83xM3uzj7Xs+mGAgHnZD0YHEw72+lG+2dRa/YZ
+         nyi2i/vCkmeG8BaLtuBFmXLpynWCY1SbhZAmiuWtGckPM2mK7c9N/UHQKc1VNduOQBjN
+         62GGSzdKmeRIBZnZz86BxLpMOefKuPX3TP9+MrS2pUtt1ubQ4RNX37Uee8hfYV4QIQTT
+         YezLdF0IZQi/ZdvrGoVBLu2lnFuKzTuHcfzqg9ZEJ6IKjdaBPWSvPcUqrRbP3vmZMbrs
+         w1CAq62G0M3bR3RUFTQspk2KvHz5AElrGyTw67L7BsbSv68NtV9ra3bKujeQb3S80g0b
+         H2OA==
+X-Forwarded-Encrypted: i=1; AHgh+RpvjP7Rd2jc8cCV2MGsoTT3MTFFhNnspgk+O0VbxKIEliffPekcotaYcUHWklBPVVLqkaFKbeRZY1ONCAk=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwX+21Id3pTmqzjN2BqETjNDljD7wvr3WJAU0TGGbRqSO7R1ggw
+	dKmRvyTPlJPbZZZvqXufl49+5vxLkXKeu9FExJpoEJXEjhHZZpLCygfBivju8nV7y6BPLVmRrS6
+	Ng8I38Q==
+X-Received: from pfmy4.prod.google.com ([2002:aa7:8044:0:b0:848:56a2:f6a9])
+ (user=seanjc job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6a00:9289:b0:848:2ae4:d2ba
+ with SMTP id d2e1a72fcca58-84889687b36mr12770821b3a.28.1784054516663; Tue, 14
+ Jul 2026 11:41:56 -0700 (PDT)
+Date: Tue, 14 Jul 2026 11:41:01 -0700
+In-Reply-To: <20260602-sev_snp_fixes-v3-0-24bfd3ae047c@meta.com>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20260602-sev_snp_fixes-v3-0-24bfd3ae047c@meta.com>
+X-Mailer: git-send-email 2.55.0.141.g00534a21ce-goog
+Message-ID: <178405419095.3137257.15966365152304045590.b4-ty@google.com>
+Subject: Re: [PATCH v3 0/4] KVM: Miscellaneous SEV/SNP related fixes
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Tom Lendacky <thomas.lendacky@amd.com>, Peter Gonda <pgonda@google.com>, 
+	Brijesh Singh <brijesh.singh@amd.com>, Youngjae Lee <youngjaelee@meta.com>, 
+	Ashish Kalra <ashish.kalra@amd.com>, Michael Roth <michael.roth@amd.com>, 
+	John Allen <john.allen@amd.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Atish Patra <atish.patra@linux.dev>
+Cc: clm@meta.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, stable@vger.kernel.org, 
+	Atish Patra <atishp@meta.com>, Sashiko <sashiko-bot@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [1.54 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	MV_CASE(0.50)[];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-25970-lists,linux-crypto=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[kylinos.cn];
-	FORGED_SENDER(0.00)[pengcan@kylinos.cn,linux-crypto@vger.kernel.org];
-	FORGED_RECIPIENTS(0.00)[m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:mgross@linux.intel.com,m:mikex.healy@intel.com,m:daniele.alessandrelli@gmail.com,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:pengcan@kylinos.cn,m:danielealessandrelli@gmail.com,s:lists@lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gondor.apana.org.au,davemloft.net,linux.intel.com,intel.com,gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	RCVD_TLS_LAST(0.00)[];
 	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_RECIPIENTS(0.00)[m:seanjc@google.com,m:pbonzini@redhat.com,m:bp@alien8.de,m:dave.hansen@linux.intel.com,m:x86@kernel.org,m:hpa@zytor.com,m:thomas.lendacky@amd.com,m:pgonda@google.com,m:brijesh.singh@amd.com,m:youngjaelee@meta.com,m:ashish.kalra@amd.com,m:michael.roth@amd.com,m:john.allen@amd.com,m:herbert@gondor.apana.org.au,m:atish.patra@linux.dev,m:clm@meta.com,m:kvm@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:stable@vger.kernel.org,m:atishp@meta.com,m:sashiko-bot@kernel.org,s:lists@lfdr.de];
+	FORGED_SENDER(0.00)[seanjc@google.com,linux-crypto@vger.kernel.org];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pengcan@kylinos.cn,linux-crypto@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-25971-lists,linux-crypto=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[seanjc@google.com,linux-crypto@vger.kernel.org];
+	DKIM_TRACE(0.00)[google.com:+];
 	ALIAS_RESOLVED(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	R_DKIM_NA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,kylinos.cn:from_mime,kylinos.cn:email,kylinos.cn:mid,vger.kernel.org:from_smtp]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,zytor.com:email]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 975ED755060
+X-Rspamd-Queue-Id: 7CC0B757EA8
 
-The Keem Bay OCS AES/SM4 driver has an OF match table wired to
-.of_match_table, but does not export the table with MODULE_DEVICE_TABLE().
+On Tue, 02 Jun 2026 15:36:31 -0700, Atish Patra wrote:
+> This series addresses a few issues found during code audit of the
+> KVM SEV/SNP and CCP driver code. The fixes include a incorrect lock state
+> and incomplete state handling during intra-host migration for SNP VMs.
+> 
+> To: Sean Christopherson <seanjc@google.com>
+> To: Paolo Bonzini <pbonzini@redhat.com>
+> To: Borislav Petkov <bp@alien8.de>
+> To: Dave Hansen <dave.hansen@linux.intel.com>
+> To: x86@kernel.org
+> To: H. Peter Anvin <hpa@zytor.com>
+> To: Tom Lendacky <thomas.lendacky@amd.com>
+> To: Peter Gonda <pgonda@google.com>
+> To: Brijesh Singh <brijesh.singh@amd.com>
+> To: Youngjae Lee <youngjaelee@meta.com>
+> To: Ashish Kalra <ashish.kalra@amd.com>
+> To: Michael Roth <michael.roth@amd.com>
+> To: John Allen <john.allen@amd.com>
+> To: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: clm@meta.com
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-crypto@vger.kernel.org
+> Cc: stable@vger.kernel.org
+> 
+> [...]
 
-Although the match table lives in keembay-ocs-aes-core.o, that object is
-part of the composite keembay-ocs-aes module.  Add the missing
-MODULE_DEVICE_TABLE(of, ...) entry so modpost can generate OF module alias
-information for OF based module autoloading.
+Applied patches 1 and 2 to kvm-x86 fixes, thanks!
 
-This is a source-level fix.  It does not claim dynamic hardware
-reproduction; the evidence is the driver-owned match table, its use by the
-platform driver, and the missing module alias publication.
+[1/4] KVM: SEV: Do not allow intra-host migration/mirroring of SNP VMs
+      https://github.com/kvm-x86/linux/commit/6ee414078823
+[2/4] KVM: selftests: Verify SNP VMs are rejected from migration and mirroring
+      https://github.com/kvm-x86/linux/commit/df371f2c6244
 
-Fixes: 885743324513 ("crypto: keembay - Add support for Keem Bay OCS AES/SM4")
-Signed-off-by: Can Peng <pengcan@kylinos.cn>
----
- drivers/crypto/intel/keembay/keembay-ocs-aes-core.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/crypto/intel/keembay/keembay-ocs-aes-core.c b/drivers/crypto/intel/keembay/keembay-ocs-aes-core.c
-index 0e424024224e..68013fe43ec6 100644
---- a/drivers/crypto/intel/keembay/keembay-ocs-aes-core.c
-+++ b/drivers/crypto/intel/keembay/keembay-ocs-aes-core.c
-@@ -1561,6 +1561,7 @@ static const struct of_device_id kmb_ocs_aes_of_match[] = {
- 	},
- 	{}
- };
-+MODULE_DEVICE_TABLE(of, kmb_ocs_aes_of_match);
- 
- static void kmb_ocs_aes_remove(struct platform_device *pdev)
- {
--- 
-2.53.0
-
+--
+https://github.com/kvm-x86/linux/tree/next
 
