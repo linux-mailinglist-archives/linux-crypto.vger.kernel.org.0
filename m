@@ -1,142 +1,162 @@
-Return-Path: <linux-crypto+bounces-25956-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25957-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id Z0KKObPsVWpzwAAAu9opvQ
-	(envelope-from <linux-crypto+bounces-25956-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2026 10:00:51 +0200
+	id 5kjSKiTtVWqywAAAu9opvQ
+	(envelope-from <linux-crypto+bounces-25957-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2026 10:02:44 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5F14752238
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2026 10:00:50 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59580752262
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2026 10:02:39 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=secunet.com header.s=202301 header.b=vjQFSrQM;
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25956-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25956-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=none) header.from=secunet.com;
+	dkim=pass header.d=gmail.com header.s=20251104 header.b=PXGCn1HU;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25957-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 2600:3c04:e001:36c::12fc:5321 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25957-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=none) header.from=gmail.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 143C2300348C
-	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2026 08:00:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id EB32A303B7F3
+	for <lists+linux-crypto@lfdr.de>; Tue, 14 Jul 2026 08:02:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 817373D9DB6;
-	Tue, 14 Jul 2026 08:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB473EC2EF;
+	Tue, 14 Jul 2026 08:02:28 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from mx1.secunet.com (mx1.secunet.com [62.96.220.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8161A38F9;
-	Tue, 14 Jul 2026 08:00:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988251A38F9
+	for <linux-crypto@vger.kernel.org>; Tue, 14 Jul 2026 08:02:26 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784016044; cv=none; b=J5hfKWuhVeO/eczSZWOJaRdarSqW1XvY0Kx2ER2nQqf8ipbwZrXTLvlrNG3C5ge7HOFdHN6m0Uv8954JCwkibEbnIt8hrl9bHdK1TvHmZgjKJR/xYvMmIZ8IUvxMVm0vpnSIDudw1GjZGN1bb9Gf+9t1dCmBuOTGoTptBcttSBg=
+	t=1784016148; cv=none; b=HLM6dEyhVAW5Nxk1pI5MUsF4l3m7j913BbIBTSLZjlaCmKesX51UqymQp9PHdcIDOlRMmKnOJLB8zbxfBpApSRTEPs9kGcOeP4XwNH7llqgOxE1kk/rGkgtDAXAaktCKjxCVKGt9UyzSiGEcdmFqjd3CPIcNCpBPGqXQ5l8cDhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784016044; c=relaxed/simple;
-	bh=lczrq4Wq1EhQvROZoZT33BuqmzgLX9Tkx5j+byiR58A=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b1GRomiG+JLj1u83Bol84wtglWISCKUy2cFyqYDHbV8Yf33dre2wST4uUIzOWhfO5JBvoKPd11enm2RHgIScDv1nvwESQlTJfJ0PdmAlq+uHx4TyeNaT+ZcdOG+L8J7+QONBCloCVwE2o5nX++fvAfkCUN3sF4eQKFnivCELBwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=secunet.com; spf=pass smtp.mailfrom=secunet.com; dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b=vjQFSrQM; arc=none smtp.client-ip=62.96.220.36
-Received: from localhost (localhost [127.0.0.1])
-	by mx1.secunet.com (Postfix) with ESMTP id 9768A2065A;
-	Tue, 14 Jul 2026 10:00:33 +0200 (CEST)
-X-Virus-Scanned: by secunet
-Received: from mx1.secunet.com ([127.0.0.1])
- by localhost (mx1.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id A6YUFFZZehSg; Tue, 14 Jul 2026 10:00:32 +0200 (CEST)
-Received: from EXCH-01.secunet.de (rl1.secunet.de [10.32.0.231])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.secunet.com (Postfix) with ESMTPS id CDA8B20643;
-	Tue, 14 Jul 2026 10:00:32 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.secunet.com CDA8B20643
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secunet.com;
-	s=202301; t=1784016032;
-	bh=zzzr7bgGfPkhtHATb7RDXhK8weqXzOaB5npsw5BmWHY=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-	b=vjQFSrQM0PfFsGsoyx7rN6+6ywJZ8U5YNTQG4kU0i20cIX5U3910cfELEKOpNE5xa
-	 IJBbDe/9y21z9rOnr7XSdKoXkIjNGi6c1RWkmNJ+M3GR+BfSx915TxcMXdvM/oKKuf
-	 shYpktoJxk3qfsfbLjYGnSzhGsagQyJZw63tWNEed4cmquX9Xr7f8wcZU7hPgewZzR
-	 NLunrVG5rQ+bsG0CQUIxBxoEPqdEAHxYJcWDE8W1LjYhQ6hFvdwqkuInaz9r3OxxR2
-	 L39qV+4ypy8a+aRgk0pV5bUhfBk9jAzcbuCaUaLMs04kVSRE5f1HXskxNV1pkzcu00
-	 ziN8sAUHPJquA==
-Received: from secunet.com (10.182.7.193) by EXCH-01.secunet.de (10.32.0.171)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.37; Tue, 14 Jul
- 2026 10:00:32 +0200
-Received: (nullmailer pid 570222 invoked by uid 1000);
-	Tue, 14 Jul 2026 08:00:31 -0000
-Date: Tue, 14 Jul 2026 10:00:31 +0200
-From: Steffen Klassert <steffen.klassert@secunet.com>
+	s=arc-20240116; t=1784016148; c=relaxed/simple;
+	bh=xn6FRjCb7BaLOzN9sSeZMxB95itrGogr8EEGOjZL6C0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PGvMmzRKrMNRPorq5Wf4a/KHisSVwzFjP3gDLMs6H+MebeiY97GppFypviety+nnXiboJ/3vYVmxspKRLz3Sw4s68ELJYntQAs99oXTA0laf4Yr5Vmhif0oqhRvRy5BiIwlqyoKSnUjcpmk7TU7871zJrCSr5H6oWGFWwG8OMT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PXGCn1HU; arc=none smtp.client-ip=209.85.128.53
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-493ec555a26so25791175e9.0
+        for <linux-crypto@vger.kernel.org>; Tue, 14 Jul 2026 01:02:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1784016145; x=1784620945; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=zVvBJ4SkbeNu5Hhcf3lSf/7F1/qZ3Gn5ctGfd77mXz4=;
+        b=PXGCn1HUgPa3uQsE9w0QBvdOigOiqThLQBJqS1O2zeA8v1K2b9kBqA1+lBPVG4xzKL
+         OsKBAgJM2vHIPmDZzlhh7q3lrPeAxExwIsN0JVqHjO7clcryc6nyGAtCoVnxlAao6wp5
+         xqJpkZiMnx2N/wLfu50KD8JUaBLOkXrbNugjk7O4ygeRwYwCOGRM3M70IsC+8sf9U4hs
+         GkzflnCTvZcj8qLaeOoJAOsPWSfJuDOADu4w4cSckJGiwtW1slqqj0SuZvmlcfQHy3JO
+         3aPFlzv2IyxZ8KoLJGpKxBYwRiVsU/t2feZ8FKOT/UEqnrnoHU4V31cxHym7dFsKzVgI
+         kVVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1784016145; x=1784620945;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=zVvBJ4SkbeNu5Hhcf3lSf/7F1/qZ3Gn5ctGfd77mXz4=;
+        b=APM79vifQWWZJplzWaHd7G3BsW1+xvXncccqOIgUdkY33t4EX/OObeyvAT8qur3fr4
+         hHonBfGXp32ANL2Eq7hWbZjbgfOP+0vyAJEOUPvkKnIADcE7e2eANepZ/riEt1Sh9SK3
+         qILUhz9jSwl0QTiTiMGVOYREc+oniG9odwmb708TlADiJM6X5J5zAp/WQXSxDiGiQM8g
+         dUFEUvTGindndwErCH4BH1RvMUIclQP0XbOZoZw4qMxCy1ZWHPpyaHzVxdzbalIuTb/r
+         aII6uao0tQ8M074dMSsm2JleS/YE/mvMkeHjwpkDLNYB9pVHkxkmk7V3FdReXWYupyfo
+         b/qg==
+X-Gm-Message-State: AOJu0YxC/9qxj1Jrbe+g5GX2jMzCRgBTsubaY9mixR8qM0Y2K7/yNxVD
+	m3g8ZqdShSgr2rc+Ctly1PbWBCc9kZvhjfmbO8oX7PVxe/FNVoP8rMWP
+X-Gm-Gg: AfdE7cm6SoCRtNUCf6pxnHa8D6xWaFuCtI2lVwCLeEuKeAKklm7xeRZGiC7el+8e5aC
+	Q3gsqMgDPUbmzvRBQKQOrqU4c5MY5rGp8TJ/f3XFTqoT9nnSprcxHnPiLdKPxnqsFI7rQbYzVKS
+	Glz+IA/tvknyiGRLMjT+B88NnW6Agoxs2Ip1G/Lkko1IgzSygyBJHLcp10iE65TMZYL8BjuMk6b
+	IrXCJOhlkfnzaiCvayCMQYzbxv44uQzeUoM1ma162+EzgzTTLIrhQF2frM/A1UYJxlziKxqN2qD
+	CTHlOU8FIXZEDTQ/NAaIw1D06TGMhNdmxV61SN9f+HJJIWaOT8cDySeFMNMcqLi0KWTVpu/gG/f
+	s25ub3+UY9WwbUOXo4uk80dqiq9pP7oLiaAm2HcxT1D713Rg1VtZpMI3RQtbOUVRMYJyaYvSazx
+	jHFNZ09CfScq/BekHtWK72ewZiaUttFrHZ+AvjCNcLRYCw/M+1YQ==
+X-Received: by 2002:a05:600c:6b17:b0:492:4a56:690b with SMTP id 5b1f17b1804b1-493f8834e5emr87474225e9.35.1784016129734;
+        Tue, 14 Jul 2026 01:02:09 -0700 (PDT)
+Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-493f2a38b19sm243600725e9.0.2026.07.14.01.02.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jul 2026 01:02:09 -0700 (PDT)
+Date: Tue, 14 Jul 2026 09:02:08 +0100
+From: David Laight <david.laight.linux@gmail.com>
 To: Eric Biggers <ebiggers@kernel.org>
-CC: Herbert Xu <herbert@gondor.apana.org.au>, Thomas Huth <thuth@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] crypto: pcrypt - Disallow nesting of the pcrypt
- wrapper
-Message-ID: <alXsn7_N81fPGJdj@secunet.com>
-References: <20260701143947.944593-1-thuth@redhat.com>
- <alRNusgXIT06hTow@gondor.apana.org.au>
- <20260713024654.GE4362@quark>
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/33] lib/crypto: aes: Add CBC and CBC-CTS support
+Message-ID: <20260714090208.6438dfa4@pumpkin>
+In-Reply-To: <20260707053503.209874-4-ebiggers@kernel.org>
+References: <20260707053503.209874-1-ebiggers@kernel.org>
+	<20260707053503.209874-4-ebiggers@kernel.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20260713024654.GE4362@quark>
-X-ClientProxiedBy: EXCH-02.secunet.de (10.32.0.172) To EXCH-01.secunet.de
- (10.32.0.171)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[secunet.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[secunet.com:s=202301];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-25956-lists,linux-crypto=lfdr.de];
-	FORGED_RECIPIENTS(0.00)[m:ebiggers@kernel.org,m:herbert@gondor.apana.org.au,m:thuth@redhat.com,m:davem@davemloft.net,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,secunet.com:from_mime,secunet.com:dkim,secunet.com:mid];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER(0.00)[steffen.klassert@secunet.com,linux-crypto@vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	FORWARDED(0.00)[lists@lfdr.de];
-	DKIM_TRACE(0.00)[secunet.com:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[steffen.klassert@secunet.com,linux-crypto@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER(0.00)[davidlaightlinux@gmail.com,linux-crypto@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-25957-lists,linux-crypto=lfdr.de];
+	FORWARDED(0.00)[lists@lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:ebiggers@kernel.org,m:linux-crypto@vger.kernel.org,m:linux-kernel@vger.kernel.org,s:lists@lfdr.de];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	RCPT_COUNT_THREE(0.00)[3];
+	SEM_URIBL_UNKNOWN_FAIL(0.00)[pumpkin:query timed out];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-crypto@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	SEM_URIBL_FRESH15_UNKNOWN_FAIL(0.00)[pumpkin:query timed out];
+	RBL_SEM_IPV6_FAIL(0.00)[2600:3c04:e001:36c::12fc:5321:query timed out];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ALIAS_RESOLVED(0.00)[];
-	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TAGGED_RCPT(0.00)[linux-crypto];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	FORGED_RECIPIENTS_FORWARDING(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,pumpkin:mid]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: E5F14752238
+X-Rspamd-Queue-Id: 59580752262
 
-On Sun, Jul 12, 2026 at 10:46:54PM -0400, Eric Biggers wrote:
-> On Mon, Jul 13, 2026 at 12:30:18PM +1000, Herbert Xu wrote:
-> > This doesn't fix the problem completely since you can nest in other
-> > ways, e.g., pcrypt(cryptd(pcrypt(...))).  How about handling the name-
-> > too-long error more gracefully?
+On Mon,  6 Jul 2026 22:34:33 -0700
+Eric Biggers <ebiggers@kernel.org> wrote:
+
+> Add support for AES-CBC and AES-CBC-CTS to the crypto library.
 > 
-> Could we just delete pcrypt instead of continuing to try to fix all the
-> weird problems it has?  A web search for pcrypt just finds CVEs and
-> advice not to use it, e.g.
-> https://github.com/libreswan/libreswan/wiki/Internals:-Cryptographic-Acceleration#obsoleted-ipsec-accelerations
+> These will be used to provide streamlined implementations of the
+> "cbc(aes)" and "cts(cbc(aes))" crypto_skcipher algorithms.  Most users
+> of these crypto_skcipher algorithms will also be able to switch to the
+> library, which as usual will be simpler and faster, e.g.:
+> 
+>     - block/blk-crypto-fallback.c (for AES-128-CBC-ESSIV)
+>     - fs/crypto/crypto.c (for AES-128-CBC-ESSIV)
+>     - fs/crypto/fname.c (for AES-256-CTS and AES-128-CBC)
+>     - kernel/bpf/crypto.c
+>     - net/ceph/crypto.c
+>     - security/keys/encrypted-keys/encrypted.c
+> 
+...
+> +void aes_cbc_encrypt(u8 *dst, const u8 *src, size_t len, u8 iv[AES_BLOCK_SIZE],
+> +		     aes_encrypt_arg key)
 
-The comments on pctypt there are not quite right, but it
-is obsolte, that's correct. It was usefull back in the
-days when the overhead of (slow) software crypto was
-high compared to an IPI. I guess there are not many
-users left, so I'm OK with removing it.
 
+Does embedding the 'u8 iv[]' in a structure work?
+It gives better type-checking for the length of the array.
+
+	David
 
