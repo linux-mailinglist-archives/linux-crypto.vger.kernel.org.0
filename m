@@ -1,135 +1,163 @@
-Return-Path: <linux-crypto+bounces-25980-lists+linux-crypto=lfdr.de@vger.kernel.org>
+Return-Path: <linux-crypto+bounces-25981-lists+linux-crypto=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-crypto@lfdr.de
 Received: from mail.lfdr.de
 	by mail.lfdr.de with LMTP
-	id afw8IQpRV2qyJAEAu9opvQ
-	(envelope-from <linux-crypto+bounces-25980-lists+linux-crypto=lfdr.de@vger.kernel.org>)
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jul 2026 11:21:14 +0200
+	id m2G2IjJ6V2qTOwEAu9opvQ
+	(envelope-from <linux-crypto+bounces-25981-lists+linux-crypto=lfdr.de@vger.kernel.org>)
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jul 2026 14:16:50 +0200
 X-Original-To: lists+linux-crypto@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11F7775C693
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jul 2026 11:21:14 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7170675DFEA
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jul 2026 14:16:49 +0200 (CEST)
 Authentication-Results: mail.lfdr.de;
-	dkim=pass header.d=kernel.org header.s=k20260515 header.b="X8f8/guC";
-	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25980-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 172.232.135.74 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25980-lists+linux-crypto=lfdr.de@vger.kernel.org";
-	dmarc=pass (policy=quarantine) header.from=kernel.org;
+	dkim=pass header.d=amazon.com header.s=amazoncorp2 header.b=UF1jJNYz;
+	spf=pass (mail.lfdr.de: domain of "linux-crypto+bounces-25981-lists+linux-crypto=lfdr.de@vger.kernel.org" designates 104.64.211.4 as permitted sender) smtp.mailfrom="linux-crypto+bounces-25981-lists+linux-crypto=lfdr.de@vger.kernel.org";
+	dmarc=pass (policy=quarantine) header.from=amazon.com;
 	arc=pass ("subspace.kernel.org:s=arc-20240116:i=1")
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 2D29D301FF21
-	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jul 2026 09:21:00 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 87421308CF25
+	for <lists+linux-crypto@lfdr.de>; Wed, 15 Jul 2026 12:02:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B34C3423E9E;
-	Wed, 15 Jul 2026 09:20:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9ED466B65;
+	Wed, 15 Jul 2026 12:01:18 +0000 (UTC)
 X-Original-To: linux-crypto@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com [44.246.68.102])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 702BE423E85;
-	Wed, 15 Jul 2026 09:20:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F3D44CF4F;
+	Wed, 15 Jul 2026 12:01:16 +0000 (UTC)
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1784107249; cv=none; b=t/ur1+0J6qwIx7JO0phKkz8NJSMKgaeNiW/P6ZP11Uh+KyxCGIsiYxq7gYPDuizT0RWAJJLqr1veRSRWhqQeCX5918h0dS9T8xAvyln8RPxT9a/WwsK2/kz+U0QslD7L8KrDLWhm6kCo6YSdaPY1M1/oQTat9taExpWmSKDz2r0=
+	t=1784116878; cv=none; b=mzZIpapJn+bdcIjX3A5mtACCBNBcvo4FgyEpRu6ne0jw3vnXNHtjX2wWX9ndarn7ttol7GITittzJJ8XLPRgqNCZK4yJ+rcUxITZU3DnpekhWDGrjJnd58/mTOl0zbXq4ELnlWsJP3kd9xn4MJ1blgRGOKXX42CEOgdUlkRjdMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1784107249; c=relaxed/simple;
-	bh=8icWg+MuYK6o8+nvyjTEbBOrLRu94DyCkjeA10u9Cqw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lJn2nbRfuZExsZ7SovFPAr5tzqb0hTYaayhCP4e5nRx8ouwHq8vPSW1m+fiOP3kutfyxLkGZ0DywtQ6eOhPOYVz7Oxjz+avkoRD7HuoLlVxkwQCBeEiVlHiDHrne3Mv4/lzU/jHZG8W+OvIuKgkYgW+HeZ9+D2i/xOwgixY0XCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X8f8/guC; arc=none smtp.client-ip=100.103.45.18
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA3BC1F00A3A;
-	Wed, 15 Jul 2026 09:20:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1784107248;
-	bh=LgtzXpBKpqrsbizlT4+gM3HB6/jCX4YYOzDpd315EWs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=X8f8/guCsQzLR6QXo73QciVGDuKazQdQ0i2ryhxGPfDSYFnWbOyfjSRiMuvtXqoBH
-	 Lzx5ra8rUtHWleE3q5yUND8d6M7V6DU8488aHf3br8UM4kUlh5qgvalKoHRuVUTS0M
-	 Xv+A2MW1H72Je5KeC8Auw2iJssxR+F5wHsHwdANIK5Y8xQvvngRLlk0Gdf8rrwlN/A
-	 sMR7wIfVMlEMcicI+e+2RdGt5RWRMgpIKmF4v3sS76NJlqB4aGhXp+fiTkjutJPoQ8
-	 AIzFyU16rPmB5ByoLnMB2yjQz7nJBeOYCaW6iV2RieVp/E2/kQ1b7XjDbL6qnmHReJ
-	 xphQ2Es0B/7uQ==
-Date: Wed, 15 Jul 2026 11:20:43 +0200
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, 
-	"David S. Miller" <davem@davemloft.net>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Harshal Dev <harshal.dev@oss.qualcomm.com>, 
-	Vinod Koul <vkoul@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>, 
-	Konrad Dybcio <konradybcio@kernel.org>, Frank Li <Frank.Li@kernel.org>, Andy Gross <agross@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-Subject: Re: [PATCH v4 1/6] dt-bindings: crypto: qcom,inline-crypto-engine:
- Fix legacy/new SoC strictness split
-Message-ID: <20260715-icy-berserk-pigeon-909f8b@quoll>
-References: <20260714-b4-shikra_crypto_changse-v4-0-06a4ea97c209@oss.qualcomm.com>
- <20260714-b4-shikra_crypto_changse-v4-1-06a4ea97c209@oss.qualcomm.com>
+	s=arc-20240116; t=1784116878; c=relaxed/simple;
+	bh=snKEYRguqD5VR4XqudKYgg++c8lGDC3R8iymuV8aQ38=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mAwmR4l7vhqAV3RV2XO0BGP0QXZINluEXalI4RTJDSSA4xnYDC88XmbcJLn3iKpWh+bv7l4z/xEHz/A57N+aETbiNRA6OkvoqJ512z7ukRxYGrKoFLXI74iY5vXZz88N/CLBubtcJpS2nssp3HVeYsUdnarMTHMRebJEuLtEVNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=UF1jJNYz; arc=none smtp.client-ip=44.246.68.102
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1784116876; x=1815652876;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=jW12a7gMz+PxQStmkNYCvL4Zb6H83SZzrOZFyQ4Rc4k=;
+  b=UF1jJNYzQvA1MI6SI4wgoHKEzsTDAlJuvHwVL9r7c3GJ5W8NdoIH4bFu
+   FVoTcw1uyzikeaqPtbh9Sq+xGzpfr/tWS2TiIQvTHxc3qH2TsnIyLd6T7
+   mCRDfRPCKDkHp4vU/I4biiQZo0RbsYypcdBwOPln3N+Fi5pRVpRC2kIS0
+   1NfbnwJoh35kufQNy9QM18MQ+xw87p8WjUJCbOf+Px0pLHe2l5QxFlRpo
+   hCS9o/FvWk57KqeoMPCcCV8q1WBgMBVLuB3ATXoLZh40QUAfwNz8/mwwr
+   nMPwKrozy6w1L75Y2naRE4JbLF9JKeZ4E8hgab6zYkoS58u9Oo1ON8aMK
+   w==;
+X-CSE-ConnectionGUID: IjX3y7uJSuSX5U/9yg+d5Q==
+X-CSE-MsgGUID: cuILeauFRhWBVEgn5g1XcQ==
+X-IronPort-AV: E=Sophos;i="6.25,165,1779148800"; 
+   d="scan'208";a="23727927"
+Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
+  by internal-pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2026 12:01:13 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [205.251.233.51:23601]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.58.199:2525] with esmtp (Farcaster)
+ id f061b287-cd6f-4f30-941c-36b95fe3dae9; Wed, 15 Jul 2026 12:01:13 +0000 (UTC)
+X-Farcaster-Flow-ID: f061b287-cd6f-4f30-941c-36b95fe3dae9
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.43;
+ Wed, 15 Jul 2026 12:01:13 +0000
+Received: from dev-dsk-lravich-1b-7405803b.eu-west-1.amazon.com (10.13.225.95)
+ by EX19D001UWA001.ant.amazon.com (10.13.138.214) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.43;
+ Wed, 15 Jul 2026 12:01:11 +0000
+From: Leonid Ravich <lravich@amazon.com>
+To: <herbert@gondor.apana.org.au>
+CC: <linux-crypto@vger.kernel.org>, <dm-devel@lists.linux.dev>,
+	<linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<davem@davemloft.net>, <ebiggers@kernel.org>, <snitzer@kernel.org>,
+	<mpatocka@redhat.com>, <axboe@kernel.dk>
+Subject: Re: [PATCH v5 2/5] crypto: dun - data-unit-number dispatch template
+Date: Wed, 15 Jul 2026 12:01:02 +0000
+Message-ID: <20260715120102.6687-1-lravich@amazon.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <alRMn--pY1ELYmBJ@gondor.apana.org.au>
+References: <20260630083431.2772-3-lravich@amazon.com>
+ <alRMn--pY1ELYmBJ@gondor.apana.org.au>
 Precedence: bulk
 X-Mailing-List: linux-crypto@vger.kernel.org
 List-Id: <linux-crypto.vger.kernel.org>
 List-Subscribe: <mailto:linux-crypto+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-crypto+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20260714-b4-shikra_crypto_changse-v4-1-06a4ea97c209@oss.qualcomm.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D040UWA001.ant.amazon.com (10.13.139.22) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-3.16 / 15.00];
-	WHITELIST_SPF_DKIM(-3.00)[kernel.org:d:+,kernel.org:s:+];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-10.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
+	WHITELIST_SPF_DKIM(-3.00)[amazon.com:d:+,kernel.org:s:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20260515];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER(0.00)[krzk@kernel.org,linux-crypto@vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	FORGED_RECIPIENTS(0.00)[m:kuldeep.singh@oss.qualcomm.com,m:herbert@gondor.apana.org.au,m:davem@davemloft.net,m:robh@kernel.org,m:krzk+dt@kernel.org,m:conor+dt@kernel.org,m:andersson@kernel.org,m:harshal.dev@oss.qualcomm.com,m:vkoul@kernel.org,m:brgl@kernel.org,m:konradybcio@kernel.org,m:Frank.Li@kernel.org,m:agross@kernel.org,m:krzysztof.kozlowski@oss.qualcomm.com,m:linux-arm-msm@vger.kernel.org,m:linux-crypto@vger.kernel.org,m:devicetree@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:dmaengine@vger.kernel.org,m:krzk@kernel.org,m:conor@kernel.org,s:lists@lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lravich@amazon.com,linux-crypto@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-25981-lists,linux-crypto=lfdr.de];
 	FORWARDED(0.00)[lists@lfdr.de];
-	TAGGED_FROM(0.00)[bounces-25980-lists,linux-crypto=lfdr.de];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_FORWARDING(0.00)[];
-	ALIAS_RESOLVED(0.00)[];
+	FORGED_RECIPIENTS(0.00)[m:herbert@gondor.apana.org.au,m:linux-crypto@vger.kernel.org,m:dm-devel@lists.linux.dev,m:linux-block@vger.kernel.org,m:linux-kernel@vger.kernel.org,m:davem@davemloft.net,m:ebiggers@kernel.org,m:snitzer@kernel.org,m:mpatocka@redhat.com,m:axboe@kernel.dk,s:lists@lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[krzk@kernel.org,linux-crypto@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
+	FORGED_SENDER(0.00)[lravich@amazon.com,linux-crypto@vger.kernel.org];
+	FORGED_SENDER_FORWARDING(0.00)[];
+	DKIM_TRACE(0.00)[amazon.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_FORWARDING(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-crypto,dt];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[qualcomm.com:email,vger.kernel.org:from_smtp,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,quoll:mid]
+	RCPT_COUNT_SEVEN(0.00)[10];
+	ALIAS_RESOLVED(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[vger.kernel.org:from_smtp,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
+	TAGGED_RCPT(0.00)[linux-crypto];
+	TO_DN_NONE(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_COUNT_SEVEN(0.00)[7]
 X-Rspamd-Server: lfdr
-X-Rspamd-Queue-Id: 11F7775C693
+X-Rspamd-Queue-Id: 7170675DFEA
 
-On Tue, Jul 14, 2026 at 03:35:12PM +0530, Kuldeep Singh wrote:
-> Couple of already merged SoCs(like sc7280, sm8750, kaanapali etc.)
-> describe ICE as single clock historically which are recently updated
-> with mandatory 2 clocks.
-> 
-> Keep only the known legacy compatibles flexible, and make strict
-> validation default(of power-domains and 2 clocks) for all other Soc
-> compatibles.
-> 
-> This ensures old DTs are valid while ensuring any new SoC (like hawi,
-> milos, eliza, nord, maili or any upcoming ones) must follow latest
-> requirements by default.
-> 
-> Signed-off-by: Kuldeep Singh <kuldeep.singh@oss.qualcomm.com>
-> ---
->  .../bindings/crypto/qcom,inline-crypto-engine.yaml | 26 ++++++++++++++--------
->  1 file changed, 17 insertions(+), 9 deletions(-)
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-
-Best regards,
-Krzysztof
-
+On Mon, Jul 13, 2026 at 12:25:35PM +1000, Herbert Xu wrote:=0D
+> This shouldn't be a template.  The default data-unit handling=0D
+> should go into the mid-API layer (so skcipher.c).  It should=0D
+> transparently split things up *if* the underlying algorithm does=0D
+> not support multiple units.=0D
+=0D
+Done for v6 (mid-API split in skcipher.c, cherry-picking  acomp=0D
+CRYPTO_ALG_REQ_SEG / segmentation-wrapper patch as you suggested).  One=0D
+design fork I'd like your call on before I resend.=0D
+=0D
+I benchmarked the mid-API split vs the legacy per-sector loop on=0D
+r7i.metal (VAES-AVX512): dm-crypt shows no measurable throughput or=0D
+latency regression, but a microbench isolates a fixed ~50 ns per 512B=0D
+unit.  It's a fixed per-call cost: the split=0D
+copies the counter IV to a per-unit scratch and re-walks the sglist per=0D
+unit and is paid only by callers setting unit_size !=3D 0.=0D
+That gives two directions:=0D
+=0D
+  1. SW batching layer (current v6): mid-API transparently splits when=0D
+     the alg lacks CRYPTO_ALG_REQ_SEG and unit_size !=3D 0.  =0D
+     Works today on every existing skcipher at the ~50 ns/unit cost, =0D
+     and goes quiet as algs gain native support.=0D
+=0D
+  2. HW-offload-hint model (as in Inel acomp series): callers set=0D
+     unit_size only for CRYPTO_ALG_REQ_SEG algs and the mid-API never=0D
+     emulates non-native ones.  Zero overhead, but the path is dead=0D
+     until an in-tree skcipher advertises native support, unlike=0D
+     acomp, where IAA already does.=0D
+=0D
+(1) is usable now with a small permanent SW cost; (2) mirrors the acomp=0D
+mid-layer dispatch but, absent a native skcipher, ships an interface=0D
+with no in-tree user.  Which would you prefer?=0D
+=0D
+Thanks,=0D
+Leonid=0D
 
